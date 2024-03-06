@@ -277,6 +277,18 @@ namespace TownOfHost
                     };
                     AllModNews.Add(news);
                 }
+                {
+                    var news = new ModNews
+                    {
+                        Number = 100008,
+                        Title = "v2024.3.5sに対応したのだ～",
+                        SubTitle = "Town Of Host-K v5.1.48.2",
+                        ShortTitle = "◆TOH-K v5.1.48.2",
+                        Text = "朝起きてk鯖見たらなんか#downloadにあったから\nこっちも対抗だぁ!()\n\nk5.1.48の入れ忘れ:\nホスト以外のmod導入済みプレイヤーがシャイボーイになったとき、mod導入者がBANされる問題の修正\n\n他:\nv2024.3.5sでゲームを開始することができなかったのを修正\n\n※このバージョンはv2023.11.28sでは動きません。\nk5.1.48.5でなにか問題があったときに使ってください。",
+                        Date = "2024-03-06T00:00:00Z"
+                    };
+                    AllModNews.Add(news);
+                }
                 AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
             }
         }
