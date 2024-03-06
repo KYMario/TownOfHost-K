@@ -10,6 +10,7 @@ using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
 using UnityEngine;
 
+using TownOfHost.Modules;
 using TownOfHost.Attributes;
 using TownOfHost.Roles.Core;
 
@@ -251,6 +252,8 @@ namespace TownOfHost
             handler.Info($"{nameof(ThisAssembly.Git.Tag)}: {ThisAssembly.Git.Tag}");
 
             ClassInjector.RegisterTypeInIl2Cpp<ErrorText>();
+
+            SystemEnvironment.SetEnvironmentVariables();
 
             Harmony.PatchAll();
         }
