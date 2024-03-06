@@ -54,6 +54,7 @@ public sealed class Shyboy : RoleBase
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
+        if (!AmongUsClient.Instance.AmHost) return;
         Cool += Time.fixedDeltaTime;
         if (Player.IsAlive() && Cool >= 0.25)
         {
@@ -63,7 +64,6 @@ public sealed class Shyboy : RoleBase
         }
         AfterMeeting += Time.fixedDeltaTime;
         var Shydeathdi = 5 * Main.DefaultCrewmateVision;
-        if (!AmongUsClient.Instance.AmHost) return;
         if (GameStates.IsInTask && Player.IsAlive() && Notshy <= AfterMeeting - 5)
         {
             Vector2 GSpos = player.transform.position;
