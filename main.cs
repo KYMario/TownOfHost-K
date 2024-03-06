@@ -252,7 +252,6 @@ namespace TownOfHost
             handler.Info($"{nameof(ThisAssembly.Git.Tag)}: {ThisAssembly.Git.Tag}");
 
             ClassInjector.RegisterTypeInIl2Cpp<ErrorText>();
-
             SystemEnvironment.SetEnvironmentVariables();
 
             Harmony.PatchAll();
