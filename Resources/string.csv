@@ -112,74 +112,74 @@
 "MaLovers","MadonnaLovers","マドンナラバーズ","丘比特恋人",
 
 "#コンビネーション役職"
-"Driver","Driver","ドライバー","","","","",""
-"Braid","Braid","ブレイド","","","","",""
-"DriverandBraid","DriverandBraid","ドライバー</color>と<color=#ff1919>ブレイド</color>"
+"Driver","Driver","ドライバー","驾驶员","","","",""
+"Braid","Braid","ブレイド","辫子","","","",""
+"DriverandBraid","DriverandBraid","驾驶员</color>和<color=#ff1919>辫子</color>"
 
 "# HideAndSeek"
 "HASFox","Fox","狐","狐狸","狐妖","Лис","Raposa","Raposa"
 "HASTroll","Troll","トロール","猎人","誘捕者","Тролль","Troll","Troll"
 
 "# TaskBattle"
-"TaskPlayerB","Player","プレイヤー","","","","",""
-"TaskBattleSet","","<color=#87CEFA>タスクバトル設定</color>","","","","",""
+"TaskPlayerB","Player","プレイヤー","玩家","","","",""
+"TaskBattleSet","","<color=#87CEFA>タスクバトル設定</color>","<color=#87CEFA>任务战设置</color>","","","",""
 "TaskBattle","TaskBattle","タスクバトル","任务战","任務戰","ЗадачаБитва","TâcheBataille",""
-"TaskBattleCanVent","Can Vent","ベントを使用できる","","","","",""
-"TaskBattleVentCooldown","Vent Cooldown","ベントクールダウン","","","","",""
-"TaskBattleTaskc","Can See Other Players Number Of Tasks","他プレイヤーのタスク数を表示する","","","","",""
-"TaskBattleTaska","Can See Total Number Of Tasks","合計タスク数を表示する","","","","",""
-"TaskBattleTasko","Can See Fastest Player Number Of Tasks","一番速い人のタスク数を表示する","","","","",""
-"TaskBattleTeamMode","Enable Team Mode","チームモードを有効にする","","","","",""
-"TaskBattleTeamC","Number of teams","チーム数","","","","",""
-"TaskBattleTeamWT","Set the game end condition to the total number of tasks completed by the team.","ゲーム終了条件をチームの合計タスク完了数にする","","","","",""
-"TaskBattleTeamWinTaskc","Total Number of Tasks","合計タスク数","","","","",""
-"TaskBattleInfo","Task battle:\nEveryone is assigned a crew and no meetings can be held.\nOnly the player who completes all tasks first can win. (with settings)","タスクバトル:\n全員にクルーが割り当てられ、会議を開くことはできない。\n一番最初にタスクを全て完了させたプレイヤーのみ勝利することができる。(設定有)","","","","",""
+"TaskBattleCanVent","Can Vent","ベントを使用できる","可以使用通风管","","","",""
+"TaskBattleVentCooldown","Vent Cooldown","ベントクールダウン","通风管冷却时间","","","",""
+"TaskBattleTaskc","Can See Other Players Number Of Tasks","他プレイヤーのタスク数を表示する","可以查看其他玩家的任务数量","","","",""
+"TaskBattleTaska","Can See Total Number Of Tasks","合計タスク数を表示する","可以查看任务总数","","","",""
+"TaskBattleTasko","Can See Fastest Player Number Of Tasks","一番速い人のタスク数を表示する","可查看最快玩家的任务数量","","","",""
+"TaskBattleTeamMode","Enable Team Mode","チームモードを有効にする","启用团队模式","","","",""
+"TaskBattleTeamC","Number of teams","チーム数","团队数量","","","",""
+"TaskBattleTeamWT","Set the game end condition to the total number of tasks completed by the team.","ゲーム終了条件をチームの合計タスク完了数にする","将游戏结束条件设置为团队完成任务的总数","","","",""
+"TaskBattleTeamWinTaskc","Total Number of Tasks","合計タスク数","任务总数","","","",""
+"TaskBattleInfo","Task battle:\nEveryone is assigned a crew and no meetings can be held.\nOnly the player who completes all tasks first can win. (with settings)","タスクバトル:\n全員にクルーが割り当てられ、会議を開くことはできない。\n一番最初にタスクを全て完了させたプレイヤーのみ勝利することができる。(設定有)","任务战：\n每个人都被分配到一个团队，不能开启会议。\n只有先完成所有任务的玩家才能获胜（可设置）","","","",""
 
 "# GM"
 "GM","GM","ゲームマスター","GM(管理员)","GM(遊戲大師)","Мастер Игры","MJ(Mestre de Jogo)","GM(Fantasma)"
 
 "# ラスト属性"
 "LastImpostor","Last Impostor","ラストインポスター","绝境者","絕境者","Последний Предатель","Último Impostor","Último Impostor"
-"LastNeutral","Last Neutral","ラストニュートラル","","","","",
-"Workhorse","Workhorse","ワークホース","实干家","加班狂","Работник","Burro de Carga",""
+"LastNeutral","Last Neutral","ラストニュートラル","最后的中立","","","",
+"Workhorse","Workhorse","ワークホース","加班狂","加班狂","Работник","Burro de Carga",""
 
 "# ゴーストロール"
 
 "# バフ属性"
 "Watcher","Watcher","ウォッチャー","窥视者","觀察者","Наблюдатель","Observador","Observador"
-"Speeding","Speeding","スピーディング","","","","",""
-"Moon","Moon","ムーン","","","","",""
-"Guesser","Guesser","ゲッサー","","","","",""
-"Sun","Sun","サン"
-"Director","Director","ディレクター"
-"Connecting","Connecting","コネクティング"
-"Serial","Serial","シリアル"
-"AdditionalVoter","AdditionalVoter","アディショナルヴォウター"
-"Opener","Opener","オープナー"
-"Psychic","Psychic","サイキック"
-"Bakeneko","Monster Cat","バケネコ"
-"Nurse","Nurse","ナース"
+"Speeding","Speeding","スピーディング","闪电侠","","","",""
+"Moon","Moon","ムーン","月亮","","","",""
+"Guesser","Guesser","ゲッサー","赌怪","","","",""
+"Sun","Sun","サン","太阳",
+"Director","Director","ディレクター","署长",
+"Connecting","Connecting","コネクティング","连接",
+"Serial","Serial","シリアル","串行",
+"AdditionalVoter","AdditionalVoter","アディショナルヴォウター","额外投票者",
+"Opener","Opener","オープナー","开场白",
+"Psychic","Psychic","サイキック","灵媒",
+"Bakeneko","Monster Cat","バケネコ","妖怪猫",
+"Nurse","Nurse","ナース","护士",
 
 "# デバフ属性"
-"NotConvener","NotConvener","ノットコンヴィーナ"
-"Notvoter","Notvoter","ノットヴォウター"
-"Elector","Elector","イレクター"
-"Water","Water","ウォーター"
-"Slacker","Slacker","怠け者"
-"LowBattery","LowBattery","充電切れ"
-"Transparent","Transparent","トランスパレント"
+"NotConvener","NotConvener","ノットコンヴィーナ","非召集人",
+"Notvoter","Notvoter","ノットヴォウター","非投票者",
+"Elector","Elector","イレクター","选举人",
+"Water","Water","ウォーター","水",
+"Slacker","Slacker","怠け者","懒鬼",
+"LowBattery","LowBattery","充電切れ","低电量",
+"Transparent","Transparent","トランスパレント","透明",
 
 "# その他"
-"Team","Team","陣営","","","","",""
-"CustomRoleTypes.Crewmate","Crewmate","<color=#8cffff>クルー</color>","船员","","Членов Экипажа","Tripulante",""
-"CustomRoleTypes.Impostor","Impostor","<color=#ff1919>インポスター</color>","内鬼","","Предателей","Impostor",""
-"CustomRoleTypes.Neutral","Neutral","<color=#808080>ニュートラル</color>","独立","","Нейтралов","Neutro",""
-"CustomRoleTypes.Madmate","Mad","<color=#ff1919>マッド</color>","叛徒","","Безумцев","Louco",""
+"Team","Team","陣営","阵营","","","",""
+"CustomRoleTypes.Crewmate","Crewmate","<color=#8cffff>クルー</color>","<color=#8cffff>船员</color>","","Членов Экипажа","Tripulante",""
+"CustomRoleTypes.Impostor","Impostor","<color=#ff1919>インポスター</color>","<color=#ff1919>内鬼</color>","","Предателей","Impostor",""
+"CustomRoleTypes.Neutral","Neutral","<color=#808080>ニュートラル</color>","<color=#808080>独立</color>","","Нейтралов","Neutro",""
+"CustomRoleTypes.Madmate","Mad","<color=#ff1919>マッド</color>","<color=#ff1919>叛徒</color>","","Безумцев","Louco",""
 "TeamCrewmate","Team Crewmates","クルー陣営","船员阵营","","Команда Членов Экипажа","Time Tripulantes",""
 "TeamImpostor","Team Impostors","インポスター陣営","内鬼阵营","幫助偽裝者","Команда Предателей","Time Impostor","Time Impostor"
 "TeamEgoist","Team EgoistTeam ","エゴイスト陣営","野心家阵营","利己主義者陣營","Команда Эгоистов","Time Egoísta","Time Egoísta"
 "TeamJackal","Team Jackal","ジャッカル陣営","豺狼阵营","豺狼陣營","Команда Шакалов","Time Guará","Time Chacal"
-"Team2","Team{0}","チーム{0}の","","","","",""
+"Team2","Team{0}","チーム{0}の","阵营{0}","","","",""
 
 "## 役職説明ショート"
 "NeutralInfo","Independent forces unaffiliated with any other teams","他のどの陣営にも属さない孤高の陣営","不属于其他阵营的独立阵营","你屬於一個獨立陣營且不受其他陣營或職業的獲勝條件引響","Команда которая не принадлежит ни к каким другим командам","Forças independentes que não pertencem a nenhuma outra equipe","Um time solitário que não pertence a nenhum outro time"
@@ -201,17 +201,17 @@
 "TimeThiefInfo","Kill to steal meeting time","敵を殺し、会議時間を奪おう","不仅夺走他们的性命，还有他们的时间","殺光你的敵人並將會議時間縮短","Убивайте игроков чтобы сократить время встречи","Mate para roubar tempo de reunião","Mate para roubar tempo de reunião"
 "SniperInfo","Snipe","狙い撃つぜ","瞄准敌人，射击！","讓你的敵人在你的狙擊下死亡","Стреляйте в Членов Экипажа на расстоянии","Hora de atirar","Hora de atirar"
 "EvilTrackerInfo","Track others","プレイヤーを追跡しろ","让我看看，我的小目标在哪","你不要過來啊啊阿","Отслеживайте Игроков","Localize os outros","Localize os outros"
-"StealthInfo","Act unseen in the dark world...","闇の世界で暗躍せよ","","","Действуйте незаметно в темноте","Tabalhe sem ser visto no mundo escuro...",""
-"NekoKabochaInfo","Take your killer to your grave","死なばもろとも","","","Отведи своего убийцу в могилу","Leve seu assassino para o túmulo",""
-"EvilHackerInfo","Hack systems","システムをハッキングせよ","","","Взломайте систему","Hackeie sistemas",""
-"PenguinInfo","Let's drag and kill!","ぺちぺち！","","","Давайте тащить и убивать!","Vamos arrastar e matar!",""
-"InsiderInfo","Knowledge is power","知は力なり","","","Знание - сила!","Conhecimento é poder",""
+"StealthInfo","Act unseen in the dark world...","闇の世界で暗躍せよ","进入阴间黑暗世界","","Действуйте незаметно в темноте","Tabalhe sem ser visto no mundo escuro...",""
+"NekoKabochaInfo","Take your killer to your grave","死なばもろとも","他的磨坊能磨碎一切","","Отведи своего убийцу в могилу","Leve seu assassino para o túmulo",""
+"EvilHackerInfo","Hack systems","システムをハッキングせよ","破解系统","","Взломайте систему","Hackeie sistemas",""
+"PenguinInfo","Let's drag and kill!","ぺちぺち！","让我们拖着杀吧！","","Давайте тащить и убивать!","Vamos arrastar e matar!",""
+"InsiderInfo","Knowledge is power","知は力なり","知识就是力量","","Знание - сила!","Conhecimento é poder",""
 "AntiReporterInfo","I won't let you report a corpse!","死体通報はさせないぞ！","我不会让你举报尸体的！","我不會讓你舉報屍體的！","Я не позволю вам сообщить о трупе!","Eu não vou deixar você denunciar um cadáver!",""
 "TeleportKillerInfo","Teleport to you!","君のもとへテレポート！","传送到你身边！","傳送到你身邊！","Телепортируйтесь к вам!","Teletransporte para você!",""
 "BomberInfo","Art is a blast","芸術は爆発だ","艺术是一种爆炸","藝術是一種爆炸","Искусство - это взрыв","A arte é uma explosão",""
-"TairouInfo","Confuse the Crewmates","クルーを惑わせ！","","","","",""
-"EvilgamblerInfo","Life is a Gamble","人生はギャンブルゾイ","","","","",""
-"NoisemakerInfo","Don't be afraid of kill","キルを恐れるな","","","","",""
+"TairouInfo","Confuse the Crewmates","クルーを惑わせ！","迷惑船员","","","",""
+"EvilgamblerInfo","Life is a Gamble","人生はギャンブルゾイ","人生就是一场赌博","","","",""
+"NoisemakerInfo","Don't be afraid of kill","キルを恐れるな","不要害怕杀戮！","","","",""
 "MagicianInfo","Let me show you some magic","マジックを見せてやろう","","","","",""
 "LimiterInfo","Can we at least die together at the end?","最期は一緒に逝こ?"
 "DecrescendoInfo","gradually weaken...","だんだん弱く...","","","","",""
