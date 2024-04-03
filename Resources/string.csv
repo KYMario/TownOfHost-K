@@ -42,8 +42,8 @@
 "Noisemaker","NoiseMaker","ノイズメーカー","噪音制造者","噪音製造者","Шум Огенератор","Produtor de Ruído",""
 "Magician","Magician","マジシャン","魔术师","魔術師","Вaitолшебник","Mágico",""
 "Limiter","Limiter","リミッター","限制者,
-"Decrescendo","Decrescendo","デクレッシェンド",""渐弱者"","","",""
-"Alien","Alien","エイリアン",""外星人"","","",""
+"Decrescendo","Decrescendo","デクレッシェンド","渐弱者","","",""
+"Alien","Alien","エイリアン","外星人","","",""
 "Mole","Mole","モグラ","鼹鼠",
 "ProgressKiller","ProgressKiller","プログレスキラー","进度杀手",
 
@@ -212,13 +212,13 @@
 "TairouInfo","Confuse the Crewmates","クルーを惑わせ！","迷惑船员","","","",""
 "EvilgamblerInfo","Life is a Gamble","人生はギャンブルゾイ","人生就是一场赌博","","","",""
 "NoisemakerInfo","Don't be afraid of kill","キルを恐れるな","不要害怕杀戮！","","","",""
-"MagicianInfo","Let me show you some magic","マジックを見せてやろう","","","","",""
-"LimiterInfo","Can we at least die together at the end?","最期は一緒に逝こ?"
-"DecrescendoInfo","gradually weaken...","だんだん弱く...","","","","",""
-"AlienInfo","A-lien I'm A-lien","ナ ニ カ が起こる胸騒ぎ"
-"MoleInfo","Continue on the road less traveled","道なき道を進んだ先は..."
-"ProgressKillerInfo","Let's eliminate them before they shine","働き者を見つけ、キルしよう","","","","",""
-"DriverInfo","Ruin the crew with Blade.","ブレイドと共にクルーを破滅せよ"
+"MagicianInfo","Let me show you some magic","マジックを見せてやろう","让我向你展示一些魔法","","","",""
+"LimiterInfo","Can we at least die together at the end?","最期は一緒に逝こ?","我们能至少在最后一起死吗？",
+"DecrescendoInfo","gradually weaken...","だんだん弱く...","逐渐减弱...","","","",""
+"AlienInfo","A-lien I'm A-lien","ナ ニ カ が起こる胸騒ぎ","由 NANIQA 引起的心脏杂音",
+"MoleInfo","Continue on the road less traveled","道なき道を進んだ先は...","无路可走的道路通往...",
+"ProgressKillerInfo","Let's eliminate them before they shine","働き者を見つけ、キルしよう","找到并击杀勤劳的人！","","","",""
+"DriverInfo","Ruin the crew with Blade.","ブレイドと共にクルーを破滅せよ","用刀片毁灭船员",
 
 "# マッドメイト系役職"
 "MadmateInfo","Help the Impostors","インポスターの援助をしよう","帮助内鬼","幫助偽裝者","Помогите Предателям","Ajude os Impostores","Ajude os Impostores"
@@ -226,12 +226,12 @@
 "MadGuardianInfo","Finish your tasks and help the Impostors","タスクを済ませ、インポスターの援助をしよう","完成任务后来帮助内鬼","完成你的任務並幫助偽裝者","Завершите свои задания, чтобы помочь Предателям","Termine as suas tarefas e ajude os Impostores","Termine as suas tarefas e ajude os Impostores"
 "MadSnitchInfo","Finish your tasks and help the Impostors","タスクを済ませ、インポスターの援助をしよう","完成任务后来帮助内鬼","完成你的任務並幫助偽裝者","Завершите свои задания, чтобы помочь Предателям","Termine as suas tarefas e ajude os Impostores","Termine as suas tarefas e ajude os Impostores"
 "SKMadmateInfo","You are now on Team Impostors","サイドキックにされた","你是内鬼的好帮手","你現在屬於偽裝者們了，盡你所能幫助他們","Теперь вы в команде Предателя","Você agora está no Time Impostor","Você agora está no Time Impostor"
-"MadJesterInfo","Get banished and lead your Impostors to victory","追放されて、インポスターを勝利へ導こう","被放逐并带领你的冒名顶替者走向胜利","被放逐並帶領你的冒名頂替者走向勝利","Получите изгнание и приведите своего Самозванца к победе","Seja banido e leve seu Impostor à vitória",""
-"MadTellerInfo",Find and help Imposters","インポスターを探し出し、援助をしよう","","","","",""
+"MadJesterInfo","Get banished and lead your Impostors to victory","追放されて、インポスターを勝利へ導こう","被驱逐后并带领内鬼走向胜利","被放逐並帶領你的冒名頂替者走向勝利","Получите изгнание и приведите своего Самозванца к победе","Seja banido e leve seu Impostor à vitória",""
+"MadTellerInfo",Find and help Imposters","インポスターを探し出し、援助をしよう","找到内鬼并提供帮助！","","","",""
 "MadBaitInfo","Trap your enemies","敵を罠にはめよう","引诱敌人落入你的陷阱当中","誘捕你的敵人","Ловите своих врагов","Prenda os seus inimigos","Prenda os seus inimigos"
-"MadReducedInfo","Reduced vote count and help the Impostors","投票数を減らし、インポスターの援助をしよう"
-"MadAvengerInfo","Flowers for your late husband.","今は亡きご主人に花束をー"
-"BraidInfo","Let's assist the Imposter, especially the driver.","インポスター、特にドライバー様の援助をしよう"
+"MadReducedInfo","Reduced vote count and help the Impostors","投票数を減らし、インポスターの援助をしよう","减少投票数，帮助内鬼！",
+"MadAvengerInfo","Flowers for your late husband.","今は亡きご主人に花束をー","为您已故的丈夫献花",
+"BraidInfo","Let's assist the Imposter, especially the driver.","インポスター、特にドライバー様の援助をしよう","让我们帮助内鬼，尤其是内鬼",
 
 "# 特殊クルー役職"
 "BaitInfo","Trap your enemies","敵を罠にはめよう","引诱敌人落入你的陷阱当中","誘捕你的敵人","Ловите своих врагов","Prenda os seus inimigos","Prenda os seus inimigos"
@@ -246,20 +246,20 @@
 "DictatorInfo","Decide who to eject","独裁政治をしよう","让我统治世界，拥有无上的权利","讓所有人臣服於你","Повесьте своего врага на страх и риск","Escolha quem será exilado","Escolha quem será exilado"
 "SeerInfo","You see the moment someone dies","他人の死んだ瞬間がわかる","你能感知死亡","你擁有陰陽眼","Вы видите когда умирают игроки","Veja o momento em que alguém morre","Veja o momento em que alguém morre"
 "TimeManagerInfo","Do the tasks and extend meeting time","タスクをして会議時間を延ばそう","任务搞快点，不就有时间开会了嘛","完成你的任務來延長會議時間","Выполняйте задания чтобы увеличить время встречи","Faça as tarefas e aumente o tempo de reunião",""
-"BakeryInfo","How about delicious bread?","美味しいパンはいかが？","好吃的面包怎么样？","好吃的麵包怎麼樣？","Как насчет вкусного хлеба?","Que tal um pão delicioso?",""
+"BakeryInfo","How about delicious bread?","美味しいパンはいかが？","想吃点好吃的面包吗？","好吃的麵包怎麼樣？","Как насчет вкусного хлеба?","Que tal um pão delicioso?",""
 "FortuneTellerInfo","What is that person's job title?","あの人の役職はなにかな？","那个人的职称是什么？","那個人的職稱是什麼？","Как называется должность этого человека?","Qual é o cargo dessa pessoa?",""
-"ToiletFanInfo","As soon as possible...","少しでも早く...","","","",""
-"TaskStarInfo","Complete your tasks and shine!","タスクを済ませて輝け！","","","",""
+"ToiletFanInfo","As soon as possible...","少しでも早く...","快一点...","","",""
+"TaskStarInfo","Complete your tasks and shine!","タスクを済ませて輝け！","完成任务，绽放光彩!","","",""
 "VentMasterInfo","Listen for vents opening and closing","ベントの開閉音を聞き取ろう","聆听通风口的打开和关闭","聆聽通風口的打開和關閉","Прислушивайтесь к открытию и закрытию вентиляционных отверстий","Ouça os respiradouros abrindo e fechando",""
-"PonkotuTellerInfo","I made a mistake again!!","あれ!?この人...敵だったの!?","","","",""
-"UltraStarInfo","I'm UltraStar!!!!!!!!","ﾃｯﾃｯﾃｰﾃﾃｯﾃｰﾃｯﾃｯﾃｰ","","","",""
-"MeetingSheriffInfo","It's time to bring down the hammer of justice.","正義の鉄槌でインポスターを撃ち抜け","","","",""
-"GuardMasterInfo","Defense is the best offense","ガードしてインポスターを暴け！","","","","",""
-"ShyboyInfo","H...He....Hey....","あ...えっと...その..."
-"BalancerInfo","(x+y)/2,(x+y)/2","(x+y)/2,(x+y)/2","","","","",""
-"ShrineMaidenInfo","I can hear the voice of a spirit...","霊の声が...聞こえる..."
-"ComebackerInfo","Comeback to the previous vent!!","前回のベントへカムバック!!"
-"VentOpenerInfo","Who is hiding in the vent?","ベントに籠ってるのはだ～れだ♪"
+"PonkotuTellerInfo","I made a mistake again!!","あれ!?この人...敵だったの!?","啊？ 这个人... 他是敌人!？","","",""
+"UltraStarInfo","I'm UltraStar!!!!!!!!","ﾃｯﾃｯﾃｰﾃﾃｯﾃｰﾃｯﾃｯﾃｰ","我是大明星!!!!!!!!","","",""
+"MeetingSheriffInfo","It's time to bring down the hammer of justice.","正義の鉄槌でインポスターを撃ち抜け","用正义之锤击毙内鬼","","",""
+"GuardMasterInfo","Defense is the best offense","ガードしてインポスターを暴け！","防范和揭露内鬼！","","","",""
+"ShyboyInfo","H...He....Hey....","あ...えっと...その...","呃... 嗯... 我是说...",
+"BalancerInfo","(x+y)/2,(x+y)/2","(x+y)/2,(x+y)/2","(x+y)/2,(x+y)/2","","","",""
+"ShrineMaidenInfo","I can hear the voice of a spirit...","霊の声が...聞こえる...","我听到灵魂... 我听到...",
+"ComebackerInfo","Comeback to the previous vent!!","前回のベントへカムバック!!","回到之前的通风口！",
+"VentOpenerInfo","Who is hiding in the vent?","ベントに籠ってるのはだ～れだ♪","躲在通风口的是谁？",
 
 "# ニュートラル役職"
 "ArsonistInfo","Burn them to crisps","燃やせ","火焰给我燃烧起来吧！","燒吧，燒吧，燃燒吧","Облейте и подожгите всех игроков","Queime tudo em pedacinhos","Queime tudo em pedacinhos"
@@ -273,22 +273,22 @@
 "TerroristInfo","Finish your tasks, THEN die","タスクを済ませ、自爆しよう","都别想活着，和我一起同归于尽！","我要開飛船撞Mira總部","Умрите после выполнения всех заданий","Termine suas tarefas, DEPOIS morra","Termine suas tarefas, DEPOIS morra"
 "ExecutionerInfo","Get your target voted out","ターゲットを追放させよう","不惜一切代价把你的目标票出去！","想盡一切辦法來投出你的目標","Заставь игроков изгнать свою цель","Faça o seu alvo ser exilado","Faça o seu alvo ser exilado"
 "EgoistInfo","Take over the Impostors' victory","インポスター勝利を独占しよう","夺走内鬼的胜利","讓我們來奪取偽裝者的勝利","Не дай Предателям победить","Ganhe no lugar do Impostor","Ganhe no lugar do Impostor"
-"ALoversInfo","Live happily ever after, together","恋人と生きて幸せを掴もう","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
-"BLoversInfo","Live happily ever after, together","この情熱を貴方に！","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
-"CLoversInfo","Live happily ever after, together","君は星より美しい。","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
-"DLoversInfo","Live happily ever after, together","君を僕の色で染めてあげる","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
-"ELoversInfo","Live happily ever after, together","君と一緒にいたら落ち着くんだ","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
-"FLoversInfo","Live happily ever after, together","白  い  恋  人","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
-"GLoversInfo","Live happily ever after, together","ねぇ!!あたしの事好きって言ったじゃん!!","你们坠入了爱河，成为了一对恋人，一起活到最后吧！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"ALoversInfo","Live happily ever after, together","恋人と生きて幸せを掴もう","你们坠入了爱河","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"BLoversInfo","Live happily ever after, together","この情熱を貴方に！","这份激情属于你！","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"CLoversInfo","Live happily ever after, together","君は星より美しい。","你比星星更美丽","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"DLoversInfo","Live happily ever after, together","君を僕の色で染めてあげる","我要把你染成我的颜色","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"ELoversInfo","Live happily ever after, together","君と一緒にいたら落ち着くんだ","和你在一起，我有家的感觉","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"FLoversInfo","Live happily ever after, together","白  い  恋  人","白色恋人","你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
+"GLoversInfo","Live happily ever after, together","ねぇ!!あたしの事好きって言ったじゃん!!","嘿 你说过你喜欢我,"你墜入了愛河","Выживите со своим Любовником","Vivam felizes para sempre, juntos","Vivam felizes para sempre, juntos"
 "JackalInfo","Kill Everyone","すべてを殺せ","快去杀光所有人，一只苍蝇都不要剩下！","殺光所有人不留活口","Убей всех игроков","Mate todos","Mate todos"
-"PlagueDoctorInfo","Spread disease to wipe out the crew","ペストをばらまけ","","","Распространите чуму","Espalhe doenças para acabar com a tripulação",""
+"PlagueDoctorInfo","Spread disease to wipe out the crew","ペストをばらまけ","驱散瘟疫","","Распространите чуму","Espalhe doenças para acabar com a tripulação",""
 "JackalMafiaInfo","Rescue the Jackal","ジャッカルの援助をしよう","拯救豺狼","拯救豺狼","Спасите шакала","Resgate o Chacal",""
-"ChefInfo","Give everyone the food!","全員に料理を渡そう！","给大家食物！","給大家食物！","Дайте всем еду!","Dê a todos a comida!",""
+"ChefInfo","Give everyone the food!","全員に料理を渡そう！","给每个人一道菜","給大家食物！","Дайте всем еду!","Dê a todos a comida!",""
 "CountKillerInfo","How many more are you going to kill?","あと何人殺そうかな？","你还要杀多少人？","你還要殺多少人？","Скольких еще ты собираешься убить?","Quantos mais vai matar?",""
 "RemotekillerInfo","Kill everything remotely","遠隔キルを使いこなし、すべてを殺せ","远程杀死一切","遠程殺死一切","Убейте все удаленно","Mate tudo remotamente",""
-"GrimReaperInfo","Hey! Go My House!","君を天界へ連れ去りに来た"
-"MadonnaInfo","I'm Madonna from School No.1","あたしは学校一のマドンナ!"
-"MaLoversInfo","I got a lover!","恋人ができました！"
+"GrimReaperInfo","Hey! Go My House!","君を天界へ連れ去りに来た","我来带你上天堂",
+"MadonnaInfo","I'm Madonna from School No.1","あたしは学校一のマドンナ!","我是学校里最棒的圣母",
+"MaLoversInfo","I got a lover!","恋人ができました！","我有女朋友了！",
 
 "# HideAndSeek"
 "HASFoxInfo","Just stay alive","とにかく生き残りましょう","活下去吧！活到最后你就成为了赢家！","盡你所能地活下去吧!","Останьтесь в живых","Sobreviva a qualquer custo","Sobreviva a qualquer custo"
@@ -302,23 +302,23 @@
 
 "# 属性"
 "LastImpostorInfo","You are the last of us","残ったのはあなただけ","你是狼村最后的希望…","你是狼村最後的希望...","Ты последний предатель","Você é o último Impostor","Você é o último Impostor"
-"LastNeutralInfo","You are Last Neutral.","後は君に託した。","","","","",""
+"LastNeutralInfo","You are Last Neutral.","後は君に託した。","你是中立们最后的希望...","","","",""
 "WorkhorseInfo","You have Extra tasks","タスクはまだ終わらない","这活还得继续肝","感覺不如做任務","Теперь у вас дополнительные задания","Você tem tarefas adicionais",""
 
 "# バフ"
 "WatcherInfo","Gaze upon all votes","みんなの投票に目を光らせよう","你可以看见所有人的投票，注意他们的选择","注意所有人的投票","Вы видите цвета голосов","Veja todos os votos","Veja todos os votos"
-"SpeedingInfo","Fu...This Is Don't My ","ふっ..それは残像さ..."
-"MoonInfo","Moon is beautiful","月がきれいですね..."
-"GuesserInfo","You are the Perfect and Ultimate Guesser","君は完璧で究極のゲッサー"
-"SunInfo","To dey is Sunny","もっと素直に愛することが出来ないの？"
-"DirectorInfo","Aggregate everyone's tasks!","みんなのタスクを集計！"
-"ConnectingInfo","I see.","丸っとお見通し。"
-"SerialInfo","Don't stay.","やめられないとまらない"
-"AdditionalVoterInfo","You Vote Added","何度も投票してやるぞ！"
-"OpenerInfo","Open sesame!","開けゴマ!"
-"BakenekoInfo","Meow Meow(=^.^=)","にゃんにゃん"
-"PsychicInfo","I can see spirit","君の思いは受け取った"
-"NurseInfo","Tell me what you think of him.","非常に残念ですが...彼は..."
+"SpeedingInfo","Fu...This Is Don't My ","ふっ..それは残像さ...","咦... 这是残影...",
+"MoonInfo","Moon is beautiful","月がきれいですね...","月亮真美",
+"GuesserInfo","You are the Perfect and Ultimate Guesser","君は完璧で究極のゲッサー","您是完美的终极专家",
+"SunInfo","To dey is Sunny","もっと素直に愛することが出来ないの？","你就不能更真诚地去爱吗？",
+"DirectorInfo","Aggregate everyone's tasks!","みんなのタスクを集計！","汇总每个人的任务！",
+"ConnectingInfo","I see.","丸っとお見通し。","通视无碍",
+"SerialInfo","Don't stay.","やめられないとまらない","贪得无厌",
+"AdditionalVoterInfo","You Vote Added","何度も投票してやるぞ！","我会一而再、再而三地投你的票！",
+"OpenerInfo","Open sesame!","開けゴマ!","芝麻开门!",
+"BakenekoInfo","Meow Meow(=^.^=)","にゃんにゃん","喵喵 (=^. ^=)",
+"PsychicInfo","I can see spirit","君の思いは受け取った","您的想法已收到",
+"NurseInfo","Tell me what you think of him.","非常に残念ですが...彼は...","我很抱歉，但是... 他...",
 
 "# デバフ属性"
 "NotConvenerInfo","My megaphone is breaked","僕のメガホンこわれちゃった..."
