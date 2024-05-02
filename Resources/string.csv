@@ -469,7 +469,7 @@
 "MaLoversInfoLong","","マドンナとマドンナから告白された相手に他の役職と重複して配役されるニュートラル。\nマドンナラバーズが2人とも生き残っている状態で試合終了すれば勝利。\n恋人の片方が死んだときにもう片方も死ぬ。クルーのタスクが完了すると敗北。"
 
 "# ヘルプ"
-"Basis","Basis","判定","","","","",""
+"Basis","Basis","判定","基础","","","",""
 
 "#モードオプション"
 "ONspecialMode","SpecialMode","<color=#00c1ff>特殊モード</color>","<color=#00c1ff>特殊模式</color>",
@@ -635,31 +635,44 @@
 "Role","Role","役職","职业","","Роль","Classe",""
 
 "BountyTargetChangeTime","Time Until Target Swaps","ターゲット変更時間","赏金目标切换时间","賞金目標切換時間","Время смены цели","Tempo Para Troca de Alvos",""
-"BountySuccessKillCooldown","Kill Cooldown After Killing Bounty","ターゲット殺害時のキルクール","赏金猎人击杀赏金目标的奖励冷却时间","賞金獵人殺死賞金目標冷卻","Перезарядка после убийства цели","Tempo de Recarga ao Matar Alvo",""
-"BountyFailureKillCooldown","Kill Cooldown After Killing Others","ターゲット以外殺害時のキルクール","赏金猎人击杀赏金目标以外玩家的惩罚冷却时间","賞金獵人殺死非賞金目標冷卻","Перезарядка после обычного Убийства","Tempo de Recarga ao Matar Outros",""
+"BountySuccessKillCooldown","Kill Cooldown After Killing Bounty","ターゲット殺害時のキルクール","赏金猎人击杀正确赏金目标的奖励冷却时间","賞金獵人殺死賞金目標冷卻","Перезарядка после убийства цели","Tempo de Recarga ao Matar Alvo",""
+"BountyFailureKillCooldown","Kill Cooldown After Killing Others","ターゲット以外殺害時のキルクール","赏金猎人击杀错误赏金目标的惩罚冷却时间","賞金獵人殺死非賞金目標冷卻","Перезарядка после обычного Убийства","Tempo de Recarga ao Matar Outros",""
 "BountyShowTargetArrow","Show Arrow Pointing To Target","ターゲットへの矢印を表示する","赏金猎人的目标以箭头显示位置","賞金獵人獲得指向目標的箭頭","Показывать стрелку указывающую на Цель","Mostrar Seta Apontando ao Alvo",""
 "DefaultShapeshiftCooldown","Default Shapeshift Cooldown","デフォルトの変身クールダウン","默认变形冷却时间","預設變身時間","Обычная перезарядка Оборотня","Tempo de Recarga Padrão (Mutar)",""
 "VampireKillDelay","Kill Delay","殺害までの時間(秒)","吸血目标延迟死亡时间","殺人延遲","Длительность укуса(Секунды)","Atraso do Abate (S)",""
 "MareAddSpeedInLightsOut","Add Mare Speed With Lights Out","停電時のメアーの加速値","梦魇熄灯时的额外速度","關燈時黑暗博士的額外速度","Скорость Ночного при Саботаже Света","Velocidade Adicional do Mare em Apagão",""
 "MareKillCooldownInLightsOut","Kill Cooldown During Fix Lights","停電時のメアーのキルクール","梦魇熄灯时的击杀冷却","關燈時黑暗博士的殺人冷卻","Откат убийства Ночного при Саботаже Света","Tempo de Recarga (abate) Durante Apagão",""
-"SabotageMasterSkillLimit","Ability Use Count(Excluding Doors)","修理能力を使用できる回数(ﾄﾞｱ閉鎖は除く)","修理大师修理破坏的最大次数","修理工修理破壞次數上限","Лимит способности (Кроме открытия дверей)","Máximo de Usos da Habilidade (Menos Portas)",""
-"CanMakeMadmateCount","Sidekick Madmate Max Count","<color=#ff1919>サイドキックマッドメイト</color>","变形者可以招募叛徒的数量","變形者招募叛徒最大人數","Максимум союзников Безумца","Máximo de Tripulantes Loucos Ajudantes",""
+"SabotageMasterSkillLimit","Ability Use Count(Excluding Doors)","修理能力を使用できる回数(ﾄﾞｱ閉鎖は除く)","修理工修理破坏的最大次数","修理工修理破壞次數上限","Лимит способности (Кроме открытия дверей)","Máximo de Usos da Habilidade (Menos Portas)",""
+"CanMakeMadmateCount","Sidekick Madmate Max Count","<color=#ff1919>サイドキックマッドメイト</color>","<color=#ff1919>变形者可以招募叛徒的数量</color>","變形者招募叛徒最大人數","Максимум союзников Безумца","Máximo de Tripulantes Loucos Ajudantes",""
 "MadSnitchTasks","Mad Snitch Tasks","マッドスニッチのタスク数","背叛的告密者任务数","背叛告密者任務數量","Задания Безумного Стукача","Tarefas do Dedo-Duro Louco",""
 "MadSnitchCanAlsoBeExposedToImpostor","Known to Impostors","インポスターからも視認できる","对内鬼同样可见","對偽裝者同樣可見","Также не защищен от Предателей","Visível Para Impostor",""
 "MadSnitchTaskTrigger","Tasks Until Boost Activated","効果を発動するタスク数","触发效果的任务数","","Количество задач повышающие скорость","Tarefas Para Ativar Impulso",""
+<<<<<<< HEAD
 "MadGuardianCanSeeWhoTriedToKill","Can See Attempted Murderer","自身の殺害未遂者を知ることができる","背叛的守卫可以得知尝试对其击杀的玩家","背叛天使可以看到是誰嘗試殺害自己","Может видеть кто пытался его убить","Pode Ver Quem Tentou Matar",""
 "MadmateOption","MadMate Options","<color=#ffa3a3>マッドメイト系役職の設定</color>","<color=#ffa3a3>叛徒设置</color>"
+=======
+"MadGuardianCanSeeWhoTriedToKill","Can See Attempted Murderer","自身の殺害未遂者を知ることができる","背叛的天使可以得知尝试对其击杀的玩家","背叛天使可以看到是誰嘗試殺害自己","Может видеть кто пытался его убить","Pode Ver Quem Tentou Matar",""
+"MadmateOption","MadMate Options","<color=#ffa3a3>マッドメイト系役職の設定</color>","<color=#ffa3a3>叛徒设置</color>",
+>>>>>>> 0d2b1f943c9fa912793584d98f60d3b7e5815125
 "MadmateCanFixLightsOut","Can Fix Lights","<color=#ffcc66>停電を直せる</color>","<color=#ffcc66>叛徒系职业可以修理照明破坏</color>","叛徒職業的玩家可以修理電燈","Безумцы могут чинить Свет","Loucos Podem Consertar Luzes",""
 "MadmateCanFixComms","Can Fix Comms","<color=#999999>通信妨害を直せる</color>","<color=#999999>叛徒系职业可以修理通讯</color>","叛徒職業的玩家可以修理通訊","Безумцы могут чинить Связь","Loucos Podem Consertar Comunicações",""
 "MadmateHasSun","Have Impostor Vision","<color=#ec6800>インポスター視界を持つ</color>","<color=#ec6800>叛徒系职业拥有内鬼视野</color>","叛徒職業的玩家有跟偽裝者一樣的視野","Безумцы имеют дальность Обзора Предателя","Loucos Têm Visão de Impostor",""
 "MadmateHasMoon","Ignore Fix Lights effect","<color=#ffff33>停電を無効化する</color>","<color=#ffff33>不受熄灯影响</color>","視野不受關燈影響","Не зависит от перебоев в подаче электроэнергии","Ignorar Efeitos do Apagão",""
 "MadmateCanSeeKillFlash","Can See ''Kill Flash''","<color=#61b26c>キルフラッシュが見える</color>","<color=#61b26c>叛徒系职业可以看到击杀闪光</color>","叛徒職業的玩家可以看到殺人閃光","Безумцы могут видеть Вспышку Убийства","Loucos Podem Ver ""Clarão de Abate""",""
 "MadmateCanSeeOtherVotes","Can See Votes","<color=#800080>他人の投票先が分かる</color>","<color=#800080>叛徒系职业可以看到其他人所投的票</color>","叛徒可以看到所有人的投票","Безумцы могут видеть цвета Голосов","Loucos Podem Ver Votos",""
+<<<<<<< HEAD
 "MadmateCanSeeDeathReason","Can See Cause Of Death","<color=#80ffdd>死因が分かる</color>","<color=#80ffdd>叛徒系职业可以看见死因","叛徒職業的玩家可以看到死因","Безумцы могут видеть Причины Смерти","Loucos Podem Ver Causa da Morte",""
 "MadmateExileCrewmate","Revenge A Crewmate When Exiled","<color=#00fa9a>追放時クルーを道連れにする</color>","<color=#00fa9a>叛徒系职业在被驱逐时带走一名船员</color>","叛徒被丟出時會隨機拖一個船員一起下水","Безумцы сохраняют команду при изгнании","Loucos Vingam um Tripulante Quando Exilados",""
 "MadmateVentCooldown","Vent Cooldown","<color=#8cffff>ベントクールダウン</color>","<color=#8cffff>叛徒系职业跳管道冷却时间</color>","叛徒職業的玩家跳管道冷卻","Откат вентиляции Безумцев","Tempo de Recarga de Dutos dos Loucos",""
 "MadmateVentMaxTime","Max Vent Duration","<color=#8cffff>ベント内での最大時間</color>","<color=#8cffff>叛徒系职业在管道中停留的最大时间</color>","叛徒職業的玩家在管道中可以停留的最大時間","Время использования вентиляции Безумцев","Tempo Máximo de Loucos nos Dutos",""
 "MadmateCanMovedByVent","Can be moved by vent","<color=#8cffff>ベント移動ができる","<color=#8cffff>可通过通风口移动</color>","","","",""
+=======
+"MadmateCanSeeDeathReason","Can See Cause Of Death","<color=#80ffdd>死因が分かる</color>","<color=#800080>叛徒系职业可以看见死因</color>","叛徒職業的玩家可以看到死因","Безумцы могут видеть Причины Смерти","Loucos Podem Ver Causa da Morte",""
+"MadmateExileCrewmate","Revenge A Crewmate When Exiled","<color=#00fa9a>追放時クルーを道連れにする</color>","<color=#00fa9a>叛徒系职业被驱逐时复仇一名船员</color>","叛徒被丟出時會隨機拖一個船員一起下水","Безумцы сохраняют команду при изгнании","Loucos Vingam um Tripulante Quando Exilados",""
+"MadmateVentCooldown","Vent Cooldown","<color=#8cffff>ベントクールダウン</color>","<color=#8cffff>叛徒系职业跳管道冷却时间</color>","叛徒職業的玩家跳管道冷卻</color>","Откат вентиляции Безумцев","Tempo de Recarga de Dutos dos Loucos",""
+"MadmateVentMaxTime","Max Vent Duration","<color=#8cffff>ベント内での最大時間</color>","<color=#8cffff>叛徒系职业在管道中停留的最大时间</color>","叛徒職業的玩家在管道中可以停留的最大時間</color>","Время использования вентиляции Безумцев","Tempo Máximo de Loucos nos Dutos",""
+"MadmateCanMovedByVent","Can be moved by vent","<color=#8cffff>ベント移動ができる","<color=#8cffff>叛徒系职业可以在通风管中移动</color>","","","",""
+>>>>>>> 0d2b1f943c9fa912793584d98f60d3b7e5815125
 "LighterMaxVision","Max Vision","最大視界","完成任务后的视野","做完任務的視野","Дальность обзора","Aumento de Visão",""
 "LighterTaskCompletedDisableLightOut","Ignore Fix Lights Effect","タスク完了時に停電を無効にする","完成任务的执灯人不受熄灯影响","完成任務的小燈人視野不受關燈影響","Имеет дальность Обзора Предателя","Ignorar Efeitos do Apagão",""
 "LighterTriggerType","Ability Activation Condition","能力発動条件","技能发动条件","","Условие активации способности","Condição de Ativação da Habilidade",""
