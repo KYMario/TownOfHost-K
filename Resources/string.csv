@@ -133,6 +133,7 @@
 "Walker","walker","ウォーカー"
 "AllArounder","AllArounder","オールラウンダー"
 "Inspector","Inspector","捜査官"
+"CandleLighter","Candle Lighter","キャンドルライター",
 "#CrewmateName"
 
 "# ニュートラル役職"
@@ -402,6 +403,7 @@
 "WalkerInfo","Walk a lot!","てくてく"
 "AllArounderInfo","I can do anything!","僕、なんでもできます！"
 "InspectorInfo","","全てわかりました...犯人は..."
+"CandleLighterInfo","By the time the wax is gone...","ろうが無くなるまでには、、",
 "#CrewmateInfo"
 
 "# ニュートラル役職"
@@ -632,6 +634,7 @@
 "WalkerInfoLong","","通常のタスクの他に、特定の部屋に行くというタスクが追加される。\n特定の部屋に行くタスクも通常のタスクも、クルーメイト勝利のカウントに含まれる。"
 "AllArounderInfoLong","","ターン毎に設定された確率に応じて、様々な役職や能力に変化する。\n\nマッドメイト、オポチュニストの場合、そのターンの間タスクは勝利カウントに計算されない。\n\n基本通信妨害中は能力が使用できない"
 "InspectorInfoLong","","会議で自投票すると捜査モードに変更できる。\n捜査モードの状態で誰かに投票するとその人の事を次のターンの間、捜査することができる。\n\n捜査相手が死亡すると、捜査相手や捜査相手を殺した犯人についての情報を手に入れることができる。\n\n会議が始まると捜査はリセットされる。\nまた、複数人同時捜査はできない。"
+"CandleLighterInfoLong","","視界がろうそくのようにだんだんと小さく狭くなっていく。ただ、他人と違いろうそくで周りを灯している為、停電の影響は受けない。\nタスクを全て完了させると新たに一本ろうそくが供給され、一番明るい状態に点け直すことができる。",
 "#CrewmateInfoLong"
 
 "# ニュートラル役職"
@@ -1421,6 +1424,10 @@
 "AllArounderRandomOpportunist","Opportunist rate","<#00ff00>オポチュニスト</color>になる確率"
 "AllArounderRandomNone","Crewmate rate","<#8cffff>クルーメイト</color>になる確率"
 "InspectVoteMode","VoteMode","捜査方法"
+"CandleLighterStartVision","Start Vision(Widest Vision)","初めの視界(一番広い視界)",
+"CandleLighterCountStartTime","Time to Start Changing Vision","視界が変わり始めるまでの時間",
+"CandleLighterEndVisionTime","Time to End Vision","最後の視界になる時間",
+"CandleLighterEndVision","End Vision(Narrowest Vision)","最後の視界(一番狭い視界)",
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""
