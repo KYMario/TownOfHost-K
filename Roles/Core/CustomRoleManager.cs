@@ -827,6 +827,7 @@ public enum CustomRoles
     VentOpener,
     VentHunter,
     Walker,
+    Express,
     //DEBUG only Crewmate
     Inspector,
     AllArounder,
