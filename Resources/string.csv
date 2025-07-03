@@ -67,6 +67,7 @@
 "QuickKiller","QuickKiller","クイックキラー"
 "BorderKiller","BorderKiller","ボーダーキラー"
 "Ballooner","Ballooner","バルーナー"
+"ShapeKiller","Shape Killer","シェイプキラー"
 "#ImpostorName"
 
 "# マッドメイト系役職"
@@ -334,6 +335,7 @@
 "QuickKillerInfo","Quickly and a lot","ｼｭﾊﾟﾊﾟｰﾝ!"
 "BorderKillerInfo","Kill a certain number of Crew","目標人数を目指して殺せ"
 "BalloonerInfo","Shu...Boooooom!","膨らませて...ドッカーン！"
+"ShapeKillerInfo","Shape & Camouflage Report","プレイヤーを偽装しよう"
 "#ImpostorInfo"
 
 "# マッドメイト系役職"
@@ -565,6 +567,7 @@
 "QuickKillerInfoLong","With at least a set number of people alive, a kill will enter quick mode for a certain amount of time. \nDuring the quick mode, the kill cool time is 0 seconds.","設定人数以上生存している状態で、キルをすると一定時間クイックモードになる。\nクイックモード中はキルクールが0秒。"
 "BorderKillerInfoLong","If you do not kill at least a set number of people yourself, you will not win even if you are the imposter winner.","設定人数以上自身でキルをしないと、インポスター勝利時でも自身は勝利できない。"
 "BalloonerInfoLong","","ワンクリックボタンを使用することで風船が破裂し周囲のプレイヤーを爆破できる。\n\nまた、タスクターン中に歩くことで\n風船が膨らみ爆破範囲が広がる。"
+"ShapeKillerInfoLong","ShapeKiller can disguise reports.\nBy shape-shifting and reporting, ShapeKiller can report the shape-shifted target.","通報を偽装できるインポスター。\nシェイプシフトして死体通報することでシェイプシフトした相手の通報にできる。"
 "#ImpostorInfoLong"
 
 "# マッドメイト系役職"
@@ -1275,6 +1278,7 @@
 "BalloonerSuicide","Used Suicide","使用後自殺する"
 "BalloonerAfterMeetingRemoveCharge","AfterMeeting Remove","会議後、減算される爆破範囲"
 "BalloonerTargetImpostor","Target Impostor","インポスターを巻き込む"
+"ShapeKillerCanDeadReport","Can Dead Reported","死者での偽装通報ができる"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
