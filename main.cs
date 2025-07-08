@@ -400,6 +400,7 @@ namespace TownOfHost
         Guess,
         TeleportKill,
         Trap,
+        NotGather,
         etc = -1
     }
     //WinData
