@@ -66,20 +66,18 @@ public sealed class ShapeKiller : RoleBase, IImpostor, ISidekickable
         Logger.Info($"{Player.GetNameWithRole()}のターゲットを {target?.GetNameWithRole()} に設定", "ShepeKillerTarget");
     }
 
-    public static bool DummyReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
+    public static void SetDummyReport(ref PlayerControl reporter, NetworkedPlayerInfo target)
     {
-        if (target == null) return false;
-        if (reporter == null || !reporter.Is(CustomRoles.ShapeKiller)) return false;
-        if (reporter.PlayerId == target.PlayerId) return false;
+        if (target == null) return;
+        if (reporter == null || !reporter.Is(CustomRoles.ShapeKiller)) return;
+        if (reporter.PlayerId == target.PlayerId) return;
 
         var shapeKiller = (ShapeKiller)reporter.GetRoleClass();
         if (shapeKiller.shapeTarget != null && (canDeadReport || shapeKiller.shapeTarget.IsAlive()))
         {
-            RPC.ReportDeadBodyForced(shapeKiller.shapeTarget, target);
+            // 通報者書き換え
+            reporter = shapeKiller.shapeTarget;
             Logger.Info($"ShapeKillerの偽装通報 player: {shapeKiller.shapeTarget?.name}, target: {target?.PlayerName}", "ShepeKillerReport");
-            return true;
         }
-
-        return false;
     }
 }

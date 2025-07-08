@@ -77,6 +77,9 @@ namespace TownOfHost
 
             AdminProvider.CalculateAdmin(true);
 
+            // シェイプキラー：通報者書き換え
+            ShapeKiller.SetDummyReport(ref __instance, target);
+
             if (target != null)
             {
                 UtilsGameLog.AddGameLog("Meeting", Utils.GetPlayerColor(target, true) + Translator.GetString("Meeting.Report") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), Utils.GetPlayerColor(__instance.PlayerId, true)));
@@ -124,11 +127,6 @@ namespace TownOfHost
             UtilsNotifyRoles.NotifyMeetingRoles();
 
             UtilsOption.SyncAllSettings();
-
-            if (ShapeKiller.DummyReportDeadBody(__instance, target))
-            {
-                return false;
-            }
 
             //if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return false;
             //サボ関係多分なしに～
