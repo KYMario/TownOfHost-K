@@ -67,6 +67,7 @@
 "QuickKiller","QuickKiller","クイックキラー"
 "BorderKiller","BorderKiller","ボーダーキラー"
 "Ballooner","Ballooner","バルーナー"
+"CharismaStar","Charisma Star","カリスマスター",
 "#ImpostorName"
 
 "# マッドメイト系役職"
@@ -334,6 +335,7 @@
 "QuickKillerInfo","Quickly and a lot","ｼｭﾊﾟﾊﾟｰﾝ!"
 "BorderKillerInfo","Kill a certain number of Crew","目標人数を目指して殺せ"
 "BalloonerInfo","Shu...Boooooom!","膨らませて...ドッカーン！"
+"CharismaStarInfo","Are you coming to my place？","オレんとこ来ないか？",
 "#ImpostorInfo"
 
 "# マッドメイト系役職"
@@ -565,6 +567,7 @@
 "QuickKillerInfoLong","With at least a set number of people alive, a kill will enter quick mode for a certain amount of time. \nDuring the quick mode, the kill cool time is 0 seconds.","設定人数以上生存している状態で、キルをすると一定時間クイックモードになる。\nクイックモード中はキルクールが0秒。"
 "BorderKillerInfoLong","If you do not kill at least a set number of people yourself, you will not win even if you are the imposter winner.","設定人数以上自身でキルをしないと、インポスター勝利時でも自身は勝利できない。"
 "BalloonerInfoLong","","ワンクリックボタンを使用することで風船が破裂し周囲のプレイヤーを爆破できる。\n\nまた、タスクターン中に歩くことで\n風船が膨らみ爆破範囲が広がる。"
+"CharismaStarInfoLong","","任意のプレイヤーを自身から一番近いベントへ集合させることができるインポスター。\nキルボタンはダブルクリックを使い分ける。シングルクリックでは集合メンバーを決め、ダブルクリックでは通常キルをする。集合メンバーは複数人設定することができ、消えるボタンを押すことでそのメンバーを自身付近のベントに集めることができる。\n全員集合できる設定をONにしている時、誰もメンバーを決めていないと全員を集合させることができる。\n集合をかけた時、対象プレイヤーがはしごを使用していると集まることが出来ない。設定により、集まれないプレイヤーは自爆する。",
 "#ImpostorInfoLong"
 
 "# マッドメイト系役職"
@@ -1275,6 +1278,10 @@
 "BalloonerSuicide","Used Suicide","使用後自殺する"
 "BalloonerAfterMeetingRemoveCharge","AfterMeeting Remove","会議後、減算される爆破範囲"
 "BalloonerTargetImpostor","Target Impostor","インポスターを巻き込む"
+"CharismaStarGatherCooldown","Gather Cooldown(>= Kill Cooldown)","集合能力のクールダウン(>=キルクール)"
+"CharismaStarGatherMaxCount","Gather Max Count","集合能力の使用回数",
+"CharismaStarNotGatherPlayerKill","Not Gather Player Kill","集合出来ないプレイヤーは自爆する",
+"CharismaStarCanAllPlayerGather","Can All Player Gather","全員を一気に集合できる"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
@@ -2001,6 +2008,7 @@
 "EraserAbility","Erase","役職を消す"
 "ProBowler_Ability","Dig","穴を掘る"
 "BalloonerAbility","Rupture","破裂"
+"CharismaStarGatherButtonText","Gather","集合",
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""
