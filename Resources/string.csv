@@ -1959,6 +1959,7 @@
 "DeathReason.Magic","Magic","マジック"
 "DeathReason.TeleportKill","TeleportKill","テレポートキル"
 "DeathReason.Trap","Trap","トラップ"
+"DeathReason.NotGather","NotGather","集えず",
 "DeathReason.etc","Other","その他","其他","其他","Другое","Outros",""
 "Alive","Alive","生存","存活","存活","Выжил","Vivo",""
 "Win","Wins","勝利","胜利","勝利"," Победили","Vitória",""
