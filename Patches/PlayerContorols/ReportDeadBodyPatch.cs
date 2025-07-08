@@ -1,9 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using HarmonyLib;
+
 using TownOfHost.Modules;
-using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Neutral;
 using static TownOfHost.Roles.Core.RoleBase;
@@ -131,7 +132,9 @@ namespace TownOfHost
             //if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return false;
             //サボ関係多分なしに～
             //押したのなら強制で始める
-            RPC.ReportDeadBodyForced(__instance, target);
+            MeetingRoomManager.Instance.AssignSelf(__instance, target);
+            DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(__instance);
+            __instance.RpcStartMeeting(target);
 
             return true;
         }

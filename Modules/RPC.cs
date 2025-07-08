@@ -385,17 +385,6 @@ namespace TownOfHost
             writer.Write(killerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
-        public static void ReportDeadBodyForced(this PlayerControl player, NetworkedPlayerInfo target)
-        {
-            // PlayerControl.ReportDeadBodyと同様の処理
-            if (!AmongUsClient.Instance.AmHost)
-            {
-                return;
-            }
-            MeetingRoomManager.Instance.AssignSelf(player, target);
-            DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(player);
-            player.RpcStartMeeting(target);
-        }
         //参考元→SuperNewRoles様
         public static void RpcSyncAllNetworkedPlayer(int TargetClientId = -1, SendOption sendOption = SendOption.None)
         {
