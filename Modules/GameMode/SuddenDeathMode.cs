@@ -47,6 +47,7 @@ namespace TownOfHost.Modules
             TeamGreen.Clear();
             TeamPurple.Clear();
         }
+        [Attributes.GameModuleInitializer]
         public static void Reset()
         {
             NowSuddenDeathTemeMode = Options.SuddenTeam.GetBool();
@@ -493,6 +494,100 @@ namespace TownOfHost.Modules
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.SuddenDeathPurple);
                     TeamPurple.Do(id => CustomWinnerHolder.WinnerIds.Add(id));
                     break;
+                }
+            }
+        }
+        public static void UpdateTeam()
+        {
+            if (GameStates.IsLobby && (Options.SuddenTeamOption.GetBool() || CheckTeamDoreka))
+            {
+                if (CheckTeamDoreka && !Options.SuddenTeamOption.GetBool())
+                {
+                    TeamReset();
+                    return;
+                }
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    var pos = pc.GetTruePosition();
+
+                    if (-3 <= pos.x && pos.x <= -1.1 && -1 <= pos.y && pos.y <= 0.4)
+                    {
+                        if (!TeamRed.Contains(pc.PlayerId))
+                            TeamRed.Add(pc.PlayerId);
+                        TeamBlue.Remove(pc.PlayerId);
+                        TeamYellow.Remove(pc.PlayerId);
+                        TeamGreen.Remove(pc.PlayerId);
+                        TeamPurple.Remove(pc.PlayerId);
+                    }
+                    else
+                    if (-0.2 <= pos.x && pos.x <= 0.7 && -1.1 <= pos.y && pos.y <= 0.4)
+                    {
+                        TeamRed.Remove(pc.PlayerId);
+                        if (!TeamBlue.Contains(pc.PlayerId))
+                            TeamBlue.Add(pc.PlayerId);
+                        TeamYellow.Remove(pc.PlayerId);
+                        TeamGreen.Remove(pc.PlayerId);
+                        TeamPurple.Remove(pc.PlayerId);
+                    }
+                    else
+                    if (1.7 <= pos.x && pos.x <= 3 && -1.1 <= pos.y && pos.y <= 0.7 && Options.SuddenTeamYellow.GetBool())
+                    {
+                        TeamRed.Remove(pc.PlayerId);
+                        TeamBlue.Remove(pc.PlayerId);
+                        if (!TeamYellow.Contains(pc.PlayerId))
+                            TeamYellow.Add(pc.PlayerId);
+                        TeamGreen.Remove(pc.PlayerId);
+                        TeamPurple.Remove(pc.PlayerId);
+                    }
+                    else
+                    if (0.5f <= pos.x && pos.x <= 2.1 && 2.1 <= pos.y && pos.y <= 3.2 && Options.SuddenTeamGreen.GetBool())
+                    {
+                        TeamRed.Remove(pc.PlayerId);
+                        TeamBlue.Remove(pc.PlayerId);
+                        TeamYellow.Remove(pc.PlayerId);
+                        if (!TeamGreen.Contains(pc.PlayerId))
+                            TeamGreen.Add(pc.PlayerId);
+                        TeamPurple.Remove(pc.PlayerId);
+                    }
+                    else
+                    if (-2.9 <= pos.x && pos.x <= -1.1 && 2.2 <= pos.y && pos.y <= 3.0 && Options.SuddenTeamPurple.GetBool())
+                    {
+                        TeamRed.Remove(pc.PlayerId);
+                        TeamBlue.Remove(pc.PlayerId);
+                        TeamYellow.Remove(pc.PlayerId);
+                        TeamGreen.Remove(pc.PlayerId);
+                        if (!TeamPurple.Contains(pc.PlayerId))
+                            TeamPurple.Add(pc.PlayerId);
+                    }
+                    else if (!GameStates.IsCountDown && !GameStates.Intro)
+                    {
+                        TeamRed.Remove(pc.PlayerId);
+                        TeamBlue.Remove(pc.PlayerId);
+                        TeamYellow.Remove(pc.PlayerId);
+                        TeamGreen.Remove(pc.PlayerId);
+                        TeamPurple.Remove(pc.PlayerId);
+                    }
+                }
+
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    var color = "#ffffff";
+                    if (TeamRed.Contains(pc.PlayerId)) color = ModColors.codered;
+                    if (TeamBlue.Contains(pc.PlayerId)) color = ModColors.codeblue;
+                    if (TeamYellow.Contains(pc.PlayerId)) color = ModColors.codeyellow;
+                    if (TeamGreen.Contains(pc.PlayerId)) color = ModColors.codegreen;
+                    if (TeamPurple.Contains(pc.PlayerId)) color = ModColors.codepurple;
+                    foreach (var seer in PlayerCatch.AllPlayerControls)
+                    {
+                        if (pc.name != "Player(Clone)" && seer.name != "Player(Clone)" && seer.PlayerId != PlayerControl.LocalPlayer.PlayerId && !seer.IsModClient())
+                            pc.RpcSetNamePrivate($"<{color}>{pc.Data.PlayerName}", true, seer, false);
+                    }
+                }
+                if (!CheckTeam && GameStates.IsCountDown)
+                {
+                    GameStartManager.Instance.ResetStartState();
+                    Utils.SendMessage(Translator.GetString("SuddendeathLobbyError"));
                 }
             }
         }

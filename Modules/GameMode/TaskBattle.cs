@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 
 namespace TownOfHost;
+
 class TaskBattle
 {
     public static bool IsTaskBattleTeamMode;
@@ -15,6 +17,7 @@ class TaskBattle
     /// <summary>追加でタスクを付与した数</summary>
     public static Dictionary<byte, int> TaskAddCount = new();
     public static bool IsAdding;
+    [Attributes.GameModuleInitializer]
     public static void Init()
     {
         IsAdding = false;
@@ -202,7 +205,65 @@ class TaskBattle
         MaxAddCount = IntegerOptionItem.Create(200323, "MaxAddCount", new(1, 99, 1), 1, TabGroup.MainSettings, false)
             .SetGameMode(CustomGameMode.TaskBattle).SetParent(TaskAddMode);
     }
+    public static void ResetAndSetTeam()
+    {
+        TaskBattleTeams.Clear();
+        if (TaskBattleTeamMode.GetBool())
+        {
+            var rand = new Random();
 
+            List<PlayerControl> ap = new();
+            foreach (var pc in PlayerCatch.AllPlayerControls)
+                ap.Add(pc);
+            if (Options.EnableGM.GetBool())
+                ap.RemoveAll(x => x == PlayerControl.LocalPlayer);
+            //チームを指定されている人は処理せず、後から追加する。
+            ap.RemoveAll(x => SelectedTeams.Values.Any(list => list.Contains(x.PlayerId)));
+
+            var AllPlayerCount = ap.Count;
+            var teamc = Math.Min(TaskBattleTeamCount.GetFloat(), AllPlayerCount);
+            var c = AllPlayerCount / teamc;//1チームのプレイヤー数 ↑チーム数
+            List<byte> playerlist = new();
+            Logger.Info($"{teamc},{c}", "TBTeamandpc");
+
+            for (var i = 0; i < teamc; i++)
+            {
+                Logger.Info($"team{i}", "TBSetTeam");
+                playerlist.Clear();
+                for (var i2 = 0; i2 < c; i2++)
+                {
+                    if (ap.Count == 0) continue;
+                    var player = ap[rand.Next(0, ap.Count)];
+                    playerlist.Add(player.PlayerId);
+                    Logger.Info($"{player.PlayerId}", "TBSetplayer");
+                    ap.Remove(player);
+                }
+                TaskBattleTeams[(byte)(i + 1)] = new List<byte>(playerlist);
+            }
+
+            foreach (var (teamId, player) in SelectedTeams)
+            {
+                List<byte> players;
+                players = TaskBattleTeams.TryGetValue(teamId, out players) ? players : new();
+                player.Do(x => players.Add(x));
+                TaskBattleTeams[teamId] = players;
+            }
+        }
+        foreach (var pc in PlayerCatch.AllPlayerControls)
+        {
+            if (Options.EnableGM.GetBool() && pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+            {
+                PlayerControl.LocalPlayer.RpcSetCustomRole(CustomRoles.GM);
+                PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.Crewmate, false);
+                PlayerControl.LocalPlayer.Data.IsDead = true;
+            }
+            else
+            {
+                pc.RpcSetCustomRole(CustomRoles.TaskPlayerB);
+                pc.RpcSetRole(TaskBattle.TaskBattleCanVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate, false);
+            }
+        }
+    }
     // ﾀｽﾊﾞﾄ用
     public class TaskBattleGameEndPredicate : GameEndPredicate
     {

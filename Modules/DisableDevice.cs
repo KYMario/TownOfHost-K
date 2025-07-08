@@ -45,6 +45,7 @@ namespace TownOfHost
         public static bool DisableDevicesIgnoreNeutrals;
         public static bool DisableDevicesIgnoreCrewmates;
         public static bool DisableDevicesIgnoreAfterAnyoneDied;
+        [Attributes.GameModuleInitializer]
         public static void Reset()
         {
             DesyncComms.Clear();
@@ -294,7 +295,7 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisableSkeldAdmin.GetBool();
                                     RoleDisable |= AdminUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
                                 }
                                 if (Vector2.Distance(PlayerPos, DevicePos["SkeldCamera"]) <= usableDistance)
                                 {
@@ -307,13 +308,13 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisableMiraHQAdmin.GetBool();
                                     RoleDisable |= AdminUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
                                 }
                                 if (Vector2.Distance(PlayerPos, DevicePos["MiraHQDoorLog"]) <= usableDistance)
                                 {
                                     doComms |= Options.DisableMiraHQDoorLog.GetBool();
                                     RoleDisable |= LogAndCamUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) LogTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) LogTimer(pc, PlayerPos);
                                 }
                                 break;
                             case 2:
@@ -321,7 +322,7 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisablePolusAdmin.GetBool();
                                     RoleDisable |= AdminUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
                                 }
                                 if (Vector2.Distance(PlayerPos, DevicePos["PolusCamera"]) <= usableDistance)
                                 {
@@ -332,7 +333,7 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisablePolusVital.GetBool();
                                     RoleDisable |= VitealUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) VitalTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) VitalTimer(pc, PlayerPos);
                                 }
                                 break;
                             case 4:
@@ -340,13 +341,13 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisableAirshipCockpitAdmin.GetBool();
                                     RoleDisable |= AdminUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
                                 }
                                 if (Vector2.Distance(PlayerPos, DevicePos["AirshipRecordsAdmin"]) <= usableDistance)
                                 {
                                     doComms |= Options.DisableAirshipRecordsAdmin.GetBool();
                                     RoleDisable |= AdminUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
                                 }
                                 if (Vector2.Distance(PlayerPos, DevicePos["AirshipCamera"]) <= usableDistance)
                                 {
@@ -357,7 +358,7 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisableAirshipVital.GetBool();
                                     RoleDisable |= VitealUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) VitalTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) VitalTimer(pc, PlayerPos);
                                 }
                                 break;
                             case 5:
@@ -365,7 +366,7 @@ namespace TownOfHost
                                 {
                                     doComms |= Options.DisableFungleVital.GetBool();
                                     RoleDisable |= VitealUsecheck(pc);
-                                    if (!pc.inVent && pc.CanMove && !doComms && !RoleDisable) VitalTimer(pc, PlayerPos);
+                                    if (!pc.inVent && !doComms && !RoleDisable) VitalTimer(pc, PlayerPos);
                                 }
                                 break;
                         }

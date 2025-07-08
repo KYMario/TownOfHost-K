@@ -21,6 +21,7 @@ using TownOfHost.Roles.Ghost;
 using static TownOfHost.Translator;
 using static TownOfHost.UtilsRoleText;
 using TownOfHost.Patches;
+using TownOfHost.Attributes;
 
 namespace TownOfHost
 {
@@ -319,6 +320,14 @@ namespace TownOfHost
         {
             if (SuddenDeathMode.NowSuddenDeathMode) return;
 
+            if (IsActive(SystemTypes.Reactor) || IsActive(SystemTypes.HeliSabotage))
+            {
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    pc.KillFlash(true);
+                }
+                return;
+            }
             var systemtypes = GetCriticalSabotageSystemType();
             ShipStatus.Instance.RpcUpdateSystem(systemtypes, 128);
 
@@ -578,7 +587,7 @@ namespace TownOfHost
                 {
                     var roleClass = pc.GetRoleClass();
                     if (!Options.firstturnmeeting || !MeetingStates.First) roleClass?.AfterMeetingTasks();
-                    roleClass?.Colorchnge();
+                    pc.GetRoleClass()?.Colorchnge();//会議後、役職変更されてものやつ。
                 }
                 if (!Options.firstturnmeeting || !MeetingStates.First)
                 {
@@ -757,6 +766,34 @@ namespace TownOfHost
             // 例: 各プレイヤーの設定をサーバーと同期する
             Logger.Info("Syncing all settings...", "Utils");
             // 実際の同期処理をここに実装
+        }
+        [GameModuleInitializer]
+        public static void Init()
+        {
+            Camouflage.ventplayr.Clear();
+            PlayerCatch.OldAlivePlayerControles.Clear();
+            ReportDeadBodyPatch.DontReport.Clear();
+            RandomSpawn.SpawnMap.NextSporn.Clear();
+            RandomSpawn.SpawnMap.NextSpornName.Clear();
+            Patches.ISystemType.VentilationSystemUpdateSystemPatch.NowVentId.Clear();
+            CoEnterVentPatch.VentPlayers.Clear();
+            MeetingHudPatch.Oniku = "";
+            MeetingHudPatch.Send = "";
+            MeetingHudPatch.Title = "";
+            MeetingVoteManager.Voteresult = "";
+            IUsePhantomButton.IPPlayerKillCooldown.Clear();
+            CustomButtonHud.CantJikakuIsPresent = null;
+            Utils.RoleSendList.Clear();
+            UtilsNotifyRoles.MeetingMoji = "";
+            Roles.Madmate.MadAvenger.Skill = false;
+            Roles.Neutral.JackalDoll.side = 0;
+            Balancer.Id = 255;
+            Stolener.Killers.Clear();
+            Options.firstturnmeeting = Options.FirstTurnMeeting.GetBool() && !Options.SuddenDeathMode.GetBool();
+            CoEnterVentPatch.OldOnEnterVent = new();
+
+            if (Options.CuseVent.GetBool() && (Options.CuseVentCount.GetFloat() >= PlayerCatch.AllAlivePlayerControls.Count())) Utils.CanVent = true;
+            else Utils.CanVent = false;
         }
     }
 }

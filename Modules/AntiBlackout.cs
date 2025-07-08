@@ -88,6 +88,7 @@ namespace TownOfHost
         public static void SendGameData([CallerMemberName] string callerMethodName = "")
         {
             logger.Info($"SendGameData is called from {callerMethodName}");
+            MeetingHudPatch.StartPatch.Serialize = true;
             foreach (var playerinfo in GameData.Instance.AllPlayers)
             {
                 MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
@@ -107,6 +108,7 @@ namespace TownOfHost
                 AmongUsClient.Instance.SendOrDisconnect(writer);
                 writer.Recycle();
             }
+            MeetingHudPatch.StartPatch.Serialize = false;
         }
         public static void OnDisconnect(NetworkedPlayerInfo player)
         {
@@ -138,7 +140,7 @@ namespace TownOfHost
                 {
                     AntiBlackout.isRoleCache.Add(player.PlayerId);
                 }
-
+                MeetingHudPatch.StartPatch.Serialize = true;
                 var sender = CustomRpcSender.Create("AntiBlackoutSetRole", SendOption.Reliable);
                 sender.StartMessage();
                 foreach (var target in GameData.Instance.AllPlayers)
@@ -156,6 +158,19 @@ namespace TownOfHost
                         sender = CustomRpcSender.Create("AntiBlackoutSetRole+2", SendOption.Reliable);
                         sender.StartMessage();
                     }
+                    if (setrole is RoleTypes.Impostor)
+                    {
+                        target.IsDead = false;
+                        sender.Write((wit) =>
+                        {
+                            wit.StartMessage(1); //0x01 Data
+                            {
+                                wit.WritePacked(target.NetId);
+                                target.Serialize(wit, false);
+                            }
+                            wit.EndMessage();
+                        }, true);
+                    }
                     sender.StartRpc(netid.Value, RpcCalls.SetRole)
                     .Write((ushort)setrole)
                     .Write(true)
@@ -169,12 +184,14 @@ namespace TownOfHost
                 check = true;
                 sender.EndMessage();
                 sender.SendMessage();
+                MeetingHudPatch.StartPatch.Serialize = false;
                 //}
             }
         }
 
         public static void ResetSetRole(PlayerControl Player)
         {
+            if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default && !Main.DontGameSet) return;
             if (Player) isRoleCache.Remove(Player.PlayerId);
             if (Player.GetClient() is null)
             {
@@ -207,6 +224,10 @@ namespace TownOfHost
                     var roleinfo = customrole.GetRoleInfo();
                     var role = roleinfo?.BaseRoleType.Invoke() ?? RoleTypes.Scientist;
                     var isalive = pc.IsAlive();
+                    if (customrole is CustomRoles.SKMadmate)
+                    {
+                        role = Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate;
+                    }
                     if (!isalive)
                     {
                         role = customrole.IsImpostor() || ((pc.GetRoleClass() as IKiller)?.CanUseSabotageButton() ?? false) ?

@@ -45,6 +45,7 @@ public sealed class Monochromer : RoleBase
     }
     private static void SetupOptionItem()
     {
+        SoloWinOption.Create(RoleInfo, 4, defo: 1);
         Kurosiro = BooleanOptionItem.Create(RoleInfo, 5, Option.MonochromerMonochro, false, false);
         HasImpostorVision = BooleanOptionItem.Create(RoleInfo, 6, GeneralOption.ImpostorVision, false, false);
         OpCanseeKiller = BooleanOptionItem.Create(RoleInfo, 7, Option.MonochromerCanseeKiller, true, false);
@@ -69,7 +70,8 @@ public sealed class Monochromer : RoleBase
         seen ??= seer;
         if (Options.firstturnmeeting && MeetingStates.FirstMeeting) return "";
         if (!CanseeKiller || GameStates.Meeting) return "";
-        if (seer.Is(CustomRoles.Monochromer) && (seen.GetCustomRole().IsImpostor() || seen.IsNeutralKiller() || seen.Is(CustomRoles.WolfBoy) || seen.Is(CustomRoles.Sheriff) || seen.Is(CustomRoles.GrimReaper)))
+        if (seer.Is(CustomRoles.Monochromer) &&
+        (seen.GetCustomRole().IsImpostor() || seen.IsNeutralKiller() || seen.Is(CustomRoles.WolfBoy) || seen.Is(CustomRoles.Sheriff) || seen.Is(CustomRoles.GrimReaper)))
         {
             var c = seen.GetRoleColor();
             if (seen.Is(CustomRoles.WolfBoy))
@@ -120,22 +122,22 @@ public sealed class Monochromer : RoleBase
             {
                 if (pc.IsAlive())
                 {
-                    Win(pc, reason);
-                    return reason != GameOverReason.CrewmatesByTask;
+                    return Win(pc, reason);
                 }
             }
         }
         return false;
     }
-    private static void Win(PlayerControl pc, GameOverReason reason)
+    private static bool Win(PlayerControl pc, GameOverReason reason)
     {
         if (reason == GameOverReason.CrewmatesByTask)
         {
             CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
             CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.Monochromer);
-            return;
+            return false;
         }
         CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Monochromer, pc.PlayerId, true);
+        return true;
     }
 
     public override void ChengeRoleAdd() => Colorchnge();

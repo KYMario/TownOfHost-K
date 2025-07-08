@@ -386,10 +386,10 @@ namespace TownOfHost
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
         //参考元→SuperNewRoles様
-        public static void RpcSyncAllNetworkedPlayer(int TargetClientId = -1)
+        public static void RpcSyncAllNetworkedPlayer(int TargetClientId = -1, SendOption sendOption = SendOption.None)
         {
             if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;
-            MessageWriter writer = MessageWriter.Get(SendOption.None);
+            MessageWriter writer = MessageWriter.Get(sendOption);
             if (TargetClientId < 0)
             {
                 writer.StartMessage(5);
@@ -412,7 +412,7 @@ namespace TownOfHost
                     AmongUsClient.Instance.SendOrDisconnect(writer);
                     writer.Recycle();
 
-                    writer = MessageWriter.Get(SendOption.None);
+                    writer = MessageWriter.Get(sendOption);
                     if (TargetClientId < 0)
                     {
                         writer.StartMessage(5);

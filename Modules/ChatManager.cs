@@ -12,6 +12,7 @@ namespace TownOfHost.Modules.ChatManager
         public static bool cancel = false;
         private static List<string> chatHistory = new();
         private const int maxHistorySize = 20;
+        [Attributes.GameModuleInitializer]
         public static void ResetChat()
         {
             chatHistory.Clear();
@@ -225,6 +226,216 @@ namespace TownOfHost.Modules.ChatManager
                     }
                 }
             }
+        }
+        public static void IntaskCheckSendMessage(PlayerControl player)
+        {
+            if (!GameStates.Meeting && PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
+            {
+                if (Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).Count() > 0)
+                {
+                    (string msg, byte sendTo, string title) = Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).FirstOrDefault();
+                    if (sendTo is not byte.MaxValue && Main.MegCount < 50)
+                    {
+                        Main.MessagesToSend.Remove((msg, sendTo, title));
+                        var sendpc = PlayerCatch.GetPlayerById(sendTo);
+                        int clientId = sendpc.GetClientId();
+                        if (sendpc != null)
+                        {
+                            var name = sendpc.Data.GetLogPlayerName();
+                            if (clientId == -1)
+                            {
+                                sendpc.SetName(title);
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(sendpc, msg);
+                                sendpc.SetName(name);
+                            }
+                            var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                            writer.StartMessage(clientId);
+                            writer.StartRpc(sendpc.NetId, (byte)RpcCalls.SetName)
+                                .Write(player.Data.NetId)
+                                .Write(title)
+                                .EndRpc();
+                            writer.StartRpc(sendpc.NetId, (byte)RpcCalls.SendChat)
+                                .Write(msg)
+                                .EndRpc();
+                            writer.EndMessage();
+                            writer.SendMessage();
+                            UtilsNotifyRoles.NotifyRoles(true, false, true, [sendpc]);
+                            if (!Main.IsCs() && Options.ExRpcWeightR.GetBool()) Main.MegCount++;
+                        }
+                    }
+                }
+            }
+        }
+        public static void SendMessageInGame()
+        {
+            PlayerControl senderplayer = PlayerCatch.AllAlivePlayerControls.OrderBy(x => x.PlayerId).FirstOrDefault();
+            if (senderplayer == null) return;
+
+            (string msg, byte sendTo, string title) = Main.MessagesToSend[0];
+            var name = senderplayer.Data.GetLogPlayerName();
+            var SendToPlayerControl = PlayerCatch.GetPlayerById(sendTo);
+            int clientId = sendTo == byte.MaxValue ? -1 : SendToPlayerControl.GetClientId();
+
+            if (clientId is not -1 && SendToPlayerControl is null)
+            {
+                Main.MessagesToSend.RemoveAt(0);
+                Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
+                return;
+            }
+
+            // タスク中で送信者が生きてて全員に表示 => 個別送信に切り替え、名前をその人視点の者に戻す
+            if (GameStates.Meeting is false && senderplayer.IsAlive() && sendTo == byte.MaxValue)
+            {
+                Main.MessagesToSend.RemoveAt(0);
+
+                foreach (var seer in PlayerCatch.AllPlayerControls)
+                {
+                    int seerclientid = seer.GetClientId();
+                    string playername = seer.GetRealName(isMeeting: true);
+                    playername = playername.ApplyNameColorData(seer, seer, true);
+                    if (Main.LastNotifyNames.TryGetValue((seer.PlayerId, seer.PlayerId), out var lastname))
+                    {
+                        playername = lastname;
+                    }
+
+                    var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                    Nwriter.StartMessage(seerclientid);
+                    Nwriter.StartRpc(seer.NetId, (byte)RpcCalls.SetName)
+                    .Write(seer.Data.NetId)
+                    .Write(title)
+                    .EndRpc();
+                    Nwriter.StartRpc(seer.NetId, (byte)RpcCalls.SendChat)
+                    .Write(msg)
+                    .EndRpc();
+                    Nwriter.StartRpc(seer.NetId, (byte)RpcCalls.SetName)
+                    .Write(seer.Data.NetId)
+                    .Write(playername)
+                    .EndRpc();
+                    Nwriter.EndMessage();
+                    Nwriter.SendMessage();
+                    UtilsNotifyRoles.NotifyRoles();
+                }
+                return;
+            }
+
+            if (Options.ExHideChatCommand.GetBool() is false ||//秘匿Off
+                    (senderplayer.PlayerId == 0 && sendTo == byte.MaxValue))//秘匿Onだけど、Snedplayrがホストかつ全員に送信
+            {
+                Main.MessagesToSend.RemoveAt(0);
+                // ホスト視点でのチャット送信
+                if (sendTo == byte.MaxValue)
+                {
+                    senderplayer.SetName(title);
+                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
+                    senderplayer.SetName(name);
+                }
+                var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                Nwriter.StartMessage(clientId);
+                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                .Write(senderplayer.Data.NetId)
+                .Write(title)
+                .EndRpc();
+                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                .Write(msg)
+                .EndRpc();
+                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                .Write(senderplayer.Data.NetId)
+                .Write(senderplayer.Data.GetLogPlayerName())
+                .EndRpc();
+                Nwriter.EndMessage();
+                Nwriter.SendMessage();
+                if (GameStates.Meeting && Main.MessagesToSend.Count < 1)
+                {
+                    _ = new LateTask(() =>
+                    {
+                        NameColorManager.RpcMeetingColorName(senderplayer);
+                        ChatUpdatePatch.DoBlockChat = false;
+                    }, Main.LagTime, "Setname", true);
+                }
+                return;
+            }
+            if (Options.ExHideChatCommand.GetBool())
+            {
+                Main.MessagesToSend.RemoveAt(0);
+                List<PlayerControl> Seers = new();
+                Seers = sendTo == byte.MaxValue ? PlayerCatch.AllPlayerControls.ToList() : [SendToPlayerControl];
+
+                foreach (var seer in Seers)
+                {
+                    int seerclientid = seer.GetClientId();
+                    string playername = seer.GetRealName(isMeeting: true);
+                    playername = playername.ApplyNameColorData(seer, seer, true);
+                    if (!GameStates.IsMeeting && Main.LastNotifyNames.TryGetValue((seer.PlayerId, seer.PlayerId), out var lastname))
+                    {
+                        playername = lastname;
+                    }
+
+                    var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                    Nwriter.StartMessage(seerclientid);
+                    Nwriter.StartRpc(seer.NetId, (byte)RpcCalls.SetName)
+                    .Write(seer.Data.NetId)
+                    .Write(title)
+                    .EndRpc();
+                    Nwriter.StartRpc(seer.NetId, (byte)RpcCalls.SendChat)
+                    .Write(msg)
+                    .EndRpc();
+                    Nwriter.StartRpc(seer.NetId, (byte)RpcCalls.SetName)
+                    .Write(seer.Data.NetId)
+                    .Write(playername)
+                    .EndRpc();
+                    Nwriter.EndMessage();
+                    Nwriter.SendMessage();
+                }
+            }
+        }
+        public static void SendmessageInLobby()
+        {
+            PlayerControl senderplayer = PlayerCatch.AllAlivePlayerControls.Where(x => x.PlayerId is not 0).OrderBy(x => x.PlayerId).FirstOrDefault();
+            if (senderplayer == null)
+            {
+                if (PlayerControl.LocalPlayer is not null)
+                {
+                    senderplayer = PlayerControl.LocalPlayer;
+                }
+                else
+                { return; }
+            }
+            (string msg, byte sendTo, string title) = Main.MessagesToSend[0];
+            var name = senderplayer.Data.GetLogPlayerName();
+            var SendToPlayerControl = PlayerCatch.GetPlayerById(sendTo);
+            int clientId = sendTo == byte.MaxValue ? -1 : SendToPlayerControl.GetClientId();
+
+            if (title.RemoveHtmlTags() == title) // ホストが送信した場合、
+            {
+                senderplayer = PlayerControl.LocalPlayer;
+                if (senderplayer == null) senderplayer = PlayerCatch.AllAlivePlayerControls.OrderBy(x => x.PlayerId).FirstOrDefault();
+            }
+            if (senderplayer == PlayerControl.LocalPlayer) _ = new LateTask(() => Utils.ApplySuffix(null, true), 0.24f, "", true);
+
+            Main.MessagesToSend.RemoveAt(0);
+
+            // ホスト視点でのチャット送信
+            if (clientId is -1)
+            {
+                senderplayer.SetName(title);
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
+                senderplayer.SetName(name);
+            }
+            var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+            Nwriter.StartMessage(clientId);
+            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+            .Write(senderplayer.Data.NetId)
+            .Write(title)
+            .EndRpc();
+            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+            .Write(msg)
+            .EndRpc();
+            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+            .Write(senderplayer.Data.NetId)
+            .Write(name)
+            .EndRpc();
+            Nwriter.EndMessage();
+            Nwriter.SendMessage();
         }
     }
 }

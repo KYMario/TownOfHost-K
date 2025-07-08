@@ -475,7 +475,7 @@ public static class GuessManager
             return false;
         }
 
-        if (!ChatCommands.GetRoleByInputName(msg, out role, true))
+        if (!UtilsRoleInfo.GetRoleByInputName(msg, out role, true))
         {
             error = GetString("GuessError1");
             return false;

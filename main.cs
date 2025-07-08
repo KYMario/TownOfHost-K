@@ -55,8 +55,8 @@ namespace TownOfHost
         // ==========
         //Sorry for many Japanese comments.
         public const string PluginGuid = "com.kymario.townofhost-k";
-        public const string PluginVersion = "51.13.29.32";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
-        public const string PluginShowVersion = "51.13.29<sub>.32</sub>";
+        public const string PluginVersion = "51.13.29.35";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
+        public const string PluginShowVersion = "51.13.29<sub>.35</sub>";
         public const string ModVersion = ".29";//リリースver用バージョン変更
 
         /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
@@ -230,7 +230,7 @@ namespace TownOfHost
             LastShapeshifterCooldown = Config.Bind("Other", "LastShapeshifterCooldown", (float)30);
             LastKickModClient = Config.Bind("Other", "LastKickModClientValue", false);
 
-            PluginModuleInitializerAttribute.InitializeAll();
+            PluginModuleInitializerAttribute.InitializeAll(true);
             Blacklist.FetchBlacklist();
 
             IRandom.SetInstance(new NetRandomWrapper());

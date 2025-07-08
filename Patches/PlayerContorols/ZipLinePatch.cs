@@ -8,6 +8,7 @@ namespace TownOfHost
     {
         static List<byte> ZipdiePlayers = new();
         static List<byte> ZiplineCools = new();
+        [Attributes.GameModuleInitializer]
         public static void reset()
         {
             ZiplineCools.Clear();

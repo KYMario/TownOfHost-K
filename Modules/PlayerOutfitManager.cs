@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 namespace TownOfHost;
+
 public static class PlayerOutfitManager
 {
     private static Dictionary<byte, OutfitData> PlayerOutfits = new();
@@ -25,6 +26,7 @@ public static class PlayerOutfitManager
     /// <summary>
     /// 保存されたデータを全て削除
     /// </summary>
+    [Attributes.GameModuleInitializer]
     public static void RemoveAll()
         => PlayerOutfits.Clear();
 

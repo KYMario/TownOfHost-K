@@ -1,12 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using Il2CppSystem.Linq;
+using System.Collections.Generic;
 using HarmonyLib;
 using UnityEngine;
+using AmongUs.GameOptions;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
-using AmongUs.GameOptions;
-using Il2CppSystem.Linq;
 
 namespace TownOfHost
 {
@@ -108,7 +108,7 @@ namespace TownOfHost
                 while (ch)
                 {
                     v++;
-                    if (!ChatCommands.GetRoleByInputName((option as StringOptionItem).GetString(v).RemoveHtmlTags(), out var role, true))
+                    if (!UtilsRoleInfo.GetRoleByInputName((option as StringOptionItem).GetString(v).RemoveHtmlTags(), out var role, true))
                     {
                         v = -1;
                         continue;
@@ -197,7 +197,7 @@ namespace TownOfHost
                     if (v < 0)
                         v = (option as StringOptionItem).Selections.Count() - 1;
 
-                    if (!ChatCommands.GetRoleByInputName((option as StringOptionItem).GetString(v).RemoveHtmlTags(), out var role, true))
+                    if (!UtilsRoleInfo.GetRoleByInputName((option as StringOptionItem).GetString(v).RemoveHtmlTags(), out var role, true))
                     {
                         role = CustomRoles.Opportunist;
                         continue;

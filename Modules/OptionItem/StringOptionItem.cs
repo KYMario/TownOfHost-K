@@ -61,7 +61,7 @@ namespace TownOfHost
         public override string GetString()
         {
             var text = Translator.GetString(Selections[Rule.GetValueByIndex(CurrentValue)]);
-            if (ChatCommands.GetRoleByInputName(text.RemoveHtmlTags(), out var r, true))
+            if (UtilsRoleInfo.GetRoleByInputName(text.RemoveHtmlTags(), out var r, true))
             {
                 return $"<b>{Utils.ColorString(UtilsRoleText.GetRoleColor(r, true), text.RemoveColorTags())}</b>";
             }

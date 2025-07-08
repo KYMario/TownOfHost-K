@@ -50,7 +50,7 @@ public abstract class InitializerAttribute<T> : Attribute
         // 見つかった初期化メソッドをpriority順に並べ替えて配列に変換
         allInitializers = initializers.OrderBy(initializer => initializer.priority).Select(initializer => initializer.targetMethod).ToArray();
     }
-    public static void InitializeAll()
+    public static void InitializeAll(bool Log = false)
     {
         // 初回の初期化時に初期化メソッドを探す
         if (allInitializers == null)
@@ -59,7 +59,7 @@ public abstract class InitializerAttribute<T> : Attribute
         }
         foreach (var initializer in allInitializers)
         {
-            logger.Info($"初期化: {initializer.DeclaringType.Name}.{initializer.Name}");
+            if (Log) logger.Info($"初期化: {initializer.DeclaringType.Name}.{initializer.Name}");
             initializer.Invoke(null, null);
         }
     }

@@ -81,9 +81,9 @@ namespace TownOfHost
             if (kantu == false)
             {
                 // 連打キルでないか
-                float minTime = Mathf.Max(0.03f, AmongUsClient.Instance.Ping / 1000f * 6f); //※AmongUsClient.Instance.Pingの値はミリ秒(ms)なので÷1000
-                                                                                            //TimeSinceLastKillに値が保存されていない || 保存されている時間がminTime以上 => キルを許可
-                                                                                            //↓許可されない場合
+                float minTime = Mathf.Max(Main.LagTime, AmongUsClient.Instance.Ping / 1000f * 6f); //※AmongUsClient.Instance.Pingの値はミリ秒(ms)なので÷1000
+                                                                                                   //TimeSinceLastKillに値が保存されていない || 保存されている時間がminTime以上 => キルを許可
+                                                                                                   //↓許可されない場合
                 if (TimeSinceLastKill.TryGetValue(killer.PlayerId, out var time) && time < minTime)
                 {
                     Logger.Info($"前回のキルからの時間が早すぎるため、キルをブロックしました。{time} < {minTime}", "CheckMurder");

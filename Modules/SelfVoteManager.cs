@@ -11,6 +11,7 @@ namespace TownOfHost.Modules
         ///</summary>
         public static byte SkipId = Skip;
         public static Dictionary<byte, bool> CheckVote = new();
+        [Attributes.GameModuleInitializer]
         public static void Init()
         {
             CheckVote.Clear();

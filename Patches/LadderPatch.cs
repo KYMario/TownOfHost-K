@@ -8,6 +8,7 @@ namespace TownOfHost
     {
         public static Dictionary<byte, Vector3> TargetLadderData;
         public static int Chance => (Options.LadderDeathChance as StringOptionItem).GetChance();
+        [Attributes.GameModuleInitializer]
         public static void Reset()
         {
             TargetLadderData = new();

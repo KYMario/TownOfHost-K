@@ -402,105 +402,103 @@ namespace TownOfHost
         private static StringBuilder Suffix = new(120);
         public static void Postfix(ShapeshifterPanel __instance, [HarmonyArgument(0)] int index, [HarmonyArgument(1)] NetworkedPlayerInfo pl)
         {
+            if (Main.EditMode && GameStates.IsFreePlay) return;
+
+            var seer = PlayerControl.LocalPlayer;
+            var seerRole = seer.GetRoleClass();
+            var target = PlayerCatch.GetPlayerById(pl.PlayerId);
+
+            //変数定義
+            string name = "";
+            bool nomarker = false;
+            string RealName;
+            Mark.Clear();
+            Suffix.Clear();
+
+            //名前を一時的に上書きするかのチェック
+            var TemporaryName = target.GetRoleClass()?.GetTemporaryName(ref name, ref nomarker, seer, target) ?? false;
+
+            //名前変更
+            RealName = TemporaryName ? name : target.GetRealName();
+
+            //NameColorManager準拠の処理
+            RealName = RealName.ApplyNameColorData(seer, target, false);
+
+            //seer役職が対象のMark
+            if (Amnesia.CheckAbility(seer))
+                Mark.Append(seerRole?.GetMark(seer, target, false));
+            //seerに関わらず発動するMark
+            Mark.Append(CustomRoleManager.GetMarkOthers(seer, target, false));
+
+            var targetlover = target.GetRiaju();
+            //ハートマークを付ける(会議中MOD視点)
+            if ((targetlover == seer.GetRiaju() && targetlover is not CustomRoles.OneLove and not CustomRoles.NotAssigned)
+            || (seer.Data.IsDead && target.IsRiaju() && targetlover != CustomRoles.OneLove))
             {
-                if (Main.EditMode && GameStates.IsFreePlay) return;
+                Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(targetlover), "♥"));
+            }
+            else
+            if ((Lovers.OneLovePlayer.Ltarget == target.PlayerId && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
+            || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
+            || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seer.Is(CustomRoles.OneLove)))
+            {
+                Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
+            }
 
-                var seer = PlayerControl.LocalPlayer;
-                var seerRole = seer.GetRoleClass();
-                var target = PlayerCatch.GetPlayerById(pl.PlayerId);
-
-                //変数定義
-                string name = "";
-                bool nomarker = false;
-                string RealName;
-                Mark.Clear();
-                Suffix.Clear();
-
-                //名前を一時的に上書きするかのチェック
-                var TemporaryName = target.GetRoleClass()?.GetTemporaryName(ref name, ref nomarker, seer, target) ?? false;
-
-                //名前変更
-                RealName = TemporaryName ? name : target.GetRealName();
-
-                //NameColorManager準拠の処理
-                RealName = RealName.ApplyNameColorData(seer, target, false);
-
-                //seer役職が対象のMark
-                if (Amnesia.CheckAbility(seer))
-                    Mark.Append(seerRole?.GetMark(seer, target, false));
-                //seerに関わらず発動するMark
-                Mark.Append(CustomRoleManager.GetMarkOthers(seer, target, false));
-
-                var targetlover = target.GetRiaju();
-                //ハートマークを付ける(会議中MOD視点)
-                if ((targetlover == seer.GetRiaju() && targetlover is not CustomRoles.OneLove and not CustomRoles.NotAssigned)
-                || (seer.Data.IsDead && target.IsRiaju() && targetlover != CustomRoles.OneLove))
+            if (target.Is(CustomRoles.Connecting) && PlayerControl.LocalPlayer.Is(CustomRoles.Connecting)
+            && !target.Is(CustomRoles.WolfBoy) && !PlayerControl.LocalPlayer.Is(CustomRoles.WolfBoy))
+            {
+                Mark.Append($"<{UtilsRoleText.GetRoleColorCode(CustomRoles.Connecting)}>Ψ</color>");
+            }
+            else if (target.Is(CustomRoles.Connecting) && PlayerControl.LocalPlayer.Data.IsDead)
+            {
+                Mark.Append($"<{UtilsRoleText.GetRoleColorCode(CustomRoles.Connecting)}>Ψ</color>");
+            }
+            //seerに関わらず発動するLowerText
+            Suffix.Append(CustomRoleManager.GetLowerTextOthers(seer, target));
+            if (Amnesia.CheckAbility(seer))
+            {
+                //プログレスキラー
+                if (seer.Is(CustomRoles.ProgressKiller) && target.Is(CustomRoles.Workhorse) && ProgressKiller.ProgressWorkhorseseen)
                 {
-                    Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(targetlover), "♥"));
+                    Mark.Append($"<color=blue>♦</color>");
                 }
-                else
-                if ((Lovers.OneLovePlayer.Ltarget == target.PlayerId && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
-                || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
-                || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seer.Is(CustomRoles.OneLove)))
-                {
-                    Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
-                }
-
-                if (target.Is(CustomRoles.Connecting) && PlayerControl.LocalPlayer.Is(CustomRoles.Connecting)
-                && !target.Is(CustomRoles.WolfBoy) && !PlayerControl.LocalPlayer.Is(CustomRoles.WolfBoy))
-                {
-                    Mark.Append($"<{UtilsRoleText.GetRoleColorCode(CustomRoles.Connecting)}>Ψ</color>");
-                }
-                else if (target.Is(CustomRoles.Connecting) && PlayerControl.LocalPlayer.Data.IsDead)
-                {
-                    Mark.Append($"<{UtilsRoleText.GetRoleColorCode(CustomRoles.Connecting)}>Ψ</color>");
-                }
-                //seerに関わらず発動するLowerText
-                Suffix.Append(CustomRoleManager.GetLowerTextOthers(seer, target));
-                if (Amnesia.CheckAbility(seer))
-                {
-                    //プログレスキラー
-                    if (seer.Is(CustomRoles.ProgressKiller) && target.Is(CustomRoles.Workhorse) && ProgressKiller.ProgressWorkhorseseen)
+                //エーリアン
+                if ((seerRole as Alien)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                    if (target.Is(CustomRoles.Workhorse))
                     {
                         Mark.Append($"<color=blue>♦</color>");
                     }
-                    //エーリアン
-                    if ((seerRole as Alien)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
-                        if (target.Is(CustomRoles.Workhorse))
-                        {
-                            Mark.Append($"<color=blue>♦</color>");
-                        }
-                    if ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
-                        if (target.Is(CustomRoles.Workhorse))
-                        {
-                            Mark.Append($"<color=blue>♦</color>");
-                        }
-                    if ((seerRole as AlienHijack)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
-                        if (target.Is(CustomRoles.Workhorse))
-                        {
-                            Mark.Append($"<color=blue>♦</color>");
-                        }
-                    //seer役職が対象のSuffix
-                    Suffix.Append(seerRole?.GetSuffix(seer, target));
-                }
+                if ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
+                    if (target.Is(CustomRoles.Workhorse))
+                    {
+                        Mark.Append($"<color=blue>♦</color>");
+                    }
+                if ((seerRole as AlienHijack)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                    if (target.Is(CustomRoles.Workhorse))
+                    {
+                        Mark.Append($"<color=blue>♦</color>");
+                    }
+                //seer役職が対象のSuffix
+                Suffix.Append(seerRole?.GetSuffix(seer, target));
+            }
 
-                //seerに関わらず発動するSuffix
-                Suffix.Append(CustomRoleManager.GetSuffixOthers(seer, target));
+            //seerに関わらず発動するSuffix
+            Suffix.Append(CustomRoleManager.GetSuffixOthers(seer, target));
 
-                if (Utils.IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())
-                    RealName = $"<size=0>{RealName}</size> ";
+            if (Utils.IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())
+                RealName = $"<size=0>{RealName}</size> ";
 
-                bool? canseedeathreasoncolor = seer.PlayerId.CanDeathReasonKillerColor() == true ? true : null;
-                string DeathReason = seer.Data.IsDead && seer.KnowDeathReason(target) ? $"<size=75%>({Utils.GetVitalText(target.PlayerId, canseedeathreasoncolor)})</size>" : "";//Mark・Suffixの適用
-                if (!seer.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor ?? false)
-                    __instance.NameText.text = $"{RealName}{((TemporaryName && nomarker) ? "" : DeathReason + Mark)}";
-                else
-                    __instance.NameText.text = $"<#ffffff>{RealName}{((TemporaryName && nomarker) ? "" : DeathReason + Mark)}</color>";
+            bool? canseedeathreasoncolor = seer.PlayerId.CanDeathReasonKillerColor() == true ? true : null;
+            string DeathReason = seer.Data.IsDead && seer.KnowDeathReason(target) ? $"<size=75%>({Utils.GetVitalText(target.PlayerId, canseedeathreasoncolor)})</size>" : "";//Mark・Suffixの適用
+            if (!seer.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor ?? false)
+                __instance.NameText.text = $"{RealName}{((TemporaryName && nomarker) ? "" : DeathReason + Mark)}";
+            else
+                __instance.NameText.text = $"<#ffffff>{RealName}{((TemporaryName && nomarker) ? "" : DeathReason + Mark)}</color>";
 
-                if (Suffix.ToString() != "" && (!TemporaryName || (TemporaryName && !nomarker)))
-                {
-                    __instance.NameText.text += "\r\n" + Suffix.ToString();
-                }
+            if (Suffix.ToString() != "" && (!TemporaryName || (TemporaryName && !nomarker)))
+            {
+                __instance.NameText.text += "\r\n" + Suffix.ToString();
             }
         }
     }

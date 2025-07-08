@@ -13,7 +13,7 @@ using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Neutral;
 using TownOfHost.Roles.AddOns.Common;
-using TownOfHost.Patches.ISystemType;
+using TownOfHost.Modules.ChatManager;
 
 namespace TownOfHost
 {
@@ -23,7 +23,6 @@ namespace TownOfHost
     {
         private static StringBuilder Mark = new(20);
         private static StringBuilder Suffix = new(120);
-        public static Dictionary<byte, int> VentDuringDisabling = new();
         //public static float test = 13.1f;
         public static float text = 0;
         public static void Postfix(PlayerControl __instance)
@@ -151,160 +150,17 @@ namespace TownOfHost
                 {
                     FallFromLadder.FixedUpdate(player);
                 }
-                if (1 == 5 && Options.CurrentGameMode == CustomGameMode.Standard && GameStates.IsInTask && GameStates.introDestroyed && isAlive && !player.IsModClient())
-                {
-                    Dictionary<int, float> Distance = new();
-                    Vector2 position = player.transform.position;
-                    foreach (var vent in ShipStatus.Instance.AllVents)
-                        Distance.Add(vent.Id, Vector2.Distance(position, vent.transform.position));
-                    var first = Distance.OrderBy(x => x.Value).First();
-
-                    if (VentDuringDisabling.TryGetValue(player.PlayerId, out var ventId) && (first.Key != ventId || first.Value > 2))
-                    {
-                        ushort num = (ushort)(VentilationSystemUpdateSystemPatch.last_opId + 1U);
-                        MessageWriter msgWriter = MessageWriter.Get(SendOption.None);
-                        msgWriter.Write(num);
-                        msgWriter.Write((byte)VentilationSystem.Operation.StopCleaning);
-                        msgWriter.Write((byte)ventId);
-                        player.RpcDesyncUpdateSystem(SystemTypes.Ventilation, msgWriter);
-                        msgWriter.Recycle();
-                        VentDuringDisabling.Remove(player.PlayerId);
-                        VentilationSystemUpdateSystemPatch.last_opId = num;
-                    }
-                    else if (first.Value <= 2 && !VentDuringDisabling.ContainsKey(player.PlayerId) && (((roleclass as IKiller)?.CanUseImpostorVentButton() is false) || (roleclass?.CanClickUseVentButton == false)))
-                    {
-                        ushort num = (ushort)(VentilationSystemUpdateSystemPatch.last_opId + 1U);
-                        MessageWriter msgWriter = MessageWriter.Get(SendOption.None);
-                        msgWriter.Write(num);
-                        msgWriter.Write((byte)VentilationSystem.Operation.StartCleaning);
-                        msgWriter.Write((byte)first.Key);
-                        player.RpcDesyncUpdateSystem(SystemTypes.Ventilation, msgWriter);
-                        msgWriter.Recycle();
-                        VentilationSystemUpdateSystemPatch.last_opId = num;
-                        VentDuringDisabling[player.PlayerId] = first.Key;
-                    }
-                }
+                VentManager.UpdateDesyncVentCleaning(player, roleclass);
 
                 Utils.ApplySuffix(__instance);
             }
             //LocalPlayer専用
             if (__instance.AmOwner)
             {
-                if (GameStates.IsLobby && (Options.SuddenTeamOption.GetBool() || SuddenDeathMode.CheckTeamDoreka))
-                {
-                    if (SuddenDeathMode.CheckTeamDoreka && !Options.SuddenTeamOption.GetBool())
-                    {
-                        SuddenDeathMode.TeamReset();
-                        return;
-                    }
-                    foreach (var pc in PlayerCatch.AllPlayerControls)
-                    {
-                        var pos = pc.GetTruePosition();
-
-                        if (-3 <= pos.x && pos.x <= -1.1 && -1 <= pos.y && pos.y <= 0.4)
-                        {
-                            if (!SuddenDeathMode.TeamRed.Contains(pc.PlayerId))
-                                SuddenDeathMode.TeamRed.Add(pc.PlayerId);
-                            SuddenDeathMode.TeamBlue.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamYellow.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamGreen.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamPurple.Remove(pc.PlayerId);
-                        }
-                        else
-                        if (-0.2 <= pos.x && pos.x <= 0.7 && -1.1 <= pos.y && pos.y <= 0.4)
-                        {
-                            SuddenDeathMode.TeamRed.Remove(pc.PlayerId);
-                            if (!SuddenDeathMode.TeamBlue.Contains(pc.PlayerId))
-                                SuddenDeathMode.TeamBlue.Add(pc.PlayerId);
-                            SuddenDeathMode.TeamYellow.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamGreen.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamPurple.Remove(pc.PlayerId);
-                        }
-                        else
-                        if (1.7 <= pos.x && pos.x <= 3 && -1.1 <= pos.y && pos.y <= 0.7 && Options.SuddenTeamYellow.GetBool())
-                        {
-                            SuddenDeathMode.TeamRed.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamBlue.Remove(pc.PlayerId);
-                            if (!SuddenDeathMode.TeamYellow.Contains(pc.PlayerId))
-                                SuddenDeathMode.TeamYellow.Add(pc.PlayerId);
-                            SuddenDeathMode.TeamGreen.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamPurple.Remove(pc.PlayerId);
-                        }
-                        else
-                        if (0.5f <= pos.x && pos.x <= 2.1 && 2.1 <= pos.y && pos.y <= 3.2 && Options.SuddenTeamGreen.GetBool())
-                        {
-                            SuddenDeathMode.TeamRed.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamBlue.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamYellow.Remove(pc.PlayerId);
-                            if (!SuddenDeathMode.TeamGreen.Contains(pc.PlayerId))
-                                SuddenDeathMode.TeamGreen.Add(pc.PlayerId);
-                            SuddenDeathMode.TeamPurple.Remove(pc.PlayerId);
-                        }
-                        else
-                        if (-2.9 <= pos.x && pos.x <= -1.1 && 2.2 <= pos.y && pos.y <= 3.0 && Options.SuddenTeamPurple.GetBool())
-                        {
-                            SuddenDeathMode.TeamRed.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamBlue.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamYellow.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamGreen.Remove(pc.PlayerId);
-                            if (!SuddenDeathMode.TeamPurple.Contains(pc.PlayerId))
-                                SuddenDeathMode.TeamPurple.Add(pc.PlayerId);
-                        }
-                        else if (!GameStates.IsCountDown && !GameStates.Intro)
-                        {
-                            SuddenDeathMode.TeamRed.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamBlue.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamYellow.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamGreen.Remove(pc.PlayerId);
-                            SuddenDeathMode.TeamPurple.Remove(pc.PlayerId);
-                        }
-                    }
-
-                    foreach (var pc in PlayerCatch.AllPlayerControls)
-                    {
-                        if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                        var color = "#ffffff";
-                        if (SuddenDeathMode.TeamRed.Contains(pc.PlayerId)) color = ModColors.codered;
-                        if (SuddenDeathMode.TeamBlue.Contains(pc.PlayerId)) color = ModColors.codeblue;
-                        if (SuddenDeathMode.TeamYellow.Contains(pc.PlayerId)) color = ModColors.codeyellow;
-                        if (SuddenDeathMode.TeamGreen.Contains(pc.PlayerId)) color = ModColors.codegreen;
-                        if (SuddenDeathMode.TeamPurple.Contains(pc.PlayerId)) color = ModColors.codepurple;
-                        foreach (var seer in PlayerCatch.AllPlayerControls)
-                        {
-                            if (pc.name != "Player(Clone)" && seer.name != "Player(Clone)" && seer.PlayerId != PlayerControl.LocalPlayer.PlayerId && !seer.IsModClient())
-                                pc.RpcSetNamePrivate($"<{color}>{pc.Data.PlayerName}", true, seer, false);
-                        }
-                    }
-                    if (!SuddenDeathMode.CheckTeam && GameStates.IsCountDown)
-                    {
-                        GameStartManager.Instance.ResetStartState();
-                        Utils.SendMessage(Translator.GetString("SuddendeathLobbyError"));
-                    }
-                }
+                SuddenDeathMode.UpdateTeam();
                 if (GameStates.InGame)
                 {
-                    if (Options.MaxInVentMode.GetBool())
-                    {
-                        List<byte> del = new();
-                        foreach (var ventpc in CoEnterVentPatch.VentPlayers)
-                        {
-                            var pc = PlayerCatch.GetPlayerById(ventpc.Key);
-                            if (pc == null) continue;
-
-                            if (ventpc.Value > Options.MaxInVentTime.GetFloat())
-                            {
-                                if (!CoEnterVentPatch.VentPlayers.TryGetValue(ventpc.Key, out var a))
-                                {
-                                    del.Add(ventpc.Key);
-                                    continue;
-                                }
-                                pc.MyPhysics.RpcBootFromVent(VentilationSystemUpdateSystemPatch.NowVentId.TryGetValue(ventpc.Key, out var r) ? r : 0);
-                                del.Add(ventpc.Key);
-                            }
-                            CoEnterVentPatch.VentPlayers[ventpc.Key] += Time.fixedDeltaTime;
-                        }
-                        del.Do(id => CoEnterVentPatch.VentPlayers.Remove(id));
-                    }
+                    VentManager.CheckVentLimit(player);
                     DisableDevice.FixedUpdate();
                     //情報機器制限
                     var nowuseing = true;
@@ -328,51 +184,27 @@ namespace TownOfHost
                             DisableDevice.UseCount = 0;
                         }
                     }
-                    if (Main.NowSabotage) Main.sabotagetime += Time.fixedDeltaTime;
-
-                    if (!GameStates.Meeting && PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
+                    if (Main.NowSabotage)
                     {
-                        if (Main.MessagesToSend.Count > 0)
+                        Main.sabotagetime += Time.fixedDeltaTime;
+                        if (!Utils.IsActive(Main.SabotageType))
                         {
-                            var pc = PlayerCatch.AllAlivePlayerControls.OrderBy(x => x.PlayerId).FirstOrDefault();
-                            if (pc != null)
+                            var sb = Translator.GetString($"sb.{Main.SabotageType}");
+
+                            if (Main.SabotageType == SystemTypes.MushroomMixupSabotage)
+                                UtilsGameLog.AddGameLog($"MushroomMixup", string.Format(Translator.GetString("Log.FixSab"), sb));
+                            else UtilsGameLog.AddGameLog($"{Main.SabotageType}", string.Format(Translator.GetString("Log.FixSab"), sb));
+                            Main.NowSabotage = false;
+                            Main.sabotagetime = 0;
+
+                            foreach (var role in CustomRoleManager.AllActiveRoles.Values)
                             {
-                                (string msg, byte sendTo, string title) = Main.MessagesToSend[0];
-                                if (sendTo != byte.MaxValue && Main.MegCount < 50)
-                                {
-                                    Main.MessagesToSend.RemoveAt(0);
-                                    var sendpc = PlayerCatch.GetPlayerById(sendTo);
-                                    int clientId = sendpc.GetClientId();
-                                    if (sendpc != null)
-                                    {
-                                        var name = pc.Data.GetLogPlayerName();
-                                        if (clientId == -1)
-                                        {
-                                            pc.SetName(title);
-                                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(pc, msg);
-                                            pc.SetName(name);
-                                        }
-                                        var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                                        writer.StartMessage(clientId);
-                                        writer.StartRpc(pc.NetId, (byte)RpcCalls.SetName)
-                                            .Write(player.Data.NetId)
-                                            .Write(title)
-                                            .EndRpc();
-                                        writer.StartRpc(pc.NetId, (byte)RpcCalls.SendChat)
-                                            .Write(msg)
-                                            .EndRpc();
-                                        writer.StartRpc(pc.NetId, (byte)RpcCalls.SetName)
-                                            .Write(player.Data.NetId)
-                                            .Write(pc.Data.GetLogPlayerName())
-                                            .EndRpc();
-                                        writer.EndMessage();
-                                        writer.SendMessage();
-                                        if (!Main.IsCs() && Options.ExRpcWeightR.GetBool()) Main.MegCount++;
-                                    }
-                                }
+                                role.AfterSabotage(Main.SabotageType);
                             }
                         }
                     }
+
+                    ChatManager.IntaskCheckSendMessage(player);
                     if (!GameStates.IsMeeting)
                     {
                         foreach (var data in ColorLovers.Alldatas.Values)
@@ -398,7 +230,7 @@ namespace TownOfHost
                         }
 
                     //カモフラ
-                    if (Camouflage.ventplayr.Count != 0)
+                    if (Camouflage.ventplayr.Count > 0)
                     {
                         var remove = new List<byte>();
                         foreach (var id in Camouflage.ventplayr)
@@ -441,7 +273,11 @@ namespace TownOfHost
                             remove.Add(id);
                         }
 
-                        ExtendedPlayerControl.AllPlayerOnlySeeMePet(); remove.ForEach(task => Camouflage.ventplayr.Remove(task));
+                        if (remove.Count > 0)
+                        {
+                            ExtendedPlayerControl.AllPlayerOnlySeeMePet();
+                            remove.ForEach(task => Camouflage.ventplayr.Remove(task));
+                        }
                     }
                 }
 
@@ -476,12 +312,14 @@ namespace TownOfHost
             {
                 if (GameStates.IsLobby)
                 {
+                    if (PlayerControl.LocalPlayer.PlayerId == __instance.PlayerId)
+                        PlayerControl.LocalPlayer.cosmetics.nameText.text = Main.lobbyname == "" ? DataManager.player.Customization.Name : Main.lobbyname;
                     if (Main.playerVersion.TryGetValue(__instance.PlayerId, out var ver))
                     {
                         if (Main.ForkId != ver.forkId) // フォークIDが違う場合
-                            __instance.cosmetics.nameText.text = $"<#ff0000><size=1.2>{ver.forkId}</size>\n{__instance?.name}</color>";
+                            __instance.cosmetics.nameText.text = $"<#f07d0d><size=1.2>{ver.forkId}</size>\n{__instance?.name}</color>";
                         else if (Main.version.CompareTo(ver.version) == 0)
-                            __instance.cosmetics.nameText.text = ver.tag == $"{ThisAssembly.Git.Commit}({ThisAssembly.Git.Branch})" ? $"<#87cefa>{__instance.name}</color>" : $"<#ffff00><size=1.2>{ver.tag}</size>\n{__instance?.name}</color>";
+                            __instance.cosmetics.nameText.text = ver.tag == $"{ThisAssembly.Git.Commit}({ThisAssembly.Git.Branch})" ? $"<#a1b0ff>{__instance.name}</color>" : $"<#ffff00><size=1.2>{ver.tag}</size>\n{__instance?.name}</color>";
                         else __instance.cosmetics.nameText.text = $"<#ff0000><size=1.2>v{ver.version}</size>\n{__instance?.name}</color>";
                     }
                     else __instance.cosmetics.nameText.text = __instance?.Data?.PlayerName;
@@ -627,8 +465,6 @@ namespace TownOfHost
                 }
                 else
                 {
-                    if (PlayerControl.LocalPlayer.PlayerId == __instance.PlayerId)
-                        PlayerControl.LocalPlayer.cosmetics.nameText.text = Main.lobbyname == "" ? DataManager.player.Customization.Name : Main.lobbyname;
                     //役職テキストの座標を初期値に戻す
                     RoleText.transform.SetLocalY(0.2f);
                 }

@@ -95,6 +95,7 @@ class ColorLovers
             Lovers.HaveLoverDontTaskPlayers.Add(pc.PlayerId);
             PlayerState.GetByPlayerId(pc.PlayerId).SetSubRole(LoverRole);
             LoverPlayer.Add(pc);
+            Assingplayer2.Remove(pc);
             Logger.Info($"役職設定1{pc.Data.GetLogPlayerName()} => {LoverRole}", "Lover");
         }
         if (Assingplayer2.Count is not 0)

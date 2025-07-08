@@ -39,6 +39,7 @@ namespace TownOfHost
             "・"
         };
 
+        [Attributes.GameModuleInitializer]
         public static void Init()
         {
             TargetArrows.Clear();
@@ -185,6 +186,7 @@ namespace TownOfHost
             "・"
         };
 
+        [Attributes.GameModuleInitializer]
         public static void Init()
         {
             TargetArrows.Clear();

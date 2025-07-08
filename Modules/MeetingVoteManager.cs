@@ -118,17 +118,17 @@ public class MeetingVoteManager
 
             if (roleVoteFor.HasValue)
             {
-                logger.Info($"{role.Player.GetNameWithRole()} が {player.GetNameWithRole().RemoveHtmlTags()} の投票先を {GetVoteName(roleVoteFor.Value)} に変更します");
+                logger.Info($"{role.Player.GetNameWithRole().RemoveHtmlTags()} が {player.GetNameWithRole().RemoveHtmlTags()} の投票先を {GetVoteName(roleVoteFor.Value)} に変更します");
                 voteFor = roleVoteFor.Value;
             }
             if (roleNumVotes.HasValue)
             {
-                logger.Info($"{role.Player.GetNameWithRole()} が {player.GetNameWithRole().RemoveHtmlTags()} の投票数を {roleNumVotes.Value} に変更します");
+                logger.Info($"{role.Player.GetNameWithRole().RemoveHtmlTags()} が {player.GetNameWithRole().RemoveHtmlTags()} の投票数を {roleNumVotes.Value} に変更します");
                 numVotes = roleNumVotes.Value;
             }
             if (!roleDoVote)
             {
-                logger.Info($"{role.Player.GetNameWithRole()} によって投票は取り消されます");
+                logger.Info($"{role.Player.GetNameWithRole().RemoveHtmlTags()} によって投票は取り消されます");
                 doVote = roleDoVote;
             }
         }

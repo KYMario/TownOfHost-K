@@ -565,7 +565,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         hasTasks = () => (NowRole is NowMode.Madmate or NowMode.Opportunist) ? HasTask.ForRecompute : HasTask.True;
     }
 
-    bool CanUseAbility()
+    public bool CanUseAbility()
     {
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return false;
         if (NowRole is NowMode.SabotageMaster) return MyTaskState.HasCompletedEnoughCountOfTasks(AbilitycanuseTaskCount.GetInt());
@@ -573,7 +573,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
     }
 
     #endregion
-    enum NowMode
+    public enum NowMode
     {
         None = CustomRoles.Crewmate,
         Bait = CustomRoles.Bait,
@@ -612,8 +612,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
     static OptionItem RandomMadmate; int RMadmate;
     static OptionItem AbilitycanuseTaskCount;
 
-
-    NowMode NowRole;
+    public NowMode NowRole;
     int MeetingCount; int NowCount;
     private bool fixedSabotage;
     private int SkillLimit;

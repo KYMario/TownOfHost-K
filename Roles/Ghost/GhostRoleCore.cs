@@ -5,8 +5,10 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.Ghost;
 
 namespace TownOfHost;
+
 class GhostRoleCore
 {
+    [Attributes.GameModuleInitializer]
     public static void Init()
     {
         AsistingAngel.Init();

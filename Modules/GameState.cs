@@ -232,6 +232,7 @@ namespace TownOfHost
     }
     public static class GameStates
     {
+        [Attributes.GameModuleInitializer]
         public static void Reset()
         {
             MeetingStates.Sending = false;
