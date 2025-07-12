@@ -27,8 +27,14 @@ public sealed class Secom : RoleBase
     )
     {
         Secom_Target = 255;
+        flashCount = 0;
+        flashTimer = 0f;
+        flashActive = false;
         RemainingMonitoring = OptionMaxMonitoring.GetFloat(); // 初期回数設定
     }
+    private int flashCount;
+    private float flashTimer;
+    private bool flashActive;
     public float RemainingMonitoring { get; private set; }
     public byte Secom_Target { get; private set; }
     public static OptionItem OptionMaxMonitoring;
@@ -60,10 +66,39 @@ public sealed class Secom : RoleBase
         if (Secom_Target == byte.MaxValue) return;
         if (target == null) return;
 
-        if (!target.IsAlive())
+        if (!target.IsAlive() && !flashActive)
         {
+            // 死亡検知 → フラッシュ開始
+            flashActive = true;
+            flashCount = 0;
+            flashTimer = 0f;
 
+            // 即1回目
+            Utils.AllPlayerKillFlash();
+            flashCount++;
             Utils.SendMessage($"{UtilsName.GetPlayerColor(target)} が死亡しました（by Secom）", Player.PlayerId);
+        }
+
+        if (flashActive)
+        {
+            flashTimer += Time.fixedDeltaTime;
+
+            if (flashTimer >= 1.5f)
+            {
+                flashTimer = 0f;
+                if (flashCount < 3)
+                {
+                    Utils.AllPlayerKillFlash();
+                    flashCount++;
+                }
+                else
+                {
+                    // 完了 → リセット＆残回数を減らす
+                    flashActive = false;
+                    Secom_Target = byte.MaxValue;
+                    RemainingMonitoring = Mathf.Max(0f, RemainingMonitoring - 1f);
+                }
+            }
         }
     }
 }
