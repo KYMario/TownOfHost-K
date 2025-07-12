@@ -51,4 +51,19 @@ public sealed class Secom : RoleBase
 
         return true;
     }
+    public override void OnFixedUpdate(PlayerControl player)
+    {
+        if (RemainingMonitoring <= 0f) return;
+
+        var target = PlayerCatch.GetPlayerById(Secom_Target);
+
+        if (Secom_Target == byte.MaxValue) return;
+        if (target == null) return;
+
+        if (!target.IsAlive())
+        {
+
+            Utils.SendMessage($"{UtilsName.GetPlayerColor(target)} が死亡しました（by Secom）", Player.PlayerId);
+        }
+    }
 }
