@@ -26,9 +26,11 @@ public sealed class Secom : RoleBase
         player
     )
     {
+        Secom_Target = 255;
         RemainingMonitoring = OptionMaxMonitoring.GetFloat(); // 初期回数設定
     }
     public float RemainingMonitoring { get; private set; }
+    public byte Secom_Target { get; private set; }
     public static OptionItem OptionMaxMonitoring;
     private static void SetupOptionItem()
     {
@@ -39,5 +41,14 @@ public sealed class Secom : RoleBase
     {
         MaxMonitoring, // Secomがキル検知できる回数
     }
+    public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
+    {
+        // Secom本人かつ、残回数が1以上なら→投票先をSecom_Targetに設定
+        if (Is(voter) && RemainingMonitoring >= 1f)
+        {
+            Secom_Target = votedForId;
+        }
 
+        return true;
+    }
 }
