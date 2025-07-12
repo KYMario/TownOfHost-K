@@ -26,8 +26,18 @@ public sealed class Secom : RoleBase
         player
     )
     {
+        RemainingMonitoring = OptionMaxMonitoring.GetFloat(); // 初期回数設定
     }
+    public float RemainingMonitoring { get; private set; }
+    public static OptionItem OptionMaxMonitoring;
     private static void SetupOptionItem()
     {
+        OptionMaxMonitoring = FloatOptionItem.Create(RoleInfo, 10, Option.MaxMonitoring, new(0f, 99f, 1f), 1f, false)
+            .SetValueFormat(OptionFormat.Times);
     }
+    enum Option
+    {
+        MaxMonitoring, // Secomがキル検知できる回数
+    }
+
 }
