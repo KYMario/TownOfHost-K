@@ -18,10 +18,164 @@ using TownOfHost.Modules;
 [assembly: AssemblyInformationalVersionAttribute(TownOfHost.Main.PluginVersion)]
 namespace TownOfHost
 {
+<<<<<<< HEAD
         [BepInPlugin(PluginGuid, "Town Of Host-K", PluginVersion)]
         [BepInIncompatibility("jp.ykundesu.supernewroles")]
         [BepInProcess("Among Us.exe")]
         public class Main : BasePlugin
+=======
+    [BepInPlugin(PluginGuid, "Town Of Host-K", PluginVersion)]
+    [BepInIncompatibility("jp.ykundesu.supernewroles")]
+    [BepInProcess("Among Us.exe")]
+    public class Main : BasePlugin
+    {
+        // == プログラム設定 / Program Config ==
+        // modの名前 / Mod Name (Default: Town Of Host)
+        public static readonly string ModName = "Town Of Host-K";
+        // modの色 / Mod Color (Default: #00bfff)
+        public static readonly string ModColor = "#00c1ff";
+        // 公開ルームを許可する / Allow Public Room (Default: true)
+        public static readonly bool AllowPublicRoom = true;
+        // フォークID / ForkId (Default: OriginalTOH)
+        public static readonly string ForkId = "TOH-K";
+        // Discordボタンを表示するか / Show Discord Button (Default: true)
+        public static readonly bool ShowDiscordButton = true;
+        // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/W5ug6hXB9V)
+        public static readonly string DiscordInviteUrl = "https://discord.gg/5DPqH8seFq";
+        // ==========
+        public const string OriginalForkId = "OriginalTOH"; // Don't Change The Value. / この値を変更しないでください。
+        // == 認証設定 / Authentication Config ==
+        // デバッグキーの認証インスタンス
+        public static HashAuth DebugKeyAuth { get; private set; }
+        public static HashAuth ExplosionKeyAuth { get; private set; }
+        // デバッグキーのハッシュ値
+        public const string DebugKeyHash = "8e5f06e453e7d11f78ad96b2ca28ff472e085bdb053189612a0a2e0be7973841";
+        // 部屋爆破キーのハッシュ値
+        public const string ExplosionKeyHash = "e7d88aaf7ea075752792089196d9441c838e6ff47432a719fad6e17cd50a441e";
+        // デバッグキーのソルト
+        public const string DebugKeySalt = "59687b";
+        // デバッグキーのコンフィグ入力
+        public static ConfigEntry<string> DebugKeyInput { get; private set; }
+        public static ConfigEntry<string> ExplosionKeyInput { get; private set; }
+
+        // ==========
+        //Sorry for many Japanese comments.
+        public const string PluginGuid = "com.kymario.townofhost-k";
+        public const string PluginVersion = "51.13.30.13";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
+        public const string PluginShowVersion = "51.13.30<sub>.13</sub>";
+        public const string ModVersion = ".30";//リリースver用バージョン変更
+
+        /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
+        public static bool DebugVersion = true;
+
+        // サポートされている最低のAmongUsバージョン
+        public static readonly string LowestSupportedVersion = "2025.4.20";
+        // このバージョンのみで公開ルームを無効にする場合
+        public static readonly bool IsPublicAvailableOnThisVersion = false;
+        public Harmony Harmony { get; } = new Harmony(PluginGuid);
+        public static Version version = Version.Parse(PluginVersion);
+        public static BepInEx.Logging.ManualLogSource Logger;
+        public static bool CanModClients => false;//参加者もMod導入していいか
+        public static bool hasArgumentException = false;
+        public static string ExceptionMessage;
+        public static bool ExceptionMessageIsShown = false;
+        public static string credentialsText;
+        public static NormalGameOptionsV09 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
+        public static HideNSeekGameOptionsV09 HideNSeekSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+        //Client Options
+        public static ConfigEntry<string> HideName { get; private set; }
+        public static ConfigEntry<string> HideColor { get; private set; }
+        public static ConfigEntry<bool> ForceJapanese { get; private set; }
+        public static ConfigEntry<bool> JapaneseRoleName { get; private set; }
+        public static ConfigEntry<float> MessageWait { get; private set; }
+        public static ConfigEntry<bool> ShowResults { get; private set; }
+        public static ConfigEntry<bool> Hiderecommendedsettings { get; private set; }
+        public static ConfigEntry<bool> UseWebHook { get; private set; }
+        public static ConfigEntry<bool> UseYomiage { get; private set; }
+        public static ConfigEntry<bool> CustomName { get; private set; }
+        public static ConfigEntry<bool> ShowGameSettingsTMP { get; private set; }
+        public static ConfigEntry<bool> CustomSprite { get; private set; }
+        public static ConfigEntry<bool> HideSomeFriendCodes { get; private set; }
+        public static ConfigEntry<bool> AutoSaveScreenShot { get; private set; }
+        public static ConfigEntry<float> MapTheme { get; private set; }
+        public static ConfigEntry<bool> ViewPingDetails { get; private set; }
+        public static ConfigEntry<bool> DebugChatopen { get; private set; }
+        public static ConfigEntry<bool> DebugSendAmout { get; private set; }
+        public static ConfigEntry<bool> DebugTours { get; private set; }
+        public static ConfigEntry<bool> ShowDistance { get; private set; }
+        public static ConfigEntry<bool> FpsLimitRemoval { get; private set; }
+        public static Dictionary<byte, PlayerVersion> playerVersion = new();
+        //Preset Name Options
+        public static ConfigEntry<string> Preset1 { get; private set; }
+        public static ConfigEntry<string> Preset2 { get; private set; }
+        public static ConfigEntry<string> Preset3 { get; private set; }
+        public static ConfigEntry<string> Preset4 { get; private set; }
+        public static ConfigEntry<string> Preset5 { get; private set; }
+        public static ConfigEntry<string> Preset6 { get; private set; }
+        public static ConfigEntry<string> Preset7 { get; private set; }
+        public static ConfigEntry<string> SKey { get; private set; }
+        //Other Configs
+        public static ConfigEntry<string> BetaBuildURL { get; private set; }
+        public static ConfigEntry<float> LastKillCooldown { get; private set; }
+        public static ConfigEntry<float> LastShapeshifterCooldown { get; private set; }
+        public static ConfigEntry<bool> LastKickModClient { get; private set; }
+        public static OptionBackupData RealOptionsData;
+        public static Dictionary<byte, Vector2> AllPlayerLastkillpos = new();
+        public static Dictionary<byte, string> AllPlayerNames = new();
+        public static Dictionary<(byte, byte), string> LastNotifyNames;
+        public static Dictionary<byte, Color32> PlayerColors = new();
+        public static Dictionary<byte, CustomDeathReason> AfterMeetingDeathPlayers = new();
+        public static Dictionary<CustomRoles, string> roleColors;
+        public static Dictionary<byte, List<uint>> AllPlayerTask = new();
+        public static List<byte> winnerList;
+        public static List<int> clientIdList;
+        public static List<(string, byte, string)> MessagesToSend;
+        public static int MegCount;
+        public static Dictionary<byte, float> AllPlayerKillCooldown = new();
+        public static bool HnSFlag = false;
+        public static bool showkillbutton = false;
+        public static bool RTAMode = false;
+        public static byte RTAPlayer = 0;
+        public static bool EditMode = false;
+        public static int page = 0;
+        public static bool AssignSameRoles = false;
+        public static Dictionary<byte, int> KillCount = new();
+        public static string Alltask;
+        public static byte LastSab;
+        public static SystemTypes SabotageType;
+        public static bool IsActiveSabotage;
+        public static float SabotageActivetimer;
+        public static (float DiscussionTime, float VotingTime) MeetingTime;
+        public static int GameCount = 0;
+        public static bool SetRoleOverride = true;
+        /// <summary>ラグを考慮した奴。アジア、カスタム、ローカルは200ms(0.2s),他は400ms(0.4s)</summary>
+        public static float LagTime = 0.2f;
+        //public static bool TaskBattleOptionv = false;
+        public static int ForcedGameEndColl;
+        public static bool ShowRoleIntro;
+        public static bool DontGameSet;
+        public static bool CanUseAbility;
+        public static CustomRoles HostRole = CustomRoles.NotAssigned;
+
+        /// <summary>
+        /// 基本的に速度の代入は禁止.スピードは増減で対応してください.
+        /// </summary>
+        public static Dictionary<byte, float> AllPlayerSpeed = new();
+        public const float MinSpeed = 0.0001f;
+        public static Dictionary<byte, bool> CheckShapeshift = new();
+        public static Dictionary<byte, byte> ShapeshiftTarget = new();
+        public static Dictionary<byte, CustomDeathReason> HostKill = new();
+        public static bool VisibleTasksCount;
+        public static string nickName = "";
+        public static string lobbyname = "";
+        public static float DefaultCrewmateVision;
+        public static float DefaultImpostorVision;
+        public static bool DebugAntiblackout = true;
+
+        public const float RoleTextSize = 2f;
+        public static Main Instance;
+        public override void Load()
+>>>>>>> a812b2153 (RoleAdd : Satellite)
         {
                 // == プログラム設定 / Program Config ==
                 // modの名前 / Mod Name (Default: Town Of Host)

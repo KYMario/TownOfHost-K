@@ -37,7 +37,7 @@ public static class HudOverrideSystemTypeUpdateSystemPatch
         {
             return false;
         }
-        if (player.Is(CustomRoles.Clumsy) || player.Is(CustomRoles.Satellite))
+        if (player.Is(CustomRoles.Clumsy))
         {
             return false;
         }

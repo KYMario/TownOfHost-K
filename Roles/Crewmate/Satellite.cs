@@ -1,11 +1,8 @@
-/*#if DEBUG //イビルサテライトあるのでデバッグのみで
+using System;
+using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
-using System;
-using System.Text;
-using System.Linq;
 using System.Collections.Generic;
-using Il2CppSystem.Linq;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 using TownOfHost.Roles.Core;
@@ -23,10 +20,10 @@ public sealed class Satellite : RoleBase
             () => RoleTypes.Crewmate,
             CustomRoleTypes.Crewmate,
             11300,
-            (6, 3),
             SetupOptionItem,
-            "r",
-            "#00E1FF",
+            "Sat",
+            "#00e1ff",
+            (6, 3),
             introSound: () => DestroyableSingleton<AutoOpenDoor>.Instance.OpenSound
         );
     public Satellite(PlayerControl player)
@@ -35,46 +32,39 @@ public sealed class Satellite : RoleBase
         player
     )
     {
-        data = new();
-        count = (int)OptionMaximum.GetFloat();
-        MeetingUsedcount = 0;
-        taskCount = OptiontaskCount.GetFloat();
-        mMaxCount = Option1MeetingMaximum.GetFloat();
-        comms = Optioncomms.GetBool();
-        vent = OptionVent.GetBool();
-        CustomRoleManager.OnFixedUpdateOthers.Add(OnFixedUpdateOthers);
     }
-    private static OptionItem OptionMaximum;
-    private static OptionItem OptiontaskCount;
-    private static OptionItem Option1MeetingMaximum;
-    private static OptionItem Optioncomms;
-    private static OptionItem OptionVent;
-
-    int count;
-    float MeetingUsedcount;
-
-    static float taskCount;
-    static float mMaxCount;
-    static bool comms;
-    static bool vent;
-
-    static Dictionary<byte, LocationData> data;
-
-    enum Option
+    private static OptionItem OptionMaximum; static int maximum;
+    private static OptionItem OptiontaskCount; static int skillusetaskcount;
+    private static OptionItem Option1MeetingMaximum; static int meetingmaximum;
+    private static OptionItem OptionAwakening;
+    bool IsAwaken;
+    int UsedSkillCount;
+    int MeetingUsedSkillCount;
+    private static Dictionary<byte, LocationData> AllPlayerLocationData;
+    private static Dictionary<byte, SystemTypes?> SentPlayers;
+    enum OptionName
     {
-        cantaskcount,
-        SatelliteCount,
-        SatelliteComms,
-        SatelliteVent
+        SatelliteCount
     }
-
     public override void Add()
     {
         AddSelfVotes(Player);
-        foreach (var pc in PlayerCatch.AllPlayerControls) data.TryAdd(pc.PlayerId, new LocationData(pc.PlayerId));
+        maximum = OptionMaximum.GetInt();
+        skillusetaskcount = OptiontaskCount.GetInt();
+        meetingmaximum = Option1MeetingMaximum.GetInt();
+        MeetingUsedSkillCount = 0;
+        UsedSkillCount = 0;
+
+        IsAwaken = OptionAwakening.GetBool() && OptiontaskCount.GetInt() > 0;
+        AllPlayerLocationData = new();
+        SentPlayers = new();
+        foreach (var pc in PlayerCatch.AllPlayerControls)
+        {
+            AllPlayerLocationData.TryAdd(pc.PlayerId, new LocationData(pc.PlayerId));
+        }
     }
 
-    private static void SetupOptionItem()
+    static void SetupOptionItem()
     {
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, OptionName.SatelliteCount, new(1, 99, 1), 2, false)
             .SetValueFormat(OptionFormat.Times);
@@ -87,22 +77,19 @@ public sealed class Satellite : RoleBase
     class LocationData
     {
         public byte PlayerId;
-        public SystemTypes? LastLocation;
         public HashSet<SystemTypes> visitedLocations;
         public LocationData(byte playerId)
         {
             PlayerId = playerId;
-            LastLocation = null;
             visitedLocations = new();
         }
     }
 
-    private bool CanUseAbility => GameStates.introDestroyed && count > 0 && MyTaskState.HasCompletedEnoughCountOfTasks(taskCount);
-    private static bool CheckComms => Utils.IsActive(SystemTypes.Comms) && !comms;
+    private bool CanUseAbility => GameStates.introDestroyed && UsedSkillCount <= maximum && MyTaskState.HasCompletedEnoughCountOfTasks(skillusetaskcount);
 
-    public static void OnFixedUpdateOthers(PlayerControl player)
+    public override void OnFixedUpdate(PlayerControl player)
     {
-        if (CheckComms || !AmongUsClient.Instance.AmHost) return;
+        if (Utils.IsActive(SystemTypes.Comms) || !AmongUsClient.Instance.AmHost || player.IsAlive() is false) return;
         // 検出された当たり判定の格納用に使い回す配列 変換時の負荷を回避するためIl2CppReferenceArrayで扱う
         Il2CppReferenceArray<Collider2D> colliders = new(45);
         // 各部屋の人数カウント処理
@@ -129,10 +116,9 @@ public sealed class Satellite : RoleBase
                 if (!collider.isTrigger && !collider.CompareTag("DeadBody"))
                 {
                     var playerControl = collider.GetComponent<PlayerControl>();
-                    if (playerControl.IsAlive())
+                    if (playerControl.IsAlive() && playerControl.GetPlayerState().HasSpawned)
                     {
-                        var locationData = data[playerControl.PlayerId];
-                        locationData.LastLocation = roomId;
+                        var locationData = AllPlayerLocationData[playerControl.PlayerId];
                         locationData.visitedLocations.Add(roomId);
                     }
                 }
@@ -142,23 +128,48 @@ public sealed class Satellite : RoleBase
 
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-        if (Is(voter) && CanUseAbility && MeetingUsedcount > 0)
+        if (Is(voter) && !IsAwaken && CanUseAbility && MeetingUsedSkillCount <= meetingmaximum)
         {
             if (CheckSelfVoteMode(Player, votedForId, out var status))
             {
-                if (status is VoteStatus.Self)
-                    Utils.SendMessage(string.Format(GetString("SkillMode"), GetString("Mode.CrewSatellite"), GetString("Vote.CrewSatellite")) + GetString("VoteSkillMode"), Player.PlayerId);
-                if (status is VoteStatus.Skip)
-                    Utils.SendMessage(GetString("VoteSkillFin"), Player.PlayerId);
-                if (status is VoteStatus.Vote)
+                switch (status)
                 {
-                    count--;
-                    MeetingUsedcountgUsedcount--;
-                    StringBuilder sb = new();
-                    var visitedLocations = data[votedForId].visitedLocations.OrderBy(x => Guid.NewGuid());
-                    foreach (var location in visitedLocations)
-                        sb.Append('\n' + DestroyableSingleton<TranslationController>.Instance.GetString(location));
-                    Utils.SendMessage(sb.ToString() + '\n', Player.PlayerId, $"<color=yellow><size=2.5>{Main.AllPlayerNames[votedForId]}の情報</color></size>");
+                    case VoteStatus.Self:
+                        Utils.SendMessage(string.Format(GetString("SkillMode"), GetString("Mode.CrewSatellite"), GetString("Vote.CrewSatellite")) + GetString("VoteSkillMode"), Player.PlayerId);
+                        break;
+                    case VoteStatus.Skip:
+                        Utils.SendMessage(GetString("VoteSkillFin"), Player.PlayerId);
+                        break;
+                    case VoteStatus.Vote:
+                        {
+                            if (Utils.IsActive(SystemTypes.Comms))
+                            {
+                                Utils.SendMessage(string.Format(GetString("SatelliteModeInfoFall") + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}"));
+                                break;
+                            }
+
+                            var systemtypes = SentPlayers.TryGetValue(votedForId, out var sentdata) ? sentdata : null;
+
+                            if (systemtypes is null)
+                            {
+                                if (AllPlayerLocationData.TryGetValue(votedForId, out var locationdata))
+                                {
+                                    systemtypes = locationdata.visitedLocations.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+                                    SentPlayers.Add(votedForId, systemtypes);
+                                    UsedSkillCount++;
+                                    MeetingUsedSkillCount++;
+                                }
+                            }
+                            else
+                            {
+                                Utils.SendMessage(string.Format(GetString("SatelliteModeInfoAgain"), UtilsName.GetPlayerColor(votedForId), GetString($"{systemtypes}")) + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}");
+                                break;
+                            }
+
+                            Logger.Info($"{Player.Data.GetLogPlayerName()} => {PlayerCatch.GetPlayerInfoById(votedForId).GetLogPlayerName()} $({systemtypes}) , {maximum - UsedSkillCount} / {meetingmaximum - MeetingUsedSkillCount}", "Satellite");
+                            Utils.SendMessage(string.Format(GetString("SatelliteModeInfo"), UtilsName.GetPlayerColor(votedForId), GetString($"{systemtypes}")) + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}");
+                        }
+                        break;
                 }
                 SetMode(Player, status is VoteStatus.Self);
                 return false;
@@ -166,44 +177,28 @@ public sealed class Satellite : RoleBase
         }
         return true;
     }
-
+    public override string GetProgressText(bool comms = false, bool GameLog = false) => $" <{RoleInfo.RoleColorCode}>({maximum - UsedSkillCount})</color>";
     public override void AfterMeetingTasks()
     {
-        foreach (var locationData in data.Values)
+        SentPlayers = new();
+        MeetingUsedSkillCount = 0;
+        foreach (var locationData in AllPlayerLocationData.Values)
         {
-            locationData.LastLocation = null;
             locationData.visitedLocations.Clear();
         }
     }
-
-    public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
+    public override CustomRoles Misidentify() => IsAwaken ? CustomRoles.Crewmate : CustomRoles.NotAssigned;
+    public override bool OnCompleteTask(uint taskid)
     {
-        seen ??= seer;
-        if (CanUseAbility && Is(seen) && Is(seer) && !isForMeeting)
-            return CheckComms ? "<color=red>通信が妨害されている間の行動は見ることができない</color>" : "";
-        return "";
-    }
-
-    public override void OnStartMeeting()
-    {
-        if (!Player.IsAlive()) return;
-        MeetingUsedcountgUsedcount = Option1MeetingMaximum.GetFloat() == 0 ? count : Math.Min(mMaxCount, count);
-        var locationData = data[Player.PlayerId];
-        var lastLocation = locationData.LastLocation;
-        if (lastLocation == SystemTypes.Hallway || lastLocation == null)
+        if (MyTaskState.HasCompletedEnoughCountOfTasks(skillusetaskcount))
         {
-            Utils.SendMessage($"あなたの最終位置の人数は不明です！\n自分で確認してるよね☆", Player.PlayerId);
-            return;
+            if (IsAwaken)
+            {
+                if (!Utils.RoleSendList.Contains(Player.PlayerId))
+                    Utils.RoleSendList.Add(Player.PlayerId);
+            }
+            IsAwaken = true;
         }
-        if (CheckComms)
-        {
-            Utils.SendMessage($"通信妨害中のため最終位置の取得に失敗しました。", Player.PlayerId);
-            return;
-        }
-        foreach (var lo in data.Values)
-            Logger.Warn($"{lo.LastLocation}", "sate");
-        var lastCount = data.Where(x => x.Value.LastLocation == lastLocation && !(vent && PlayerCatch.GetPlayerById(x.Key)?.inVent == true)).Count();
-        _ = new LateTask(() => Utils.SendMessage($"あなたの最終位置には{lastCount}人いました\n\nこの会議では能力を{MeetingUsedcount}回使用することが可能", Player.PlayerId), 0.25f);
+        return true;
     }
 }
-#endif*/

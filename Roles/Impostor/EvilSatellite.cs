@@ -154,10 +154,10 @@ public sealed class EvilSatellite : RoleBase, IImpostor
                 index++;
                 count++;
             }
-            sendtext += string.Format(GetString("EvilSateliteShepeInfo"), UtilsName.GetPlayerColor(playerid));
-            if (OptionRandom.GetBool()) sendtext += GetString("EvilSateliteShepeInfo2");
-            sendtext += string.Format(GetString("EvilSateliteShepeInfo3"), usecount);
-            Utils.SendMessage(sendtext, Player.PlayerId, string.Format($"<color=#ff1919>{GetString("EvilSateliteShepeInfoTitle")}</color>", UtilsName.GetPlayerColor(playerid)));
+            sendtext += string.Format(GetString("EvilSateliteSkillInfo"), UtilsName.GetPlayerColor(playerid));
+            if (OptionRandom.GetBool()) sendtext += GetString("EvilSateliteSkillInfo2");
+            sendtext += string.Format(GetString("EvilSateliteSkillInfo3"), usecount);
+            Utils.SendMessage(sendtext, Player.PlayerId, string.Format($"<color=#ff1919>{GetString("EvilSateliteSkillInfoTitle")}</color>", UtilsName.GetPlayerColor(playerid)));
         }
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false) => $"<color=#ff1919>({usecount})</color>";
