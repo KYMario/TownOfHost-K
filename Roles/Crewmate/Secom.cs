@@ -28,15 +28,9 @@ public sealed class Observer : RoleBase
     )
     {
         ObserverTarget = 255;
-        flashCount = 0;
-        flashTimer = 0f;
-        isFlashActive = false;
         RemainingMonitoring = (int)OptionMaxMonitoring.GetFloat(); // 初期回数設定（float→int）
     }
 
-    private int flashCount;
-    private float flashTimer;
-    private bool isFlashActive;
     private byte ObserverTarget;
 
     public int RemainingMonitoring { get; private set; }
@@ -73,39 +67,15 @@ public sealed class Observer : RoleBase
         var target = PlayerCatch.GetPlayerById(ObserverTarget);
         if (target == null) return;
 
-        if (!target.IsAlive() && !isFlashActive)
+        if (!target.IsAlive())
         {
-            // 死亡検知 → フラッシュ開始
-            isFlashActive = true;
-            flashCount = 0;
-            flashTimer = 0f;
-
-            // 即1回目
+            // 死亡検知 → 即1回だけキルフラッシュ
             Utils.AllPlayerKillFlash();
-            flashCount++;
-            Utils.SendMessage($"{UtilsName.GetPlayerColor(target)} が死亡しました（by Secom）", Player.PlayerId);
-        }
+            Utils.SendMessage($"{UtilsName.GetPlayerColor(target)} が死亡しました（by Observer）", Player.PlayerId);
 
-        if (isFlashActive)
-        {
-            flashTimer += Time.fixedDeltaTime;
-
-            if (flashTimer >= 1.5f)
-            {
-                flashTimer = 0f;
-                if (flashCount < 3)
-                {
-                    Utils.AllPlayerKillFlash();
-                    flashCount++;
-                }
-                else
-                {
-                    // 完了 → リセット＆残回数を減らす
-                    isFlashActive = false;
-                    ObserverTarget = byte.MaxValue;
-                    RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
-                }
-            }
+            // 状態リセット＆残回数を減らす
+            ObserverTarget = byte.MaxValue;
+            RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
         }
     }
 }
