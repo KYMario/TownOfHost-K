@@ -61,11 +61,10 @@ public sealed class Secom : RoleBase
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
-        if (RemainingMonitoring <= 0f) return;
+        if (RemainingMonitoring <= 0) return;
+        if (Secom_Target == byte.MaxValue) return;
 
         var target = PlayerCatch.GetPlayerById(Secom_Target);
-
-        if (Secom_Target == byte.MaxValue) return;
         if (target == null) return;
 
         if (!target.IsAlive() && !isFlashActive)
@@ -99,7 +98,6 @@ public sealed class Secom : RoleBase
                     isFlashActive = false;
                     Secom_Target = byte.MaxValue;
                     RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
-
                 }
             }
         }
