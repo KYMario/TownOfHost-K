@@ -141,7 +141,7 @@
 "Inspector","Inspector","捜査官"
 "CandleLighter","Candle Lighter","キャンドルライター",
 "Express","Express","エクスプレス"
-"Secom","<color=#070e5e>Se</color><color=#16bdc9>c</color><color=#070e5e>om</color>"
+"Observer","Observer","観察者"
 "#CrewmateName"
 
 "# ニュートラル役職"
@@ -422,7 +422,7 @@
 "CandleLighterInfo","By the time the wax is gone...","ろうが無くなるまでには、、",
 "ExpressInfo","Let's run around comfortably","気持ちよく駆け回ろう",
 "MerlinInfo","Make it work","アサシンに気づかれる事無く、上手くやり通せ。"
-"SecomInfo","I'm keeping an eye on you.","見張ってるで...!"
+"ObserverInfo","I'm keeping an eye on you.","見張ってるで...!"
 "#CrewmateInfo"
 
 "# ニュートラル役職"

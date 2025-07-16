@@ -5,29 +5,29 @@ using UnityEngine;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class Secom : RoleBase
+public sealed class Observer : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
-            typeof(Secom),
-            player => new Secom(player),
-            CustomRoles.Secom,
+            typeof(Observer),
+            player => new Observer(player),
+            CustomRoles.Observer,
             () => RoleTypes.Crewmate,
             CustomRoleTypes.Crewmate,
             999999,  //(仮)
             SetupOptionItem,
-            "Secom",
+            "Observer",
             "#8a99b7",
             (1, 0),
             false
         );
-    public Secom(PlayerControl player)
+    public Observer(PlayerControl player)
     : base(
         RoleInfo,
         player
     )
     {
-        secomTarget = 255;
+        ObserverTarget = 255;
         flashCount = 0;
         flashTimer = 0f;
         isFlashActive = false;
@@ -37,7 +37,7 @@ public sealed class Secom : RoleBase
     private int flashCount;
     private float flashTimer;
     private bool isFlashActive;
-    private byte secomTarget;
+    private byte ObserverTarget;
 
     public int RemainingMonitoring { get; private set; }
 
@@ -51,15 +51,15 @@ public sealed class Secom : RoleBase
 
     enum Option
     {
-        MaxMonitoring, // Secomがキル検知できる回数
+        MaxMonitoring, // Observerがキル検知できる回数
     }
 
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-        // Secom本人かつ、残回数が1以上なら→投票先をsecomTargetに設定
+        // Observer本人かつ、残回数が1以上なら→投票先をObserverTargetに設定
         if (Is(voter) && RemainingMonitoring >= 1)
         {
-            secomTarget = votedForId;
+            ObserverTarget = votedForId;
         }
 
         return true;
@@ -68,9 +68,9 @@ public sealed class Secom : RoleBase
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (RemainingMonitoring <= 0) return;
-        if (secomTarget == byte.MaxValue) return;
+        if (ObserverTarget == byte.MaxValue) return;
 
-        var target = PlayerCatch.GetPlayerById(secomTarget);
+        var target = PlayerCatch.GetPlayerById(ObserverTarget);
         if (target == null) return;
 
         if (!target.IsAlive() && !isFlashActive)
@@ -102,7 +102,7 @@ public sealed class Secom : RoleBase
                 {
                     // 完了 → リセット＆残回数を減らす
                     isFlashActive = false;
-                    secomTarget = byte.MaxValue;
+                    ObserverTarget = byte.MaxValue;
                     RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
                 }
             }
