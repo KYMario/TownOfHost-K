@@ -27,44 +27,50 @@ public sealed class Secom : RoleBase
         player
     )
     {
-        Secom_Target = 255;
+        secomTarget = 255;
         flashCount = 0;
         flashTimer = 0f;
         isFlashActive = false;
-        RemainingMonitoring = (int)OptionMaxMonitoring.GetFloat();
+        RemainingMonitoring = (int)OptionMaxMonitoring.GetFloat(); // 初期回数設定（float→int）
     }
+
     private int flashCount;
     private float flashTimer;
     private bool isFlashActive;
+    private byte secomTarget;
+
     public int RemainingMonitoring { get; private set; }
 
-    public byte Secom_Target { get; private set; }
     public static OptionItem OptionMaxMonitoring;
+
     private static void SetupOptionItem()
     {
         OptionMaxMonitoring = FloatOptionItem.Create(RoleInfo, 10, Option.MaxMonitoring, new(0f, 99f, 1f), 1f, false)
             .SetValueFormat(OptionFormat.Times);
     }
+
     enum Option
     {
         MaxMonitoring, // Secomがキル検知できる回数
     }
+
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-        // Secom本人かつ、残回数が1以上なら→投票先をSecom_Targetに設定
-        if (Is(voter) && RemainingMonitoring >= 1f)
+        // Secom本人かつ、残回数が1以上なら→投票先をsecomTargetに設定
+        if (Is(voter) && RemainingMonitoring >= 1)
         {
-            Secom_Target = votedForId;
+            secomTarget = votedForId;
         }
 
         return true;
     }
+
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (RemainingMonitoring <= 0) return;
-        if (Secom_Target == byte.MaxValue) return;
+        if (secomTarget == byte.MaxValue) return;
 
-        var target = PlayerCatch.GetPlayerById(Secom_Target);
+        var target = PlayerCatch.GetPlayerById(secomTarget);
         if (target == null) return;
 
         if (!target.IsAlive() && !isFlashActive)
@@ -96,7 +102,7 @@ public sealed class Secom : RoleBase
                 {
                     // 完了 → リセット＆残回数を減らす
                     isFlashActive = false;
-                    Secom_Target = byte.MaxValue;
+                    secomTarget = byte.MaxValue;
                     RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
                 }
             }
