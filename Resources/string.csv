@@ -137,6 +137,7 @@
 "Inspector","Inspector","捜査官"
 "CandleLighter","Candle Lighter","キャンドルライター",
 "Express","Express","エクスプレス"
+"Observer","Observer","観察者"
 "#CrewmateName"
 
 "# ニュートラル役職"
@@ -410,6 +411,7 @@
 "InspectorInfo","","全てわかりました...犯人は..."
 "CandleLighterInfo","By the time the wax is gone...","ろうが無くなるまでには、、",
 "ExpressInfo","Let's run around comfortably","気持ちよく駆け回ろう",
+"ObserverInfo","I'm keeping an eye on you.","見張ってるで...!"
 "#CrewmateInfo"
 
 "# ニュートラル役職"
@@ -1439,6 +1441,7 @@
 "CandleLighterEndVisionTime","Time to End Vision","最後の視界になる時間",
 "CandleLighterEndVision","End Vision(Narrowest Vision)","最後の視界(一番狭い視界)",
 "ExpressSpeed","Speed","スピード","速度",,
+"MaxMonitoring","MaxMonitoring","監視可能回数"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""
