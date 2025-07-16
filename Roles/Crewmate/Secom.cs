@@ -1,3 +1,4 @@
+using System;
 using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using UnityEngine;
@@ -30,12 +31,13 @@ public sealed class Secom : RoleBase
         flashCount = 0;
         flashTimer = 0f;
         isFlashActive = false;
-        RemainingMonitoring = OptionMaxMonitoring.GetFloat(); // 初期回数設定
+        RemainingMonitoring = (int)OptionMaxMonitoring.GetFloat();
     }
     private int flashCount;
     private float flashTimer;
     private bool isFlashActive;
-    public float RemainingMonitoring { get; private set; }
+    public int RemainingMonitoring { get; private set; }
+
     public byte Secom_Target { get; private set; }
     public static OptionItem OptionMaxMonitoring;
     private static void SetupOptionItem()
@@ -96,7 +98,8 @@ public sealed class Secom : RoleBase
                     // 完了 → リセット＆残回数を減らす
                     isFlashActive = false;
                     Secom_Target = byte.MaxValue;
-                    RemainingMonitoring = Mathf.Max(0f, RemainingMonitoring - 1f);
+                    RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
+
                 }
             }
         }
