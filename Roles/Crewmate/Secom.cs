@@ -27,11 +27,15 @@ public sealed class Observer : RoleBase
         player
     )
     {
-        ObserverTarget = 255;
+        ObserverTarget = byte.MaxValue;
         RemainingMonitoring = (int)OptionMaxMonitoring.GetFloat(); // 初期回数設定（float→int）
+        Awakened = !OptAwakening.GetBool() || OptAwakeningTaskCount.GetInt() < 1;
     }
 
     private byte ObserverTarget;
+    bool Awakened;
+    static OptionItem OptAwakening;
+    static OptionItem OptAwakeningTaskCount;
 
     public int RemainingMonitoring { get; private set; }
 
@@ -41,6 +45,8 @@ public sealed class Observer : RoleBase
     {
         OptionMaxMonitoring = FloatOptionItem.Create(RoleInfo, 10, Option.MaxMonitoring, new(0f, 99f, 1f), 1f, false)
             .SetValueFormat(OptionFormat.Times);
+        OptAwakening = BooleanOptionItem.Create(RoleInfo, 10, GeneralOption.TaskAwakening, false, false);
+        OptAwakeningTaskCount = FloatOptionItem.Create(RoleInfo, 11, GeneralOption.AwakeningTaskcount, new(0f, 255f, 1f), 5f, false, OptAwakening);
     }
 
     enum Option
@@ -51,7 +57,7 @@ public sealed class Observer : RoleBase
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         // Observer本人かつ、残回数が1以上なら→投票先をObserverTargetに設定
-        if (Is(voter) && RemainingMonitoring >= 1)
+        if (Is(voter) && RemainingMonitoring >= 1 && Awakened)
         {
             ObserverTarget = votedForId;
         }
@@ -77,5 +83,17 @@ public sealed class Observer : RoleBase
             ObserverTarget = byte.MaxValue;
             RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
         }
+    }
+    public override bool OnCompleteTask(uint taskid)
+    {
+        if (!Awakened && MyTaskState.HasCompletedEnoughCountOfTasks(OptAwakeningTaskCount.GetInt()))
+        {
+            Awakened = true;
+
+            if (!Utils.RoleSendList.Contains(Player.PlayerId))
+                Utils.RoleSendList.Add(Player.PlayerId);
+        }
+
+        return true;
     }
 }
