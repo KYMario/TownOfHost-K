@@ -822,7 +822,7 @@ public enum CustomRoles
     Express,
     Inspector,
     AllArounder,
-    Secom,
+    Observer,
     //DEBUG only Crewmate
     //DEBUG only Crewmate
     Satellite,
