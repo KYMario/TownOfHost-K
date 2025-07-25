@@ -28,7 +28,7 @@ public sealed class Observer : RoleBase
     )
     {
         ObserverTarget = byte.MaxValue;
-        RemainingMonitoring = (int)OptionMaxMonitoring.GetFloat(); // 初期回数設定（float→int）
+        RemainingMonitoring = OptionMaxMonitoring.GetInt();
         Awakened = !OptAwakening.GetBool() || OptAwakeningTaskCount.GetInt() < 1;
     }
 
@@ -43,7 +43,7 @@ public sealed class Observer : RoleBase
 
     private static void SetupOptionItem()
     {
-        OptionMaxMonitoring = FloatOptionItem.Create(RoleInfo, 10, Option.MaxMonitoring, new(0f, 99f, 1f), 1f, false)
+        OptionMaxMonitoring = IntegerOptionItem.Create(RoleInfo, 10, Option.MaxMonitoring, new(0, 99, 1), 10, false)
             .SetValueFormat(OptionFormat.Times);
         OptAwakening = BooleanOptionItem.Create(RoleInfo, 10, GeneralOption.TaskAwakening, false, false);
         OptAwakeningTaskCount = FloatOptionItem.Create(RoleInfo, 11, GeneralOption.AwakeningTaskcount, new(0f, 255f, 1f), 5f, false, OptAwakening);
