@@ -110,17 +110,12 @@ namespace TownOfHost
                 SetValue(0);
                 return;
             }
-            if (NotAssin is null)
-            {
-                Logger.Info($"aaa", "aaa");
-            }
             var notassings = NotAssin?.Invoke() ?? [];
             if (notassings.Contains(role) && notassings.Count() > 0)
             {
                 SetValue(0);
                 return;
             }
-            Logger.Info(notassings.Count().ToString(), "aaa");
 
             switch (role.GetCustomRoleTypes())
             {

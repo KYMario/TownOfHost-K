@@ -854,6 +854,7 @@ public enum CustomRoles
     LastNeutral,
     Workhorse,
     Twins,
+    OneWolf,
     //第三属性
     Lovers, RedLovers, YellowLovers, BlueLovers, GreenLovers, WhiteLovers, PurpleLovers,
     MadonnaLovers, OneLove, Amanojaku, Faction,

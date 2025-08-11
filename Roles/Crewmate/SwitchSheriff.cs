@@ -102,6 +102,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
     {
         foreach (var neutral in CustomRolesHelper.AllStandardRoles.Where(x => x.IsNeutral()).ToArray())
         {
+            if (Event.CheckRole(neutral) is false) continue;
             if (neutral is CustomRoles.SchrodingerCat) continue;
             SetUpKillTargetOption(neutral, idOffset, true, CanKillNeutrals);
             idOffset++;
