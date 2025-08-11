@@ -22,6 +22,7 @@ using static TownOfHost.Translator;
 using static TownOfHost.UtilsRoleText;
 using TownOfHost.Patches;
 using TownOfHost.Attributes;
+using Il2CppSystem.Xml.Schema;
 
 namespace TownOfHost
 {
@@ -415,6 +416,150 @@ namespace TownOfHost
                 else if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)
                     PlayerControl.LocalPlayer.RpcSetNamePrivate(n, true, pc);
             }
+        }
+        public static void SendGuardDate(byte playerId = byte.MaxValue)
+        {
+            StringBuilder sb = new();
+
+            sb.Append($"{GetString("GuardData")}\n<size=60%>{GetString("GuardDataInfo")}");
+            sb.Append($"<size=80%>{string.Format(GetString("GuardPower"), 0)}</size>\n{GetString("Normal")}\n");
+            sb.Append($"<size=80%>{string.Format(GetString("KillPower"), 1)}</size>\n");
+
+            var i = 0;
+            bool Ishedder = false;
+            CustomRoles[] killLv1 = [CustomRoles.UltraStar, CustomRoles.NekoKabocha , CustomRoles.Puppeteer , CustomRoles.Sniper, CustomRoles.TeleportKiller
+            ,CustomRoles.Bomber , CustomRoles.Vampire,CustomRoles.Remotekiller];
+            CustomRoles[] GuardLv1 = [CustomRoles.GuardMaster, CustomRoles.Guarding, CustomRoles.OneWolf, CustomRoles.VentOpener];
+            CustomRoles[] killLv2 = [CustomRoles.Ballooner, CustomRoles.FireWorks, CustomRoles.Warlock, CustomRoles.GrimReaper];
+            CustomRoles[] GuardLv2 = [CustomRoles.Fox, CustomRoles.MadGuardian];
+            CustomRoles[] KillLv3 = [CustomRoles.Jumper];
+            CustomRoles[] GuardLv9 = [CustomRoles.King];
+            CustomRoles[] KillLv10 = [CustomRoles.ConnectSaver, CustomRoles.Shyboy, CustomRoles.Limiter, CustomRoles.EarnestWolf, CustomRoles.CurseMaker];
+
+            sb.Append($"{GetString("DeathReason.Kill")}{(i is 3 ? "\n" : "　")}");
+            i = i + 1 % 4;
+            foreach (var role in killLv1)
+            {
+                string infotext = "";
+                if (UltraStar.OptionCheckKill.GetBool() && role is CustomRoles.UltraStar)
+                {
+                    killLv2.AddItem(role);
+                    continue;
+                }
+                if (role is CustomRoles.NekoKabocha) infotext = $"({GetString("DeathReason.Revenge")})";
+                if (role is CustomRoles.Sniper) infotext = $"({GetString("DeathReason.Sniped")})";
+                if (role is CustomRoles.TeleportKiller) infotext = $"({GetString("DeathReason.TeleportKill")})";
+                if (role is CustomRoles.Bomber) infotext = $"({GetString("DeathReason.Bombed")})";
+                if (role.IsEnable())
+                {
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            i = 0;
+            Ishedder = true;
+            foreach (var role in GuardLv1)
+            {
+                string infotext = "";
+                if (role is CustomRoles.VentOpener && !VentOpener.OptionBlockKill.GetBool()) continue;
+                if (role is CustomRoles.VentOpener) infotext = $"({GetString("DeathReason.Revenge")})";
+                if (role.IsEnable())
+                {
+                    if (Ishedder)
+                    {
+                        sb.Append($"\n<size=80%>{string.Format(GetString("GuardPower"), 1)}</size>\n");
+                        Ishedder = false;
+                    }
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            i = 0;
+            Ishedder = true;
+            foreach (var role in killLv2)
+            {
+                string infotext = "";
+                if (role is CustomRoles.Bomber or CustomRoles.FireWorks) infotext = $"({GetString("DeathReason.Bombed")})";
+                if (role is CustomRoles.GrimReaper) infotext = $"({GetString("DeathReason.Grim")})";
+                if (role is CustomRoles.Warlock) infotext = $"({GetString("DeathReason.Spell")})";
+                if (role.IsEnable())
+                {
+                    if (Ishedder)
+                    {
+                        sb.Append($"\n<size=80%>{string.Format(GetString("KillPower"), 2)}</size>\n");
+                        Ishedder = false;
+                    }
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            i = 0;
+            Ishedder = true;
+            foreach (var role in GuardLv2)
+            {
+                string infotext = "";
+                if (role.IsEnable())
+                {
+                    if (Ishedder)
+                    {
+                        sb.Append($"\n<size=80%>{string.Format(GetString("GuardPower"), 2)}</size>\n");
+                        Ishedder = false;
+                    }
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            i = 0;
+            Ishedder = true;
+            foreach (var role in KillLv3)
+            {
+                string infotext = "";
+                if (role.IsEnable())
+                {
+                    if (Ishedder)
+                    {
+                        sb.Append($"\n<size=80%>{string.Format(GetString("KillPower"), 3)}</size>\n");
+                        Ishedder = false;
+                    }
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            i = 0;
+            Ishedder = true;
+            foreach (var role in GuardLv9)
+            {
+                string infotext = "";
+                if (role.IsEnable())
+                {
+                    if (Ishedder)
+                    {
+                        sb.Append($"\n<size=80%>{string.Format(GetString("GuardPower"), 9)}</size>\n");
+                        Ishedder = false;
+                    }
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            i = 0;
+            Ishedder = true;
+            foreach (var role in KillLv10)
+            {
+                string infotext = "";
+                if (role is CustomRoles.Shyboy && Shyboy.OptionShyDieBom.GetBool() is false) continue;
+                if (role is CustomRoles.Shyboy or CustomRoles.Limiter) infotext = $"({GetString("DeathReason.Bombed")})";
+                if (role.IsEnable())
+                {
+                    if (Ishedder)
+                    {
+                        sb.Append($"\n<size=80%>{string.Format(GetString("KillPower"), 10)}</size>\n");
+                        Ishedder = false;
+                    }
+                    sb.Append($"{GetRoleColorAndtext(role)}{infotext}{(i is 3 ? "\n" : "　")}");
+                    i = i + 1 % 4;
+                }
+            }
+            SendMessage(sb.ToString(), playerId);
         }
         #region AfterMeetingTasks
         public static bool CantUseVent;

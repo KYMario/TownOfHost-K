@@ -2478,3 +2478,8 @@
 "OneWolf.Guard","Guard","ガードされる"
 "OneWolf.Remove","Remove OneWolf","キル後、一匹狼解除"
 "OneWolf.GuardAndRemove","Guard and Remove OneWolf","ガード後、一匹狼解除"
+"GuardData","Guarddata","ガード系情報"
+"GuardDataInfo","","キルのレベル > ガードレベル：キル成功\nガードレベル => キルのレベル：ガード適応\n\n"
+"Normal","Normal","通常時"
+"GuardPower","GuardPower-{0}","ガードLv.{0}"
+"KillPower","KillPower-{0}","キルLv.{0}"

@@ -36,7 +36,7 @@ public sealed class UltraStar : RoleBase, IKiller
     private static OptionItem OptionSpeed;
     private static OptionItem Optioncankill;
     private static OptionItem Optionkillcool;
-    static OptionItem OptionCheckKill;
+    public static OptionItem OptionCheckKill;
     static OptionItem OptionCanseeKillcooltime;
     static OptionItem OptionCanseeAllplayer;
     enum OptionName

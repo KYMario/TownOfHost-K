@@ -209,7 +209,6 @@ namespace TownOfHost
                         subArgs = args.Length < 2 ? "" : args[1];
                         switch (subArgs)
                         {
-
                             case "r":
                             case "roles":
                                 subArgs = args.Length < 3 ? "" : args[2];
@@ -235,7 +234,12 @@ namespace TownOfHost
                                 ShowActiveSettings(PlayerControl.LocalPlayer.PlayerId);
                                 break;
                             case "w":
+                            case "win":
                                 ShowWinSetting();
+                                break;
+                            case "g":
+                            case "guard":
+                                SendGuardDate();
                                 break;
                             default:
                                 ShowActiveSettings();
@@ -1199,7 +1203,12 @@ namespace TownOfHost
                             ShowSetting(player.PlayerId);
                             break;
                         case "w":
+                        case "win":
                             ShowWinSetting(player.PlayerId);
+                            break;
+                        case "g":
+                        case "guard":
+                            SendGuardDate(player.PlayerId);
                             break;
                         default:
                             ShowActiveSettings(player.PlayerId);

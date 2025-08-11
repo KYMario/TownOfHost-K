@@ -34,7 +34,7 @@ public sealed class Shyboy : RoleBase
     }
     private static float Shytime; private static OptionItem OptionShytime;
     private static float Notshy; private static OptionItem OptionNotShy;
-    private static OptionItem OptionShyDieBom;
+    public static OptionItem OptionShyDieBom;
     float Shydeath;
     float Cool;
     float AfterMeeting;
