@@ -556,8 +556,7 @@ namespace TownOfHost
                         stringOption.Value = stringOption.oldValue = option.CurrentValue;
                         stringOption.ValueText.text = "読み込み中..";
                         stringOption.name = option.Name;
-
-                        stringOption.LabelBackground.sprite = LabelBackground.OptionLabelBackground(option.Name) ?? LabelBackgroundSprite;
+                        stringOption.LabelBackground.sprite = LabelBackgroundSprite;
                         if (option.HideValue)
                         {
                             stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
@@ -605,7 +604,19 @@ namespace TownOfHost
                         stringOption.ValueText.text = "読み込み中..";
                         stringOption.name = option.Name;
 
-                        stringOption.LabelBackground.sprite = LabelBackground.OptionLabelBackground(option.Name) ?? LabelBackgroundSprite;
+                        stringOption.LabelBackground.sprite = LabelBackgroundSprite;
+
+                        if (option.IsHeader)
+                        {
+                            var marksprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.{option.Name}.png");
+                            if (marksprite is not null)
+                            {
+                                var mark = Object.Instantiate(stringOption.LabelBackground, stringOption.transform);
+                                mark.sprite = marksprite;
+                                mark.transform.localPosition = new Vector3(0.53f, -0.062f, -10.1f);
+                                mark.transform.localScale = new Vector3(0.26f, 0.85f, 1);
+                            }
+                        }
                         if (option.HideValue)
                         {
                             stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
@@ -709,8 +720,10 @@ namespace TownOfHost
                                     infobutton.OnClick = new();
                                     infobutton.OnClick.AddListener((System.Action)(() =>
                                     {
+                                        var oldinfo = Nowinfo;
                                         Nowinfo = option.CustomRole;
-                                        HudManager.Instance.TaskPanel.ToggleOpen();
+                                        if (HudManager.Instance.TaskPanel.open is false || Nowinfo == oldinfo)
+                                            HudManager.Instance.TaskPanel.ToggleOpen();
                                     }));
                                     infobutton.gameObject.transform.SetLocalX(0);
                                     infobutton.gameObject.transform.SetLocalZ(-50);
@@ -794,6 +807,7 @@ namespace TownOfHost
             template.OnValueChanged = new System.Action<OptionBehaviour>((o) => { });
             return template;
         }
+        static List<CustomRoles> MarkRoles = [CustomRoles.Jumper];
     }
 
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.FixedUpdate))]
@@ -851,39 +865,6 @@ namespace TownOfHost
             else
                 __instance.glyphR.color = __instance.glyphUnavailableColor;
             return false;
-        }
-    }
-
-    class LabelBackground
-    {
-        public static Sprite OptionLabelBackground(string OptionName)
-        {
-            var path = "TownOfHost.Resources.Label.";
-            var la = "LabelBackground.png";
-            return OptionName switch
-            {
-                "MapModification" => UtilsSprite.LoadSprite($"{path}MapModification{la}"),
-                "MadmateOption" => UtilsSprite.LoadSprite($"{path}MadmateOption{la}"),
-                "Sabotage" => UtilsSprite.LoadSprite($"{path}Sabotage{la}"),
-                "RandomSpawn" => UtilsSprite.LoadSprite($"{path}RandomSpawn{la}"),
-                "Preset" => UtilsSprite.LoadSprite($"{path}Preset{la}"),
-                "GameMode" => UtilsSprite.LoadSprite($"{path}GameMode{la}"),
-                "Shyboy" => UtilsSprite.LoadSprite($"{path}Shyboy{la}"),
-                "MadTeller" => UtilsSprite.LoadSprite($"{path}Madteller{la}"),
-                "PonkotuTeller" => UtilsSprite.LoadSprite($"{path}PonkotuTeller{la}"),
-                "FortuneTeller" => UtilsSprite.LoadSprite($"{path}FortuneTeller{la}"),
-                "AmateurTeller" => UtilsSprite.LoadSprite($"{path}AmateurTeller{la}"),
-                "NiceAddoer" => UtilsSprite.LoadSprite($"{path}NiceAddoer{la}"),
-                "EvilAddoer" => UtilsSprite.LoadSprite($"{path}EvilAddoer{la}"),
-                "Alien" => UtilsSprite.LoadSprite($"{path}Alien{la}"),
-                "JackalAlien" => UtilsSprite.LoadSprite($"{path}JackalAlien{la}"),
-                "DevicesOption" => UtilsSprite.LoadSprite($"{path}Device{la}"),
-                "Jumper" => UtilsSprite.LoadSprite($"{path}Jumper{la}"),
-                "LadderDeath" => UtilsSprite.LoadSprite($"{path}LadderDeath{la}"),
-                "ONspecialMode" => UtilsSprite.LoadSprite($"{path}ONspecialMode{la}"),
-                "UltraStar" => UtilsSprite.LoadSprite($"{path}UltraStar{la}"),
-                _ => null,
-            };
         }
     }
 }
