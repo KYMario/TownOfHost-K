@@ -687,6 +687,7 @@ namespace TownOfHost
             if (player.Is(CustomRoles.LastImpostor)) sb.Append(juncture + AddonInfo(CustomRoles.LastImpostor, from: From.TownOfHost, pc: player) + "\n");
             if (player.Is(CustomRoles.LastNeutral)) sb.Append(juncture + AddonInfo(CustomRoles.LastNeutral, pc: player) + "\n");
             if (player.Is(CustomRoles.Workhorse)) sb.Append(juncture + AddonInfo(CustomRoles.Workhorse, from: From.TownOfHost, pc: player) + "\n");
+            if (player.Is(CustomRoles.OneWolf)) sb.Append(juncture + AddonInfo(CustomRoles.OneWolf, pc: player) + "\n");
             CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             if (player.Is(CustomRoles.Twins)) sb.Append(juncture + AddonInfo(CustomRoles.Twins) + "\n");
 
@@ -750,6 +751,7 @@ namespace TownOfHost
                 CustomRoles.LastImpostor => AddonInfo(role, from: From.TownOfHost),
                 CustomRoles.LastNeutral => AddonInfo(role),
                 CustomRoles.Workhorse => AddonInfo(role, from: From.TownOfHost),
+                CustomRoles.OneWolf => AddonInfo(role),
                 //幽霊役職
                 CustomRoles.Ghostbuttoner => AddonInfo(role),
                 CustomRoles.GhostNoiseSender => AddonInfo(role),

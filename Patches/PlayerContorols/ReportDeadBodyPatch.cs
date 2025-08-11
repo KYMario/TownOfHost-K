@@ -145,6 +145,7 @@ namespace TownOfHost
 
                 UtilsOption.SyncAllSettings();
 
+                InnerNetClientPatch.DontTouch = true;
                 MeetingRoomManager.Instance.AssignSelf(__instance, target);
                 DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(__instance);
                 __instance.StartMeeting(target);
@@ -271,6 +272,7 @@ namespace TownOfHost
 
                 UtilsOption.SyncAllSettings();
 
+                InnerNetClientPatch.DontTouch = true;
                 MeetingRoomManager.Instance.AssignSelf(reporter, target);
                 DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(reporter);
                 reporter.StartMeeting(target);

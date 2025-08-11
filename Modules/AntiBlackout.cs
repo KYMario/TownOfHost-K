@@ -236,6 +236,10 @@ namespace TownOfHost
                     {
                         role = Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate;
                     }
+                    if (Player.GetCustomRole().IsImpostor() && pc.GetCustomRole().IsImpostor() && Player.PlayerId != pc.PlayerId)
+                    {
+                        if (pc.Is(CustomRoles.OneWolf) || Player.Is(CustomRoles.OneWolf)) role = RoleTypes.Crewmate;
+                    }
                     if (!isalive)
                     {
                         role = customrole.IsImpostor() || ((pc.GetRoleClass() as IKiller)?.CanUseSabotageButton() ?? false) ?

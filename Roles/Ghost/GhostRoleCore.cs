@@ -53,6 +53,7 @@ class GhostRoleCore
         Slacker.Init();
         Transparent.Init();
         Clumsy.Init();
+        OneWolf.Init();
     }
     public static void SetupCustomOptionAddonAndIsGhostRole()
     {
@@ -64,6 +65,7 @@ class GhostRoleCore
 
         //バフ(ゲッサー→特定陣営→会議効果→タスクターン)
         Guesser.SetupCustomOption();
+        OneWolf.SetupCustomOption();
         Serial.SetupCustomOption();
         MagicHand.SetupCustomOption();
         Connecting.SetupCustomOption();

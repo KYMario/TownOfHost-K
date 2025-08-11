@@ -86,6 +86,7 @@ public static class MeetingHudPatch
             ChatUpdatePatch.BlockSendName = true;
             MeetingStates.Sending = true;
             GameStates.task = false;
+            InnerNetClientPatch.DontTouch = false;
             GameStates.AlreadyDied |= !PlayerCatch.IsAllAlive;
             PlayerCatch.OldAlivePlayerControles.Clear();
             var Sender = CustomRpcSender.Create("MeetingSet", Hazel.SendOption.Reliable);

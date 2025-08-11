@@ -147,8 +147,10 @@ class StandardIntro
                 pc.RpcSetRoleDesync(roleType, pc.GetClientId(), SendOption.None);
 
                 if (pc.Is(CustomRoles.Amnesiac)) continue;
+                if (pc.Is(CustomRoles.OneWolf)) continue;
                 foreach (var seen in PlayerCatch.AllPlayerControls)
                 {
+                    if (seen.Is(CustomRoles.OneWolf)) continue;
                     if (!SuddenDeathMode.NowSuddenDeathMode && (role.GetCustomRoleTypes() is CustomRoleTypes.Impostor || role is CustomRoles.Egoist)
                     && (seen.GetCustomRole().GetCustomRoleTypes() is CustomRoleTypes.Impostor || seen.GetCustomRole() is CustomRoles.Egoist))
                     {
@@ -249,6 +251,19 @@ class StandardIntro
                                     var clientId = killer.GetClientId();
                                     //他者視点Amnesiacをインポスターにする
                                     pc.RpcSetRoleDesync(RoleTypes.Impostor, clientId);
+                                }
+                            }
+                            if (pc.Is(CustomRoles.OneWolf))
+                            {
+                                foreach (var seer in PlayerCatch.AllPlayerControls)
+                                {
+                                    if (seer.PlayerId == pc.PlayerId) continue;
+                                    pc.RpcSetRoleDesync(RoleTypes.Crewmate, seer.GetClientId());
+                                }
+                                foreach (var target in PlayerCatch.AllPlayerControls)
+                                {
+                                    if (target.PlayerId == pc.PlayerId) continue;
+                                    target.RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId());
                                 }
                             }
                             if (pc.Is(CustomRoles.Amnesia))//continueでいいかもだけど一応...

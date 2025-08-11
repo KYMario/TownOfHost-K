@@ -60,6 +60,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.Workhorse, "wh");
                 roleCommands.Add(CustomRoles.LastNeutral, "ln");
                 roleCommands.Add(CustomRoles.LastImpostor, "li");
+                roleCommands.Add(CustomRoles.OneWolf, "Ow");
                 //バフ
                 roleCommands.Add(CustomRoles.Watching, "wat");
                 roleCommands.Add(CustomRoles.Speeding, "sd");

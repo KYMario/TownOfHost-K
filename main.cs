@@ -264,8 +264,9 @@ namespace TownOfHost
                     {CustomRoles.LastNeutral,"#cccccc"},
                     {CustomRoles.Workhorse, "#00ffff"},
                     {CustomRoles.Twins, "#80cf48"},
+                    {CustomRoles.OneWolf , "#ff1919"},
 
-                    {CustomRoles.Watching, "#800080"},
+                    { CustomRoles.Watching, "#800080"},
                     {CustomRoles.Speeding, "#33ccff"},
                     {CustomRoles.Moon,"#ffff33"},
                     {CustomRoles.Guesser,"#999900"},

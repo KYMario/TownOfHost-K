@@ -64,6 +64,7 @@ namespace TownOfHost
                 CustomRoles.LastImpostor or
                 CustomRoles.LastNeutral or
                 CustomRoles.Workhorse or
+                CustomRoles.OneWolf or
                 //バフ
                 CustomRoles.Moon or
                 CustomRoles.Guesser or

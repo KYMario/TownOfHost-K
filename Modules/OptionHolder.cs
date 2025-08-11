@@ -1237,9 +1237,9 @@ namespace TownOfHost
         }
         private static List<CombinationRoles> Combinations = new();
         public static void SetupRoleOptions(SimpleRoleInfo info) => SetupRoleOptions(info.ConfigId, info.Tab, info.RoleName, info.AssignInfo.AssignCountRule, fromtext: UtilsOption.GetFrom(info), combination: info.Combination);
-        public static void SetupRoleOptions(int id, TabGroup tab, CustomRoles role, IntegerValueRule assignCountRule = null, CustomGameMode customGameMode = CustomGameMode.Standard, string fromtext = "", CombinationRoles combination = CombinationRoles.None, int defo = -1)
+        public static OptionItem SetupRoleOptions(int id, TabGroup tab, CustomRoles role, IntegerValueRule assignCountRule = null, CustomGameMode customGameMode = CustomGameMode.Standard, string fromtext = "", CombinationRoles combination = CombinationRoles.None, int defo = -1)
         {
-            if ((role is CustomRoles.Phantom) || (combination != CombinationRoles.None && Combinations.Contains(combination))) return;
+            if ((role is CustomRoles.Phantom) || (combination != CombinationRoles.None && Combinations.Contains(combination))) return null;
             if (role.IsVanilla())
             {
                 switch (role)
@@ -1268,7 +1268,7 @@ namespace TownOfHost
                 .SetGameMode(customGameMode) as IntegerOptionItem;
             var hidevalue = role is CustomRoles.Driver || role.IsLovers() || (assignCountRule.MaxValue == assignCountRule.MinValue);
 
-            if (role is CustomRoles.Crewmate or CustomRoles.Impostor) return;
+            if (role is CustomRoles.Crewmate or CustomRoles.Impostor) return spawnOption;
 
             var countOption = IntegerOptionItem.Create(id + 1, "Maximum", assignCountRule, defo is -1 ? assignCountRule.Step : defo, tab, false, HideValue: hidevalue)
                 .SetParent(spawnOption)
@@ -1280,6 +1280,7 @@ namespace TownOfHost
             if (combination != CombinationRoles.None) Combinations.Add(combination);
             CustomRoleSpawnChances.Add(role, spawnOption);
             CustomRoleCounts.Add(role, countOption);
+            return spawnOption;
         }
     }
 }

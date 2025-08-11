@@ -387,7 +387,8 @@ namespace TownOfHost
                 var tage = playerInfo.Object;
 
                 if (tage == null || tage.inVent) continue;
-                if (!SuddenDeathMode.NowSuddenDeathTemeMode && IsOneclick && tage.GetCustomRole().GetCustomRoleTypes() == roletype && roletype is CustomRoleTypes.Impostor) continue;
+                if (!SuddenDeathMode.NowSuddenDeathTemeMode && IsOneclick && tage.GetCustomRole().GetCustomRoleTypes() == roletype && roletype is CustomRoleTypes.Impostor
+                && !tage.Is(CustomRoles.OneWolf) && !pc.Is(CustomRoles.OneWolf)) continue;
                 if (SuddenDeathMode.NowSuddenDeathTemeMode)
                 {
                     if (SuddenDeathMode.IsSameteam(pc.PlayerId, tage.PlayerId)) continue;

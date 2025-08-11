@@ -222,6 +222,7 @@
 "GM","GM","ゲームマスター","GM(管理员)","GM(遊戲大師)","Мастер Игры","MJ(Mestre de Jogo)","GM(Fantasma)"
 
 "# ラスト属性"
+"OneWolf","OneWolf","一匹狼"
 "LastImpostor","Last Impostor","ラストインポスター","绝境者","絕境者","Последний Предатель","Último Impostor","Último Impostor"
 "LastNeutral","Last Neutral","ラストニュートラル","最后的中立","","","",
 "Workhorse","Workhorse","ワークホース","加班狂","加班狂","Работник","Burro de Carga",""
@@ -491,6 +492,7 @@
 "WorkhorseInfo","You have Extra tasks","タスクはまだ終わらない","这活还得继续肝","感覺不如做任務","Теперь у вас дополнительные задания","Você tem tarefas adicionais",""
 "TwinsInfo","We are all in this together","僕らは以心伝心"
 "FactionInfo","'”Let's give them a hand here for once.”'","「「ここは一旦手を貸そう」」"
+"OneWolfInfo","","仲間なんていらない"
 
 "# バフ"
 "WatchingInfo","Gaze upon all votes","みんなの投票に目を光らせよう","你可以看见所有人的投票，注意他们的选择","注意所有人的投票","Вы видите цвета голосов","Veja todos os votos","Veja todos os votos"
@@ -773,6 +775,7 @@
 "WorkhorseInfoLong","(Add-ons):\nAn Add-on granted to the first living Crewmate finishing all the tasks.\nYou are assigned additional tasks necessary for the tasks win.\nNot granted to roles with no tasks or with abilities triggered by finishing tasks.","(属性):\n最初に生きてタスクを終えたクルーに付与される属性。\n追加タスクが割り当てられる。\nクルーメイト以外にも割り当てる設定でもタスクが無い、タスク完了で能力が発動する役職には付与されない。","(附加效果):\n该附加效果赋予给第一个完成所有任务并存活的船员。\n你需要完成额外的任务来达成任务胜利。\n此效果不会赋予那些没有任务或者通过完成任务才能使用能力的诸多职业。","(屬性):\n此效果會被賦予在第一個完成任務且存活的船員。\n實習生必須做完附加任務來獲勝，\n此效果不會賦予在那些需要通過完成任務來觸發技能的職業上。","(Атрибут):\nДополнительные задания присваиваются первому живому Члену Экипажа, который выполнит все задания. \nЕму назначаются дополнительные задания, необходимые для победы с помощью заданий. \nНе может присваиваться ролям которые не имеют заданий, или ролям со способностями которые активируются после выполнения заданий.","(Atributos):\nUm atributo dado ao primeiro tripulante que finalizar todas as tarefas.\nVocê recebe tarefas adicionais necessárias para vencer. \nNão é dado a classes quem não têm tarefas, ou com habilidades ativadas ao finalizar todas as tarefas.",""
 "TwinsInfoLong","(Add-ons):\n","(属性):\n基本クルー陣営、設定によってはマッドメイト、\nキル不可ニュートラルに付与される。2人1組の属性。\nお互いに付与されているということが分かる"
 "FactionInfoLong","(Add-ons):\nAssing Only Setting Role.\n","設定された役職に必ずアサインされる属性。\n設定によって、徒党(ととう)同士「δ」マークがつく。\n徒党の誰かが単独勝利すると、徒党全員勝利する。\n\nラバーズの場合、徒党は付与されるが徒党での勝利はできない。"
+"OneWolfInfoLong","","(属性):\n仲間のインポスターが分からなくなる、インポスター限定属性\n\n一匹狼ではないインポスターから一匹狼は見えない。"
 
 "# バフ属性"
 "WatchingInfoLong","Add-ons:\nYou can see everyone's votes even if anonymous voting is on.","(属性):\n全員の投票先を見ることができる。","(效果):\n会议时窥视者可以看到所有人的投票。","(附加效果):\n會議時觀察者可以看到所有人的投票。","(Атрибут):\nНаблюдатель может видеть все цвета голосов несмотря на анонимное голосование.","(Atributos):\nVocê consegue ver os votos de todos, mesmo que os votos anônimos estejam ligados.",""
@@ -1685,6 +1688,8 @@
 "TwinsDiefollow","follow die","片割れが死亡すると後追いする"
 "TwinsAddWin","If his partner wins, he himself wins","片割れが勝利すると自身も追加勝利する"
 "CanSeeFactionMate","Can See Other Faction","徒党が見える"
+"OneWolfImpostorKillMe","Impostor Kill OneWolf Mode","インポスターが一匹狼をキルした時"
+"OneWolfMeCanKillImpostor","OneWolf Kill Impostor Mode","一匹狼がインポスターをキルした時"
 
 "## 幽霊役職設定"
 "GhostRoleOptions","GhostRole Options","幽霊役職の設定"
@@ -2469,3 +2474,7 @@
 "ArsonistLogInfo","{0} Doused.","{0}に油が塗られた"
 "AssassinGuessCollect","{0} was Merlin...","{0}はマーリンだった。"
 "AssassinGuessNonCollect","{0} was not Merlin...","{0}はマーリンではなかった..."
+"OneWolf.NoChange","Nochange","キルを行う"
+"OneWolf.Guard","Guard","ガードされる"
+"OneWolf.Remove","Remove OneWolf","キル後、一匹狼解除"
+"OneWolf.GuardAndRemove","Guard and Remove OneWolf","ガード後、一匹狼解除"

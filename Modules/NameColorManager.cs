@@ -41,7 +41,7 @@ namespace TownOfHost
                 {
                     if (targetRole.GetRoleInfo()?.IsCantSeeTeammates == true)
                         colorCode = Roles.Vanilla.Impostor.RoleInfo.RoleColorCode;
-                    if (seerRole.GetRoleInfo()?.IsCantSeeTeammates == true && !(roleClass as Amnesiac).Realized)
+                    if ((seerRole.GetRoleInfo()?.IsCantSeeTeammates == true && !(roleClass as Amnesiac).Realized) || seer.Is(CustomRoles.OneWolf) || target.Is(CustomRoles.OneWolf))
                         colorCode = "#ffffff"; //white
                 }
             }

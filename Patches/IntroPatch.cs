@@ -331,6 +331,7 @@ namespace TownOfHost
             }
             BeginCrewmatePatch.Prefix(__instance, ref yourTeam);
             if (PlayerControl.LocalPlayer.GetCustomRole().IsImpostor())
+            {
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
                     if (pc == null) continue;
@@ -340,7 +341,17 @@ namespace TownOfHost
                         RoleManager.Instance.SetRole(pc, RoleTypes.Impostor);
                         yourTeam.Add(pc);
                     }
+                    if (pc.Is(CustomRoles.OneWolf))
+                    {
+                        yourTeam.Remove(pc);
+                    }
                 }
+                if (PlayerControl.LocalPlayer.Is(CustomRoles.OneWolf))
+                {
+                    yourTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();
+                    yourTeam.Add(PlayerControl.LocalPlayer);
+                }
+            }
             return true;
         }
         public static void Postfix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
@@ -473,6 +484,8 @@ namespace TownOfHost
                     foreach (var pl in PlayerCatch.AllPlayerControls)
                     {
                         if (pl.Is(CustomRoles.Amnesiac))
+                            pl.Data.Role.NameColor = Palette.White;
+                        if (pl.Is(CustomRoles.OneWolf))
                             pl.Data.Role.NameColor = Palette.White;
                         List<uint> TaskList = new();
                         if (pl.Data.Tasks != null)

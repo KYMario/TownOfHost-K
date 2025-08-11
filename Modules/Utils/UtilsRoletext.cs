@@ -108,8 +108,6 @@ namespace TownOfHost
                     switch (subRole)
                     {
                         case CustomRoles.LastImpostor:
-                            roleText = GetRoleString("Last-") + roleText;
-                            break;
                         case CustomRoles.LastNeutral:
                             roleText = GetRoleString("Last-") + roleText;
                             break;
@@ -125,6 +123,9 @@ namespace TownOfHost
                             break;
                         case CustomRoles.Faction:
                             roleText = GetRoleColorAndtext(CustomRoles.Faction) + roleText;
+                            break;
+                        case CustomRoles.OneWolf:
+                            roleText = GetRoleColorAndtext(CustomRoles.OneWolf) + roleText;
                             break;
                     }
                 }

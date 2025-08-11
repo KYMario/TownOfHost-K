@@ -11,6 +11,7 @@ namespace TownOfHost
         public MessageWriter stream;
         public readonly string name;
         public readonly SendOption sendOption;
+        public int tag;
         public bool isUnsafe;
         public delegate void onSendDelegateType();
         public onSendDelegateType onSendDelegate;
@@ -40,6 +41,7 @@ namespace TownOfHost
             this.sendOption = sendOption;
             this.isUnsafe = isUnsafe;
             this.currentRpcTarget = -2;
+            this.tag = -1;
             onSendDelegate = () => Logger.Info($"{this.name}'s onSendDelegate =>", "CustomRpcSender");
 
             currentState = State.Ready;
@@ -68,9 +70,18 @@ namespace TownOfHost
 
             if (targetClientId < 0)
             {
-                // 全員に対するRPC
-                stream.StartMessage(5);
-                stream.Write(AmongUsClient.Instance.GameId);
+                if (tag is 5 or -1)
+                {
+                    // 全員に対するRPC
+                    stream.StartMessage(5);
+                    stream.Write(AmongUsClient.Instance.GameId);
+                    tag = 5;
+                }
+                else
+                {
+                    Logger.Error($"{name} {tag}/5tagが前回のと異なります。", "CustomRpcSender.Error");
+                    return this;
+                }
             }
             else
             {
@@ -78,6 +89,7 @@ namespace TownOfHost
                 stream.StartMessage(6);
                 stream.Write(AmongUsClient.Instance.GameId);
                 stream.WritePacked(targetClientId);
+                tag = 6;
             }
 
             currentRpcTarget = targetClientId;

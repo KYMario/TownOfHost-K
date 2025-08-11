@@ -167,7 +167,7 @@ namespace TownOfHost
                 {
                     player.RpcSetRole(role.GetRoleTypes(), Main.SetRoleOverride);
                 }
-                if (roleInfo?.IsCantSeeTeammates == true && role.IsImpostor() && !SuddenDeathMode.NowSuddenDeathMode)
+                if ((roleInfo?.IsCantSeeTeammates == true || player.Is(CustomRoles.OneWolf)) && role.IsImpostor() && !SuddenDeathMode.NowSuddenDeathMode)
                 {
                     var clientId = player.GetClientId();
                     foreach (var killer in PlayerCatch.AllPlayerControls)

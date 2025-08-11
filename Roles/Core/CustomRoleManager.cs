@@ -116,6 +116,7 @@ public static class CustomRoleManager
                         GuardreasonNumber = 0;
                     }
                 }
+                OneWolf.OnCheckMurder(info);
             }
 
             // キラーのキルチェック処理実行
@@ -293,6 +294,7 @@ public static class CustomRoleManager
         }
         Lovers.MadonnLoversSuicide(attemptTarget.PlayerId);
         Lovers.OneLoveSuicide(attemptTarget.PlayerId);
+        OneWolf.OnMurderPlayer(info);
 
         //以降共通処理
         var targetState = PlayerState.GetByPlayerId(attemptTarget.PlayerId);
@@ -479,6 +481,7 @@ public static class CustomRoleManager
                 case CustomRoles.Amnesia: Amnesia.Add(pc.PlayerId); break;
 
                 case CustomRoles.Amanojaku: Amanojaku.Add(pc.PlayerId); break;
+                case CustomRoles.OneWolf: OneWolf.Add(pc.PlayerId); break;
 
                 case CustomRoles.Ghostbuttoner: Ghostbuttoner.Add(pc.PlayerId); break;
                 case CustomRoles.GhostNoiseSender: GhostNoiseSender.Add(pc.PlayerId); break;
