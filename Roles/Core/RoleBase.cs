@@ -34,7 +34,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// アビリティボタンで発動する能力を持っているか
     /// </summary>
-    public bool HasAbility { get; private set; }
+    public bool HasAbility;
     public RoleBase(
         SimpleRoleInfo roleInfo,
         PlayerControl player,

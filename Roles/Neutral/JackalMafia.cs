@@ -99,7 +99,7 @@ namespace TownOfHost.Roles.Neutral
             OptionSidekickPromotion = BooleanOptionItem.Create(RoleInfo, 24, JackalOption.JackalSidekickPromotion, false, false, OptionCanMakeSidekick);
             RoleAddAddons.Create(RoleInfo, 25, NeutralKiller: true);
         }   //↑あってるかは知らない、
-        public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Jackal;
+        public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Jackal;
         public float CalculateKillCooldown() => KillCooldown;
         public bool CanUseSabotageButton() => CanUseSabotage;
         public bool CanUseImpostorVentButton() => CanVent;

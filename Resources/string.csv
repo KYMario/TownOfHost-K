@@ -85,6 +85,8 @@
 "MadTracker","MadTracker","マッドトラッカー","","","",""
 "MadChanger","MadChanger","マッドチェンジャー"
 "MadSuicide","MadSuicide","マッドスーサイド"
+"MadBetrayer","MadBetrayer","マッドベトレイヤー"
+"Betrayer","Betrayer","ベトレイヤー"
 "#MadmateName"
 
 "# 特殊クルー役職"
@@ -360,6 +362,7 @@
 "MadTrackerInfo","Use your abilities to assist the Imposter","能力を駆使し、インポスターの援助をしよう"
 "MadChangerInfo","We've switched!?","僕達...入れ替わってる...!?"
 "MadSuicideInfo","For the Impostor...","ご主人様の為なら..."
+"MadBetrayerInfo","","ご主人は我の手駒"
 "#MadmateInfo"
 
 "# 特殊クルー役職"
@@ -597,6 +600,7 @@
 "MadChangerInfoLong","You are a crewmate, but you act as the impostors\n","クルーだがインポスターの味方をする。\nキルボタンで対象を決めてから\nシェイプシフトを行うことで対象者二人の位置を入れ替えることが出来る。\n対象者が同一人物,キルでの対象者,キルでの対象者が死亡済みの場合は自身が対象となる。\n対象者がテレポートできない状態であれば能力は発動されない。"
 "BraidInfoLong","Combination role with <#ff1919>driver</color>. \n they are on the side of the imposter. \n imposter and \n cannot recognize each other. \n itself completes a certain number of tasks, \n <#ff1919>driver</color> is given various abilities. will be granted to the \n <#ff1919>driver</color>.","<#ff1919>ドライバー</color>とのコンビネーション役職。\n\nクルーだがインポスターの味方をする。\nインポスターと互いに認識できない。\n自身が一定数タスクを完了させると\n<#ff1919>ドライバー</color>に様々な能力が付与される。"
 "MadSuicideInfoLong","You are a crewmate, but you act as the impostors\n You have two suicide ability.","クルーだがインポスターの味方をする。\nインポスターと互いに認識できない。\n2つの自決能力を持つマッドメイト。\nキルボタンを使用することでシェリフ誤爆のように自決する。\n※他視点からはキルターゲットに殺されるがONの場合は、\n　キルターゲットからは自爆、\n　他視点からはキルターゲットがキルしたように見える。\n\nワンクリックボタンを使用することでその場で自決する。"
+"MadBetrayerInfoLong","","クルーだがインポスターの味方をする。\n全てのタスクを完了させるとインポスターをキルできる能力を持つ。\n\nインポスターをキルすると、役職がベトレイヤーに変化し、全員を殺すことができるようになる。\nベトレイヤーになると勝利条件が\n「有害なキル役職が死亡しており、生き残っているベトレイヤーの人数がクルーと同じかそれ以上」に変化する。"
 "#MadmateInfoLong"
 
 "# 特殊クルー役職"
@@ -1369,6 +1373,7 @@
 "MadSuicideKillDeathreason","Use Killbutton deathreason","キルボタン使用時の死因"
 "MadSuicideKillSuicidetargetkiller","Other seer killing target","他視点からはキルターゲットに殺される"
 "MadSuicideAbilityDeathreason","Use AbilityButton deathreason","ワンクリボタン使用時の死因"
+"MadBetrayerImpostorRevealTaskcount","Impostor RevialTaskCount","インポスターが分かるタスク数"
 
 "## CrewMate RoleSetting"
 "BaitReportDelay","report delay","通報までの遅延"
@@ -1994,6 +1999,8 @@
 "ComebackLowerText","SnapTo:{0}","カムバック先:{0}"
 "BalloonerLowerText1","add Bomdistance to walk","歩いて爆破範囲を広げよう"
 "BalloonerLowerText2","UsePhantomButton → Bom!","ファントムボタン → 破裂!"
+"MadBetrayerLowerText","","インポスターをキルして裏切ることができる"
+"MadBetrayerLowerTextBetray","","裏切った。インポスターの代わりとなれ"
 
 "## かくれんぼ設定"
 "HideAndSeekOptions","Hide and Seek Settings","かくれんぼの設定","躲猫猫设置","躲貓貓設定","Настройки Пряток","Configurações do Esconde-Esconde",""
@@ -2258,6 +2265,7 @@
 "EraserMeg","{0} => {1}","{0} : {1}の役職を消しちゃった!!"
 "SheriffMissLog","Misfire for {0}","{0}に誤爆しちゃった！"
 "Log.PlagueDoctor","{0} => {1}%","{0}が{1}感染した..."
+"MadBetrayerLog","Betrayed Impostor.","インポスターを裏切った。"
 
 "## その他"
 

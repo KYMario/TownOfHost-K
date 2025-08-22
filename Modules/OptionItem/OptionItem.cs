@@ -234,6 +234,7 @@ namespace TownOfHost
                 {
                     case OptionZeroNotation.Infinity: return "∞";
                     case OptionZeroNotation.Hyphen: return "―";
+                    case OptionZeroNotation.Off: return Translator.GetString("ColoredOff");
                     default: break;
                 }
             }
@@ -401,6 +402,7 @@ namespace TownOfHost
     {
         None,
         Infinity,
-        Hyphen
+        Hyphen,
+        Off
     }
 }

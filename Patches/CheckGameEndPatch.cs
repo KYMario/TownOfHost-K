@@ -17,6 +17,7 @@ using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Ghost;
 using TownOfHost.Roles.Impostor;
+using TownOfHost.Roles.Madmate;
 
 namespace TownOfHost
 {
@@ -377,9 +378,15 @@ namespace TownOfHost
                 int MilkyWay = 0;
                 int Fox = 0;
                 int FoxAndCrew = 0;
+                int MadBetrayer = 0;
 
                 foreach (var pc in PlayerCatch.AllAlivePlayerControls)
                 {
+                    if (pc.GetCustomRole() is CustomRoles.MadBetrayer)
+                    {
+                        Roles.Madmate.MadBetrayer.CheckCount(ref Crew, ref MadBetrayer);
+                        continue;
+                    }
                     switch (pc.GetCountTypes())
                     {
                         case CountTypes.Crew: Crew++; FoxAndCrew++; break;
@@ -416,7 +423,7 @@ namespace TownOfHost
                     }
                 }
 
-                if (Imp == 0 && FoxAndCrew == 0 && Jackal == 0 && Remotekiller == 0 && MilkyWay == 0) //全滅
+                if (Imp == 0 && FoxAndCrew == 0 && Jackal == 0 && Remotekiller == 0 && MilkyWay == 0 && MadBetrayer == 0) //全滅
                 {
                     reason = GameOverReason.ImpostorsByKill;
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.None);
@@ -433,12 +440,12 @@ namespace TownOfHost
                     CustomWinnerHolder.NeutralWinnerIds.Add(PlayerCatch.AllPlayerControls
                         .Where(pc => pc.GetCustomRole() is CustomRoles.GrimReaper).FirstOrDefault()?.PlayerId ?? byte.MaxValue);
                 }
-                else if (Jackal == 0 && Remotekiller == 0 && MilkyWay == 0 && FoxAndCrew <= Imp) //インポスター勝利
+                else if (Jackal == 0 && Remotekiller == 0 && MilkyWay == 0 && MadBetrayer == 0 && FoxAndCrew <= Imp) //インポスター勝利
                 {
                     reason = GameOverReason.ImpostorsByKill;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Impostor, byte.MaxValue);
                 }
-                else if (Imp == 0 && Remotekiller == 0 && MilkyWay == 0 && FoxAndCrew <= Jackal) //ジャッカル勝利
+                else if (Imp == 0 && Remotekiller == 0 && MilkyWay == 0 && MadBetrayer == 0 && FoxAndCrew <= Jackal) //ジャッカル勝利
                 {
                     reason = GameOverReason.ImpostorsByKill;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Jackal, byte.MaxValue);
@@ -447,7 +454,7 @@ namespace TownOfHost
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalAlien);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackaldoll);
                 }
-                else if (Imp == 0 && Jackal == 0 && MilkyWay == 0 && FoxAndCrew <= Remotekiller)
+                else if (Imp == 0 && Jackal == 0 && MilkyWay == 0 && MadBetrayer == 0 && FoxAndCrew <= Remotekiller)
                 {
                     reason = GameOverReason.ImpostorsByKill;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Remotekiller, byte.MaxValue);
@@ -455,7 +462,7 @@ namespace TownOfHost
                     CustomWinnerHolder.NeutralWinnerIds.Add(PlayerCatch.AllPlayerControls
                         .Where(pc => pc.GetCustomRole() is CustomRoles.Remotekiller).FirstOrDefault()?.PlayerId ?? byte.MaxValue);
                 }
-                else if (Jackal == 0 && Imp == 0 && GrimReaper == 1 && Remotekiller == 0 && MilkyWay == 0)//死神勝利(2)
+                else if (Jackal == 0 && Imp == 0 && GrimReaper == 1 && Remotekiller == 0 && MilkyWay == 0 && MadBetrayer == 0)//死神勝利(2)
                 {
                     reason = GameOverReason.ImpostorsByKill;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.GrimReaper, byte.MaxValue);
@@ -463,14 +470,20 @@ namespace TownOfHost
                     CustomWinnerHolder.NeutralWinnerIds.Add(PlayerCatch.AllPlayerControls
                         .Where(pc => pc.GetCustomRole() is CustomRoles.GrimReaper).FirstOrDefault()?.PlayerId ?? byte.MaxValue);
                 }
-                else if (Imp == 0 && Jackal == 0 && Remotekiller == 0 && FoxAndCrew <= MilkyWay)
+                else if (Imp == 0 && Jackal == 0 && Remotekiller == 0 && MadBetrayer == 0 && FoxAndCrew <= MilkyWay)
                 {
                     reason = GameOverReason.ImpostorsByKill;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.MilkyWay, byte.MaxValue);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Vega);
                     CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Altair);
                 }
-                else if (Jackal == 0 && Remotekiller == 0 && MilkyWay == 0 && Imp == 0) //クルー勝利
+                else if (Imp == 0 && Jackal == 0 && Remotekiller == 0 && MilkyWay == 0 && FoxAndCrew <= MadBetrayer)
+                {
+                    reason = GameOverReason.ImpostorsByKill;
+                    CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.MadBetrayer, byte.MaxValue);
+                    CustomWinnerHolder.WinnerRoles.Add(CustomRoles.MadBetrayer);
+                }
+                else if (Jackal == 0 && Remotekiller == 0 && MadBetrayer == 0 && MilkyWay == 0 && Imp == 0) //クルー勝利
                 {
                     reason = GameOverReason.CrewmatesByVote;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Crewmate, byte.MaxValue);

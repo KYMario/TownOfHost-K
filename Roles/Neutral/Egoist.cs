@@ -51,7 +51,7 @@ public sealed class Egoist : RoleBase, ISidekickable, ILNKiller, ISchrodingerCat
     private static PlayerControl egoist;
     enum Op { EgoistNameColor }
 
-    public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Egoist;
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Egoist;
 
     private static void SetupOptionItem()
     {

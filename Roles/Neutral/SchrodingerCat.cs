@@ -10,6 +10,7 @@ using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Crewmate;
+using static TownOfHost.Roles.Core.Interfaces.ISchrodingerCatOwner;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -252,54 +253,6 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
     public bool? CheckSeeDeathReason(PlayerControl seen) => AmMadmate && Options.MadmateCanSeeDeathReason.GetBool();
     public bool? CheckKillFlash(MurderInfo info) => AmMadmate && Options.MadmateCanSeeKillFlash.GetBool();
 
-    /// <summary>
-    /// 陣営状態
-    /// </summary>
-    public enum TeamType : byte
-    {
-        /// <summary>
-        /// どこの陣営にも属していない状態
-        /// </summary>
-        None = 0,
-
-        // 10-49 シェリフキルオプションを作成しない変化先
-
-        /// <summary>
-        /// インポスター陣営に所属する状態
-        /// </summary>
-        Mad = 10,
-        /// <summary>
-        /// クルー陣営に所属する状態
-        /// </summary>
-        Crew,
-
-        // 50- シェリフキルオプションを作成する変化先
-
-        /// <summary>
-        /// ジャッカル陣営に所属する状態
-        /// </summary>
-        Jackal = 50,
-        /// <summary>
-        /// エゴイスト陣営に所属する状態
-        /// </summary>
-        Egoist,
-        /// <summary>
-        /// カウントキラーに所属する状態
-        /// </summary>
-        CountKiller,
-        /// <summary>
-        /// リモートキラーに所属する状態
-        /// </summary>
-        Remotekiller,
-        /// <summary>
-        /// ドッペルゲンガーに所属する状態
-        /// </summary>
-        DoppelGanger,
-        /// <summary>
-        /// 天の川陣営に所属する状態
-        /// </summary>
-        MilkyWay,
-    }
     public static Color GetCatColor(TeamType catType)
     {
         Color? color = catType switch

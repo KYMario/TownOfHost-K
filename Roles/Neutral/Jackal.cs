@@ -66,7 +66,7 @@ namespace TownOfHost.Roles.Neutral
 
         enum OptionName { JackalSidekickPromotion, JackalImpostorCanSidekick, JackalbeforeImpCanSeeImp, Jackaldollimpgaimpnimieru }
 
-        public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Jackal;
+        public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Jackal;
 
         private static void SetupOptionItem()
         {

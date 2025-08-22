@@ -60,7 +60,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
         SheriffCanKillLovers
     }
     public static Dictionary<CustomRoles, OptionItem> KillTargetOptions = new();
-    public static Dictionary<SchrodingerCat.TeamType, OptionItem> SchrodingerCatKillTargetOptions = new();
+    public static Dictionary<ISchrodingerCatOwner.TeamType, OptionItem> SchrodingerCatKillTargetOptions = new();
     public int ShotLimit = 0;
     public float CurrentKillCooldown = 30;
     public static readonly string[] KillOption =
@@ -68,7 +68,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
         "SheriffCanKillAll", "SheriffCanKillSeparately"
     };
 
-    public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Crew;
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Crew;
 
     private static void SetupOptionItem()
     {
@@ -93,7 +93,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
             SetUpKillTargetOption(neutral, idOffset, true, CanKillNeutrals);
             idOffset++;
         }
-        foreach (var catType in EnumHelper.GetAllValues<SchrodingerCat.TeamType>())
+        foreach (var catType in EnumHelper.GetAllValues<ISchrodingerCatOwner.TeamType>())
         {
             if ((byte)catType < 50)
             {
@@ -115,7 +115,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
 
         return roleoptionitem;
     }
-    public static void SetUpSchrodingerCatKillTargetOption(SchrodingerCat.TeamType catType, int idOffset, bool defaultValue = true, OptionItem parent = null)
+    public static void SetUpSchrodingerCatKillTargetOption(ISchrodingerCatOwner.TeamType catType, int idOffset, bool defaultValue = true, OptionItem parent = null)
     {
         var id = RoleInfo.ConfigId + idOffset;
         parent ??= RoleInfo.RoleOption;
@@ -203,7 +203,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
 
         if (player.GetRoleClass() is SchrodingerCat schrodingerCat)
         {
-            if (schrodingerCat.Team == SchrodingerCat.TeamType.None)
+            if (schrodingerCat.Team == ISchrodingerCatOwner.TeamType.None)
             {
                 Logger.Warn($"シェリフ({player.GetRealName()})にキルされたシュレディンガーの猫のロールが変化していません", nameof(Sheriff));
                 return false;
@@ -214,8 +214,8 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
             }
             return schrodingerCat.Team switch
             {
-                SchrodingerCat.TeamType.Mad => KillTargetOptions.TryGetValue(CustomRoles.Madmate, out var option) && option.GetBool(),
-                SchrodingerCat.TeamType.Crew => false,
+                ISchrodingerCatOwner.TeamType.Mad => KillTargetOptions.TryGetValue(CustomRoles.Madmate, out var option) && option.GetBool(),
+                ISchrodingerCatOwner.TeamType.Crew => false,
                 _ => CanKillNeutrals.GetValue() == 0 || (SchrodingerCatKillTargetOptions.TryGetValue(schrodingerCat.Team, out var option) && option.GetBool()),
             };
         }

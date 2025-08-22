@@ -540,8 +540,6 @@ namespace TownOfHost
             if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
             //pc.RpcSetPet("");
 
-            if (Options.ExRpcWeightR.GetBool()) return;
-
             foreach (var ap in PlayerCatch.AllPlayerControls)
             {
                 var petId = "";

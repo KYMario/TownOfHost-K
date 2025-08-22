@@ -799,7 +799,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
     #endregion
     #region Jackal
 
-    public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Jackal;
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Jackal;
     public float CalculateKillCooldown() => OptionKillCooldown.GetFloat();
     public bool CanUseSabotageButton() => OptionCanUseSabotage.GetBool();
     public override bool OnInvokeSabotage(SystemTypes systemType) => OptionCanUseSabotage.GetBool();

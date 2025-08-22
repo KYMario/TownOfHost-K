@@ -746,6 +746,7 @@ public enum CustomRoles
     MadChanger,
     MadSuicide,
     //DEBUG only Madmate
+   MadBetrayer,
     //Crewmate(Vanilla)
     Engineer,
     Scientist,

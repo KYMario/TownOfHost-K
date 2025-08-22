@@ -55,7 +55,7 @@ namespace TownOfHost.Roles.Neutral
             OptionKillAnimation = BooleanOptionItem.Create(RoleInfo, 11, OptionName.KillAnimation, true, false);
             RoleAddAddons.Create(RoleInfo, 12, NeutralKiller: true);
         }
-        public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.Remotekiller;
+        public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Remotekiller;
         public float CalculateKillCooldown() => KillCooldown;
         public override bool OnInvokeSabotage(SystemTypes systemType) => false;
 

@@ -475,7 +475,6 @@ namespace TownOfHost
                 if (!Options.EnableGM.GetBool() && Options.CurrentGameMode == CustomGameMode.TaskBattle && TaskBattle.TaskBattleCanVent.GetBool())
                     RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.Engineer);
 
-                ExtendedRpc.AllPlayerOnlySeeMePet();
                 RemoveDisableDevicesPatch.UpdateDisableDevices();
 
                 _ = new LateTask(() =>
@@ -501,6 +500,7 @@ namespace TownOfHost
                     CustomRoleManager.AllActiveRoles.Values.Do(role => role.ChangeColor());
                     UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
                     SuddenDeathMode.NotTeamKill();
+                    ExtendedRpc.AllPlayerOnlySeeMePet();
                 }, 1.25f, "", true);
 
                 if (Options.firstturnmeeting)

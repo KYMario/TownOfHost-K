@@ -17,9 +17,9 @@ public interface IImpostor : IKiller, ISchrodingerCatOwner
     public bool CanBeLastImpostor => true;
     /// <summary>
     /// シュレディンガーの猫を切った際の変化先役職<br/>
-    /// デフォルト<see cref="SchrodingerCat.TeamType.TeamImpostor"/>
+    /// デフォルト<see cref="ISchrodingerCatOwner.TeamType.TeamImpostor"/>
     /// </summary>
-    SchrodingerCat.TeamType ISchrodingerCatOwner.SchrodingerCatChangeTo => SchrodingerCat.TeamType.Mad;
+    ISchrodingerCatOwner.TeamType ISchrodingerCatOwner.SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Mad;
 
     /// <summary>
     /// この役職に切られたシュレディンガーの猫へのオプション変更<br/>

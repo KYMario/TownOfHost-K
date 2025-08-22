@@ -36,7 +36,7 @@ public sealed class Altair : RoleBase, IKiller, ISchrodingerCatOwner, IAdditiona
     public bool CanUseImpostorVentButton() => Vega.AltairCanUseVent;
     public bool CanUseSabotageButton() => false;
 
-    public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.MilkyWay;
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.MilkyWay;
     public override void ApplyGameOptions(IGameOptions opt) => opt.SetVision(Vega.HasImpostorVision);
 
     public override string GetMark(PlayerControl seer, PlayerControl seen, bool isForMeeting = false)

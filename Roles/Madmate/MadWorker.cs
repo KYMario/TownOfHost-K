@@ -17,7 +17,7 @@ public sealed class MadWorker : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
             8400,
             SetupOptionItem,
             "mw",
-            OptionSort: (4, 2)
+            OptionSort: (4, 3)
         );
     public MadWorker(PlayerControl player)
     : base(

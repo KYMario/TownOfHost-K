@@ -53,7 +53,7 @@ public sealed class WolfBoy : RoleBase, IKiller, ISchrodingerCatOwner
     public float CurrentKillCooldown = 30;
     bool HasImpV;
 
-    public SchrodingerCat.TeamType SchrodingerCatChangeTo => Shurenekodotti.GetBool() ? SchrodingerCat.TeamType.Mad : SchrodingerCat.TeamType.Crew;
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => Shurenekodotti.GetBool() ? ISchrodingerCatOwner.TeamType.Mad : ISchrodingerCatOwner.TeamType.Crew;
     public override CustomRoles TellResults(PlayerControl player) => CustomRoles.Impostor;
     private static void SetupOptionItem()
     {
@@ -138,7 +138,7 @@ public sealed class WolfBoy : RoleBase, IKiller, ISchrodingerCatOwner
 
         if (player.GetRoleClass() is SchrodingerCat schrodingerCat)
         {
-            if (schrodingerCat.Team == SchrodingerCat.TeamType.None)
+            if (schrodingerCat.Team == ISchrodingerCatOwner.TeamType.None)
             {
                 Logger.Warn($"狼少年({player.GetRealName()})にキルされたシュレディンガーの猫のロールが変化していません", nameof(WolfBoy));
                 return false;

@@ -211,7 +211,7 @@ namespace TownOfHost.Roles.Impostor
                     var targetroleclass = target?.GetRoleClass();
                     if (targetroleclass is SchrodingerCat schrodingerCat)
                     {
-                        if (schrodingerCat.Team == SchrodingerCat.TeamType.None)
+                        if (schrodingerCat.Team == ISchrodingerCatOwner.TeamType.None)
                         {
                             schrodingerCat.ChangeTeamOnKill(Player);
                             Player.SetKillCooldown(target: schrodingerCat.Player);
@@ -220,7 +220,7 @@ namespace TownOfHost.Roles.Impostor
                     }
                     if (targetroleclass is BakeCat bakeneko)
                     {
-                        if (bakeneko.Team == BakeCat.TeamType.None)
+                        if (bakeneko.Team == ISchrodingerCatOwner.TeamType.None)
                         {
                             bakeneko.ChangeTeamOnKill(Player);
                             Player.SetKillCooldown(target: bakeneko.Player);

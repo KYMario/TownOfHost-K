@@ -22,6 +22,7 @@ namespace TownOfHost
         private bool _canUseMovingPlatform = true;
         public string KillRoom;
         public bool Is10secKillButton;
+        public Action GhostRoleAction;
 
         /// <summary>
         /// 持っているガード。<br/>

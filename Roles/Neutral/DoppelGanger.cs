@@ -3,6 +3,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using static TownOfHost.Roles.Core.Interfaces.ISchrodingerCatOwner;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -58,7 +59,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
     int Count;
     byte Target;
     bool win;
-    public SchrodingerCat.TeamType SchrodingerCatChangeTo => SchrodingerCat.TeamType.DoppelGanger;
+    public TeamType SchrodingerCatChangeTo => TeamType.DoppelGanger;
 
     enum OptionName
     {

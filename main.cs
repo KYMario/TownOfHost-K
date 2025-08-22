@@ -60,7 +60,7 @@ namespace TownOfHost
                 public const string ModVersion = ".30";//リリースver用バージョン変更
 
                 /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
-                public static bool DebugVersion = false;
+                public static bool DebugVersion = true;
 
                 // サポートされている最低のAmongUsバージョン
                 public static readonly string LowestSupportedVersion = "2025.4.20";
@@ -316,7 +316,7 @@ namespace TownOfHost
                     {CustomRoles.GuardianAngel,"#7cc0fc"},
                     {CustomRoles.DemonicTracker,"#824880"},
                     {CustomRoles.DemonicCrusher,"#522886"},
-                    {CustomRoles.DemonicVenter ,"#635963"},
+                    { CustomRoles.DemonicVenter ,"#635963"},
                     {CustomRoles.AsistingAngel,"#8da0b6"},
 
                     {CustomRoles.NotAssigned, "#ffffff"}
@@ -445,6 +445,7 @@ namespace TownOfHost
                 Fox = CustomRoles.Fox,
                 PhantomThief = CustomRoles.PhantomThief,
                 MilkyWay = CustomRoles.Vega,
+                MadBetrayer = CustomRoles.MadBetrayer,
 
                 HASTroll = CustomRoles.HASTroll,
                 TaskPlayerB = CustomRoles.TaskPlayerB,
