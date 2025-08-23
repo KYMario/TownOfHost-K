@@ -1658,6 +1658,7 @@
 "AmnesiaRealizeTaskCount","Realize Tasks","記憶を取り戻すタスク数"
 "AmnesiaCanRealizeKill","Realize of kills","一定数キルをすることで記憶を取り戻す"
 "AmnesiaRealizeKillcount","Realize Kill Count","記憶を取り戻すキル回数"
+"AmnesiaRealizeImpostorCount","Realize ImpsotCount","記憶を取り戻すインポスター人数"
 "AmnesiaDontCanUseAbility","Can't use Role Ability","能力が使えない"
 "AmnesiaDefaultKillCool","Default to kill-cool until you are aware of it","自覚するまでキルクールをデフォルトにする"
 "AmanojakuAssingDay","Amanojaku Assign day","アサインされる日"

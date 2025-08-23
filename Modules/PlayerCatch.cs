@@ -5,6 +5,7 @@ using System.Text;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.AddOns.Impostor;
 using TownOfHost.Roles.AddOns.Neutral;
+using TownOfHost.Roles.AddOns.Common;
 
 namespace TownOfHost
 {
@@ -69,6 +70,7 @@ namespace TownOfHost
                 Logger.Info("生存しているインポスター:" + AliveImpostorCount + "人", "CountAliveImpostors");
                 PlayerCatch.AliveImpostorCount = AliveImpostorCount;
                 LastImpostor.SetSubRole();
+                Amnesia.CheckImpostorCount();
             }
             if (PlayerCatch.AliveNeutalCount != AliveNeutalCount)
             {

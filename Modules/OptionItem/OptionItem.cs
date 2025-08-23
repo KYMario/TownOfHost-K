@@ -165,7 +165,8 @@ namespace TownOfHost
             i.Parent = parent;
             parent.SetChild(i);
         });
-        public OptionItem SetParentRole(CustomRoles parentrole) => Do(i => i.ParentRole = parentrole);
+        public OptionItem SetParentRole(CustomRoles parentrole)
+            => Do(i => i.ParentRole = parentrole);
         public OptionItem SetChild(OptionItem child) => Do(i => i.Children.Add(child));
         public OptionItem RegisterUpdateValueEvent(EventHandler<UpdateValueEventArgs> handler)
             => Do(i => UpdateValueEvent += handler);
