@@ -17,6 +17,7 @@ namespace TownOfHost
 
         public static OptionItem EnableDebugMode;
         public static OptionItem EnableTOHkDebugMode;
+        public static OptionItem Spawndummy;
 
         public static void Auth(HashAuth auth, string input)
         {
@@ -41,6 +42,10 @@ namespace TownOfHost
             });*/
             EnableTOHkDebugMode = BooleanOptionItem.Create(3, "EnableTOHkDebugMode", false, TabGroup.MainSettings, true)
                 .SetColor(Color.green)
+                .SetHidden(!AmDebugger);
+            Spawndummy = IntegerOptionItem.Create(5, "Spawndummy", new(0, 14, 1), 0, TabGroup.MainSettings, true)
+                .SetColor(Color.green)
+                .SetZeroNotation(OptionZeroNotation.Off)
                 .SetHidden(!AmDebugger);
         }
     }

@@ -46,6 +46,11 @@ public static class MeetingHudPatch
                 return true;
             }
             var voter = PlayerCatch.GetPlayerById(srcPlayerId);
+            if (voter.isDummy)
+            {
+                MeetingVoteManager.Instance?.SetVote(srcPlayerId, suspectPlayerId);
+                return true;
+            }
             var votefor = PlayerCatch.GetPlayerById(suspectPlayerId);
 
             foreach (var pc in PlayerCatch.AllPlayerControls)

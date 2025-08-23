@@ -246,6 +246,12 @@ namespace TownOfHost
                     List<PlayerControl> AllPlayers = new();
                     foreach (var pc in PlayerCatch.AllPlayerControls)
                     {
+                        if (pc.isDummy)
+                        {
+                            pc.RpcSetCustomRole(CustomRoles.Crewmate);
+                            pc.RpcSetRole(RoleTypes.Crewmate);
+                            continue;
+                        }
                         AllPlayers.Add(pc);
                     }
 
@@ -289,7 +295,7 @@ namespace TownOfHost
                 Il2CppSystem.Collections.Generic.List<NetworkedPlayerInfo> playerInfos = new();
                 foreach (NetworkedPlayerInfo data in GameData.Instance.AllPlayers)
                 {
-                    if (data.Object != null && !data.IsDead && !Disconnected.Contains(data.PlayerId))
+                    if (data.Object != null && !data.IsDead && !Disconnected.Contains(data.PlayerId) && data?.Object?.isDummy is false)
                         playerInfos.Add(data);
                 }
                 IGameOptions currentGameOptions = GameOptionsManager.Instance.CurrentGameOptions;

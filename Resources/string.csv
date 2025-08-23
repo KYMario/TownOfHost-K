@@ -870,6 +870,7 @@
 "KickBanOptionWhiteList","Whitelisted players are not eligible","<#f5edba>ホワイトリストに登録されているプレイヤーは入室可能</color>"
 "EnableDebugMode","Enable Debug Mode","デバッグモードを有効化する","开启调试模式","啟用偵錯模式","Включить режим отладки","Ativar Modo de Depuração",""
 "EnableTOHkDebugMode","Enable Debug Mode","TOH-Kのデバッグモードを有効化する","开启调试模式","啟用偵錯模式","Включить режим отладки","Ativar Modo de Depuração",""
+"Spawndummy","Spawndummy","ダミーを出現させる"
 "ExperimentalMode","Experimental Mode","試験的設定"
 "ExAftermeetingflash","After Meeting flash","会議後にフラッシュを入れる"
 "BlackOutwokesitobasu","Reset Camera Anti BlackOut","リセットカメラ式暗転対策"

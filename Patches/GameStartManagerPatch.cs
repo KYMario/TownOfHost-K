@@ -260,6 +260,35 @@ namespace TownOfHost
                         Logger.Warn(msg, "BeginGame");
                     }
                 }
+                if (DebugModeManager.Spawndummy.GetBool() && DebugModeManager.EnableTOHkDebugMode.GetBool() && GameStates.IsLocalGame)
+                {
+                    byte id = 0;
+                    foreach (var p in PlayerControl.AllPlayerControls)
+                        id++;
+                    for (var i = PlayerCatch.AllPlayerControls.Where(pc => pc.isDummy).Count();
+                    i < DebugModeManager.Spawndummy.GetInt(); i++)
+                    {
+                        if (id > 14) break;
+                        var dummy = Object.Instantiate(AmongUsClient.Instance.PlayerPrefab);
+                        dummy.isDummy = true;
+                        dummy.PlayerId = id;
+                        var playerinfo = GameData.Instance.AddDummy(dummy);
+                        var colorid = (byte)((PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId + id) % 18);
+
+                        dummy.NetTransform.enabled = true;
+                        dummy.RpcSetColor(colorid);
+                        dummy.RpcSetName(GetString(StringNames.Dummy) + (i + 1));
+                        dummy.GetComponent<DummyBehaviour>().enabled = true;
+                        dummy.isDummy = true;
+                        dummy.SetHat("", colorid);
+                        dummy.SetVisor("", colorid);
+                        dummy.SetSkin("", colorid);
+                        dummy.SetPet("");
+                        id++;
+                        AmongUsClient.Instance.Spawn(dummy);
+                        playerinfo.RpcSetTasks(Array.Empty<byte>());
+                    }
+                }
 
                 RoleAssignManager.CheckRoleCount();
 
