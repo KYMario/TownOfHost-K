@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
@@ -29,6 +30,9 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
         KillCoolDown = OptionKillCoolDown.GetFloat();
         count = 0;
         OverKillMode = OptionOverKillCanCount.GetBool() is false;
+
+        CantReport = OptionOverKillCantReport.GetBool();
+        OverKillList = new();
     }
     static OptionItem OptionKillCoolDown;
     static OptionItem OptionOverKillCanCount;
@@ -36,6 +40,8 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
     static OptionItem OptionNomalKillDistance;
     static OptionItem OptionOverKillDistance;
     static OptionItem OptionOverKillDontKillM;
+    static OptionItem OptionOverKillCantReport; static bool CantReport;
+    List<byte> OverKillList;
     float KillCoolDown;
     int count;
     bool OverKillMode;
@@ -46,7 +52,8 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
         EarnestWolfOverBairitu,
         EarnestWolfNomalKllDistance,
         EarnestWolfOverKillDistance,
-        EarnestWolfOverKillDontKillM
+        EarnestWolfOverKillDontKillM,
+        EarnestWolfOverKillCantReport
     }
 
     static void SetupOptionItem()
@@ -57,6 +64,7 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
         OptionNomalKillDistance = StringOptionItem.Create(RoleInfo, 13, OptionName.EarnestWolfNomalKllDistance, EnumHelper.GetAllNames<OverrideKilldistance.KillDistance>(), 0, false);
         OptionOverKillDistance = StringOptionItem.Create(RoleInfo, 14, OptionName.EarnestWolfOverKillDistance, EnumHelper.GetAllNames<OverrideKilldistance.KillDistance>(), 2, false);
         OptionOverKillDontKillM = BooleanOptionItem.Create(RoleInfo, 15, OptionName.EarnestWolfOverKillDontKillM, false, false);
+        OptionOverKillCantReport = BooleanOptionItem.Create(RoleInfo, 16, OptionName.EarnestWolfOverKillCantReport, false, false);
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
@@ -77,10 +85,11 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
             info.KillPower = 10;
             var dummykiller = OptionOverKillDontKillM.GetBool() ? target : killer;
 
-            if (info.IsCanKilling) return false;
+            if (info.IsCanKilling is false) return false;
             CustomRoleManager.CheckMurderInfos[info.AppearanceKiller.PlayerId] = info;
             dummykiller.RpcMurderPlayer(target);
             OverKillMode = OptionOverKillCanCount.GetBool() is false;
+            OverKillList.Add(target.PlayerId);
 
             _ = new LateTask(() =>
             {
@@ -129,5 +138,16 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("EarnestWolfLowerText");
         return $"<size=50%>{GetString("EarnestWolfLowerText")}</size>";
+    }
+    public override bool CancelReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target, ref DontReportreson reason)
+    {
+        if (target is null || CantReport is false) return false;
+
+        if (OverKillList.Contains(target.PlayerId))
+        {
+            reason = DontReportreson.Impostor;
+            return true;
+        }
+        return false;
     }
 }

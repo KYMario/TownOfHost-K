@@ -546,5 +546,6 @@ public abstract class RoleBase : IDisposable
         CantUseButton,
         Eat,
         Other,
+        Impostor,
     }
 }

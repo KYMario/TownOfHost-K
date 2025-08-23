@@ -11,9 +11,9 @@ namespace TownOfHost
     {
         #region static
         public static IReadOnlyList<OptionItem> AllOptions => _allOptions;
-        private static List<OptionItem> _allOptions = new(1024);
+        private static List<OptionItem> _allOptions = new(2048);
         public static IReadOnlyDictionary<int, OptionItem> FastOptions => _fastOptions;
-        private static Dictionary<int, OptionItem> _fastOptions = new(1024);
+        private static Dictionary<int, OptionItem> _fastOptions = new(2048);
         public static IReadOnlyList<OptionItem> KillCoolOption => _killcooloption;
         private static List<OptionItem> _killcooloption = new(1024);
         public static int CurrentPreset { get; set; }

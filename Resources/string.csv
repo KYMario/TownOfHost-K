@@ -1296,6 +1296,7 @@
 "EarnestWolfNomalKllDistance","nomal Killdistance","通常時のキルディスタンス"
 "EarnestWolfOverKillDistance","overkill Killdistance","オーバーキルモードのキルディスタンス"
 "EarnestWolfOverKillDontKillM","OverKill Not KillMotion","オーバーキルモード中、キルモーションを表示しない"
+"EarnestWolfOverKillCantReport",OverKill Cant Report,"オーバーキルでキルされると死体通報ができない"
 "blastrange","BomberExplosion Range","爆発範囲"
 "AmnesiacCantKillImpostor","Can't Kill Impostor","インポスターをキルできない"
 "AmnesiacMatchSettingstoSheriff","Option Role","設定を思い込んでいる役職に合わせる"

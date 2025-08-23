@@ -92,7 +92,7 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
     {
         if (ReportCrashTimers.ContainsKey(reporter.PlayerId))
         {
-            reportreson = DontReportreson.Other;
+            reportreson = DontReportreson.Impostor;
             return true;
         }
         return false;
