@@ -1050,6 +1050,9 @@
 "LoversHideChat","Lovers Hide Chat (/lc)","ラバーズ秘匿チャット(/lc)"
 "ConnectingHideChat","Connecting Hide Chat (/cc)","コネクティング秘匿チャット(/cc)"
 "OutroCrewWinreasonchenge","Display match results in non-client outros","非クライアントのアウトロで試合結果を表示"
+"OptionBatchSetting","OptionBatchSetting","一括設定"
+"OptionAllImpostorKillCool","AllImpostorKillCooldown","インポスターのキルクールダウン"
+"OptionAllNeutralKillCool","AllNeutralKillCooldown","ニュートラルのキルクールダウン"
 
 "### サドンデスモード"
 "SuddenDeathMode","SuddenDeathMode","サドンデスモード"

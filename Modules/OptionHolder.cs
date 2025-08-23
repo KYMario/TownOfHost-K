@@ -469,6 +469,10 @@ namespace TownOfHost
         public static OptionItem GhostCanSeeKillflash;
         public static OptionItem GhostCanSeeNumberOfButtonsOnOthers;
 
+        public static OptionItem OptionBatchSetting;
+        public static OptionItem OptionAllImpostorKillCool;
+        public static OptionItem OptionAllNeutralKillCool;
+
         // プリセット対象外
         public static OptionItem NoGameEnd;
         public static OptionItem AutoDisplayLastResult;
@@ -1149,6 +1153,32 @@ namespace TownOfHost
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#66ffff")
                 .SetParent(ConvenientOptions);
+
+            OptionBatchSetting = BooleanOptionItem.Create(113000, "OptionBatchSetting", false, TabGroup.MainSettings, false)
+                .SetHeader(true)
+                .SetColorcode("#6c831aff");
+            OptionAllImpostorKillCool = FloatOptionItem.Create(113001, "OptionAllImpostorKillCool", new(0, 180, 0.5f), 29.5f, TabGroup.MainSettings, false)
+                .SetParent(OptionBatchSetting)
+                .RegisterUpdateValueEvent((object obj, OptionItem.UpdateValueEventArgs args) =>
+                {
+                    foreach (var option in OptionItem.KillCoolOption.Where(opt => opt.ParentRole.IsImpostor()))
+                    {
+                        option.SetValue(args.CurrentValue, false, false);
+                    }
+                    OptionItem.SyncAllOptions();
+                    OptionSaver.Save();
+                });
+            OptionAllNeutralKillCool = FloatOptionItem.Create(113002, "OptionAllNeutralKillCool", new(0, 180, 0.5f), 29.5f, TabGroup.MainSettings, false)
+                .SetParent(OptionBatchSetting)
+                .RegisterUpdateValueEvent((object obj, OptionItem.UpdateValueEventArgs args) =>
+                {
+                    foreach (var option in OptionItem.KillCoolOption.Where(opt => opt.ParentRole.IsNeutral()))
+                    {
+                        option.SetValue(args.CurrentValue, false, false);
+                    }
+                    OptionItem.SyncAllOptions();
+                    OptionSaver.Save();
+                });
 
             DisableTaskWin = BooleanOptionItem.Create(1_000_200, "DisableTaskWin", false, TabGroup.MainSettings, false)
                 .SetHeader(true)

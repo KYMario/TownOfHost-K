@@ -452,7 +452,7 @@ namespace TownOfHost
                 // ボタン生成
                 CreateButton("OptionReset", Color.red, new Vector2(8.5f, 0f), new Action(() =>
                 {
-                    OptionItem.AllOptions.ToArray().Where(x => x.Id > 0 && x.Id is not 2 and not 3 && 1_000_000 > x.Id && x.CurrentValue != x.DefaultValue).Do(x => x.SetValue(x.DefaultValue));
+                    OptionItem.AllOptions.ToArray().Where(x => x.Id > 0 && x.Id is not 2 and not 3 && 1_000_000 > x.Id && x.CurrentValue != x.DefaultValue).Do(x => x.SetValue(x.DefaultValue, false, false));
                     var pr = OptionItem.AllOptions.Where(op => op.Id == 0).FirstOrDefault();
                     switch (pr.CurrentValue)
                     {
@@ -466,6 +466,8 @@ namespace TownOfHost
                     }
                     GameSettingMenuChangeTabPatch.meg = GetString("OptionResetMeg");
                     timer = 3;
+                    OptionItem.SyncAllOptions();
+                    OptionSaver.Save();
                 }), UtilsSprite.LoadSprite("TownOfHost.Resources.RESET-STG.png", 150f));
                 CreateButton("OptionCopy", Color.green, new Vector2(7.89f, 0), new Action(() =>
                 {
@@ -807,7 +809,6 @@ namespace TownOfHost
             template.OnValueChanged = new System.Action<OptionBehaviour>((o) => { });
             return template;
         }
-        static List<CustomRoles> MarkRoles = [CustomRoles.Jumper];
     }
 
     [HarmonyPatch(typeof(StringOption), nameof(StringOption.FixedUpdate))]

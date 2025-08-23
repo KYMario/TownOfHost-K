@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using HarmonyLib;
+using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using UnityEngine;
 using static TownOfHost.Translator;
@@ -25,8 +26,10 @@ class PresetMenu
             foreach (var roleopt in Options.CustomRoleSpawnChances)
             {
                 if (roleopt.Value.GetValue() is not 0)
-                    roleopt.Value.SetValue(0);
+                    roleopt.Value.SetValue(0, false, false);
             }
+            OptionItem.SyncAllOptions();
+            OptionSaver.Save();
         });
 
         var SheriffAndMad = CreatePresetButton(GetString("SheriffAndMadPreset"), new Color32(255, 178, 40, byte.MaxValue), 1, () =>
@@ -34,8 +37,10 @@ class PresetMenu
             foreach (var roleopt in Options.CustomRoleSpawnChances)
             {
                 bool IsShrima = roleopt.Key is CustomRoles.Sheriff or CustomRoles.MadSnitch or CustomRoles.EvilHacker or CustomRoles.EvilTracker;
-                roleopt.Value.SetValue(IsShrima ? 10 : 0);
+                roleopt.Value.SetValue(IsShrima ? 10 : 0, false, false);
             }
+            OptionItem.SyncAllOptions();
+            OptionSaver.Save();
         });
 
         var SetMenyRole = CreatePresetButton(GetString("SetMenyRole"), new Color32(255, 0, 40, byte.MaxValue), 2, () =>
@@ -44,8 +49,10 @@ class PresetMenu
             {
                 bool IsShrima = roleopt.Key is CustomRoles.Jumper or CustomRoles.EvilSatellite or CustomRoles.MadGuardian or CustomRoles.SwitchSheriff or CustomRoles.PonkotuTeller or CustomRoles.Insider
                 or CustomRoles.Stolener or CustomRoles.Snowman or CustomRoles.Walker or CustomRoles.Jackal or CustomRoles.Jester;
-                if ((IsShrima ? 10 : 0) != roleopt.Value.GetValue()) roleopt.Value.SetValue(IsShrima ? 10 : 0);
+                if ((IsShrima ? 10 : 0) != roleopt.Value.GetValue()) roleopt.Value.SetValue(IsShrima ? 10 : 0, false, false);
             }
+            OptionItem.SyncAllOptions();
+            OptionSaver.Save();
         });
 
         var SetAllRole = CreatePresetButton($"<#aa84f0>{GetString("AllRole")}</color>", new Color32(69, 24, 153, byte.MaxValue), 3, () =>
@@ -58,9 +65,11 @@ class PresetMenu
                 if (role.IsImpostor() || role.IsCrewmate() || role.IsMadmate() || role.IsNeutral())
                 {
                     if (option.Value.GetValue() is not 10)
-                        option.Value.SetValue(10);
+                        option.Value.SetValue(10, false, false);
                 }
             }
+            OptionItem.SyncAllOptions();
+            OptionSaver.Save();
         });
 
         var SetAllRoleAndAddon = CreatePresetButton($"<#aa84f0>{GetString("AllRoleAndSubRole")}</color>", new Color32(60, 60, 60, byte.MaxValue), 4, () =>
@@ -71,8 +80,10 @@ class PresetMenu
                 if (role is CustomRoles.NotAssigned) continue;
                 if (Event.CheckRole(role) is false) continue;
                 if (option.Value.GetValue() is not 10)
-                    option.Value.SetValue(10);
+                    option.Value.SetValue(10, false, false);
             }
+            OptionItem.SyncAllOptions();
+            OptionSaver.Save();
         });
 
         var SetSuddenDeathMode = CreatePresetButton($"<#ffaf8a>{GetString("SetSuddenDeathMode")}</color>", new Color32(242, 125, 70, byte.MaxValue), 5, () =>
@@ -81,8 +92,10 @@ class PresetMenu
             {
                 int IsShrima = option.Key is CustomRoles.Jumper or CustomRoles.Evilgambler or CustomRoles.EvilHacker or CustomRoles.Mole or CustomRoles.QuickKiller or CustomRoles.Sniper
                 or CustomRoles.UltraStar or CustomRoles.Shyboy or CustomRoles.DoppelGanger or CustomRoles.Terrorist or CustomRoles.Vulture ? 10 : 0;
-                if (option.Value.GetValue() != IsShrima) option.Value.SetValue(IsShrima);
+                if (option.Value.GetValue() != IsShrima) option.Value.SetValue(IsShrima, false, false);
             }
+            OptionItem.SyncAllOptions();
+            OptionSaver.Save();
         });
     }
 

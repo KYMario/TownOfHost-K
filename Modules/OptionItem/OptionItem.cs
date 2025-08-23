@@ -14,6 +14,8 @@ namespace TownOfHost
         private static List<OptionItem> _allOptions = new(1024);
         public static IReadOnlyDictionary<int, OptionItem> FastOptions => _fastOptions;
         private static Dictionary<int, OptionItem> _fastOptions = new(1024);
+        public static IReadOnlyList<OptionItem> KillCoolOption => _killcooloption;
+        private static List<OptionItem> _killcooloption = new(1024);
         public static int CurrentPreset { get; set; }
 #if DEBUG
         public static bool IdDuplicated { get; private set; } = false;
@@ -127,6 +129,10 @@ namespace TownOfHost
                 IdDuplicated = true;
 #endif
                 Logger.Error($"ID:{id}が重複しています name:{name} : {_fastOptions[id].Name}", "OptionItem");
+            }
+            if (name == "KillCooldown")
+            {
+                _killcooloption.Add(this);
             }
         }
 
