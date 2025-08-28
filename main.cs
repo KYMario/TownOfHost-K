@@ -446,6 +446,7 @@ namespace TownOfHost
                 PhantomThief = CustomRoles.PhantomThief,
                 MilkyWay = CustomRoles.Vega,
                 MadBetrayer = CustomRoles.MadBetrayer,
+                Strawdoll = CustomRoles.Strawdoll,
 
                 HASTroll = CustomRoles.HASTroll,
                 TaskPlayerB = CustomRoles.TaskPlayerB,

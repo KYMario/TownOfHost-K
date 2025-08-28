@@ -230,7 +230,7 @@ namespace TownOfHost.Modules.ChatManager
         }
         public static void IntaskCheckSendMessage(PlayerControl player)
         {
-            if (!GameStates.CalledMeeting && PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
+            if (PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
             {
                 if (Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).Count() > 0)
                 {

@@ -20,7 +20,7 @@ namespace TownOfHost
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.FixedUpdate))]
     class FixedUpdatePatch
     {
-        static float timer;
+        public static float timer;//毎tick処理しなくて何とかなるものは10tickに1回位にしとく。
         static Dictionary<byte, string> oldname = new();
         private static StringBuilder Mark = new(20);
         private static StringBuilder Suffix = new(120);
@@ -49,20 +49,15 @@ namespace TownOfHost
                 }
             }
 
-            TargetArrow.OnFixedUpdate(player);
-            GetArrow.OnFixedUpdate(player);
-
             CustomRoleManager.OnFixedUpdate(player);
 
             var roleclass = player.GetRoleClass();
             var isAlive = player.IsAlive();
             var roleinfo = __instance.GetCustomRole().GetRoleInfo();
 
-            (roleclass as IUsePhantomButton)?.FixedUpdate(player);
-
             if (AmongUsClient.Instance.AmHost)
             {//実行クライアントがホストの場合のみ実行
-                if (__instance && GameStates.IsInTask)
+                if (GameStates.IsInTask)
                 {
                     if (ReportDeadBodyPatch.CanReport[__instance.PlayerId] && ReportDeadBodyPatch.WaitReport[__instance.PlayerId].Count > 0)
                     {
@@ -124,16 +119,17 @@ namespace TownOfHost
                             }
                         }
                     }
+                    //ターゲットのリセット
+                    if (isAlive && FallFromLadder.IsActiveLadderDeath)
+                    {
+                        FallFromLadder.FixedUpdate(player);
+                    }
+                    VentManager.UpdateDesyncVentCleaning(player, roleclass);
+                    TargetArrow.OnFixedUpdate(player);
+                    GetArrow.OnFixedUpdate(player);
+                    DoubleTrigger.OnFixedUpdate(player);
+                    (roleclass as IUsePhantomButton)?.FixedUpdate(player);
                 }
-
-                DoubleTrigger.OnFixedUpdate(player);
-
-                //ターゲットのリセット
-                if (GameStates.IsInTask && isAlive && Options.LadderDeath.GetBool())
-                {
-                    FallFromLadder.FixedUpdate(player);
-                }
-                VentManager.UpdateDesyncVentCleaning(player, roleclass);
 
                 Utils.ApplySuffix(__instance);
             }
@@ -150,15 +146,15 @@ namespace TownOfHost
                         //情報機器制限
                         if (DisableDevice.optTimeLimitDevices || DisableDevice.optTurnTimeLimitDevice)
                         {
-                            var nowuseing = true;
-                            if (DisableDevice.optTimeLimitCamAndLog > 0 && DisableDevice.GameLogAndCamTimer > DisableDevice.optTimeLimitCamAndLog)
-                                nowuseing = false;
-
-                            if (DisableDevice.optTurnTimeLimitCamAndLog > 0 && DisableDevice.TurnLogAndCamTimer > DisableDevice.optTurnTimeLimitCamAndLog)
-                                nowuseing = false;
-
                             if (DisableDevice.UseCount > 0)
                             {
+                                var nowuseing = true;
+                                if (DisableDevice.optTimeLimitCamAndLog > 0 && DisableDevice.GameLogAndCamTimer > DisableDevice.optTimeLimitCamAndLog)
+                                    nowuseing = false;
+
+                                if (DisableDevice.optTurnTimeLimitCamAndLog > 0 && DisableDevice.TurnLogAndCamTimer > DisableDevice.optTurnTimeLimitCamAndLog)
+                                    nowuseing = false;
+
                                 if (nowuseing)
                                 {
                                     if (DisableDevice.optTimeLimitDevices)
@@ -179,7 +175,7 @@ namespace TownOfHost
                     }
 
                     ChatManager.IntaskCheckSendMessage(player);
-                    if (!GameStates.IsMeeting)
+                    if (!GameStates.IsMeeting && timer is 7)
                     {
                         foreach (var data in ColorLovers.Alldatas.Values)
                         {
@@ -200,14 +196,17 @@ namespace TownOfHost
                     SuddenDeathMode.UpdateTeam();
                 }
 
-                var kiruta = GameStates.IsInTask && !GameStates.Intro && ((__instance.Is(CustomRoles.Amnesiac) && !(roleclass as Amnesiac).Realized) || __instance.Is(CustomRoles.OneWolf));
-                //キルターゲットの上書き処理
-                if (GameStates.IsInTask && !GameStates.Intro && ((!(__instance.Is(CustomRoleTypes.Impostor) || __instance.Is(CustomRoles.Egoist)) && (roleinfo?.IsDesyncImpostor ?? false)) || kiruta) && !__instance.Data.IsDead)
+                if (timer is 3)
                 {
-                    PlayerControl target = null;
-                    if (!__instance.CanUseKillButton()) target = null;
-                    else { target = __instance.TryGetKilltarget(); }
-                    HudManager.Instance.KillButton.SetTarget(target);
+                    var kiruta = GameStates.IsInTask && !GameStates.Intro && ((__instance.Is(CustomRoles.Amnesiac) && !(roleclass as Amnesiac).Realized) || __instance.Is(CustomRoles.OneWolf));
+                    //キルターゲットの上書き処理
+                    if (GameStates.IsInTask && !GameStates.Intro && ((!(__instance.Is(CustomRoleTypes.Impostor) || __instance.Is(CustomRoles.Egoist)) && (roleinfo?.IsDesyncImpostor ?? false)) || kiruta) && !__instance.Data.IsDead)
+                    {
+                        PlayerControl target = null;
+                        if (!__instance.CanUseKillButton()) target = null;
+                        else { target = __instance.TryGetKilltarget(); }
+                        HudManager.Instance.KillButton.SetTarget(target);
+                    }
                 }
             }
 

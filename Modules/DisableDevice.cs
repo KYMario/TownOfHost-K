@@ -259,7 +259,6 @@ namespace TownOfHost
         }
         public static void FixedUpdate()
         {
-            if (!DoDisable) return;
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 try

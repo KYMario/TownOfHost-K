@@ -86,7 +86,7 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
     private static void SetupOptionItem()
     {
         SoloWinOption.Create(RoleInfo, 8, defo: 1);
-        OptionAddWinEatCount = IntegerOptionItem.Create(RoleInfo, 9, OptionName.VultrueAddWinEatcount, new(0, 14, 1), 2, false).SetZeroNotation(OptionZeroNotation.Hyphen);
+        OptionAddWinEatCount = IntegerOptionItem.Create(RoleInfo, 9, OptionName.VultrueAddWinEatcount, new(0, 14, 1), 2, false).SetZeroNotation(OptionZeroNotation.Off);
         OptionWinEatCount = IntegerOptionItem.Create(RoleInfo, 10, OptionName.VultrueWinEatcount, new(1, 14, 1), 3, false);
         OptionEatShape = BooleanOptionItem.Create(RoleInfo, 11, OptionName.VultrueEatShape, true, false);
         OptionCanUseVent = BooleanOptionItem.Create(RoleInfo, 14, GeneralOption.CanVent, true, false);

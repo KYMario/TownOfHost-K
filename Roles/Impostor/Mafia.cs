@@ -44,7 +44,7 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
     public static void SetupCustomOption()
     {
         CanKillImpostorCount = IntegerOptionItem.Create(RoleInfo, 9, Option.MafiaCanKillImpostorCount, new(1, 3, 1), 2, false).SetValueFormat(OptionFormat.Players);
-        CanKillDay = IntegerOptionItem.Create(RoleInfo, 12, Option.MafiaCanKillDay, new(0, 30, 1), 0, false).SetZeroNotation(OptionZeroNotation.Hyphen).SetValueFormat(OptionFormat.day);
+        CanKillDay = IntegerOptionItem.Create(RoleInfo, 12, Option.MafiaCanKillDay, new(0, 30, 1), 0, false).SetZeroNotation(OptionZeroNotation.Off).SetValueFormat(OptionFormat.day);
         OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, new(0f, 180f, 0.5f), 30f, false).SetValueFormat(OptionFormat.Seconds);
         CanmakeSidekickMadMate = BooleanOptionItem.Create(RoleInfo, 11, GeneralOption.CanCreateSideKick, false, false);
     }

@@ -211,9 +211,13 @@ namespace TownOfHost
         {
             return ApplyFormat(CurrentValue.ToString());
         }
+        public string GetString(bool coloroff)
+        {
+            return ApplyFormat(CurrentValue.ToString(), coloroff);
+        }
         public virtual string GetTextString()
         {
-            return GetString();
+            return GetString(false);
         }
         public virtual int GetValue() => IsSingleValue ? SingleValue : AllValues[CurrentPreset];
 
@@ -225,7 +229,7 @@ namespace TownOfHost
             return IsHidden || (GameMode != CustomGameMode.All && GameMode != mode) || !IsEnabled();
         }
 
-        public string ApplyFormat(string value)
+        public string ApplyFormat(string value, bool coloroff = true)
         {
             if (value == "-0") value = "0";
             if (value == "0")
@@ -234,7 +238,7 @@ namespace TownOfHost
                 {
                     case OptionZeroNotation.Infinity: return "∞";
                     case OptionZeroNotation.Hyphen: return "―";
-                    case OptionZeroNotation.Off: return Translator.GetString("ColoredOff");
+                    case OptionZeroNotation.Off: return coloroff ? Translator.GetString("ColoredOff") : "×";
                     default: break;
                 }
             }

@@ -30,7 +30,6 @@ public static class SecurityCameraSystemTypeUpdateSystemPatch
         }
         if (amount == SecurityCameraSystemType.DecrementOp)
         {
-
             if (DisableDevice.UseCount <= 0) return true;
 
             var camerasDisabled = (MapNames)Main.NormalOptions.MapId switch
@@ -41,7 +40,6 @@ public static class SecurityCameraSystemTypeUpdateSystemPatch
                 _ => false,
             };
             if (!camerasDisabled) DisableDevice.UseCount--;
-
         }
         return true;
     }

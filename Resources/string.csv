@@ -182,6 +182,7 @@
 "SantaClaus","SantaClaus","サンタクロース"
 "Vulture","Vulture","ヴァルチャー"
 "Turncoat","Turncoat","裏切者"
+"Strawdoll","Strawdoll","藁人形"
 "#NeutralName"
 
 "#コンビネーション役職"
@@ -466,6 +467,7 @@
 "TurncoatInfo","It's all your fault...","全部キミが悪いんだよ..."
 "VegaInfo","Meet Altair...","彦星に会いたくて"
 "AltairInfo","Let's make this ship a shooting star","この船を流れ星にしよう"
+"StrawdollInfo","Use him as a substitute","アイツを身代わりに"
 "#NeutralInfo"
 
 "# HideAndSeek"
@@ -691,6 +693,7 @@
 "VentomanInfoLong","","設定数ベントに入ると勝利するただそれだけだ\nベント開閉やばれないようにベントに入ろう!"
 "VegaInfoLong","","<color=#b0c4de>彦星</color>とのコンビネーション役職。\n\n彦星に会いたい健気な織姫。\n1ターンに一度、彦星と合流しキルボタンを押すことで逢い引き出来る。\n一定回数逢い引きすると彦星にランダムなバフ属性がつく。\n彦星が死亡、または役職変化した場合会議後に後追いする"
 "AltairInfoLong","","<color=#f1d9d9>織姫</color>とのコンビネーション役職。\n\n織姫のために船を沈めようとする彦星。\nキルボタンを持ちベントを使える。\n織姫と合流し逢い引きする事で様々なバフ属性を貰える。\nまた、逢い引き回数に応じてキルクール短縮、キル可能役職がわかる等の強化が施される。"
+"StrawdollInfoLong","","変身した状態で設定回数キルを身代わりさせれば勝利。\n\nキルボタンでターゲットを指定し、ファントムボタンを押すことでターゲットに変身することができる。\n変身した状態でターゲットと近付くと自身が死亡する。\nターゲットが生存かつ変身中にキルされるとキルを防ぎ、ターゲットが代わりに死亡する\nその後、変身が解除され、発動地点にテレポートする。"
 "#NeutralInfoLong"
 
 "# ImpostorDescInfos"
@@ -754,6 +757,9 @@
 "JackalDescImpostorSideKick","","<u>インポスター以外で</u>"
 "ArsonistDesc","","キルボタンを使い一定時間密着すると、ターゲットに油を塗れる。\n生存しているすべてのクルーに油を塗ったら\n<b>{0}</b>ボタンを使用し船を燃やして勝利する。"
 "MadonnaDesc","","会議で自投票すると告白モードに変更できる。\n告白モードの状態で自身以外の誰かに投票すると、投票先のプレイヤーに告白することができる。\n相手がラバーズ,片思い,片思いの想い人のいずれかでなければ告白が成功。その相手とマドンナラバーズになれる。\n相手がラバーズ,片思い,片思いの想い人のいずれかだと告白は失敗。ラバーズになれず役職が<b>{0}</b>に変更される。\n\nまた、<b>{1}</b>日目終了時点で告白を行わないと死亡する。\nマドンナにラバーズは配役されない。"
+"StrawdollDesc","","変身した状態で<b>{0}</b>回キルを身代わりさせれば勝利。\n\nキルボタンでターゲットを指定し、ファントムボタンを押すことでターゲットに変身することができる。\n{1}\nターゲットが生存かつ変身中にキルされるとキルを防ぎ、ターゲットが代わりに死亡する。\nその後、変身が解除され、発動地点{2}にテレポートする。"
+"StrawdollDescDistance","","<u>変身した状態でターゲットに近づくと自身が死亡する。\n</u>"
+"StrawdollDescVent","","<u>の近くにあるベント内</u>"
 
 "# HideAndSeek"
 "HASFoxInfoLong","(HideAndSeek):\nThey win the game with other Roles (except Troll) only if they are alive at the game end.","(かくれんぼ):\nトロールを除くいずれかの陣営が勝利したときに生き残っていれば、勝利した陣営に追加で勝利することができる。","（躲猫猫）:\n狐狸活到最后便与获胜阵营一同获胜。","(躲貓貓):\n除了其他的中立陣營以外,只要狐妖活下來即可獲勝\n他們將跟著遊戲結束的獲勝陣營一起獲勝。","(Прятки):\nЕсли какая-либо роль, кроме Тролля побеждает и выживает, то победившая роль может одержать дополнительную победу.","(Esconde-Esconde): \nEles ganham adicionalmente com qualquer classe (exceto Troll), se estiverem vivos no final.",""
@@ -884,7 +890,7 @@
 "FixSpawnPacketSize","Set When Disconnect above 8-9 People","8～9人以上で切断される現象の修正"
 "FixSpawnPacketSizeInfo","<color=red>Disconnect Player","<color=red>切断者が発生した場合のみ"
 "ExIntroWeight","Intro Disconnect Rpc Weight","イントロの通信量を改善してみる"
-"ExIntroWeightInfo","Only Disconnect player on Intor.","イントロ落ちが発生した時のみ"
+"ExIntroWeightInfo","Only Disconnect player on Intor.","オートミュート環境下では非推奨"
 "ExRpcWeightR","Rpc Weight","Rpcの送信頻度を制限する"
 "ExCallMeetingBlackout","Meeting Blackout","会議前に視界を暗転させる"
 "UseZoom","UseZoom (ModClient Only)","ズームを有効にする(ModClient Only)"
@@ -1591,6 +1597,12 @@
 "VegaAddWin","","相方が勝利した場合その相方も追加勝利する"
 "WorkaholicCanWinAtDeath","Can Win Death","死亡後も勝利できる"
 "ChefTurnStartCooldown","TurnStart Cooldown","ターン開始後のクールダウン"
+"StrawdollTargetCooldown","SetTarget Cooldown","ターゲット指定のクールダウン"
+"StrawdollShapeCooldown","ShapeShift Cooldown","変身のクールダウン"
+"StrawdollWinKilledCount","Win KilledCount","勝利に必要なキルされる回数"
+"StrawdollTpToVent","Teleport to near vent","テレポート先をベント内にする"
+"StrawdollReprisaldistance","Reprisal Distance","自身が呪殺される距離"
+"StrawdollStoptime","Stop Time","噛まれた時に動けない時間"
 
 "## Unit Role Setting"
 "BraidKillCooldown","Bread Task Complete Driver Killcool","ブレイドが全タスク完了時のキルクール"
@@ -2001,6 +2013,8 @@
 "BalloonerLowerText2","UsePhantomButton → Bom!","ファントムボタン → 破裂!"
 "MadBetrayerLowerText","","インポスターをキルして裏切ることができる"
 "MadBetrayerLowerTextBetray","","裏切った。インポスターの代わりとなれ"
+"StrawdollSetTarget","Kill → SetTarget","キル → ターゲット指定"
+"StrawdollShape","Phantombutton → ShapeShift","ファントムボタン → 変身"
 
 "## かくれんぼ設定"
 "HideAndSeekOptions","Hide and Seek Settings","かくれんぼの設定","躲猫猫设置","躲貓貓設定","Настройки Пряток","Configurações do Esconde-Esconde",""
@@ -2266,6 +2280,7 @@
 "SheriffMissLog","Misfire for {0}","{0}に誤爆しちゃった！"
 "Log.PlagueDoctor","{0} => {1}%","{0}が{1}感染した..."
 "MadBetrayerLog","Betrayed Impostor.","インポスターを裏切った。"
+"StrawdollKilledLog","{0}","藁人形が{0}回切られた..."
 
 "## その他"
 

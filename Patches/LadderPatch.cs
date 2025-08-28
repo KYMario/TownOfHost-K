@@ -7,10 +7,12 @@ namespace TownOfHost
     public class FallFromLadder
     {
         public static Dictionary<byte, Vector3> TargetLadderData;
+        public static bool IsActiveLadderDeath;
         public static int Chance => (Options.LadderDeathChance as StringOptionItem).GetChance();
         [Attributes.GameModuleInitializer]
         public static void Reset()
         {
+            IsActiveLadderDeath = Options.LadderDeath.GetBool();
             TargetLadderData = new();
         }
         public static void OnClimbLadder(PlayerPhysics player, Ladder source)

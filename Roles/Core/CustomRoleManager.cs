@@ -842,6 +842,7 @@ public enum CustomRoles
     SantaClaus,
     TaskPlayerB,
     //DEBUG only Neutral.
+    Strawdoll,
     //HideAndSeek
     HASFox,
     HASTroll,

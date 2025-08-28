@@ -69,10 +69,10 @@ namespace TownOfHost.Roles.Impostor
             OptionLastTurnKillcool = FloatOptionItem.Create(RoleInfo, 10, OptionName.LimiterLastTurnKillCool, new(0f, 180f, 0.5f), 25f, false)
                 .SetValueFormat(OptionFormat.Seconds);
             OptionLimitMeeting = BooleanOptionItem.Create(RoleInfo, 15, OptionName.LimiterLimitMeeting, false, false);
-            OptionLimiterTurnLimit = IntegerOptionItem.Create(RoleInfo, 11, OptionName.LimiterTurnLimit, new(0, 15, 1), 3, false).SetZeroNotation(OptionZeroNotation.Hyphen).SetValueFormat(OptionFormat.day);
+            OptionLimiterTurnLimit = IntegerOptionItem.Create(RoleInfo, 11, OptionName.LimiterTurnLimit, new(0, 15, 1), 3, false).SetZeroNotation(OptionZeroNotation.Off).SetValueFormat(OptionFormat.day);
             OptionLimitTimer = FloatOptionItem.Create(RoleInfo, 13, OptionName.LimiterTimeLimit, new(0, 300, 5), 180, false).SetZeroNotation(OptionZeroNotation.Infinity)
                 .SetValueFormat(OptionFormat.Seconds);
-            OptionLimitKill = IntegerOptionItem.Create(RoleInfo, 14, OptionName.LimiterKillLimit, new(0, 15, 1), 4, false).SetZeroNotation(OptionZeroNotation.Hyphen);
+            OptionLimitKill = IntegerOptionItem.Create(RoleInfo, 14, OptionName.LimiterKillLimit, new(0, 15, 1), 4, false).SetZeroNotation(OptionZeroNotation.Off);
             Optionblastrange = FloatOptionItem.Create(RoleInfo, 12, OptionName.blastrange, new(0.5f, 20f, 0.5f), 5f, false);
         }
         public float CalculateKillCooldown() => KillCooldown;

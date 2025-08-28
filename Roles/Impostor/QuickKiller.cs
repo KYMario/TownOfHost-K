@@ -53,7 +53,7 @@ public sealed class QuickKiller : RoleBase, IImpostor
         OptionQuickKillTimer = FloatOptionItem.Create(RoleInfo, 11, OptionName.QuickKillerTimer, new(0.1f, 10f, 0.1f), 3f, false)
                 .SetValueFormat(OptionFormat.Seconds);
         OptionAbiltyCanUsePlayercount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.QuickKillerCanuseplayercount, new(0, 15, 1), 6, false)
-            .SetValueFormat(OptionFormat.Players).SetZeroNotation(OptionZeroNotation.Hyphen);
+            .SetValueFormat(OptionFormat.Players).SetZeroNotation(OptionZeroNotation.Off);
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
