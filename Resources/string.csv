@@ -239,6 +239,7 @@
 "DemonicTracker","DemonicTracker","デーモントラッカー"
 "DemonicVenter","DemonicVenter","デーモンベンター"
 "DemonicCrusher","DemonicCrusher","デーモンクラッシャー"
+"DemonicSupporter","DemonicSupporter","デーモンサポーター"
 "AsistingAngel","AsistingAngel","アシスティングエンジェル"
 
 "# バフ属性"
@@ -489,6 +490,7 @@
 "DemonicTrackerInfo","know where you are.","君の居場所はお見通し"
 "DemonicVenterInfo","with a pop","こっそ～りこっそ～り"
 "DemonicCrusherInfo","Dokaaaan!","どっかーん！"
+"DemonicSupporterInfo","Carry out sabotage","サボタージュを起こそう"
 "AsistingAngelInfo","will lead you to victory.","君を勝たせてあげる..."
 
 "# 属性"
@@ -776,6 +778,7 @@
 "DemonicTrackerInfoLong","","(幽霊役職):\n死亡したマッドメイトにしか付与されない。\n守護能力の使用相手の居場所がインポスターに通知されるようになる。"
 "DemonicCrusherInfoLong","","(幽霊役職):\n死亡したマッドメイトにしか付与されない。\n守護能力を発動しようとすると\n一定時間生存者全員情報機器が使えなくなる。"
 "DemonicVenterInfoLong","","(幽霊役職):\n死亡したマッドメイトにしか付与されない。\n守護能力を発動しようとすると\n使用相手から一番近いベントが開く"
+"DemonicSupporterInfoLong","","(幽霊役職):\n死亡したマッドメイトにしか付与されない。\nサボタージュが使用可能になる。"
 "AsistingAngelInfoLong","","(幽霊役職):\n死亡したクルー/ニュートラルにしか付与されない。\n初めての守護能力を使用したアシスト対象が勝利すると自身も追加勝利する。\n\nアシスト対象選択後、守護能力をアシスト対象に発動しようとすると、\nアシスト対象に一定時間のキルガードを付与する。\nアシスト対象以外に発動した場合、\n発動した時の位置がアシスト対象者に通知される。\n能力を使用した場合、次のクールダウンが増加する。\n\n幽霊,幽霊役職設定に関わらず他人の役職などが見えない。\n元の勝利条件は無くなり、タスクもなくなる。"
 "GuardianAngelInfoLong","","(幽霊役職):\n死亡したクルー陣営にしか付与されない。\n一定時間守護能力で守った人がキルされそうになった時、キルをバリアで防ぐ。"
 

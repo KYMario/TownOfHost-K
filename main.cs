@@ -316,6 +316,7 @@ namespace TownOfHost
                     {CustomRoles.GuardianAngel,"#7cc0fc"},
                     {CustomRoles.DemonicTracker,"#824880"},
                     {CustomRoles.DemonicCrusher,"#522886"},
+                    {CustomRoles.DemonicSupporter , "#351f1f"},
                     { CustomRoles.DemonicVenter ,"#635963"},
                     {CustomRoles.AsistingAngel,"#8da0b6"},
 

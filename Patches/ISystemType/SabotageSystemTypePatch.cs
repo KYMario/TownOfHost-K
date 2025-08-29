@@ -32,7 +32,7 @@ public static class SabotageSystemTypeUpdateSystemPatch
             return false;
         }
         var roleClass = player.GetRoleClass();
-        if (roleClass is IKiller killer)
+        if (roleClass is IKiller killer && !player.Is(CustomRoles.DemonicSupporter))
         {
             //そもそもサボタージュボタン使用不可ならサボタージュ不可
             if (!killer.CanUseSabotageButton()) return false;
@@ -59,7 +59,7 @@ public static class SabotageSystemTypeUpdateSystemPatch
     private static bool CanSabotage(PlayerControl player)
     {
         //サボタージュ出来ないキラー役職はサボタージュ自体をキャンセル
-        if (!player.Is(CustomRoleTypes.Impostor))
+        if (!player.Is(CustomRoleTypes.Impostor) && !player.Is(CustomRoles.DemonicSupporter))
         {
             return false;
         }

@@ -105,6 +105,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.GhostRumour, "Rum");
                 roleCommands.Add(CustomRoles.GuardianAngel, "Gan");
                 roleCommands.Add(CustomRoles.DemonicCrusher, "DCr");
+                roleCommands.Add(CustomRoles.DemonicSupporter, "DSu");
                 roleCommands.Add(CustomRoles.DemonicTracker, "DTr");
                 roleCommands.Add(CustomRoles.DemonicVenter, "Dve");
                 roleCommands.Add(CustomRoles.AsistingAngel, "AsA");

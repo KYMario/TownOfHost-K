@@ -211,6 +211,7 @@ namespace TownOfHost
                         or CustomRoles.DemonicTracker
                         or CustomRoles.DemonicVenter
                         or CustomRoles.DemonicCrusher
+                        or CustomRoles.DemonicSupporter
                         or CustomRoles.AsistingAngel
                         ;
         }

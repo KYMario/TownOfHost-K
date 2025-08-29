@@ -760,6 +760,7 @@ namespace TownOfHost
                 CustomRoles.GuardianAngel => AddonInfo(role),
                 CustomRoles.DemonicTracker => AddonInfo(role),
                 CustomRoles.DemonicCrusher => AddonInfo(role),
+                CustomRoles.DemonicSupporter => AddonInfo(role),
                 CustomRoles.DemonicVenter => AddonInfo(role),
                 CustomRoles.AsistingAngel => AddonInfo(role),
 

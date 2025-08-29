@@ -15,6 +15,7 @@ class GhostRoleCore
         DemonicCrusher.Init();
         DemonicTracker.Init();
         DemonicVenter.Init();
+        DemonicSupporter.Init();
         Ghostbuttoner.Init();
         GhostNoiseSender.Init();
         GhostReseter.Init();
@@ -97,6 +98,7 @@ class GhostRoleCore
         DemonicTracker.SetupCustomOption();
         DemonicCrusher.SetupCustomOption();
         DemonicVenter.SetupCustomOption();
+        DemonicSupporter.SetupCustomOption();
         AsistingAngel.SetupCustomOption();
         Ghostbuttoner.SetupCustomOption();
         GhostNoiseSender.SetupCustomOption();

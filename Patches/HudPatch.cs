@@ -572,7 +572,7 @@ namespace TownOfHost
             if (opts.Mode is MapOptions.Modes.Normal or MapOptions.Modes.Sabotage)
             {
                 var player = PlayerControl.LocalPlayer;
-                if (player.GetRoleClass() is IKiller killer && killer.CanUseSabotageButton())
+                if ((player.GetRoleClass() is IKiller killer && killer.CanUseSabotageButton()) || player.GetPlayerState().GhostRole is CustomRoles.DemonicSupporter)
                     opts.Mode = MapOptions.Modes.Sabotage;
                 else
                     opts.Mode = MapOptions.Modes.Normal;

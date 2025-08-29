@@ -80,6 +80,24 @@ namespace TownOfHost.Roles.Ghost
                     UtilsGameLog.AddGameLog($"{role}", string.Format(GetString("GhostRole.log"), UtilsName.GetPlayerColor(pc), Utils.ColorString(UtilsRoleText.GetRoleColor(role), UtilsRoleText.GetRoleName(role))));
                     UtilsGameLog.LastLogRole[pc.PlayerId] += $"<size=45%>=> {Utils.ColorString(UtilsRoleText.GetRoleColor(role), UtilsRoleText.GetRoleName(role))}</size>";
 
+                    if (role is CustomRoles.DemonicSupporter)
+                    {
+                        if (!IsDead)
+                        {
+                            pc.RpcSetRole(RoleTypes.ImpostorGhost, true);
+                        }
+                        else
+                        {
+                            _ = new LateTask(() =>
+                                {
+                                    if (!GameStates.CalledMeeting)
+                                    {
+                                        pc.RpcSetRole(RoleTypes.ImpostorGhost, true);
+                                    }
+                                }, 1.4f, "Fix sabotage");
+                        }
+                        return;
+                    }
                     if (!IsDead)
                     {
                         pc.RpcSetRole(RoleTypes.GuardianAngel, true);

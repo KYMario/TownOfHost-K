@@ -275,7 +275,7 @@ namespace TownOfHost
 
                     if (!isalive && pc.IsGhostRole())
                     {
-                        setrole = RoleTypes.GuardianAngel;
+                        setrole = pc.GetPlayerState().GhostRole is CustomRoles.DemonicSupporter ? RoleTypes.ImpostorGhost : RoleTypes.GuardianAngel;
                     }
 
                     sender.StartRpc(pc.NetId, RpcCalls.SetRole)
@@ -302,7 +302,7 @@ namespace TownOfHost
                     else
                     {
                         Player.RpcExileV2();
-                        if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.IsGhostRole())
+                        if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.GetPlayerState().GhostRole is not CustomRoles.NotAssigned and not CustomRoles.DemonicSupporter)
                         {
                             Player.RpcSetRole(RoleTypes.GuardianAngel, true);
                             Player.RpcResetAbilityCooldown();

@@ -491,6 +491,7 @@ public static class CustomRoleManager
                 case CustomRoles.DemonicTracker: DemonicTracker.Add(pc.PlayerId); break;
                 case CustomRoles.DemonicVenter: DemonicVenter.Add(pc.PlayerId); break;
                 case CustomRoles.DemonicCrusher: DemonicCrusher.Add(pc.PlayerId); break;
+                case CustomRoles.DemonicSupporter: DemonicSupporter.Add(pc.PlayerId); break;
                 case CustomRoles.AsistingAngel: AsistingAngel.Add(pc.PlayerId); break;
             }
         }
@@ -746,7 +747,7 @@ public enum CustomRoles
     MadChanger,
     MadSuicide,
     //DEBUG only Madmate
-   MadBetrayer,
+    MadBetrayer,
     //Crewmate(Vanilla)
     Engineer,
     Scientist,
@@ -901,6 +902,7 @@ public enum CustomRoles
     DemonicCrusher,
     DemonicTracker,
     DemonicVenter,
+    DemonicSupporter,
     //CrewMateGhost
     Ghostbuttoner,
     GhostNoiseSender,
