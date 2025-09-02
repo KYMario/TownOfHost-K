@@ -540,6 +540,7 @@ namespace TownOfHost
             var template = GetTeamplate();
             if (template == null) return;
             var LabelBackgroundSprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.LabelBackground.png");
+            var ShowOptionSprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.ShowOption.png");
 
             foreach (var option in OptionItem.AllOptions)
             {
@@ -634,8 +635,8 @@ namespace TownOfHost
                             button.buttonText.DestroyTranslator();
                             button.buttonText.text = " ";
                             button.gameObject.name = $"{option.Name}OptionButton";
-                            button.transform.localPosition = new Vector3(-2.06f * Widthratio, 0.0446f, -2);
-                            button.transform.localScale = new Vector3(1.64f * Widthratio, 1.14f * Heightratio, 1f);
+                            button.transform.localPosition = new Vector3(-2.46f * Widthratio, 0.0446f, -2);
+                            button.transform.localScale = new Vector3(1.44f * Widthratio, 1.14f * Heightratio, 1f);
                             button.activeSprites.GetComponent<SpriteRenderer>().sprite = LabelBackgroundSprite;
                             button.activeSprites.GetComponent<SpriteRenderer>().color = UtilsRoleText.GetRoleColor(option.CustomRole).ShadeColor(0.2f).SetAlpha(0.35f);
 
@@ -727,10 +728,26 @@ namespace TownOfHost
                                         if (HudManager.Instance.TaskPanel.open is false || Nowinfo == oldinfo)
                                             HudManager.Instance.TaskPanel.ToggleOpen();
                                     }));
-                                    infobutton.gameObject.transform.SetLocalX(0);
+                                    infobutton.gameObject.transform.SetLocalX(-0.1f);
                                     infobutton.gameObject.transform.SetLocalZ(-50);
 
                                     roleInfobutton.Add(option.CustomRole, infobutton);
+                                }
+                            }
+                            {
+                                var Showoptionbutton = Object.Instantiate(stringOption.MinusBtn, stringOption.transform);
+                                {
+                                    Showoptionbutton.gameObject.name = $"{option.Name}-SetOption";
+                                    Showoptionbutton.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "";
+                                    Showoptionbutton.buttonSprite.sprite = ShowOptionSprite;
+
+                                    Showoptionbutton.OnClick = new();
+                                    Showoptionbutton.OnClick.AddListener((System.Action)(() =>
+                                    {
+                                        button.OnClick.Invoke();
+                                    }));
+                                    Showoptionbutton.gameObject.transform.SetLocalX(-0.6f);
+                                    Showoptionbutton.gameObject.transform.SetLocalZ(-50);
                                 }
                             }
                         }
