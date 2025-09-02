@@ -71,6 +71,7 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
     public bool CanUseImpostorVentButton() => OptionCanusevent.GetBool();
     public bool CanUseSabotageButton() => false;
     public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
+    bool IKiller.IsKiller => false;
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
         var (killer, target) = info.AttemptTuple;
