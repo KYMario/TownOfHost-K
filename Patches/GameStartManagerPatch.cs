@@ -206,7 +206,7 @@ namespace TownOfHost
                 if (__instance.RulesPresetText != null && timerLabel != null)
                 {
                     timerLabel.DestroyTranslator();
-                    timerLabel.text = "タイマー";
+                    timerLabel.text = GetString("SuffixMode.Timer").RemoveDeltext("ルーム");
                     __instance.RulesPresetText.DestroyTranslator();
                     __instance.RulesPresetText.text = GetTimerString();
                 }

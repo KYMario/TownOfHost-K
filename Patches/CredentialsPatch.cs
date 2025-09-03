@@ -40,7 +40,7 @@ namespace TownOfHost
 
                 credentialsText.alignment = TextAlignmentOptions.TopRight;
 
-                if (FixedUpdatePatch.timer is 1 && GameStates.InGame)
+                if ((FixedUpdatePatch.timer is 1 && GameStates.InGame) || GameStates.IsLobby)
                 {
                     sb.Clear();
 

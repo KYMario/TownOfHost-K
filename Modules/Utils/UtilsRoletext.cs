@@ -630,7 +630,7 @@ namespace TownOfHost
                             CountTypes.MilkyWay => Roles.Neutral.Vega.TeamText,
                             _ => "...?",
                         };
-                        return string.Format(GetString("fortuihourole"), playername, team, GetString("fortuihouisnotrole"));
+                        return string.Format(GetString("fortuihourole"), playername, team, GetString("fortuihouisrole"));
                 }
             }
 

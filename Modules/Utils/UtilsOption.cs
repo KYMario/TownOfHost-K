@@ -196,13 +196,13 @@ namespace TownOfHost
                         if (opt.Name is "RoleAssigningAlgorithm" or "LimitMeetingTime" or "LowerLimitVotingTime")
                             sb.Append($"\n▶{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
                         else
-                        if (opt.Name is "KillFlashDuration")
+                        if (opt.Name is "KillFlashDuration" or "DefaultShapeshiftCooldown" or "DefaultShapeshiftDuration" or "DefaultEngineerCooldown" or "DefaultEngineerInVentMaxTime")
                             sb.Append($"\n◇{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
                         else
                         if (opt.Name is "KickModClient" or "KickPlayerFriendCodeNotExist" or "ApplyDenyNameList" or "ApplyBanList")
                             sb.Append($"\n◆{opt.GetName(true)}\n");
                         else if (opt.Name is "TaskBattleSet" or "ONspecialMode" or "ExperimentalMode" or "MadmateOption" or "GhostRoleOptions"
-                                or "MapModification" or "Sabotage" or "RandomMapsMode" or "GhostOptions" or "MeetingAndVoteOpt" or "DevicesOption" or "ConvenientOptions")
+                                or "MapModification" or "TaskOption" or "Sabotage" or "RandomMapsMode" or "GhostOptions" or "MeetingAndVoteOpt" or "DevicesOption" or "ConvenientOptions")
                             sb.Append($"\n■{opt.GetName(false)}\n");
                         else sb.Append($"\n・{opt.GetName(true)}\n");
                         ShowChildrenSettings(opt, ref sb, 1, getbool: true);

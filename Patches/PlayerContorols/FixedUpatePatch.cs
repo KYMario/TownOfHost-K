@@ -196,7 +196,7 @@ namespace TownOfHost
                     SuddenDeathMode.UpdateTeam();
                 }
 
-                if (timer is 3)
+                //if (timer is 3)
                 {
                     var kiruta = GameStates.IsInTask && !GameStates.Intro && ((__instance.Is(CustomRoles.Amnesiac) && !(roleclass as Amnesiac).Realized) || __instance.Is(CustomRoles.OneWolf));
                     //キルターゲットの上書き処理

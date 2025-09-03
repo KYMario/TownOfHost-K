@@ -71,7 +71,7 @@ namespace TownOfHost
                 foreach (var option in OptionItem.AllOptions)
                 {
                     if (Event.OptionLoad.Contains(option.Name) && !Event.Special) option.SetValue(0);
-                    if (Event.EventRoles.ContainsKey(option.CustomRole)) option.SetValue(0);
+                    if (Event.CheckRole(option.CustomRole) is false) option.SetValue(0);
                 }
             }
         }

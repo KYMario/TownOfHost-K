@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using HarmonyLib;
 using UnityEngine;
 
@@ -158,6 +157,7 @@ namespace TownOfHost
         public static OptionItem CanSeeImpostorRole;
         public static OptionItem AllPlayerSkinShuffle;
 
+        public static OptionItem TaskOption;
         public static OptionItem UploadDataIsLongTask;
         // タスク無効化
         public static OptionItem DisableTasks;
@@ -759,11 +759,16 @@ namespace TownOfHost
             MaxInVentMode = BooleanOptionItem.Create(107011, "MaxInVentMode", false, TabGroup.MainSettings, false).SetParent(MapModification);
             MaxInVentTime = FloatOptionItem.Create(107012, "MaxInVentTime", new(3f, 300, 0.5f), 30f, TabGroup.MainSettings, false).SetValueFormat(OptionFormat.Seconds).SetParent(MaxInVentMode);
 
+            //タスク設定
+            TaskOption = BooleanOptionItem.Create(107199, "TaskOption", false, TabGroup.MainSettings, false)
+                .SetGameMode(CustomGameMode.All)
+                .SetColorcode("#eada2eff")
+                .SetHeader(true);
             // タスク無効化
             UploadDataIsLongTask = BooleanOptionItem.Create(107200, "UploadDataIsLongTask", false, TabGroup.MainSettings, false)
                 .SetGameMode(CustomGameMode.All)
-                .SetParent(MapModification);
-            DisableTasks = BooleanOptionItem.Create(107201, "DisableTasks", false, TabGroup.MainSettings, false).SetParent(MapModification)
+                .SetParent(TaskOption);
+            DisableTasks = BooleanOptionItem.Create(107201, "DisableTasks", false, TabGroup.MainSettings, false).SetParent(TaskOption)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#6b6b6b");
             DisableSwipeCard = BooleanOptionItem.Create(107202, "DisableSwipeCardTask", false, TabGroup.MainSettings, false).SetParent(DisableTasks)
@@ -1285,7 +1290,7 @@ namespace TownOfHost
                 }
             }
             assignCountRule ??= new(1, 15, 1);
-            var from = "<line-height=25%><size=25%>\n</size><size=60%><pos=50%></color> <b>" + fromtext + "</b></size>";
+            var from = "<line-height=25%><size=25%>\n</size><size=60%><pos=10%></color> <b>" + fromtext + "</b></size>";
 
             var spawnOption = IntegerOptionItem.Create(id, combination == CombinationRoles.None ? role.ToString() : combination.ToString(), new(0, 100, 10), 0, tab, false, from)
                 .SetColorcode(UtilsRoleText.GetRoleColorCode(role))
