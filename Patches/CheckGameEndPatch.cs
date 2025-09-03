@@ -16,6 +16,7 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Ghost;
+using TownOfHost.Roles.Impostor;
 
 namespace TownOfHost
 {
@@ -407,6 +408,13 @@ namespace TownOfHost
                             break;
                         }
                     }
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    if (pc.GetRoleClass() is Assassin assassin && !pc.IsAlive())
+                    {
+                        Imp += assassin.NowState is Assassin.AssassinMeeting.WaitMeeting or Assassin.AssassinMeeting.CallMetting or Assassin.AssassinMeeting.Guessing ? 1 : 0;
+                    }
+                }
 
                 if (Imp == 0 && FoxAndCrew == 0 && Jackal == 0 && Remotekiller == 0 && MilkyWay == 0) //全滅
                 {

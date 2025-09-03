@@ -148,7 +148,7 @@ namespace TownOfHost
                     while (parent != null && enabled)
                     {
                         i++;
-                        enabled = parent.GetBool() || (parent.CustomRole.IsAddOn() && option.Name is not "%roleTypes%Maximum" and not "Maximum" and not "FixedRole");
+                        enabled = parent.CustomRole is not CustomRoles.NotAssigned || parent.GetBool() || (parent.CustomRole.IsAddOn() && option.Name is not "%roleTypes%Maximum" and not "Maximum" and not "FixedRole");
                         parent = parent.Parent;
                     }
 
@@ -261,7 +261,7 @@ namespace TownOfHost
                     //起動時以外で表示/非表示を切り替える際に使う
                     if (enabled)
                     {
-                        if (ActiveOnlyMode || ShowFilter.NowSettingRole is not CustomRoles.NotAssigned)
+                        if (ActiveOnlyMode || (ShowFilter.NowSettingRole is not CustomRoles.NotAssigned && option.CustomRole.IsSubRole()))
                         {
                             if (isroleoption)
                             {
@@ -314,7 +314,8 @@ namespace TownOfHost
                     }
                     if (isroleoption && ShowFilter.NosetOptin is FilterOptionItem filterOption)
                     {
-                        if (filterOption.NotAssin.Contains(option.CustomRole))
+                        var notassings = filterOption?.NotAssin?.Invoke() ?? [];
+                        if (notassings.Contains(option.CustomRole))
                         {
                             enabled = false;
                         }

@@ -1,8 +1,9 @@
 using AmongUs.Data;
 using AmongUs.GameOptions;
 using HarmonyLib;
-
+using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Neutral;
 
 namespace TownOfHost
@@ -266,6 +267,10 @@ namespace TownOfHost
                     modinit.outfit = Camouflage.PlayerSkins.TryGetValue(result.Value.Exiled.PlayerId, out var skin) ? skin : result.Value.Exiled.DefaultOutfit;
                     modinit.voteTie = false;
                     SecondBegin = true;
+                    if (result.Value.Exiled.Object?.GetRoleClass() is Assassin assassin && Assassin.NowUse)
+                    {
+                        modinit.outfit.PlayerName = MeetingVoteManager.Voteresult + "<size=0>";
+                    }
                     __instance.Begin(modinit);
                     return false;
                 }

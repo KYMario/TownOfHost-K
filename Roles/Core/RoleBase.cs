@@ -57,7 +57,7 @@ public abstract class RoleBase : IDisposable
         MyState = PlayerState.GetByPlayerId(player.PlayerId);
         MyTaskState = MyState.GetTaskState();
 
-        CustomRoleManager.AllActiveRoles.Add(Player.PlayerId, this);
+        CustomRoleManager.AllActiveRoles.TryAdd(Player.PlayerId, this);
     }
 #pragma warning disable CA1816
     public void Dispose()

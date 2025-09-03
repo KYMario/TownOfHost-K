@@ -1323,6 +1323,9 @@
 "CharismaStarGatherMaxCount","Gather Max Count","集合能力の使用回数",
 "CharismaStarNotGatherPlayerKill","Not Gather Player Kill","集合出来ないプレイヤーは自爆する",
 "CharismaStarCanAllPlayerGather","Can All Player Gather","全員を一気に集合できる"
+"AssasinCanCallMeetingKill","Can Call Meeting Kill","追放以外でもアサシン会議を起こす"
+"AssasinHasOtherRole","Has Other Role","他の役職の能力も持つ"
+"AssassinHaveRole","Role","併せ持つ役職"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
@@ -2460,3 +2463,5 @@
 "ModSettingInfo_Camratio","It is not 16:9 aspect ratio!!\nThe UI will be broken!","画面比率が16:9のものではありません!!\nUIが崩れます!"
 "Vent","Vent","Vent"
 "ArsonistLogInfo","{0} Doused.","{0}に油が塗られた"
+"AssassinGuessCollect","{0} was Merlin...","{0}はマーリンだった。"
+"AssassinGuessNonCollect","{0} was not Merlin...","{0}はマーリンではなかった..."

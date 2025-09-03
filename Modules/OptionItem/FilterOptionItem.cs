@@ -13,11 +13,11 @@ namespace TownOfHost
         public Dictionary<CustomRoles, int> Selections;
         public List<CustomRoles> Sele;
         public static Dictionary<CustomRoles, int> Selection;
-        public CustomRoles[] NotAssin;
+        public Func<CustomRoles[]> NotAssin;
         public (bool impostor, bool madmate, bool crewmate, bool neutral) roles;
 
         // コンストラクタ
-        public FilterOptionItem(int id, string name, int defaultValue, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing)
+        public FilterOptionItem(int id, string name, int defaultValue, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null)
         : base(id, name, defaultValue, tab, isSingleValue)
         {
             Selections = new Dictionary<CustomRoles, int>
@@ -44,11 +44,11 @@ namespace TownOfHost
         )
         {
             return new FilterOptionItem(
-                id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, notassing
+                id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, () => notassing
             );
         }
         public static FilterOptionItem Create(
-            int id, Enum name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+            int id, Enum name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null
         )
         {
             return new FilterOptionItem(
@@ -56,7 +56,7 @@ namespace TownOfHost
             );
         }
         public static FilterOptionItem Create(
-            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null
         )
         {
             var opt = new FilterOptionItem(
@@ -67,7 +67,7 @@ namespace TownOfHost
             return opt;
         }
         public static FilterOptionItem Create(
-            SimpleRoleInfo roleInfo, int idOffset, string name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+            SimpleRoleInfo roleInfo, int idOffset, string name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null
         )
         {
             var opt = new FilterOptionItem(
@@ -110,11 +110,17 @@ namespace TownOfHost
                 SetValue(0);
                 return;
             }
-            if (NotAssin.Contains(role) && NotAssin.Count() > 0)
+            if (NotAssin is null)
+            {
+                Logger.Info($"aaa", "aaa");
+            }
+            var notassings = NotAssin?.Invoke() ?? [];
+            if (notassings.Contains(role) && notassings.Count() > 0)
             {
                 SetValue(0);
                 return;
             }
+            Logger.Info(notassings.Count().ToString(), "aaa");
 
             switch (role.GetCustomRoleTypes())
             {

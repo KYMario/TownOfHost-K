@@ -30,12 +30,10 @@ static class Event
     /// </summary>
     /// <returns>ロールが使用可能ならtrueを返します</returns>
     public static bool CheckRole(CustomRoles role) => !EventRoles.TryGetValue(role, out var check) || check.Invoke();
-    private static Dictionary<CustomRoles, Func<bool>> EventRoles = new()
+    public static Dictionary<CustomRoles, Func<bool>> EventRoles = new()
     {
         {CustomRoles.Altair,() => Tanabata},
         {CustomRoles.Vega,() => Tanabata},
-        {CustomRoles.Assassin , () => DebugModeManager.AmDebugger},
-        {CustomRoles.Merlin , () => DebugModeManager.AmDebugger},
         {CustomRoles.SpeedStar , () => Special},
         {CustomRoles.Chameleon , () => Special},
         {CustomRoles.Cakeshop , () => NowRoleEvent}
