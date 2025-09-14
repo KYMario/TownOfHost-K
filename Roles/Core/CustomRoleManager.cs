@@ -448,6 +448,7 @@ public static class CustomRoleManager
             var roleClass = roleInfo.CreateInstance(player);
             roleClass.Add();
             if (IsGame) roleClass.ChengeRoleAdd();
+            if (roleClass is ISelfVoter selfVoter) selfVoter.AddSelfVoter(player);
         }
         else
         {

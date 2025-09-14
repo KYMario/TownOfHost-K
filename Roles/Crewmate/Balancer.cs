@@ -8,10 +8,12 @@ using TownOfHost.Roles.Core;
 using static TownOfHost.Modules.SelfVoteManager;
 using static TownOfHost.Modules.MeetingVoteManager;
 using static TownOfHost.Modules.MeetingTimeManager;
+using Hazel;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class Balancer : RoleBase
+public sealed class Balancer : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -74,7 +76,6 @@ public sealed class Balancer : RoleBase
         OptionCanMeetingAbility = BooleanOptionItem.Create(RoleInfo, 12, Option.BalancerCanUseMeetingAbility, false, false);
     }
 
-    public override void Add() => AddSelfVotes(Player);
     public override void OnDestroy()
     {
         Id = 255;
@@ -89,7 +90,7 @@ public sealed class Balancer : RoleBase
             Main.nickName = nickname;
         nickname = null;
     }
-
+    bool ISelfVoter.CanUseVoted() => Canuseability() && !used && Id is not 255 && (CanUseAllAlive || GameStates.AlreadyDied);
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

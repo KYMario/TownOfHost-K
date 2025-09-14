@@ -5,10 +5,12 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using static TownOfHost.Modules.SelfVoteManager;
+using Hazel;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class Inspector : RoleBase
+public sealed class Inspector : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -84,7 +86,6 @@ public sealed class Inspector : RoleBase
         DeathTimer,
         TargetRoom,
     }
-    public override void Add() => AddSelfVotes(Player);
     private static void SetupOptionItem()
     {
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, GeneralOption.OptionCount, new(1, 99, 1), 1, false)
@@ -220,6 +221,7 @@ public sealed class Inspector : RoleBase
         Isdie = false;
         TargetPlayerId = byte.MaxValue;
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && TargetPlayerId is byte.MaxValue && Awakened;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

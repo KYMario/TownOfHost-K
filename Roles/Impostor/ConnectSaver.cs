@@ -13,7 +13,7 @@ namespace TownOfHost.Roles.Impostor;
 //タゲ相手の狙われてる設定orタゲ相手が分かる設定追加する
 //↑キルク変動つけたから、これでバランス見たい感じはある。
 
-public sealed class ConnectSaver : RoleBase, IImpostor
+public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -68,7 +68,6 @@ public sealed class ConnectSaver : RoleBase, IImpostor
         OptionMinimumPlayerCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.ConnectSaverPlayerCount, new(0, 15, 1), 6, false).SetValueFormat(OptionFormat.Players);
         OptionDeathReason = StringOptionItem.Create(RoleInfo, 13, OptionName.ConnectSaverDeathReason, cRolesString, 3, false);
     }
-    public override void Add() => AddSelfVotes(Player);
     private void SendRPC()
     {
         using var sender = CreateSender();
@@ -99,6 +98,7 @@ public sealed class ConnectSaver : RoleBase, IImpostor
         }
         return "";
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && !(PlayerCatch.AllAlivePlayersCount < OptionMinimumPlayerCount.GetInt()) && Max > usedcount && (target1 == byte.MaxValue || target2 == byte.MaxValue);
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

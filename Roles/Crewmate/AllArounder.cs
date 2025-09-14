@@ -15,7 +15,7 @@ using static TownOfHost.Modules.SelfVoteManager;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSeeable, IMeetingTimeAlterable, IAdditionalWinner
+public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSeeable, IMeetingTimeAlterable, IAdditionalWinner, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -219,6 +219,9 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
 
     #endregion
     #region Sheriff
+    bool ISelfVoter.CanUseVoted() => OptionSheriffShotLimit.GetInt() > NowCount && CanUseAbility() && NowRole is NowMode.MeetingSheriff && (MeetingCount < Option1MeetingMaximum.GetInt() || Option1MeetingMaximum.GetInt() == 0)
+    && Canuseability() && CanUseAbility();
+
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;
@@ -468,7 +471,6 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         MeetingCount = 0;
         NowCount = 0;
         UsedSkillCount = 0;
-        AddSelfVotes(Player);
     }
     void SetRole()
     {

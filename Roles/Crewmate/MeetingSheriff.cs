@@ -9,10 +9,11 @@ using TownOfHost.Roles.Neutral;
 using TownOfHost.Modules.ChatManager;
 using static TownOfHost.Modules.SelfVoteManager;
 using TownOfHost.Modules;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class MeetingSheriff : RoleBase
+public sealed class MeetingSheriff : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -76,7 +77,6 @@ public sealed class MeetingSheriff : RoleBase
         Option1MeetingMaximum = IntegerOptionItem.Create(RoleInfo, 14, GeneralOption.MeetingMaxTime, new(0, 99, 1), 0, false)
             .SetValueFormat(OptionFormat.Times).SetZeroNotation(OptionZeroNotation.Infinity);
     }
-    public override void Add() => AddSelfVotes(Player);
     private void SendRPC()
     {
         using var sender = CreateSender();
@@ -98,6 +98,8 @@ public sealed class MeetingSheriff : RoleBase
         }
         return "";
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > Usedcount && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < OneMeetingMaximum || OneMeetingMaximum == 0);
+
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

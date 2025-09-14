@@ -7,10 +7,12 @@ using Il2CppInterop.Runtime.InteropTypes.Arrays;
 
 using TownOfHost.Roles.Core;
 using static TownOfHost.Modules.SelfVoteManager;
+using Hazel;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class Satellite : RoleBase
+public sealed class Satellite : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -48,7 +50,6 @@ public sealed class Satellite : RoleBase
     }
     public override void Add()
     {
-        AddSelfVotes(Player);
         maximum = OptionMaximum.GetInt();
         skillusetaskcount = OptiontaskCount.GetInt();
         meetingmaximum = Option1MeetingMaximum.GetInt();
@@ -69,7 +70,8 @@ public sealed class Satellite : RoleBase
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, OptionName.SatelliteCount, new(1, 99, 1), 2, false)
             .SetValueFormat(OptionFormat.Times);
         Option1MeetingMaximum = IntegerOptionItem.Create(RoleInfo, 11, GeneralOption.MeetingMaxTime, new(0, 99, 1), 1, false)
-            .SetValueFormat(OptionFormat.Times);
+            .SetValueFormat(OptionFormat.Times)
+            .SetZeroNotation(OptionZeroNotation.Infinity);
         OptiontaskCount = IntegerOptionItem.Create(RoleInfo, 12, GeneralOption.cantaskcount, new(0, 99, 1), 5, false);
         OptionAwakening = BooleanOptionItem.Create(RoleInfo, 13, GeneralOption.AbilityAwakening, false, false);
     }
@@ -125,10 +127,10 @@ public sealed class Satellite : RoleBase
             }
         }
     }
-
+    bool ISelfVoter.CanUseVoted() => Canuseability() && !IsAwaken && CanUseAbility && (MeetingUsedSkillCount <= meetingmaximum || meetingmaximum == 0);
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-        if (Is(voter) && !IsAwaken && CanUseAbility && MeetingUsedSkillCount <= meetingmaximum)
+        if (Is(voter) && !IsAwaken && CanUseAbility && (MeetingUsedSkillCount <= meetingmaximum || meetingmaximum == 0))
         {
             if (CheckSelfVoteMode(Player, votedForId, out var status))
             {

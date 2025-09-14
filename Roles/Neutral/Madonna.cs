@@ -4,10 +4,12 @@ using System.Linq;
 using TownOfHost.Roles.Core;
 using TownOfHost.Attributes;
 using static TownOfHost.Modules.SelfVoteManager;
+using Hazel;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class Madonna : RoleBase
+public sealed class Madonna : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -77,8 +79,6 @@ public sealed class Madonna : RoleBase
         MadonnaLoverAddwin = BooleanOptionItem.Create(RoleInfo, 12, Option.LoversRoleAddwin, false, false);
         MaLoversSolowin3players = BooleanOptionItem.Create(RoleInfo, 13, Option.LoverSoloWin3players, false, false);
     }
-
-    public override void Add() => AddSelfVotes(Player);
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
         seen ??= seer;
@@ -89,6 +89,7 @@ public sealed class Madonna : RoleBase
         }
         return "";
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && !Player.Is(CustomRoles.MadonnaLovers) && IsNonLover;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

@@ -5,10 +5,11 @@ using Hazel;
 using TownOfHost.Roles.Core;
 using System;
 using static TownOfHost.Modules.SelfVoteManager;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class PonkotuTeller : RoleBase
+public sealed class PonkotuTeller : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -106,7 +107,6 @@ public sealed class PonkotuTeller : RoleBase
         MeisFT = BooleanOptionItem.Create(RoleInfo, 18, Option.PonkotuTellerMyisFT, false, false);
         OptionDontChengeGame = BooleanOptionItem.Create(RoleInfo, 20, Option.PonkotuDontChengeGame, false, false);
     }
-    public override void Add() => AddSelfVotes(Player);
     private void SendRPC()
     {
         using var sender = CreateSender();
@@ -128,9 +128,10 @@ public sealed class PonkotuTeller : RoleBase
         }
         return "";
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
+
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-
         if (!Canuseability()) return true;
         if (Max > count && Is(voter) && MyTaskState.HasCompletedEnoughCountOfTasks((int)cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0))
         {

@@ -4,10 +4,11 @@ using Hazel;
 using TownOfHost.Roles.Core;
 using System;
 using static TownOfHost.Modules.SelfVoteManager;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class ShrineMaiden : RoleBase
+public sealed class ShrineMaiden : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -76,9 +77,6 @@ public sealed class ShrineMaiden : RoleBase
             .SetValueFormat(OptionFormat.Times);
         OptAwakening = BooleanOptionItem.Create(RoleInfo, 16, GeneralOption.AbilityAwakening, false, false);
     }
-
-    public override void Add() => AddSelfVotes(Player);
-
     private void SendRPC()
     {
         using var sender = CreateSender();
@@ -118,6 +116,8 @@ public sealed class ShrineMaiden : RoleBase
         }
         return "";
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && IsReport && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
+
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

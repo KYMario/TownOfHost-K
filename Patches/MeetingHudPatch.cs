@@ -74,6 +74,15 @@ public static class MeetingHudPatch
                     return false;
                 }
             }
+            if (voter.GetRoleClass() is ISelfVoter selfVoter)
+            {
+                if (selfVoter.CanUseVoted())
+                {
+                    MeetingVoteManager.Instance?.SetVote(srcPlayerId, suspectPlayerId, isoverride: false);
+                    __instance.RpcClearVote(voter.GetClientId());
+                    return true;
+                }
+            }
             MeetingVoteManager.Instance?.SetVote(srcPlayerId, suspectPlayerId);
             return true;
         }

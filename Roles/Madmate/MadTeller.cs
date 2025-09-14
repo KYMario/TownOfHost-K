@@ -10,7 +10,7 @@ using static TownOfHost.Modules.SelfVoteManager;
 
 namespace TownOfHost.Roles.Madmate;
 
-public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
+public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -83,8 +83,6 @@ public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         OptionTaskTrigger = IntegerOptionItem.Create(RoleInfo, 15, GeneralOption.TaskTrigger, new(0, 99, 1), 1, false).SetValueFormat(OptionFormat.Pieces);
         OverrideTasksData.Create(RoleInfo, 20);
     }
-
-    public override void Add() => AddSelfVotes(Player);
     private void SendRPC()
     {
         using var sender = CreateSender();
@@ -107,6 +105,8 @@ public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         }
         return "";
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && Check() && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
+
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

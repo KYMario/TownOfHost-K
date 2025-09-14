@@ -22,7 +22,7 @@ namespace TownOfHost.Roles.Impostor;
 // ウィッチ(キルで呪い付与...弱いかなぁ...)
 // エイリアンジャッカルって需要ありそうじゃね?(???)シェイプも丁度開いてるし！
 
-public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomata
+public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomata, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
             SimpleRoleInfo.Create(
@@ -59,7 +59,6 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
     public override void Add()
     {
         Uetukecount = 0;
-        AddSelfVotes(Player);
         AbductTimer = 255f;
         stopCount = false;
         Aliens.Add(this);
@@ -781,7 +780,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
     #endregion
 
     #region 植え付け
-
+    bool ISelfVoter.CanUseVoted() => Canuseability() && OptUetukeCount.GetInt() > Uetukecount && !UetukeUsed && !modeNone && !modeNomal;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

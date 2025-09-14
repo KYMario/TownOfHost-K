@@ -6,10 +6,11 @@ using Hazel;
 
 using TownOfHost.Roles.Core;
 using static TownOfHost.Modules.SelfVoteManager;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class FortuneTeller : RoleBase
+public sealed class FortuneTeller : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -69,8 +70,6 @@ public sealed class FortuneTeller : RoleBase
         TellRole, //占い時役職を表示するか、陣営を表示するかの設定
     }
 
-    public override void Add() => AddSelfVotes(Player);
-
     private static void SetupOptionItem()
     {
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, Option.TellMaximum, new(1, 99, 1), 1, false)
@@ -109,6 +108,7 @@ public sealed class FortuneTeller : RoleBase
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(!MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) ? Color.gray : Max <= count ? Color.gray : Color.cyan, $"({Max - count})");
     public override void OnStartMeeting() => MeetingUsedcount = 0;
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

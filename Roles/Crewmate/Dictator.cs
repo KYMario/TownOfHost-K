@@ -2,11 +2,12 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.Modules.SelfVoteManager;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class Dictator : RoleBase
+public sealed class Dictator : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -36,8 +37,8 @@ public sealed class Dictator : RoleBase
     {
         OptionSelfVote = BooleanOptionItem.Create(RoleInfo, 10, OptionName.DictatorSelfVote, false, false);
     }
-    public override void Add() => AddSelfVotes(Player);
     static OptionItem OptionSelfVote;
+    bool ISelfVoter.CanUseVoted() => false;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;

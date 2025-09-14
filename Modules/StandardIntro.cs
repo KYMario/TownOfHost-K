@@ -229,6 +229,7 @@ class StandardIntro
                             bool issend = false;
                             foreach (var data in GameData.Instance.AllPlayers)//これ1人でstream.Lengthが111
                             {
+                                i++;
                                 if (4 < i)
                                 {
                                     issend = true;
@@ -238,7 +239,6 @@ class StandardIntro
                                     data.Serialize(sender, false);
                                     sender.EndMessage();
                                 }
-                                i++;
                             }
                             if (issend)
                             {

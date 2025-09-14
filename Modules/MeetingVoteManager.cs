@@ -72,7 +72,7 @@ public class MeetingVoteManager
     /// <param name="voteFor">投票先</param>
     /// <param name="numVotes">票数</param>
     /// <param name="isIntentional">投票者自身の投票操作による自発的な投票かどうか</param>
-    public void SetVote(byte voter, byte voteFor, int numVotes = 1, bool isIntentional = true)
+    public void SetVote(byte voter, byte voteFor, int numVotes = 1, bool isIntentional = true, bool isoverride = true)
     {
         if (!allVotes.TryGetValue(voter, out var vote))
         {
@@ -81,6 +81,7 @@ public class MeetingVoteManager
         }
         if (vote.HasVoted)
         {
+            if (!isoverride) return;
             logger.Info($"ID: {voter}の投票を上書きします");
         }
 

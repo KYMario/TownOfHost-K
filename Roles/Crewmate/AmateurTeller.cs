@@ -3,10 +3,12 @@ using AmongUs.GameOptions;
 using UnityEngine;
 using TownOfHost.Roles.Core;
 using static TownOfHost.Modules.SelfVoteManager;
+using Hazel;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class AmateurTeller : RoleBase
+public sealed class AmateurTeller : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -78,7 +80,6 @@ public sealed class AmateurTeller : RoleBase
 
     public override void Add()
     {
-        AddSelfVotes(Player);
         tellers.Add(this);
     }
     public override void OnDestroy()
@@ -115,6 +116,7 @@ public sealed class AmateurTeller : RoleBase
         }
         return false;
     }
+    bool ISelfVoter.CanUseVoted() => Canuseability() && maximum > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (!Use);
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;
