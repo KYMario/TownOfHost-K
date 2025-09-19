@@ -307,6 +307,10 @@ namespace TownOfHost
             Player.GetPlayerState().IsBlackOut = false;
             Player.ResetKillCooldown();
             Player.OnlySeeMyPet();
+            if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.Is(CustomRoles.SKMadmate) && Player.IsAlive())
+            {
+                Player.RpcSetRoleDesync(Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate, Player.GetClientId());
+            }
             _ = new LateTask(() =>
                 {
                     Player.SetKillCooldown(force: true, delay: true);
