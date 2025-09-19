@@ -36,3 +36,9 @@ class GameDataSerializePatch
         return false;
     }
 }
+
+[HarmonyPatch(typeof(NetworkedPlayerInfo), nameof(NetworkedPlayerInfo.MarkDirty))]
+class NetworkedPlayerInfoMarkDirtyPatch
+{
+    public static bool Prefix() => GameDataSerializePatch.DontTouch is false;
+}

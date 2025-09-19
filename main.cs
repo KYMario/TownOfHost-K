@@ -108,6 +108,8 @@ namespace TownOfHost
         public static ConfigEntry<string> Preset6 { get; private set; }
         public static ConfigEntry<string> Preset7 { get; private set; }
         public static ConfigEntry<string> SKey { get; private set; }
+        public static ConfigEntry<string> JoinWord { get; private set; }
+        public static ConfigEntry<string> RemoveWord { get; private set; }
         //Other Configs
         public static ConfigEntry<string> BetaBuildURL { get; private set; }
         public static ConfigEntry<float> LastKillCooldown { get; private set; }
@@ -195,6 +197,8 @@ namespace TownOfHost
             DebugTours = Config.Bind("Client Options", "DebugTours", false);
             ShowDistance = Config.Bind("Client Options", "Show Distance", false);
             FpsLimitRemoval = Config.Bind("Client Options", "Fps Limit Removal", false);
+            JoinWord = Config.Bind("StreamMenu", "JoinWord", "");
+            RemoveWord = Config.Bind("StreamMenu", "RemoveWord", "");
             DebugKeyInput = Config.Bind("Authentication", "Debug Key", "");
             ExplosionKeyInput = Config.Bind("Authentication", "Explosion Key", "");
 

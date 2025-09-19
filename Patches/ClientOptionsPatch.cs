@@ -2,6 +2,7 @@ using HarmonyLib;
 using UnityEngine;
 
 using TownOfHost.Modules.ClientOptions;
+using Rewired.Utils;
 
 namespace TownOfHost
 {
@@ -20,6 +21,7 @@ namespace TownOfHost
         private static ClientActionItem CustomSprite;
         private static ClientActionItem HideSomeFriendCodes;
         private static ToggleButtonBehaviour soundSettingsButton;
+        private static ToggleButtonBehaviour StreamHopeButton;
         private static ClientActionItem ViewPingDetails;
         private static ClientActionItem DebugChatopen;
         private static ClientActionItem DebugSendAmout;
@@ -125,6 +127,10 @@ namespace TownOfHost
             {
                 SoundSettingsScreen.Init(__instance);
             }
+            if (StreamerHopeMenu.Popup == null)
+            {
+                StreamerHopeMenu.Init(__instance);
+            }
             if (soundSettingsButton.IsDestroyedOrNull())
             {
                 soundSettingsButton = Object.Instantiate(__instance.DisableMouseMovement, __instance.transform.FindChild("GeneralTab/MiscGroup"));
@@ -138,6 +144,21 @@ namespace TownOfHost
                 soundSettingsPassiveButton.OnClick.AddListener((System.Action)(() =>
                 {
                     SoundSettingsScreen.Show();
+                }));
+            }
+            if (StreamHopeButton.IsNullOrDestroyed())
+            {
+                StreamHopeButton = Object.Instantiate(__instance.DisableMouseMovement, __instance.transform.FindChild("GeneralTab/MiscGroup"));
+                StreamHopeButton.transform.localPosition = new(0f, 0.9264f, __instance.DisableMouseMovement.transform.localPosition.z);//左側:-1.3127f,1.5588f
+                StreamHopeButton.transform.localScale = new(0.7f, 0.7f);
+                StreamHopeButton.name = "StreamList";
+                StreamHopeButton.Text.text = Translator.GetString("StreamList");
+                StreamHopeButton.Background.color = Palette.ImpostorRed;
+                var soundSettingsPassiveButton = StreamHopeButton.GetComponent<PassiveButton>();
+                soundSettingsPassiveButton.OnClick = new();
+                soundSettingsPassiveButton.OnClick.AddListener((System.Action)(() =>
+                {
+                    StreamerHopeMenu.Show(__instance);
                 }));
             }
 
@@ -174,6 +195,7 @@ namespace TownOfHost
             }
             ModUnloaderScreen.Hide();
             SoundSettingsScreen.Hide();
+            StreamerHopeMenu.Hide();
         }
     }
 }

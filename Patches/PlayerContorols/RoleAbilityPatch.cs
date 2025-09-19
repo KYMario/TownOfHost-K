@@ -234,6 +234,7 @@ namespace TownOfHost
                 killcool = 10;
             float cooldown = killcool - TurnTimer;
             if (cooldown <= 1) cooldown = 0.005f;
+            Logger.Info($"Use:{__instance.Data.GetLogPlayerName()}", "PhantomButton");
 
             if (AdjustKillCooldown)
             {

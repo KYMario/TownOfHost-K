@@ -103,15 +103,18 @@ namespace TownOfHost
                 Utils.SendMessage(msg);
                 Logger.Error(msg, "CoStartGame");
             }
+            List<string> allname = new();
 
             foreach (var target in PlayerCatch.AllPlayerControls)
             {
+                allname.Add(target.Data.PlayerName);
                 foreach (var seer in PlayerCatch.AllPlayerControls)
                 {
                     var pair = (target.PlayerId, seer.PlayerId);
                     Main.LastNotifyNames[pair] = target.name;
                 }
             }
+            StreamerInfo.ChangeList(allname);
             List<PlayerControl> players = new();
             PlayerCatch.AllPlayerControls.Do(x => players.Add(x));
             PlayerCatch.AllPlayerNetId = new();

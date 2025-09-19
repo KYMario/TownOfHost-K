@@ -174,6 +174,7 @@ namespace TownOfHost
                 {
                     MainMenuManagerPatch.Statistisc.transform.localPosition = new Vector3(0.8f, 1.7f);
                 }
+                CreateStreameMenu.CreateText();
             }
         }
 

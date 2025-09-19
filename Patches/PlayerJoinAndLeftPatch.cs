@@ -39,6 +39,7 @@ namespace TownOfHost
             GameStates.canmusic = true;
             MainMenuManagerPatch.DestroyButton();
             //AntiBlackout.Reset();
+            StreamerInfo.JoinGame();
             ErrorText.Instance.Clear();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -83,6 +84,7 @@ namespace TownOfHost
     {
         public static void Prefix(InnerNetClient __instance, DisconnectReasons reason, string stringReason)
         {
+            StreamerInfo.DisconnectInternal();
             Logger.Info($"切断(理由:{reason}:{stringReason}, ping:{__instance.Ping},FriendCode:{__instance?.GetClient(__instance.ClientId)?.FriendCode},PUID:{__instance?.GetClient(__instance.ClientId)?.ProductUserId})", "Session");
 
             if (GameStates.IsFreePlay && Main.EditMode)
@@ -132,6 +134,13 @@ namespace TownOfHost
             if (!BanManager.CheckWhiteList(client?.FriendCode, client?.ProductUserId))
             {
                 BanManager.CheckDenyNamePlayer(client);
+            }
+            if (StreamerInfo.JoinPlayer(client) is false)
+            {
+                AmongUsClient.Instance.KickPlayer(client.Id, false);
+                Logger.seeingame($"{client?.PlayerName}は参加希望者ではないため、kickしました");
+                Logger.Info($"参加希望に無いプレイヤー{client?.PlayerName}({client.FriendCode})をKickしました。", "Kick");
+                return;
             }
             RPC.RpcVersionCheck();
         }
@@ -222,12 +231,14 @@ namespace TownOfHost
             void SetDisconnect(ClientData data)
             {
                 if (data == null) return;
+                var info = GameData.Instance.AllPlayers.ToArray().Where(info => info.Puid == data.ProductUserId).FirstOrDefault();
+                if (info == null) return;
+
                 if (GameStates.Intro || GameStates.IsInGame)
                 {
-                    var info = GameData.Instance.AllPlayers.ToArray().Where(info => info.Puid == data.ProductUserId).FirstOrDefault();
-                    if (info == null) return;
                     SelectRolesPatch.Disconnected.Add(info.PlayerId);
                 }
+                StreamerInfo.LeftPlayer(info);
             }
         }
     }

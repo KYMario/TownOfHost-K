@@ -276,6 +276,7 @@ namespace TownOfHost
                     Translator.GetString("versionchangebutton"));
                 betaversionchange.FontSize = 2;
             }
+            CreateStreameMenu.CreateMenu(__instance);
 
             // フリープレイの無効化
             var howToPlayButton = __instance.howToPlayButton;
@@ -311,7 +312,7 @@ namespace TownOfHost
                 {
                     VersionChangeButton = CreateButton(
                         "VersionChangeButton",
-                        new(2.4036f * Widthratio, -2.6963f, 1f),
+                        new(2.4036f * Widthratio, -1.6963f, 1f),
                         new(0, 202, 255, byte.MaxValue),
                         new(60, 255, 255, byte.MaxValue),
                         () =>
@@ -365,7 +366,7 @@ namespace TownOfHost
         /// <param name="action">押したときに発火するアクション</param>
         /// <param name="label">ボタンのテキスト</param>
         /// <param name="scale">ボタンのサイズ 変更しないなら不要</param>
-        private static SimpleButton CreateButton(
+        public static SimpleButton CreateButton(
             string name,
             Vector3 localPosition,
             Color32 normalColor,
@@ -407,6 +408,7 @@ namespace TownOfHost
         [HarmonyPostfix]
         public static void OpenMenuPostfix(MainMenuManager __instance)
         {
+            CreateStreameMenu.CloseMenu();
             var Findbuttongo = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/Scaler/Find Game Button");
 
             var codebuttongo = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/Scaler/Enter Code Button");
@@ -452,6 +454,7 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
+            CreateStreameMenu.CloseMenu();
         }
         public static void DestroyButton()
         {

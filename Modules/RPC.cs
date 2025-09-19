@@ -66,6 +66,7 @@ namespace TownOfHost
                     Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()} => {p?.GetNameWithRole().RemoveHtmlTags() ?? "null"}", "StartMeeting");
                     break;
                 case RpcCalls.CheckVanish:
+                case RpcCalls.StartVanish:
                     if (PlayerControlPhantomPatch.CheckVanish(__instance) is false) return false;
                     break;
             }

@@ -2138,6 +2138,7 @@
 "DebugTours","DebugTours","DebugTours"
 "FpsLimitRemoval","Fps Limit Removal","FPSの制限を解除する"
 "AutoSaveScreenShot","Auto Save ScreenShot","試合結果のスクショを自動保存する"
+"StreamList","HopeList","参加希望者リスト"
 
 "## ヘルプテキスト"
 
@@ -2525,3 +2526,8 @@
 "Normal","Normal","通常時"
 "GuardPower","GuardPower-{0}","ガードLv.{0}"
 "KillPower","KillPower-{0}","キルLv.{0}"
+"NowURLTitle","Youtube URL","配信のURL<size=50%>(youtube限定)"
+"ClickToSetURL","streamURL Click to Paste","クリックしてURLをペースト"
+"JoinWordTitle","Join Word","参加ワード<size=30%>(+プレイヤー名)"
+"RemoveWordTitle","RemoveWord","辞退ワード"
+"Delete","Delete","削除"
