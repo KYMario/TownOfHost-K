@@ -17,8 +17,9 @@ namespace TownOfHost
             __instance.loadingBar.loadingText.text += $"({IsReadyCount}/{allClients.Count - 1})";
         }
         [HarmonyPatch(nameof(LoadingBarManager.ToggleLoadingBar)), HarmonyPostfix]
-        private static void ToggleLoadingBarPostfix(LoadingBarManager __instance)
+        private static void ToggleLoadingBarPostfix(LoadingBarManager __instance, bool on)
         {
+            if (!on || __instance?.loadingBar?.loadingText == null) return;
             __instance.loadingBar.loadingText.enableWordWrapping = false;
         }
     }
