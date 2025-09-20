@@ -146,6 +146,13 @@ namespace TownOfHost
                                 release.DownloadUrl = asset.DownloadUrl;
                         }
                         release.OpenURL = $"https://github.com/KYMario/TownOfHost-K/releases/tag/{tag}";
+
+                        if (tag == null) continue;
+
+                        if (!tag.Contains($"{Main.ModVersion}")) continue;//そのバージョンの奴じゃないなら除外
+                        if (tag.StartsWith("5.") || tag.StartsWith("S5.") || tag.StartsWith("s5.") || tag.Contains("519.") || tag.Contains("S519.")) continue;//今の表記は519とかなので5.1.x表示ならもう表示しない
+
+                        snapshots.Add(release);
                     }
                 }
                 else
