@@ -76,18 +76,22 @@ public abstract class RoleDescription
                     sb.Append($"{rule}{Options.MadmateCanFixComms.GetName()}: {Options.MadmateCanFixComms.GetTextString()}\n");
                     sb.Append($"{rule}{Options.MadmateHasLighting.GetName()}: {Options.MadmateHasLighting.GetTextString()}\n");
                     sb.Append($"{rule}{Options.MadmateHasMoon.GetName()}: {Options.MadmateHasMoon.GetTextString()}\n");
-                    sb.Append($"{rule}{Options.MadmateCanSeeKillFlash.GetName()}: {Options.MadmateCanSeeKillFlash.GetTextString()}\n");
-                    sb.Append($"{rule}{Options.MadmateCanSeeOtherVotes.GetName()}: {Options.MadmateCanSeeOtherVotes.GetTextString()}\n");
-                    sb.Append($"{rule}{Options.MadmateCanSeeDeathReason.GetName()}: {Options.MadmateCanSeeDeathReason.GetTextString()}\n");
-                    sb.Append($"{rule}{Options.MadmateRevengePlayer.GetName()}: {Options.MadmateRevengePlayer.GetTextString()}\n");
+                    if (Options.MadmateCanSeeKillFlash.GetBool())
+                        sb.Append($"{rule}{Options.MadmateCanSeeKillFlash.GetName()}: {Options.MadmateCanSeeKillFlash.GetTextString()}\n");
+                    if (Options.MadmateCanSeeOtherVotes.GetBool())
+                        sb.Append($"{rule}{Options.MadmateCanSeeOtherVotes.GetName()}: {Options.MadmateCanSeeOtherVotes.GetTextString()}\n");
+                    if (Options.MadmateCanSeeDeathReason.GetBool())
+                        sb.Append($"{rule}{Options.MadmateCanSeeDeathReason.GetName()}: {Options.MadmateCanSeeDeathReason.GetTextString()}\n");
                     if (Options.MadmateRevengePlayer.GetBool())
                     {
+                        sb.Append($"{rule}{Options.MadmateRevengePlayer.GetName()}: {Options.MadmateRevengePlayer.GetTextString()}\n");
                         sb.Append($"┃ {rule}{Options.MadmateRevengeCanImpostor.GetName()}: {Options.MadmateRevengeCanImpostor.GetTextString()}\n");
                         sb.Append($"┃ {rule}{Options.MadmateRevengeMadmate.GetName()}: {Options.MadmateRevengeMadmate.GetTextString()}\n");
                         sb.Append($"┃ {rule}{Options.MadmateRevengeCrewmate.GetName()}: {Options.MadmateRevengeCrewmate.GetTextString()}\n");
                         sb.Append($"┃ {ruleFooter}{Options.MadmateRevengeNeutral.GetName()}: {Options.MadmateRevengeNeutral.GetTextString()}\n");
                     }
-                    sb.Append($"{rule}{Options.MadCanSeeImpostor.GetName()}: {Options.MadCanSeeImpostor.GetTextString()}\n");
+                    if (Options.MadCanSeeImpostor.GetBool())
+                        sb.Append($"{rule}{Options.MadCanSeeImpostor.GetName()}: {Options.MadCanSeeImpostor.GetTextString()}\n");
                     sb.Append($"{rule}{Options.MadmateVentCooldown.GetName()}: {Options.MadmateVentCooldown.GetTextString()}\n");
                     sb.Append($"{rule}{Options.MadmateVentMaxTime.GetName()}: {Options.MadmateVentMaxTime.GetTextString()}\n");
                     sb.Append($"{rule}{Options.MadmateCanMovedByVent.GetName()}: {Options.MadmateCanMovedByVent.GetTextString()}\n");

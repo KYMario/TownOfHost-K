@@ -92,7 +92,7 @@ namespace TownOfHost
 
             if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId) CustomButtonHud.BottonHud();
 
-            if (player.CanUseKillButton())
+            if (player.CanUseKillButton() || force)
             {
                 if (IUsePhantomButton.IPPlayerKillCooldown.ContainsKey(player.PlayerId))
                 {
@@ -113,7 +113,6 @@ namespace TownOfHost
                 }
                 player.SyncSettings();
             }
-            else if (force) player.SyncSettings();
 
             if (delay)
             {
@@ -128,22 +127,24 @@ namespace TownOfHost
                 player.RpcProtectedMurderPlayer(target);
                 if (player != target) player.RpcProtectedMurderPlayer();
             }
-            if (player.CanUseKillButton())
+            if (player.CanUseKillButton() || force)
             {
                 _ = new LateTask(() =>
                 {
                     player.ResetKillCooldown();
                     player.SyncSettings();
-                }, delay ? Main.LagTime + 1f : 1f, "", true);
+                }, delay ? (Main.LagTime + 1f) : 1f, "", true);
             }
         }
 
         public static void MarkDirtySettings(this PlayerControl player)
         {
+            if (player.isDummy) return;
             PlayerGameOptionsSender.SetDirty(player.PlayerId);
         }
         public static void SyncSettings(this PlayerControl player)
         {
+            if (player.isDummy) return;
             PlayerGameOptionsSender.SetDirty(player.PlayerId);
             GameOptionsSender.SendAllGameOptions();
         }
