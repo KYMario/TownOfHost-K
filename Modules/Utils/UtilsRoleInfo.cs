@@ -234,7 +234,7 @@ namespace TownOfHost
                     var roleInfo = roledata.Key.GetRoleInfo();
                     if (roleInfo != null && roleInfo.Description != null)
                     {
-                        SendMessage(roleInfo.Description.FullFormatHelp, sendTo: player);
+                        SendMessage(roleInfo.Description.FullFormatHelp, sendTo: player, checkl: true);
                     }
                     // RoleInfoがない役職は従来の処理
                     else
@@ -256,7 +256,7 @@ namespace TownOfHost
                 var roleInfo = hr.GetRoleInfo();
                 if (roleInfo != null && roleInfo.Description != null)
                 {
-                    SendMessage(roleInfo.Description.FullFormatHelp, sendTo: player);
+                    SendMessage(roleInfo.Description.FullFormatHelp, sendTo: player, checkl: true);
                 }
                 // RoleInfoがない役職は従来の処理
                 else

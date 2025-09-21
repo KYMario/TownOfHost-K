@@ -52,7 +52,7 @@ namespace TownOfHost
                     {
                         if (role.GetRoleInfo()?.Description is { } description)
                         {
-                            SendMessage(description.FullFormatHelp, PlayerId);
+                            SendMessage(description.FullFormatHelp, PlayerId, checkl: true);
                         }
                         // RoleInfoがない役職は従来処理
                         else
@@ -518,6 +518,10 @@ namespace TownOfHost
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveFungle || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveSkeld || Options.IsActiveMiraHQ || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if (Askesu && opt.Value.Name == "%roleTypes%Maximum") continue;
+                if (opt.Value.ParentRole is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder)
+                {
+                    if (opt.Value.GetBool() is false) continue;
+                }
 
                 if (pc != null)
                 {
@@ -614,7 +618,7 @@ namespace TownOfHost
                 var RoleTextData = GetRoleColorCode(role);
                 string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
                 string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}";
-                SendMessage(description.FullFormatHelp, player.PlayerId, title: RoleInfoTitle);
+                SendMessage(description.FullFormatHelp, player.PlayerId, title: RoleInfoTitle, checkl: true);
                 GetAddonsHelp(player);
                 return;
             }

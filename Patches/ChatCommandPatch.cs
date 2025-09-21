@@ -418,7 +418,7 @@ namespace TownOfHost
                                 SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(PlayerControl.LocalPlayer.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{PlayerControl.LocalPlayer.GetRoleDesc(true)}", PlayerControl.LocalPlayer.PlayerId, hRoleInfoTitle);
                             }
                             else
-                                SendMessage(role.GetRoleInfo()?.Description?.FullFormatHelp ?? $"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(PlayerControl.LocalPlayer.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{PlayerControl.LocalPlayer.GetRoleDesc(true)}", PlayerControl.LocalPlayer.PlayerId, hRoleInfoTitle);
+                                SendMessage(role.GetRoleInfo()?.Description?.FullFormatHelp ?? $"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(PlayerControl.LocalPlayer.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{PlayerControl.LocalPlayer.GetRoleDesc(true)}", PlayerControl.LocalPlayer.PlayerId, hRoleInfoTitle, checkl: true);
                             GetAddonsHelp(PlayerControl.LocalPlayer);
 
                             subArgs = args.Length < 2 ? "" : args[1];
@@ -452,8 +452,7 @@ namespace TownOfHost
                                         else
                                         if (role.GetRoleInfo()?.Description is { } description)
                                         {
-
-                                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle);
+                                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
                                         }
                                         // roleInfoがない役職
                                         else
@@ -1290,8 +1289,7 @@ namespace TownOfHost
                         else
                         if (role.GetRoleInfo()?.Description is { } description)
                         {
-
-                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle);
+                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
                         }
                         // roleInfoがない役職
                         else

@@ -299,7 +299,7 @@ namespace TownOfHost
                     }
                     if (OnPlayerLeftPatch.IsIntroError && client.Character.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                     {
-                        Utils.SendMessage(GetString("IntroLeftPlayerError"), client.Character.PlayerId);
+                        //Utils.SendMessage(GetString("IntroLeftPlayerError"), client.Character.PlayerId);
                         OnPlayerLeftPatch.IsIntroError = false;
                     }
                     Utils.ApplySuffix(client.Character, true);

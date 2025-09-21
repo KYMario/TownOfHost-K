@@ -314,16 +314,77 @@ namespace TownOfHost
 
             SendMessage(text + tpinfo, to);
         }
-        public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool rob = false)
+        public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool rob = false, bool checkl = false)
         {
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
             if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle");// + "</color>";
-            //すぐ</align>すると最終行もあれなので。
+                                                                                                    //すぐ</align>すると最終行もあれなので。
+            var towsend = "";
+            if (checkl && text.Length > 500 && sendTo != PlayerControl.LocalPlayer.PlayerId)
+            {
+                var sendtext = "";
+                var alltext = text.Split("\n");
+                (string size, string color, string hi, string b) tag = ("", "", "", "");
+                var oldtext = text;
+                var i = 0;
+                for (i = 0; sendtext.Length * 2.25f < text.Length && (alltext.Count() * 0.8f > i); i++)
+                {
+                    sendtext += $"{alltext[i]}\n";
+                    var tagtex = alltext[i].RemoveText().RemoveDeltext("　").RemoveDeltext(" ").Split("<");
+                    foreach (var tagtext in tagtex)
+                    {
+                        if (tagtext == "") continue;
+                        switch (tagtext.Substring(0, 1))
+                        {
+                            case "s": tag.size = $"<{tagtext.Split(">")[0]}>"; break;
+                            case "c": case "#": tag.color = $"<{tagtext.Split(">")[0]}>"; break;
+                            case "h": tag.hi = $"<{tagtext.Split(">")[0]}>"; break;
+                            case "b": tag.b = $"<{tagtext.Split(">")[0]}>"; break;
+                            case "/":
+                                switch (tagtext.Substring(1, 1))
+                                {
+                                    case "s": tag.size = ""; break;
+                                    case "c": tag.color = ""; break;
+                                    case "h": tag.hi = ""; break;
+                                    case "b": tag.b = ""; break;
+                                }
+                                break;
+                        }
+                    }
+                }
+                var send = "";
+                for (var ii = i; ii < alltext.Count(); ii++)
+                {
+                    send += $"{alltext[ii]}\n";
+                }
+                towsend = $"{tag.b}{tag.hi}{tag.color}{tag.size}{send}";
+                text = sendtext;
+            }
+            if (text.RemoveHtmlTags().StartsWith("\n") || text.RemoveHtmlTags().StartsWith("\r"))
+            {
+                var alltext = text.Split("\n");
+                bool first = true;
+                text = "";
+                alltext.Do(t =>
+                {
+                    if (first)
+                    {
+                        text += t.RemoveDeltext("\n").RemoveDeltext("\r");
+                        first = false;
+                        return;
+                    }
+                    text += t + "\n";
+                });
+            }
             var fir = rob ? "" : "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
+            if (towsend is not "")
+            {
+                SendMessage(towsend, sendTo, title, rob, true);
+            }
         }
         /// <param name="pc">seer</param>
         /// <param name="force">強制かつ全員に送信</param>
