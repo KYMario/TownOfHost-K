@@ -142,6 +142,7 @@ public static class SabotageComplete
 {
     public static void CompleteSabotage()
     {
+        if (Main.SabotageType is SystemTypes.Hallway) return;
         var sb = Translator.GetString($"sb.{Main.SabotageType}");
         if (Main.SabotageType == SystemTypes.MushroomMixupSabotage)
             UtilsGameLog.AddGameLog($"MushroomMixup", string.Format(Translator.GetString("Log.FixSab"), sb));
