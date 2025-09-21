@@ -21,7 +21,7 @@ namespace TownOfHost
         private static ClientActionItem CustomSprite;
         private static ClientActionItem HideSomeFriendCodes;
         private static ToggleButtonBehaviour soundSettingsButton;
-        private static ToggleButtonBehaviour StreamHopeButton;
+        public static ToggleButtonBehaviour StreamHopeButton;
         private static ClientActionItem ViewPingDetails;
         private static ClientActionItem DebugChatopen;
         private static ClientActionItem DebugSendAmout;
@@ -196,6 +196,17 @@ namespace TownOfHost
             ModUnloaderScreen.Hide();
             SoundSettingsScreen.Hide();
             StreamerHopeMenu.Hide();
+        }
+    }
+    [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Open))]
+    public static class OptionsMenuBehaviourOpenPatch
+    {
+        public static void Postfix()
+        {
+            if (OptionsMenuBehaviourStartPatch.StreamHopeButton.IsNullOrDestroyed() is false)
+            {
+                OptionsMenuBehaviourStartPatch.StreamHopeButton.gameObject.SetActive(StreamerInfo.StreamURL is not "");
+            }
         }
     }
 }
