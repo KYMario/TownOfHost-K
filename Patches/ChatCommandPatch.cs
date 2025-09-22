@@ -486,7 +486,7 @@ namespace TownOfHost
                             }
 
                             Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "impostorsChat");
-                            foreach (var imp in PlayerCatch.AllAlivePlayerControls)
+                            foreach (var imp in PlayerCatch.AllPlayerControls)
                             {
                                 if ((imp.GetRoleClass() as Amnesiac)?.Realized == false) continue;
                                 if (imp && ((imp?.GetCustomRole().IsImpostor() ?? false) || imp?.GetCustomRole() is CustomRoles.Egoist) || !imp.IsAlive())
@@ -526,7 +526,7 @@ namespace TownOfHost
                             }
 
                             Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "jackalChat");
-                            foreach (var jac in PlayerCatch.AllAlivePlayerControls)
+                            foreach (var jac in PlayerCatch.AllPlayerControls)
                             {
                                 if (jac && ((jac?.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || !jac.IsAlive()))
                                 {
@@ -569,7 +569,7 @@ namespace TownOfHost
                             }
 
                             Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "loversChat");
-                            foreach (var lover in AllAlivePlayerControls)
+                            foreach (var lover in AllPlayerControls)
                             {
                                 if (lover && (lover.GetLoverRole() == loverrole || !lover.IsAlive()))
                                 {
