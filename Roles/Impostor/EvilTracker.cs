@@ -297,32 +297,10 @@ public sealed class EvilTracker : RoleBase, IImpostor, IKillFlashSeeable, ISidek
         if (!(CanSeeLastRoomInMeeting && IsTrackTarget(seen))) return "";
 
         string text = Utils.ColorString(Palette.ImpostorRed, TargetArrow.GetArrows(Player, seen.PlayerId));
-        var Lastroom = PlayerState.GetByPlayerId(seen.PlayerId).LastRoom;
+        var target = TargetId.GetPlayerControl();
+        var room = target.GetShipRoomName();
 
-        if (Lastroom == null)
-            text += Utils.ColorString(Color.gray, "@" + GetString("FailToTrack"));
-        else
-        if (Lastroom.RoomId == SystemTypes.Hallway)
-        {
-            var Rooms = ShipStatus.Instance.AllRooms;
-            Dictionary<PlainShipRoom, float> Distance = new();
-
-            if (Rooms != null)
-                foreach (var room in Rooms)
-                {
-                    if (room.RoomId == SystemTypes.Hallway) continue;
-                    Distance.Add(room, Vector2.Distance(seen.transform.position, room.transform.position));
-                }
-
-            var Nearestroom = Distance.OrderByDescending(x => x.Value).Last().Key;
-            text += $"<color=#ff1919>@{Translator.GetString($"{Nearestroom.RoomId}") + Translator.GetString($"{Nearestroom.RoomId}")}</color>";
-        }
-        else
-        {
-            text += Utils.ColorString(Palette.ImpostorRed, "@" + GetString(Lastroom.RoomId.ToString()));
-        }
-
-        return text;
+        return text + room;
     }
     /// <summary>相方がキルした部屋を通知する設定がオンなら各プレイヤーに通知を行う</summary>
     private static void HandleMurderRoomNotify(MurderInfo info)
