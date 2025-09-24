@@ -83,7 +83,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         Non = -1,
         Kill = 0, KillToVent, KillRoom, KillPlayer,
         GoRoom = 10, GoVent, SeePlayer, MorePlayer,
-        Task = 20, NonVote, AllTaskComp, Report
+        Task = 20, Vote, AllTaskComp, Report
     }
     enum OptionName
     {
@@ -232,9 +232,9 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     }
     public override bool VotingResults(ref NetworkedPlayerInfo Exiled, ref bool IsTie, Dictionary<byte, int> vote, byte[] mostVotedPlayers, bool ClearAndExile)
     {
-        if (NowMission is MissionList.NonVote && vote.TryGetValue(Player.PlayerId, out var count))
+        if (NowMission is MissionList.Vote && vote.TryGetValue(Player.PlayerId, out var count))
         {
-            if (count <= 0) ComplateMission();
+            if (2 <= count) ComplateMission();
         }
         return false;
     }

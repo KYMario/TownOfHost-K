@@ -1983,7 +1983,7 @@
 "mission.SeePlayer","Touch Random Player","ランダムに選ばれたプレイヤーに接触する"
 "mission.MorePlayer","See 3player","視界内に自身を除く3人のプレイヤーを入れる"
 "mission.Task","Complete one Task","タスクを一つ完了させる"
-"mission.NonVote","NonVote","会議で1票も自身に入れられない"
+"mission.Vote","2Voted","会議で2票以上自身に投票される"
 "mission.AllTaskComp","AllTaskComplete","配布されるタスクを全てこなす"
 "mission.Report","Report DeadBody","死体通報を行う"
 
