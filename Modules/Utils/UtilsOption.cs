@@ -57,14 +57,14 @@ namespace TownOfHost
                         // RoleInfoがない役職は従来処理
                         else
                         {
-                            SendMessage(GetRoleName(role) + "\n\n" + GetString(Enum.GetName(typeof(CustomRoles), role) + "InfoLong"), PlayerId);
+                            SendMessage(GetRoleName(role) + "\n\n" + GetString(Enum.GetName(typeof(CustomRoles), role) + "InfoLong"), PlayerId, checkl: true);
                         }
                     }
                 }
                 foreach (var role in CustomRolesHelper.AllAddOns)
                     if (role.IsEnable())
                     {
-                        SendMessage(GetAddonsHelp(role), PlayerId);
+                        SendMessage(GetAddonsHelp(role), PlayerId, checkl: true);
                     }
             }
             if (Options.NoGameEnd.GetBool()) { SendMessage(GetString("NoGameEndInfo"), PlayerId); }
@@ -112,8 +112,8 @@ namespace TownOfHost
             }
             else
             {
-                sb.AppendFormat("<size={0}>", ActiveSettingsSize);
                 sb.Append("<size=100%>").Append(GetString("Settings")).Append('\n').Append("</size>");
+                sb.AppendFormat("<size={0}>", ActiveSettingsSize);
 
                 var nowcount = GetRoleTypesCountInt();
 
@@ -248,7 +248,7 @@ namespace TownOfHost
             {
                 sb += $"\n" + UtilsRoleText.GetCombinationName(data.Key, true) + $"{data.Value}";
             }
-            SendMessage(sb, PlayerId);
+            SendMessage(sb, PlayerId, checkl: true);
         }
         public static void CopyCurrentSettings()
         {
@@ -295,9 +295,9 @@ namespace TownOfHost
         public static string GetActiveRoleText(byte pc)
         {
             var sb = new StringBuilder().AppendFormat("<line-height={0}>", ActiveSettingsLineHeight);
-            sb.AppendFormat("<size={0}>", "70%");
             sb.AppendFormat("\n◆{0}:{1}", GetRoleName(CustomRoles.GM), Options.EnableGM.GetString());
             sb.Append("\n<size=100%>\n").Append(GetString("Roles")).Append("</size>");
+            sb.AppendFormat("<size={0}>", "70%");
             CustomRoles[] roles = null;
             CustomRoles[] addons = null;
             if (Options.CurrentGameMode == CustomGameMode.Standard) roles = CustomRolesHelper.AllStandardRoles;
@@ -360,6 +360,7 @@ namespace TownOfHost
                 if (addons.Any(add => add.IsEnable()))
                 {
                     sb.Append("\n<size=100%>\n").Append(GetString("Addons")).Append("</size>");
+                    sb.AppendFormat("<size={0}>", "70%");
 
                     nowcount = 1;
                     foreach (CustomRoles Addon in addons.Where(a => a.IsEnable()))

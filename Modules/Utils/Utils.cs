@@ -316,6 +316,7 @@ namespace TownOfHost
         }
         public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool rob = false, bool checkl = false)
         {
+            Logger.Info($"{text}", "aaa");
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
             if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle");// + "</color>";
@@ -328,8 +329,13 @@ namespace TownOfHost
                 (string size, string color, string hi, string b) tag = ("", "", "", "");
                 var oldtext = text;
                 var i = 0;
-                for (i = 0; sendtext.Length * 2.25f < text.Length && (alltext.Count() * 0.8f > i); i++)
+                for (i = 0; sendtext.Length < 400; i++)
                 {
+                    if (sendtext.Length + alltext[i].Length > 400 && i > 0)
+                    {
+                        i--;
+                        break;
+                    }
                     sendtext += $"{alltext[i]}\n";
                     var tagtex = alltext[i].RemoveText().RemoveDeltext("　").RemoveDeltext(" ").Split("<");
                     foreach (var tagtext in tagtex)
@@ -339,14 +345,14 @@ namespace TownOfHost
                         {
                             case "s": tag.size = $"<{tagtext.Split(">")[0]}>"; break;
                             case "c": case "#": tag.color = $"<{tagtext.Split(">")[0]}>"; break;
-                            case "h": tag.hi = $"<{tagtext.Split(">")[0]}>"; break;
+                            case "l": tag.hi = $"<{tagtext.Split(">")[0]}>"; break;
                             case "b": tag.b = $"<{tagtext.Split(">")[0]}>"; break;
                             case "/":
                                 switch (tagtext.Substring(1, 1))
                                 {
                                     case "s": tag.size = ""; break;
                                     case "c": tag.color = ""; break;
-                                    case "h": tag.hi = ""; break;
+                                    case "l": tag.hi = ""; break;
                                     case "b": tag.b = ""; break;
                                 }
                                 break;
@@ -620,7 +626,7 @@ namespace TownOfHost
                     i = i + 1 % 4;
                 }
             }
-            SendMessage(sb.ToString(), playerId);
+            SendMessage(sb.ToString(), playerId, checkl: true);
         }
         #region AfterMeetingTasks
         public static bool CantUseVent;
