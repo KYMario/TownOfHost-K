@@ -555,7 +555,7 @@ namespace TownOfHost
                         var stringOption = Object.Instantiate(template, optionsMenu.transform);
                         crOptions[parentrole].Add(stringOption);
                         roleopts.Add(option);
-                        stringOption.TitleText.text = $"<b>{option.Name}</b>";
+                        stringOption.TitleText.text = $"<b>{option.GetName()}</b>";
                         stringOption.Value = stringOption.oldValue = option.CurrentValue;
                         stringOption.ValueText.text = "読み込み中..";
                         stringOption.name = option.Name;
@@ -602,7 +602,7 @@ namespace TownOfHost
                         var optionsMenu = list[option.Tab];
                         var stringOption = Object.Instantiate(template, optionsMenu.transform);
                         scOptions[option.Tab].Add(stringOption);
-                        stringOption.TitleText.text = $"<b>{option.Name}</b>";
+                        stringOption.TitleText.text = $"<b>{option.GetName()}</b>";
                         stringOption.Value = stringOption.oldValue = option.CurrentValue;
                         stringOption.ValueText.text = "読み込み中..";
                         stringOption.name = option.Name;

@@ -39,6 +39,7 @@ namespace TownOfHost
                 pages.Add(gameoptionsb.ToString() + "\r\n");
             }
             //ゲームモードの表示
+            sb.Append($"{PresetOptionItem.Preset.GetName()}: {PresetOptionItem.Preset.GetString().Split("\n")[0].RemoveSizeTags()}\n\n");
             sb.Append($"{Options.GameMode.GetName()}: {Options.GameMode.GetString()}\n\n");
             //sb.AppendFormat("{0}: {1}\n\n", RoleAssignManager.OptionAssignMode.GetName(), RoleAssignManager.OptionAssignMode.GetString());
             if (Options.HideGameSettings.GetBool() && !AmongUsClient.Instance.AmHost)

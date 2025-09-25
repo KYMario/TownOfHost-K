@@ -42,6 +42,7 @@ namespace TownOfHost
         public bool HideValue { get; protected set; }
         public CustomRoles CustomRole { get; protected set; }
         public CustomRoles ParentRole { get; protected set; }
+        public Func<string> funcOptionName { get; protected set; }
         public Dictionary<string, string> ReplacementDictionary
         {
             get => _replacementDictionary;
@@ -94,6 +95,7 @@ namespace TownOfHost
             IsHeader = false;
             IsHidden = false;
             IsEnabled = () => true;
+            funcOptionName = () => "";
             ZeroNotation = OptionZeroNotation.None;
             parented = false;
             CustomRole = CustomRoles.NotAssigned;
@@ -153,6 +155,7 @@ namespace TownOfHost
         public OptionItem SetEnabled(Func<bool> value) => Do(i => i.IsEnabled = value);
         public OptionItem SetInfo(string value) => Do(i => i.Fromtext = "<line-height=25%><size=25%>\n</size><size=60%></color> <b>" + value + "</b></size>");
         public OptionItem SetZeroNotation(OptionZeroNotation value) => Do(i => i.ZeroNotation = value);
+        public OptionItem SetOptionName(Func<string> value) => Do(i => i.funcOptionName = value);
 
         public OptionItem SetParent(OptionItem parent) => Do(i =>
         {
@@ -184,6 +187,14 @@ namespace TownOfHost
         // Getter
         public virtual string GetName(bool disableColor = false, bool isoption = false)
         {
+            if (funcOptionName.Invoke() is not "")
+            {
+                var name = funcOptionName.Invoke();
+                if (disableColor) return name;
+
+                if (isoption) return name;
+                return NameColorCode != "#ffffff" ? $"<{NameColorCode}>" + name + "</color>" : Utils.ColorString(NameColor, name);
+            }
             if (disableColor) return Translator.GetString(Name, ReplacementDictionary);
 
             if (isoption)

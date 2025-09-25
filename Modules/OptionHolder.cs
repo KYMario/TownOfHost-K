@@ -239,6 +239,15 @@ namespace TownOfHost
         public static OptionItem AddedTheAirShip;
         public static OptionItem AddedTheFungle;
         // public static OptionItem AddedDleks;
+        // ランダムプリセット
+        public static OptionItem RandomPreset;
+        public static OptionItem AddedPreset1;
+        public static OptionItem AddedPreset2;
+        public static OptionItem AddedPreset3;
+        public static OptionItem AddedPreset4;
+        public static OptionItem AddedPreset5;
+        public static OptionItem AddedPreset6;
+        public static OptionItem AddedPreset7;
 
         // ランダムスポーン
         public static OptionItem EnableRandomSpawn;
@@ -1194,6 +1203,38 @@ namespace TownOfHost
                     OptionItem.SyncAllOptions();
                     OptionSaver.Save();
                 });
+            RandomPreset = BooleanOptionItem.Create(113500, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetHeader(true)
+                .SetColorcode("#49a484")
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset1 = BooleanOptionItem.Create(113501, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset1.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset2 = BooleanOptionItem.Create(113502, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset2.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset3 = BooleanOptionItem.Create(113503, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset3.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset4 = BooleanOptionItem.Create(113504, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset4.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset5 = BooleanOptionItem.Create(113505, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset5.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset6 = BooleanOptionItem.Create(113506, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset6.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
+            AddedPreset7 = BooleanOptionItem.Create(113507, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset7.Value))
+                .SetParent(RandomPreset)
+                .SetGameMode(CustomGameMode.All);
 
             DisableTaskWin = BooleanOptionItem.Create(1_000_200, "DisableTaskWin", false, TabGroup.MainSettings, false)
                 .SetHeader(true)
@@ -1203,23 +1244,23 @@ namespace TownOfHost
                 .SetColorcode("#ff1919")
                 .SetGameMode(CustomGameMode.All);
             // プリセット対象外
-            AutoDisplayLastResult = BooleanOptionItem.Create(1_000_000, "AutoDisplayLastResult", true, TabGroup.MainSettings, false)
+            AutoDisplayLastResult = BooleanOptionItem.Create(1_000_000, "AutoDisplayLastResult", true, TabGroup.MainSettings, true)
                 .SetHeader(true)
                 .SetColorcode("#66ffff")
                 .SetGameMode(CustomGameMode.All);
-            AutoDisplayKillLog = BooleanOptionItem.Create(1_000_006, "AutoDisplayKillLog", true, TabGroup.MainSettings, false)
+            AutoDisplayKillLog = BooleanOptionItem.Create(1_000_006, "AutoDisplayKillLog", true, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#66ffff");
-            HideGameSettings = BooleanOptionItem.Create(1_000_002, "HideGameSettings", false, TabGroup.MainSettings, false)
+            HideGameSettings = BooleanOptionItem.Create(1_000_002, "HideGameSettings", false, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#00c1ff");
-            HideSettingsDuringGame = BooleanOptionItem.Create(1_000_003, "HideGameSettingsDuringGame", false, TabGroup.MainSettings, false)
+            HideSettingsDuringGame = BooleanOptionItem.Create(1_000_003, "HideGameSettingsDuringGame", false, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#00c1ff");
             SuffixMode = StringOptionItem.Create(1_000_001, "SuffixMode", suffixModes, 0, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#00c1ff");
-            ChangeNameToRoleInfo = BooleanOptionItem.Create(1_000_004, "ChangeNameToRoleInfo", true, TabGroup.MainSettings, false)
+            ChangeNameToRoleInfo = BooleanOptionItem.Create(1_000_004, "ChangeNameToRoleInfo", true, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#00c1ff");
             RoleAssigningAlgorithm = StringOptionItem.Create(1_000_005, "RoleAssigningAlgorithm", RoleAssigningAlgorithms, 0, TabGroup.MainSettings, true)
@@ -1228,7 +1269,7 @@ namespace TownOfHost
                 .RegisterUpdateValueEvent(
                     (object obj, OptionItem.UpdateValueEventArgs args) => IRandom.SetInstanceById(args.CurrentValue)
                 );
-            UseZoom = BooleanOptionItem.Create(1_000_008, "UseZoom", true, TabGroup.MainSettings, false)
+            UseZoom = BooleanOptionItem.Create(1_000_008, "UseZoom", true, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#9199a1");
             ExOldIntroSystem = BooleanOptionItem.Create(105014, "ExOldIntroSystem", false, TabGroup.MainSettings, false)

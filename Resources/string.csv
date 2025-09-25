@@ -730,7 +730,7 @@
 "ProBowlerDesc","","シェイプシフトをして穴を掘る。\n穴を掘った後、キルボタンを押すことでキルターゲットを{0}<b>{1}</b>させる。\n\n会議後、穴は埋まる。\n穴は<b>{2}回</b>まで掘れる。"
 "ProBowlerDescBowl","","<u>掘った穴まで転がし、</u>"
 "ProBowlerDescTeleport","","<u>掘った穴に直接テレポートさせ、</u>"
-"SerialKillerDesc","","キルクールが他のインポスターに比べて短い反面、1度目のキルを行った後\n<b>{0}秒</b>以内ににキルしないと自爆する。"
+"SerialKillerDesc","","キルクールが他のインポスターに比べて短い反面、1度目のキルを行った後\n<b>{0}秒</b>以内にキルしないと自爆する。"
 
 "# MadmateDescInfos"
 
@@ -903,6 +903,8 @@
 "ExCallMeetingBlackout","Meeting Blackout","会議前に視界を暗転させる"
 "UseZoom","UseZoom (ModClient Only)","ズームを有効にする(ModClient Only)"
 "SoloWinOption","%role%SoloWin","%role%の勝利優先順位"
+"RandomPreset","RandomPreset","ランダムプリセット"
+"AddedPreset","Added {0}","{0} を追加する"
 
 "## マップ改造"
 "MapModification","Map Modifications","マップ改造","地图修改","","Модификации для карт","Modificações do Mapa",""

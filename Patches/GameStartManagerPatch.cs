@@ -227,6 +227,8 @@ namespace TownOfHost
         {
             public static bool Prefix(GameStartManager __instance)
             {
+                SelectRandomPreset();
+
                 SelectRandomMap();
 
                 var invalidColor = PlayerCatch.AllPlayerControls.Where(p => p.Data.DefaultOutfit.ColorId < 0 || Palette.PlayerColors.Length <= p.Data.DefaultOutfit.ColorId);
@@ -333,6 +335,25 @@ namespace TownOfHost
                     if (randomMaps.Count <= 0) return;
                     var mapsId = randomMaps[rand.Next(randomMaps.Count)];
                     Main.NormalOptions.MapId = mapsId;
+                }
+            }
+            static void SelectRandomPreset()
+            {
+                if (Options.RandomPreset.GetBool())
+                {
+                    var rand = IRandom.Instance;
+                    List<byte> randompresets = new();
+                    if (Options.AddedPreset1.GetBool()) randompresets.Add(0);
+                    if (Options.AddedPreset2.GetBool()) randompresets.Add(1);
+                    if (Options.AddedPreset3.GetBool()) randompresets.Add(2);
+                    if (Options.AddedPreset4.GetBool()) randompresets.Add(3);
+                    if (Options.AddedPreset5.GetBool()) randompresets.Add(4);
+                    if (Options.AddedPreset6.GetBool()) randompresets.Add(5);
+                    if (Options.AddedPreset7.GetBool()) randompresets.Add(6);
+
+                    if (randompresets.Count <= 0) return;
+                    var presetId = randompresets[rand.Next(randompresets.Count)];
+                    PresetOptionItem.Preset.SetValue(presetId);
                 }
             }
         }
