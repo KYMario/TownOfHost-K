@@ -46,6 +46,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
             InfectInactiveTime = OptionInfectInactiveTime.GetFloat();
             CanInfectSelf = OptionInfectCanInfectSelf.GetBool();
             CanInfectVent = OptionInfectCanInfectVent.GetBool();
+            DestroyPlague = OptionDestroyPlague.GetBool();
 
             InfectInfos = new(GameData.Instance.PlayerCount);
             //他視点用のMarkメソッド登録
@@ -68,6 +69,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
     private static OptionItem OptionInfectInactiveTime;
     private static OptionItem OptionInfectCanInfectSelf;
     private static OptionItem OptionInfectCanInfectVent;
+    private static OptionItem OptionDestroyPlague;
 
     private static int InfectLimit;
     private static bool InfectWhenKilled;
@@ -76,6 +78,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
     private static float InfectInactiveTime;
     private static bool CanInfectSelf;
     private static bool CanInfectVent;
+    private static bool DestroyPlague;
     enum OptionName
     {
         PlagueDoctorInfectLimit,
@@ -85,6 +88,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
         PlagueDoctorInfectInactiveTime,
         PlagueDoctorCanInfectSelf,
         PlagueDoctorCanInfectVent,
+        PlagueDoctorDestroyPlague
     }
     private static void SetupOptionItem()
     {
@@ -99,6 +103,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
            .SetValueFormat(OptionFormat.Seconds);
         OptionInfectCanInfectSelf = BooleanOptionItem.Create(RoleInfo, 15, OptionName.PlagueDoctorCanInfectSelf, false, false);
         OptionInfectCanInfectVent = BooleanOptionItem.Create(RoleInfo, 16, OptionName.PlagueDoctorCanInfectVent, false, false);
+        OptionDestroyPlague = BooleanOptionItem.Create(RoleInfo, 18, OptionName.PlagueDoctorDestroyPlague, false, false);
         OverrideKilldistance.Create(RoleInfo, 17);
     }
 
@@ -107,6 +112,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
     private static bool InfectActive;
     private static bool LateCheckWin;
     private static List<PlagueDoctor> PlagueDoctors = new();
+    static bool NonPlague;
 
     public override void Add()
     {
@@ -185,6 +191,12 @@ public sealed class PlagueDoctor : RoleBase, IKiller
         if (!AmongUsClient.Instance.AmHost) return;
 
         if (!GameStates.IsInTask) return;
+        if (NonPlague) return;//ペスト不在だと感染しない...理由付けがむずいけど自然消滅ってこと..
+        if (DestroyPlague && !PlagueDoctors.Any(pla => pla?.Player?.GetCustomRole() is CustomRoles.PlagueDoctor))
+        {
+            NonPlague = true;
+            return;
+        }
         if (LateCheckWin)
         {
             //吊り/キルの後、念のため勝利条件チェック
