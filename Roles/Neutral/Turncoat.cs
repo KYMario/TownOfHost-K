@@ -4,17 +4,19 @@ using System.Linq;
 using UnityEngine;
 
 using TownOfHost.Roles.Core;
+using Hazel;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class Turncoat : RoleBase
+public sealed class Turncoat : RoleBase, IKiller
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(Turncoat),
             player => new Turncoat(player),
             CustomRoles.Turncoat,
-            () => RoleTypes.Crewmate,
+            () => OptionCanShapeShift.GetBool() ? RoleTypes.Shapeshifter : RoleTypes.Crewmate,
             CustomRoleTypes.Neutral,
             15500,
             SetupOptionItem,
@@ -29,10 +31,14 @@ public sealed class Turncoat : RoleBase
         () => HasTask.False
     )
     {
+        cooldown = OptionCooldown.GetFloat();
+        duration = OptionCooldown.GetFloat();
     }
     static OptionItem OptionCanTargetImpostor;
     static OptionItem OptionCanTargetNeutral;
     static OptionItem OptionCanTargetMadmate;
+    static OptionItem OptionCanShapeShift; static OptionItem OptionCooldown; static OptionItem OptionDuration;
+    static float cooldown; static float duration;
 
     enum OptionName
     {
@@ -46,6 +52,12 @@ public sealed class Turncoat : RoleBase
 
     private static void SetupOptionItem()
     {
+        OptionCanShapeShift = BooleanOptionItem.Create(RoleInfo, 13, "JesterCanUseShapeshift", false, false);
+        OptionCooldown = FloatOptionItem.Create(RoleInfo, 14, GeneralOption.Cooldown, new(0f, 180f, 0.5f), 30f, false, OptionCanShapeShift)
+                .SetValueFormat(OptionFormat.Seconds);
+        OptionDuration = FloatOptionItem.Create(RoleInfo, 15, GeneralOption.Duration, new(0f, 180f, 0.5f), 5f, false, OptionCanShapeShift)
+                .SetZeroNotation(OptionZeroNotation.Infinity)
+                .SetValueFormat(OptionFormat.Seconds);
         OptionCanTargetImpostor = BooleanOptionItem.Create(RoleInfo, 10, OptionName.TurncoatCanTargetImpostor, false, false);
         OptionCanTargetMadmate = BooleanOptionItem.Create(RoleInfo, 11, OptionName.TurncoatCanTargetMadmate, false, false);
         OptionCanTargetNeutral = BooleanOptionItem.Create(RoleInfo, 12, OptionName.TurncoatCanTargetNeutral, false, false);
@@ -177,4 +189,26 @@ public sealed class Turncoat : RoleBase
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false) => $"<color={TargetColorcode}>★</color>";
 
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(IsTargetDied);
+        sender.Writer.Write(Target);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        IsTargetDied = reader.ReadBoolean();
+        Target = reader.ReadByte();
+        TargetColorcode = Palette.PlayerColors[PlayerCatch.GetPlayerById(Target).cosmetics.ColorId].ColorCode();
+    }
+
+    bool IKiller.CanUseImpostorVentButton() => false;
+    bool IKiller.CanUseKillButton() => false;
+    bool IKiller.CanUseSabotageButton() => false;//サボタージュ使えてもいい気がする。
+    public override void ApplyGameOptions(IGameOptions opt)
+    {
+        AURoleOptions.ShapeshifterCooldown = cooldown;
+        AURoleOptions.ShapeshifterDuration = duration;
+    }
 }
