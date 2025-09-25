@@ -154,6 +154,7 @@ namespace TownOfHost
                 StreamHopeButton.name = "StreamList";
                 StreamHopeButton.Text.text = Translator.GetString("StreamList");
                 StreamHopeButton.Background.color = Palette.ImpostorRed;
+                StreamHopeButton.gameObject.SetActive(StreamerInfo.StreamURL is not "");
                 var soundSettingsPassiveButton = StreamHopeButton.GetComponent<PassiveButton>();
                 soundSettingsPassiveButton.OnClick = new();
                 soundSettingsPassiveButton.OnClick.AddListener((System.Action)(() =>
@@ -201,7 +202,7 @@ namespace TownOfHost
     [HarmonyPatch(typeof(OptionsMenuBehaviour), nameof(OptionsMenuBehaviour.Open))]
     public static class OptionsMenuBehaviourOpenPatch
     {
-        public static void Postfix()
+        public static void Prefix()
         {
             if (OptionsMenuBehaviourStartPatch.StreamHopeButton.IsNullOrDestroyed() is false)
             {

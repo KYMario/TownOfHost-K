@@ -40,6 +40,18 @@ namespace TownOfHost
                     RemoveWord.name = "removeword";
                     JoinWord.gameObject.SetActive(false);
                     RemoveWord.gameObject.SetActive(false);
+                    JoinWord.allowAllCharacters = true;
+                    JoinWord.AllowSymbols = true;
+                    JoinWord.AllowEmail = true;
+                    JoinWord.AllowPaste = true;
+                    JoinWord.characterLimit = 20;
+                    JoinWord.SetText(Main.JoinWord.Value);
+                    RemoveWord.allowAllCharacters = true;
+                    RemoveWord.AllowSymbols = true;
+                    RemoveWord.AllowEmail = true;
+                    RemoveWord.AllowPaste = true;
+                    RemoveWord.characterLimit = 20;
+                    RemoveWord.SetText(Main.RemoveWord.Value);
                 }
             }
             if (SimpleButton.IsNullOrDestroyed(SetURL))
