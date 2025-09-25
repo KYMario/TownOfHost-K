@@ -15,7 +15,6 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.AddOns.Common;
 
 using static TownOfHost.Translator;
-using UnityEngine.ProBuilder;
 
 namespace TownOfHost
 {
@@ -540,6 +539,14 @@ namespace TownOfHost
             }
             if (!(AntiBlackout.IsCached || GameStates.CalledMeeting || GameStates.ExiledAnimate))
                 Twins.TwinsSuicide();
+
+            if (Options.GhostIgnoreTasks.GetBool())
+            {
+                if (Options.GhostIgnoreTasksplayer.GetInt() <= (PlayerCatch.AllAlivePlayersCount - 1))
+                {
+                    Main.DisableTaskPlayerList.Add(target.PlayerId);
+                }
+            }
         }
         public static PlayerControl GetRealKiller(this PlayerControl target)
         {

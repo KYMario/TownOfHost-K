@@ -29,7 +29,7 @@ namespace TownOfHost
                 else
                 {
                     // 死んでいて，死人のタスク免除が有効なら確定でfalse
-                    if (p.IsDead && Options.GhostIgnoreTasks.GetBool())
+                    if (p.IsDead && Options.GhostIgnoreTasks.GetBool() && Main.DisableTaskPlayerList.Contains(p.PlayerId))
                     {
                         return false;
                     }

@@ -211,20 +211,19 @@ namespace TownOfHost
                     }
                 }
             }
-            if (sb.ToString() != "")
-                SendMessage(sb.ToString(), PlayerId);
+            SendMessage(sb.ToString(), PlayerId, checkl: true);
         }
         private static void CheckPageChange(byte PlayerId, StringBuilder sb, bool force = false, string title = "")
         {
+            /*
             if (sb.ToString().RemoveHtmlTags() == "") return;
-
             //2Byte文字想定で600byt越えるならページを変える
             if (force || sb.Length > 600)
             {
                 SendMessage(sb.ToString(), PlayerId, title);
                 sb.Clear();
                 sb.AppendFormat("<line-height=45%><size={0}>", ActiveSettingsSize);
-            }
+            }*/
         }
         public static void ShowWinSetting(byte PlayerId = byte.MaxValue)
         {
@@ -291,7 +290,7 @@ namespace TownOfHost
             }
             var m = GetActiveRoleText(PlayerId);
             if (m.RemoveHtmlTags() != "")
-                SendMessage(m, PlayerId);
+                SendMessage(m, PlayerId, checkl: true);
         }
         public static string GetActiveRoleText(byte pc)
         {
@@ -353,7 +352,6 @@ namespace TownOfHost
                         co = $"<{GetRoleColorCode(role, true)}>{co}";
                         sb.AppendFormat($"{(nowcount is 1 ? "　" : (nowcount is 2 ? "\n" : ""))}" + co + "{0}</color>:{1}", role.GetCombinationName(false), role.GetChance() is 100 ? role.GetCount() : $"{role.GetChance()}%x{role.GetCount()}");
                         if (nowcount > 1) nowcount = 0;
-                        checkpage(sb);
                     }
                 }
             }
@@ -374,29 +372,10 @@ namespace TownOfHost
                         var longestNameByteCount = addons.Select(x => x.GetCombinationName().Length).OrderByDescending(x => x).FirstOrDefault();
                         sb.AppendFormat($"{(nowcount is 1 ? "　" : (nowcount is 2 ? "\n" : ""))}" + m + "{0}:{1}", GetRoleColorAndtext(Addon), Addon.GetChance() is 100 ? $"{Addon.GetCount()}" : $"{Addon.GetChance()}%x{Addon.GetCount()}");
                         if (nowcount > 1) nowcount = 0;
-                        checkpage(sb);
                     }
                 }
             }
             return sb.ToString();
-
-            void checkpage(StringBuilder sb)
-            {
-                if (pc == byte.MaxValue) return;
-
-                var n = sb.ToString().Length;
-                if (n > 600)
-                {
-                    nowcount = 3;
-                    if (sb.ToString().RemoveHtmlTags() != "")
-                    {
-                        n = 0;
-                        SendMessage(sb.ToString(), pc);
-                        sb.Clear();
-                        sb.Append("<line-height=60%><size=70%>");
-                    }
-                }
-            }
         }
         public static void ShowSetting(byte PlayerId = byte.MaxValue)
         {

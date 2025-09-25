@@ -126,6 +126,7 @@ namespace TownOfHost
         public static Dictionary<byte, List<uint>> AllPlayerTask = new();
         public static List<byte> winnerList;
         public static List<int> clientIdList;
+        public static List<byte> DisableTaskPlayerList;
         public static List<(string, byte, string)> MessagesToSend;
         public static int MegCount;
         public static Dictionary<byte, float> AllPlayerKillCooldown = new();

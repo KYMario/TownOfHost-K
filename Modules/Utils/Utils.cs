@@ -875,6 +875,7 @@ namespace TownOfHost
             Roles.Madmate.MadAvenger.Skill = false;
             Roles.Neutral.JackalDoll.NowSideKickCount = 0;
             Balancer.Id = 255;
+            Main.DisableTaskPlayerList = new();
             Stolener.Killers.Clear();
             Options.firstturnmeeting = Options.FirstTurnMeeting.GetBool() && !SuddenDeathMode.SuddenDeathModeActive.GetBool();
             CoEnterVentPatch.OldOnEnterVent = new();

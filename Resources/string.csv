@@ -1011,6 +1011,7 @@
 "GhostCanSeeKillflash","Can see Killflash","キルフラッシュを見ることが出来る"
 "GhostCanSeeNumberOfButtonsOnOthers","Can See Num Emergency Meetings","他人の緊急ボタン残数を見ることができる"
 "GhostIgnoreTasks","Ghosts Exempt From Tasks","死人のタスクを免除する","幽灵无视任务","幽靈可以免除任務","Призраки игнорируют задания","Fantasmas Isentos de Tarefas",""
+"GhostIgnoreTasksplayer","","設定数以上生存していると免除"
 
 "### 割り当て"
 "RoleAssigningAlgorithm","Role Assigning Algorithm","役職割り当てのアルゴリズム","职业分配算法","職業分配算法","Алгоритм назначения Ролей","Algoritmo de Atribuição de Classes",""

@@ -475,6 +475,7 @@ namespace TownOfHost
         public static OptionItem GhostCanSeeDeathReason;
         public static OptionItem GhostCanSeeKillerColor;
         public static OptionItem GhostIgnoreTasks;
+        public static OptionItem GhostIgnoreTasksplayer;
         public static OptionItem GhostCanSeeAllTasks;
         public static OptionItem GhostCanSeeKillflash;
         public static OptionItem GhostCanSeeNumberOfButtonsOnOthers;
@@ -1138,11 +1139,14 @@ namespace TownOfHost
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#bbbbdd")
                 .SetParent(GhostOptions);
+            GhostIgnoreTasksplayer = IntegerOptionItem.Create(110010, "GhostIgnoreTasksplayer", new(1, 15, 1), 6, TabGroup.MainSettings, false)
+                .SetGameMode(CustomGameMode.All)
+                .SetParent(GhostIgnoreTasks);
 
             // その他
             ConvenientOptions = BooleanOptionItem.Create(111000, "ConvenientOptions", true, TabGroup.MainSettings, false)
-                .SetColorcode("#cc3366")
-                .SetHeader(true);
+                    .SetColorcode("#cc3366")
+                    .SetHeader(true);
             FirstTurnMeeting = BooleanOptionItem.Create(111001, "FirstTurnMeeting", false, TabGroup.MainSettings, false)
                 .SetGameMode(CustomGameMode.Standard)//初手強制会議
                 .SetColorcode("#4fd6a7")

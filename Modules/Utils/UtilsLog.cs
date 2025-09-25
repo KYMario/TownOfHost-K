@@ -385,15 +385,8 @@ namespace TownOfHost
 
                     var Star = "★";
                     var send = mes.ToString() + "\n\n" + $"{Star}{meg}{Star}".Color(winnerColor);
-                    SendMessage(send.RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
+                    SendMessage(send.RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId, checkl: true);
                     break;
-                }
-
-                if (mes.Length > 500 && log.Key < day)
-                {
-                    SendMessage(mes.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
-                    mes = mes.Clear();
-                    mes.Append("<size=60%>");
                 }
             }
             //SendMessage(/*EndGamePatch.KillLog*/, PlayerId);
