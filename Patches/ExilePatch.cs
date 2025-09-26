@@ -270,10 +270,6 @@ namespace TownOfHost
                     modinit.outfit = Camouflage.PlayerSkins.TryGetValue(result.Value.Exiled.PlayerId, out var skin) ? skin : result.Value.Exiled.DefaultOutfit;
                     modinit.voteTie = false;
                     SecondBegin = true;
-                    if (result.Value.Exiled.Object?.GetRoleClass() is Assassin assassin && Assassin.NowUse)
-                    {
-                        modinit.outfit.PlayerName = MeetingVoteManager.Voteresult + "<size=0>";
-                    }
                     __instance.Begin(modinit);
                     return false;
                 }
@@ -297,6 +293,10 @@ namespace TownOfHost
                         __instance.completeString = Translator.GetString(StringNames.NoExileSkip);
                     }
                 }
+            }
+            if (result.Value.Exiled.Object?.GetRoleClass() is Assassin && Assassin.NowUse)
+            {
+                __instance.completeString = MeetingVoteManager.Voteresult + "<size=0>";
             }
             SecondBegin = false;
         }

@@ -565,6 +565,7 @@ namespace TownOfHost
                 {
                     foreach (var psr in Rooms)
                     {
+                        if (psr.roomArea is null) continue;
                         if (psr.roomArea.OverlapPoint((Vector2)pc.transform.position))
                         {
                             room = psr;

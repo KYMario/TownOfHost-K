@@ -664,6 +664,7 @@
 "CandleLighterInfoLong","","視界がろうそくのようにだんだんと小さく狭くなっていく。ただ、他人と違いろうそくで周りを灯している為、停電の影響は受けない。\nタスクを全て完了させると新たに一本ろうそくが供給され、一番明るい状態に点け直すことができる。",
 "ExpressInfoLong","It is just fast.","ただ足が速い。",
 "MerlinInfoLong","Combination role with <#ff1919>assassin</color>. \n\nThe names of Imposters and Egoists appear in red. Loses when Assassin guesses himself in \n\n Assassin meeting.","<#ff1919>アサシン</color>とのコンビネーション役職。\n\nインポスター、エゴイストの名前が赤く見える。\n\nアサシン会議でアサシンに自身を推測されると負ける。"
+"ObserverInfoLong","","会議で誰かに投票する事で投票相手を「監視対象」にする。\n監視対象が死亡した時、全員にキルフラッシュが発生する。"
 "#CrewmateInfoLong"
 
 "# ニュートラル役職"

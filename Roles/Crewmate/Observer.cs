@@ -1,7 +1,6 @@
 using System;
 using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
-using UnityEngine;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -14,11 +13,11 @@ public sealed class Observer : RoleBase
             CustomRoles.Observer,
             () => RoleTypes.Crewmate,
             CustomRoleTypes.Crewmate,
-            999999,  //(仮)
+            23300,
             SetupOptionItem,
             "Observer",
             "#8a99b7",
-            (1, 0),
+            (3, 9),
             false
         );
     public Observer(PlayerControl player)
@@ -45,8 +44,8 @@ public sealed class Observer : RoleBase
     {
         OptionMaxMonitoring = IntegerOptionItem.Create(RoleInfo, 10, Option.maxMonitoringCount, new(0, 99, 1), 10, false)
             .SetValueFormat(OptionFormat.Times);
-        OptAwakening = BooleanOptionItem.Create(RoleInfo, 10, GeneralOption.TaskAwakening, false, false);
-        OptAwakeningTaskCount = FloatOptionItem.Create(RoleInfo, 11, GeneralOption.AwakeningTaskcount, new(0f, 255f, 1f), 5f, false, OptAwakening);
+        OptAwakening = BooleanOptionItem.Create(RoleInfo, 11, GeneralOption.TaskAwakening, false, false);
+        OptAwakeningTaskCount = FloatOptionItem.Create(RoleInfo, 12, GeneralOption.AwakeningTaskcount, new(0f, 255f, 1f), 5f, false, OptAwakening);
     }
 
     enum Option

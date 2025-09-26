@@ -316,7 +316,6 @@ namespace TownOfHost
         }
         public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool rob = false, bool checkl = false)
         {
-            Logger.Info($"{text}", "aaa");
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
             if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle");// + "</color>";

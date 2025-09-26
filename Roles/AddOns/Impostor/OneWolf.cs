@@ -43,15 +43,21 @@ namespace TownOfHost.Roles.AddOns.Common
             playerId.GetPlayerState().RemoveSubRole(CustomRoles.OneWolf);
             var player = playerId.GetPlayerControl();
 
-            foreach (var imp in PlayerCatch.AllPlayerControls.Where(pc => pc.GetCustomRole().IsImpostor() && playerIdList.Contains(pc.PlayerId) is false))
+            _ = new LateTask(() =>
             {
-                if (playerId == PlayerControl.LocalPlayer.PlayerId)
+                foreach (var imp in PlayerCatch.AllPlayerControls.Where(pc => pc.GetCustomRole().IsImpostor() && playerIdList.Contains(pc.PlayerId) is false))
                 {
-                    imp.Data.Role.NameColor = Palette.ImpostorRed;
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        imp.RpcSetRoleDesync(imp.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, player.GetClientId());
+                        player.RpcSetRoleDesync(player.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, imp.GetClientId());
+                    }
+                    if (playerId == PlayerControl.LocalPlayer.PlayerId)
+                    {
+                        imp.Data.Role.NameColor = Palette.ImpostorRed;
+                    }
                 }
-                imp.RpcSetRoleDesync(imp.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, player.GetClientId());
-                player.RpcSetRoleDesync(player.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, imp.GetClientId());
-            }
+            }, 0.2f, "SetImpostor", null);
             UtilsNotifyRoles.NotifyRoles(true, true);
         }
         public static void OnCheckMurder(MurderInfo info)
