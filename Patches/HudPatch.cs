@@ -299,7 +299,7 @@ namespace TownOfHost
                     var __instance = DestroyableSingleton<HudManager>.Instance;
                     var customrole = player.GetCustomRole();
                     var isalive = player.IsAlive();
-                    if (!__instance) return;
+                    if (!__instance || roleClass == null) return;
                     if (roleClass.HasAbility) player.Data.Role.InitializeAbilityButton();
                     //定義
                     if (MotoKillButton == null && __instance.KillButton.graphic.sprite && player.Data.RoleType is not RoleTypes.Viper) MotoKillButton = __instance.KillButton.graphic.sprite;
