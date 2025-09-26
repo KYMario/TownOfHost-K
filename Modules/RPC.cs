@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Linq;
 using System.Threading.Tasks;
 using AmongUs.GameOptions;
+using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using TownOfHost.Modules;
@@ -117,9 +119,16 @@ namespace TownOfHost
                         Version version = Version.Parse(reader.ReadString());
                         string tag = reader.ReadString();
                         string forkId = 3 <= version.Major ? reader.ReadString() : Main.OriginalForkId;
+
                         Main.playerVersion[__instance.PlayerId] = new PlayerVersion(version, tag, forkId);
                         //バージョンが一致した場合送信(SyncAllOptionsでホスト以外は弾かれるためホスト以外は送信しません)
-                        if (GameStartManagerPatch.GameStartManagerUpdatePatch.MatchVersions(__instance.PlayerId)) OptionItem.SyncAllOptions();
+                        if (GameStartManagerPatch.GameStartManagerUpdatePatch.MatchVersions(__instance.PlayerId))
+                        {
+                            if (!AmongUsClient.Instance.AmHost) break;
+                            OptionItem.SyncAllOptions();
+                            RPC.RpcSyncRoomTimer();
+                            RPC.SyncYomiage();
+                        }
                     }
                     catch
                     {
@@ -129,14 +138,6 @@ namespace TownOfHost
                             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.RequestRetryVersionCheck, SendOption.Reliable, __instance.GetClientId());
                             AmongUsClient.Instance.FinishRpcImmediately(writer);
                         }, 1f, "Retry Version Check Task");
-                    }
-                    finally
-                    {
-                        if (AmongUsClient.Instance.AmHost)
-                        {
-                            RPC.RpcSyncRoomTimer();
-                            RPC.SyncYomiage();
-                        }
                     }
                     break;
                 case CustomRPC.RequestRetryVersionCheck:
@@ -187,11 +188,10 @@ namespace TownOfHost
                     RPC.SetRealKiller(targetId, killerId);
                     break;
                 case CustomRPC.SyncRoomTimer:
-                    float timer = 0;
-                    if (float.TryParse(reader.ReadString(), out timer))
-                        _ = GameStartManagerPatch.SetTimer(timer - 0.5f);
-                    else _ = GameStartManagerPatch.SetTimer(0);
-                    Logger.Info($"{timer - 0.5f}", "settimer");
+                    float lag = AmongUsClient.Instance.Ping / 1000f;
+                    float timer = reader.ReadSingle() - lag;
+                    GameStartManagerPatch.SetTimer(timer);
+                    Logger.Info($"Set: {timer}", "RPC SetTimer");
                     break;
                 case CustomRPC.SyncYomiage:
                     Yomiage.YomiageS.Clear();
@@ -265,16 +265,20 @@ namespace TownOfHost
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             player.Exiled();
         }
-        public static async void RpcVersionCheck()//クラッシュの原因。正味まだクライアント対応してないから消してもいい気はする
+        public static IEnumerator CoRpcVersionCheck() //たぶんなおせました
         {
-            while (PlayerControl.LocalPlayer == null) await Task.Delay(500); //800ぐらいで動く
+            while (PlayerControl.LocalPlayer == null) yield return new UnityEngine.WaitForSeconds(0.5f);
 
-            /*MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VersionCheck, SendOption.Reliable);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.VersionCheck, SendOption.Reliable);
             writer.Write(Main.PluginVersion);
             writer.Write($"{ThisAssembly.Git.Commit}({ThisAssembly.Git.Branch})");
             writer.Write(Main.ForkId);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);*/
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
             Main.playerVersion[PlayerControl.LocalPlayer.PlayerId] = new PlayerVersion(Main.PluginVersion, $"{ThisAssembly.Git.Commit}({ThisAssembly.Git.Branch})", Main.ForkId);
+        }
+        public static void RpcVersionCheck()
+        {
+            AmongUsClient.Instance.StartCoroutine(CoRpcVersionCheck().WrapToIl2Cpp());
         }
         public static void RpcModUnload(byte playerId)
         {
@@ -284,7 +288,7 @@ namespace TownOfHost
         public static void RpcSyncRoomTimer()
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncRoomTimer, SendOption.None, -1);
-            writer.Write($"{GameStartManagerPatch.GetTimer()}");
+            writer.Write(GameStartManagerPatch.GetTimer());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
         public static void RpcShowMeetingKill(byte targetId)
