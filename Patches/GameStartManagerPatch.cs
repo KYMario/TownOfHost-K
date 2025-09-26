@@ -19,7 +19,7 @@ namespace TownOfHost
     public class GameStartManagerPatch
     {
         public static float GetTimer() => timer;
-        public static float SetTimer(float time) => timer = time;
+        public static void SetTimer(float time) => timer = time;
         public static float Timer2 = 0; //毎秒タイマー送るのはあれだから
         private static float timer = 600f;
         private static TextMeshPro warningText;
