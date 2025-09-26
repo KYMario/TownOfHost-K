@@ -47,6 +47,8 @@ namespace TownOfHost
             {
                 LoadError = true;
                 Logger.Exception(ex, "Options");
+
+                ErrorText.Instance?.AddError(ErrorCode.OptionError);
             }
         }
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix]
