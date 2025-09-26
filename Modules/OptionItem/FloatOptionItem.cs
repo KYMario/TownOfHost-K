@@ -60,6 +60,10 @@ namespace TownOfHost
         {
             return ApplyFormat(Rule.GetValueByIndex(CurrentValue).ToString());
         }
+        public override string GetValueString(bool coloroff)
+        {
+            return ApplyFormat(Rule.GetValueByIndex(CurrentValue).ToString(), coloroff);
+        }
         public override int GetValue()
             => Rule.RepeatIndex(base.GetValue());
 

@@ -222,7 +222,7 @@ namespace TownOfHost
         {
             return ApplyFormat(CurrentValue.ToString());
         }
-        public string GetString(bool coloroff)
+        public virtual string GetValueString(bool coloroff)
         {
             return ApplyFormat(CurrentValue.ToString(), coloroff);
         }
@@ -232,7 +232,7 @@ namespace TownOfHost
             {
                 return stringOptionItem.GetString();
             }
-            return GetString();
+            return GetValueString(false);
         }
         public virtual int GetValue() => IsSingleValue ? SingleValue : AllValues[CurrentPreset];
 

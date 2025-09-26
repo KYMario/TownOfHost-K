@@ -92,16 +92,17 @@ namespace TownOfHost
 
             return UtilsRoleText.GetRoleColorAndtext(role);
         }
-        public string GetString(int value)
+        public override string GetValueString(bool coloroff)
         {
-            var role = Sele[Rule.GetValueByIndex(value)];
+            var role = Sele[Rule.GetValueByIndex(CurrentValue)];
 
             if (role is CustomRoles.NotAssigned)
             {
                 return Translator.GetString("Unsettled");
             }
 
-            return UtilsRoleText.GetRoleColorAndtext(role);
+            var name = UtilsRoleText.GetRoleColorAndtext(role);
+            return coloroff ? name.RemoveColorTags() : name;
         }
         public void SetRoleValue(CustomRoles role)
         {
