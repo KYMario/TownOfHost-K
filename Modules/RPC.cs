@@ -128,6 +128,12 @@ namespace TownOfHost
                     RPC.RpcVersionCheck();
                     break;
                 case CustomRPC.SyncCustomSettings:
+                    int optionId = reader.ReadPackedInt32();
+                    if (optionId >= 0 && OptionItem.FastOptions.TryGetValue(optionId, out var optionSync))
+                    {
+                        optionSync.SetValue(reader.ReadPackedInt32());
+                        break;
+                    }
                     foreach (OptionItem co in OptionItem.AllOptions)
                         //すべてのカスタムオプションについてインデックス値で受信
                         co.SetValue(reader.ReadPackedInt32());
@@ -207,9 +213,19 @@ namespace TownOfHost
             if (!PlayerCatch.AnyModClient()) return;
 
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable, -1);
+            writer.WritePacked(-1);
             foreach (OptionItem co in OptionItem.AllOptions)
                 //すべてのカスタムオプションについてインデックス値で送信
                 writer.WritePacked(co.GetValue());
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+        public static void SyncCustomSettingsRPC(OptionItem item)
+        {
+            if (!AmongUsClient.Instance.AmHost || !PlayerCatch.AnyModClient()) return;
+
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable, -1);
+            writer.WritePacked(item.Id);
+            writer.WritePacked(item.GetValue());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
         public static void PlaySoundRPC(byte PlayerID, Sounds sound)

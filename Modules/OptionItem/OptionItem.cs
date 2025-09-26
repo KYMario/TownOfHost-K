@@ -319,7 +319,7 @@ namespace TownOfHost
             Refresh();
             if (doSync)
             {
-                SyncAllOptions();
+                SyncOptions();
             }
             if (doSave)
             {
@@ -355,11 +355,24 @@ namespace TownOfHost
         {
             if (
                 PlayerCatch.AllPlayerControls.Count() <= 1 ||
+                AmongUsClient.Instance == null ||
                 AmongUsClient.Instance.AmHost == false ||
                 PlayerControl.LocalPlayer == null
             ) return;
 
             RPC.SyncCustomSettingsRPC();
+        }
+
+        public void SyncOptions()
+        {
+            if (
+                PlayerCatch.AllPlayerControls.Count() <= 1 ||
+                AmongUsClient.Instance == null ||
+                AmongUsClient.Instance.AmHost == false ||
+                PlayerControl.LocalPlayer == null
+            ) return;
+
+            RPC.SyncCustomSettingsRPC(this);
         }
 
         // EventArgs
