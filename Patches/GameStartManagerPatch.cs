@@ -445,7 +445,7 @@ namespace TownOfHost
                     }
                     var colorid = host?.ColorId ?? 0;
                     var colorr = Palette.PlayerColors.Length > colorid ? Palette.PlayerColors[colorid] : ModColors.White;
-                    __instance.playerName.text = $"<b>{host.PlayerName.Color(colorr)}{mark}</b>";
+                    __instance.playerName.text = host == null ? "???" : $"<b>{host.PlayerName.Color(colorr)}{mark}</b>";
                 }
                 catch
                 {
