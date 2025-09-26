@@ -106,7 +106,7 @@ namespace TownOfHost
             }
             catch
             {
-                Logger.Warn($"エラーが発生したため、RPCをキャンセルしました {__instance.PlayerId}", "cancel");
+                Logger.Error($"エラーが発生したため、RPCをキャンセルしました {__instance.PlayerId}", "cancel");
                 return;
             }
 
