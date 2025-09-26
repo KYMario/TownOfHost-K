@@ -377,6 +377,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     }
     void ComplateMission()
     {
+        if (AmongUsClient.Instance.AmHost is false) return;
         //ポイント追加
         var getpoint = GetPoint(NowMission).All;
         Logger.Info($"ComplateMisson:{NowPoint + getpoint} ({NowPoint} + {getpoint}) / {NowMission}", "Missioneer");

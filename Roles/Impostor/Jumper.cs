@@ -3,6 +3,8 @@ using HarmonyLib;
 using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
+using System.Collections.Generic;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -68,13 +70,20 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
     {
         JumperOneCoolTime, JumperCCoolTime, JumperJumpcount, JumperJumpDis, JumperDistance
     }
-
+    static Dictionary<int, float> junpdis = new()
+    {
+        { 1, 1.22f},
+        { 2,  1.82f },
+        { 3, 2.1f},
+        { 4, 2.7f},
+        { 5, 2.9f}
+    };
     static void SetupOptionItem()
     {
         OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, new(0f, 180f, 0.5f), 30f, false)
                 .SetValueFormat(OptionFormat.Seconds);
         OptionJumpcount = IntegerOptionItem.Create(RoleInfo, 11, Option.JumperJumpcount, new(1, 30, 1), 4, false);
-        OptionJumpDistance = IntegerOptionItem.Create(RoleInfo, 15, Option.JumperDistance, new(1, 3, 1), 1, false);
+        OptionJumpDistance = IntegerOptionItem.Create(RoleInfo, 15, Option.JumperDistance, new(1, 5, 1), 1, false);
         OptionOnecooltime = FloatOptionItem.Create(RoleInfo, 12, Option.JumperOneCoolTime, new(0f, 180f, 0.5f), 15f, false).SetValueFormat(OptionFormat.Seconds);
         OptionJumpcooltime = FloatOptionItem.Create(RoleInfo, 13, Option.JumperCCoolTime, new(0f, 180f, 0.5f), 25f, false).SetValueFormat(OptionFormat.Seconds);
         OptionJumpdis = FloatOptionItem.Create(RoleInfo, 14, Option.JumperJumpDis, new(0.2f, 3, 0.1f), 1.5f, false).SetValueFormat(OptionFormat.Seconds);
@@ -121,7 +130,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
                                 if (target.Is(CustomRoles.King) || target.PlayerId == player.PlayerId) continue;
 
                                 float Distance = Vector2.Distance(player.transform.position, target.transform.position);
-                                if (Distance <= (Jumpdistance == 1 ? 1.22f : (Jumpdistance == 2 ? 1.82f : 2.2)))
+                                if (Distance <= (junpdis.TryGetValue(Jumpdistance, out var dis) ? dis : 0))
                                 {
                                     if (CustomRoleManager.OnCheckMurder(player, target, target, target, true, Killpower: 3))
                                     {
@@ -189,10 +198,14 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         seen ??= seer;
         if (Player == seen && ShowMark && !GameStates.CalledMeeting)
         {
-            name = Jumpdistance == 1 ? "<line-height=100%> \n \n \n \n \n \n \n \n \n \n \n \n<size=1200%><color=#ff1919>●</color></size></line-height>"
-            : (Jumpdistance == 2 ? "<line-height=100%> \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n<size=2100%><color=#ff1919>●</color></size></line-height>"
-                : "<line-height=100%> \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n \n<size=2800%><color=#ff1919>●</color></size></line-height>"
-            );
+            switch (Jumpdistance)
+            {
+                case 1: name = "<line-height=1400%>\n <size=1200%><color=#ff1919>●</color></size></line-height>"; break;
+                case 2: name = "<line-height=2400%>\n <size=1900%><color=#ff1919>●</color></size></line-height>"; break;
+                case 3: name = "<line-height=2700%>\n <size=2200%><color=#ff1919>●</color></size></line-height>"; break;
+                case 4: name = "<line-height=3000%>\n <size=2800%><color=#ff1919>●</color></size></line-height>"; break;
+                case 5: name = "<line-height=3500%>\n <size=3200%><color=#ff1919>●</color></size></line-height>"; break;
+            }
             NoMarker = true;
             return true;
         }
