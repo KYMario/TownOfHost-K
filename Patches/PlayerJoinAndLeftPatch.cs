@@ -253,7 +253,7 @@ namespace TownOfHost
             {
                 /*if (client?.Character?.PlayerId == 0)
                     _ = new LateTask(() => CheckPingPatch.Check = true, 10f, "Start Ping Check", true);*/
-                OptionItem.SyncAllOptions();
+                //OptionItem.SyncAllOptions();
 
                 _ = new LateTask(() =>
                 {
