@@ -216,6 +216,13 @@ namespace TownOfHost
         }
     }
 
+    [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRoleRpc))]
+    internal class HandleRoleRpcPatch
+    {
+        public static bool Prefix([HarmonyArgument(0)] byte callId)
+            => !Enum.IsDefined(typeof(CustomRPC), (int)callId);
+    }
+
     internal static class RPC
     {
         //SyncCustomSettingsRPC Sender
