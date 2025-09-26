@@ -93,6 +93,21 @@ namespace TownOfHost
             //CustomRPC以外は処理しない
             if (callId < (byte)CustomRPC.VersionCheck) return;
 
+            try
+            {
+                if (!((CustomRPC)callId is CustomRPC.VersionCheck or CustomRPC.RequestRetryVersionCheck)
+                && reader.ReadString() != Main.ForkId)
+                {
+                    Logger.Warn($"別MODのRPCをキャンセルしました {__instance.PlayerId}", "cancel");
+                    return;
+                }
+            }
+            catch
+            {
+                Logger.Warn($"エラーが発生したため、RPCをキャンセルしました {__instance.PlayerId}", "cancel");
+                return;
+            }
+
             CustomRPC rpcType = (CustomRPC)callId;
             switch (rpcType)
             {
@@ -463,6 +478,12 @@ namespace TownOfHost
         public static void Prefix(InnerNet.InnerNetClient __instance, [HarmonyArgument(0)] uint targetNetId, [HarmonyArgument(1)] byte callId, [HarmonyArgument(3)] int targetClientId = -1)
         {
             RPC.SendRpcLogger(targetNetId, callId, targetClientId);
+        }
+        public static void Postfix([HarmonyArgument(1)] byte callId, MessageWriter __result)
+        {
+            if (!Enum.IsDefined(typeof(CustomRPC), (int)callId)) return;
+            if ((CustomRPC)callId is CustomRPC.VersionCheck or CustomRPC.RequestRetryVersionCheck) return;
+            __result.Write(Main.ForkId);
         }
     }
 }
