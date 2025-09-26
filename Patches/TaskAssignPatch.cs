@@ -62,6 +62,12 @@ namespace TownOfHost
                 return;
             }
 
+            if (ShipStatus.Instance == null)
+            {
+                Logger.Warn("警告:ShipStatusがnullです。", "RpcSetTasksPatch");
+                return;
+            }
+
             var pc = __instance.Object;
             CustomRoles? RoleNullable = pc?.GetCustomRole();
             if (RoleNullable == null) return;
