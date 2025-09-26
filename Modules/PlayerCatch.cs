@@ -63,8 +63,10 @@ namespace TownOfHost
 
         public static void CountAlivePlayers(bool sendLog = false)
         {
-            int AliveImpostorCount = AllAlivePlayerControls.Count(pc => pc.Is(CustomRoleTypes.Impostor));
-            int AliveNeutalCount = AllAlivePlayerControls.Count(pc => pc.Is(CustomRoleTypes.Neutral));
+            var playerControls = AllAlivePlayerControls;
+            int AliveImpostorCount = playerControls.Count(pc => pc.Is(CustomRoleTypes.Impostor));
+            int AliveNeutalCount = playerControls.Count(pc => pc.Is(CustomRoleTypes.Neutral));
+
             if (PlayerCatch.AliveImpostorCount != AliveImpostorCount)
             {
                 Logger.Info("生存しているインポスター:" + AliveImpostorCount + "人", "CountAliveImpostors");
@@ -81,7 +83,7 @@ namespace TownOfHost
 
             if (sendLog)
             {
-                if (Options.CantUseVentMode.GetBool() && (AllAlivePlayerControls.Count() <= Options.CantUseVentTrueCount.GetFloat()))
+                if (Options.CantUseVentMode.GetBool() && (playerControls.Count() <= Options.CantUseVentTrueCount.GetFloat()))
                     Utils.CantUseVent = true;
                 else Utils.CantUseVent = false;
 
