@@ -28,8 +28,9 @@ namespace TownOfHost.Modules
             AllSenders.OfType<PlayerGameOptionsSender>()
             .ToList().ForEach(sender => sender.SetDirty());
 
+        public static IGameOptions cachedGameOptions = null;
         public override IGameOptions BasedGameOptions =>
-            Main.RealOptionsData.Restore(new NormalGameOptionsV10(new UnityLogger().Cast<ILogger>()).Cast<IGameOptions>());
+            Main.RealOptionsData.Restore(cachedGameOptions ?? (cachedGameOptions = new NormalGameOptionsV10(new UnityLogger().Cast<ILogger>()).Cast<IGameOptions>()));
         public override bool IsDirty { get; protected set; }
 
         public PlayerControl player;
