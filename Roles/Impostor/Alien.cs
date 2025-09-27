@@ -20,7 +20,6 @@ namespace TownOfHost.Roles.Impostor;
 // 追加したいなぁって思ってるの
 // マジシャン(キルボタンぜんぶ吹っ飛ばす...流石に強い気がする)
 // ウィッチ(キルで呪い付与...弱いかなぁ...)
-// エイリアンジャッカルって需要ありそうじゃね?(???)シェイプも丁度開いてるし！
 
 public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomata, ISelfVoter
 {
@@ -685,18 +684,29 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         if (modeRemotekiller)
         {
             var user = physics.myPlayer;
-            if (Remotekillertarget != 111 && Player.PlayerId == user.PlayerId)
+            if (Remotekillertarget is not 111 && Player.PlayerId == user.PlayerId)
             {
                 var target = PlayerCatch.GetPlayerById(Remotekillertarget);
                 if (!target.IsAlive()) return true;
-                _ = new LateTask(() =>
+                if (OptionKillAnimation.GetBool())
+                {
+                    _ = new LateTask(() =>
+                    {
+                        target.SetRealKiller(user);
+                        user.RpcMurderPlayer(target, true);
+                    }, 1.2f);
+                }
+                else
                 {
                     target.SetRealKiller(user);
-                    user.RpcMurderPlayer(target, true);
-                }, 1f);
+                    target.RpcMurderPlayer(target, true);
+                }
+
                 RPC.PlaySoundRPC(user.PlayerId, Sounds.KillSound);
-                Remotekillertarget = 111;
-                return false;
+                RPC.PlaySoundRPC(user.PlayerId, Sounds.TaskComplete);
+                Logger.Info($"Remotekillerのターゲット{target.name}のキルに成功", "Remotekiller.kill");
+                Remotekillertarget = byte.MaxValue;
+                return !OptionKillAnimation.GetBool();
             }
         }
         if (modeMole)//モグラ
@@ -1106,6 +1116,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
     bool modePuppeteer;
     //リモートキラー
     static OptionItem OptionModeRemotekiller;
+    public static OptionItem OptionKillAnimation;
     static int RateRemotekiller;
     bool modeRemotekiller;
     byte Remotekillertarget;
@@ -1211,7 +1222,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         AlienCEvilHacker,
         AlienCLimiter, blastrange,
         AlienCPuppeteer, PuppeteerPuppetCool,
-        AlienCRemoteKiller,
+        AlienCRemoteKiller, KillAnimation,
         AlienCStealth, StealthDarkenDuration,
         AlienCNomal,
         AlienCNotifier, NotifierProbability,
@@ -1242,6 +1253,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         OptionModeStealth = FloatOptionItem.Create(RoleInfo, 18, OptionName.AlienCStealth, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         OptionStealthDarkenDuration = FloatOptionItem.Create(RoleInfo, 19, OptionName.StealthDarkenDuration, new(0.5f, 5f, 0.5f), 1f, false, OptionModeStealth).SetValueFormat(OptionFormat.Seconds);
         OptionModeRemotekiller = FloatOptionItem.Create(RoleInfo, 20, OptionName.AlienCRemoteKiller, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
+        OptionKillAnimation = BooleanOptionItem.Create(RoleInfo, 50, OptionName.KillAnimation, false, false, OptionModeRemotekiller);
         OptionModeNotifier = FloatOptionItem.Create(RoleInfo, 21, OptionName.AlienCNotifier, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         OptionNotifierProbability = FloatOptionItem.Create(RoleInfo, 22, OptionName.NotifierProbability, new(0, 100, 5), 50, false, OptionModeNotifier).SetValueFormat(OptionFormat.Percent);
         OptionModeTimeThief = FloatOptionItem.Create(RoleInfo, 23, OptionName.AlienCTimeThief, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);

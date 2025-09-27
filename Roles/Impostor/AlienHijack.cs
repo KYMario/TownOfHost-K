@@ -654,18 +654,29 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         if (modeRemotekiller)
         {
             var user = physics.myPlayer;
-            if (Remotekillertarget != 111 && Player.PlayerId == user.PlayerId)
+            if (Remotekillertarget is not 111 && Player.PlayerId == user.PlayerId)
             {
                 var target = PlayerCatch.GetPlayerById(Remotekillertarget);
                 if (!target.IsAlive()) return true;
-                _ = new LateTask(() =>
+                if (Alien.OptionKillAnimation.GetBool())
+                {
+                    _ = new LateTask(() =>
+                    {
+                        target.SetRealKiller(user);
+                        user.RpcMurderPlayer(target, true);
+                    }, 1.2f);
+                }
+                else
                 {
                     target.SetRealKiller(user);
-                    user.RpcMurderPlayer(target, true);
-                }, 1f);
+                    target.RpcMurderPlayer(target, true);
+                }
+
                 RPC.PlaySoundRPC(user.PlayerId, Sounds.KillSound);
-                Remotekillertarget = 111;
-                return false;
+                RPC.PlaySoundRPC(user.PlayerId, Sounds.TaskComplete);
+                Logger.Info($"Remotekillerのターゲット{target.name}のキルに成功", "Remotekiller.kill");
+                Remotekillertarget = byte.MaxValue;
+                return !Alien.OptionKillAnimation.GetBool();
             }
         }
         if (modeMole)//モグラ

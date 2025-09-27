@@ -704,18 +704,29 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         if (modeRemotekiller)
         {
             var user = physics.myPlayer;
-            if (Remotekillertarget != 111 && Player.PlayerId == user.PlayerId)
+            if (Remotekillertarget is not 111 && Player.PlayerId == user.PlayerId)
             {
                 var target = PlayerCatch.GetPlayerById(Remotekillertarget);
                 if (!target.IsAlive()) return true;
-                _ = new LateTask(() =>
+                if (OptionKillAnimation.GetBool())
+                {
+                    _ = new LateTask(() =>
+                    {
+                        target.SetRealKiller(user);
+                        user.RpcMurderPlayer(target, true);
+                    }, 1.2f);
+                }
+                else
                 {
                     target.SetRealKiller(user);
-                    user.RpcMurderPlayer(target, true);
-                }, 1f);
+                    target.RpcMurderPlayer(target, true);
+                }
+
                 RPC.PlaySoundRPC(user.PlayerId, Sounds.KillSound);
-                Remotekillertarget = 111;
-                return false;
+                RPC.PlaySoundRPC(user.PlayerId, Sounds.TaskComplete);
+                Logger.Info($"Remotekillerのターゲット{target.name}のキルに成功", "Remotekiller.kill");
+                Remotekillertarget = byte.MaxValue;
+                return !OptionKillAnimation.GetBool();
             }
         }
         if (modeMole)//モグラ
@@ -1133,6 +1144,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
     bool modePuppeteer;
     //リモートキラー
     static OptionItem OptionModeRemotekiller;
+    public static OptionItem OptionKillAnimation;
     static int RateRemotekiller;
     bool modeRemotekiller;
     byte Remotekillertarget;
@@ -1246,7 +1258,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         AlienCEvilHacker,
         AlienCLimiter, blastrange,
         AlienCPuppeteer, PuppeteerPuppetCool,
-        AlienCRemoteKiller,
+        AlienCRemoteKiller, KillAnimation,
         AlienCStealth, StealthDarkenDuration,
         AlienCNomal,
         AlienCNotifier, NotifierProbability,
@@ -1290,6 +1302,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         OptionModeStealth = FloatOptionItem.Create(RoleInfo, 28, OptionName.AlienCStealth, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         OptionStealthDarkenDuration = FloatOptionItem.Create(RoleInfo, 29, OptionName.StealthDarkenDuration, new(0.5f, 5f, 0.5f), 1f, false, OptionModeStealth).SetValueFormat(OptionFormat.Seconds);
         OptionModeRemotekiller = FloatOptionItem.Create(RoleInfo, 30, OptionName.AlienCRemoteKiller, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
+        OptionKillAnimation = BooleanOptionItem.Create(RoleInfo, 55, OptionName.KillAnimation, false, false, OptionModeRemotekiller);
         OptionModeNotifier = FloatOptionItem.Create(RoleInfo, 31, OptionName.AlienCNotifier, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         OptionNotifierProbability = FloatOptionItem.Create(RoleInfo, 32, OptionName.NotifierProbability, new(0, 100, 5), 50, false, OptionModeNotifier).SetValueFormat(OptionFormat.Percent);
         OptionModeTimeThief = FloatOptionItem.Create(RoleInfo, 33, OptionName.AlienCTimeThief, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
