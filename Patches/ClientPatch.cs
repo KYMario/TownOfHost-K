@@ -49,6 +49,33 @@ namespace TownOfHost
             if (delhas) delhas?.SetActive(false);
         }
     }
+
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show))]
+    class CreateGameOptionsShowPatch
+    {
+        public static void Prefix(CreateGameOptions __instance)
+        {
+            //HaSボタンを非表示にする
+            __instance.modeButtons[1]?.gameObject?.SetActive(false);
+        }
+        public static void Postfix(CreateGameOptions __instance)
+        {
+            //ノーマルモードを選択させる
+            __instance.SelectMode(0, false);
+            __instance.UpdateServerText(ServerManager.Instance.CurrentRegion.Name);
+        }
+    }
+
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.SelectMode))]
+    class CreateGameOptionsSelectModePatch
+    {
+        //通常モードを選択させる
+        public static void Prefix(ref int i)
+        {
+            i = 0;
+        }
+    }
+
     [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.OpenServerDropdown))]
     class CreateGameOptionsOpenServerDropdown
     {

@@ -414,6 +414,9 @@ namespace TownOfHost
             var codebuttongo = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/Scaler/Enter Code Button");
             var Codebutton = codebuttongo.transform.GetComponent<PassiveButton>();
 
+            var createbuttongameobject = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/Scaler/Create Lobby Button");
+            var createbutton = createbuttongameobject.transform.GetComponent<PassiveButton>();
+
             if (Findbuttongo)
             {
                 Findbuttongo.SetActive(false);
@@ -422,6 +425,10 @@ namespace TownOfHost
             {
                 var buttonCollider = Codebutton.GetComponent<BoxCollider2D>();
                 buttonCollider.offset = new(100f, 100f);
+            }
+            if (Main.IsAndroid())
+            {
+                createbutton.GetComponent<BoxCollider2D>().offset = new(100f, 100);
             }
 
             if (CredentialsPatch.TohkLogo != null)
@@ -439,8 +446,8 @@ namespace TownOfHost
                 var TMPobjct = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/CrossplayWarning/CrossPlayText/Text_TMP");
 
                 var TMP = TMPobjct.transform.GetComponent<TextMeshPro>();
-                TMP.SetText(Translator.GetString("CantPublickAndJoin"));
-                _ = new LateTask(() => TMP.SetText(Translator.GetString("CantPublickAndJoin")), 0.05f, "Set", true);
+                TMP.SetText(Main.IsAndroid() ? Translator.GetString("CantAndroidCreateGame") : Translator.GetString("CantPublickAndJoin"));
+                _ = new LateTask(() => TMP.SetText(Main.IsAndroid() ? Translator.GetString("CantAndroidCreateGame") : Translator.GetString("CantPublickAndJoin")), 0.05f, "Set", true);
             }
         }
         [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]

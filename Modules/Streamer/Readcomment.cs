@@ -178,6 +178,7 @@ class StreamerInfo
     }
     private async Task<HttpResponseMessage> FetchChat()
     {
+        if (Main.IsAndroid()) return null;
         var param = new Dictionary<string, string>()
         {
             ["key"] = chatData.key

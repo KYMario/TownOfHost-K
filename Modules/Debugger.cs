@@ -13,6 +13,7 @@ namespace TownOfHost
     {
         public static void Send(string text)
         {
+            if (Main.IsAndroid()) return;
             ClientOptionsManager.CheckOptions();
             if (ClientOptionsManager.WebhookUrl == "none" || !Main.UseWebHook.Value) return;
             HttpClient httpClient = new();
@@ -34,6 +35,7 @@ namespace TownOfHost
         //参考元→https://github.com/Dolly1016/Nebula-Public/
         public static void SendResult(byte[] pngImage)
         {
+            if (Main.IsAndroid()) return;
             ClientOptionsManager.CheckOptions();
             if (ClientOptionsManager.WebhookUrl == "none" || !Main.UseWebHook.Value) return;
             try

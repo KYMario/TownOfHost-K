@@ -57,7 +57,12 @@ namespace TownOfHost
             bool updateCheck = version != null && version.Update.Version != null;
             //string url = beta ? Main.BetaBuildURL.Value : URL + "/releases" + (updateCheck ? "/tags/" + version.Update.Version : (all ? "" : "/latest"));
             string url = beta ? Main.BetaBuildURL.Value : URL + "/releases" + (all ? "" : "/latest");
-            if (snap || all) url = url + "?page=1";
+            if (all) url = url + "?page=1";
+
+            //強制オプションが使用されていない & allオプションが使用されている & 既に取得済み
+            if (all && releases.Any()) return true;
+            if (Main.IsAndroid()) return true;
+
             try
             {
                 string result;

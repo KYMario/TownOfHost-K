@@ -53,21 +53,24 @@ namespace TownOfHost
             {
                 OpenLogFolder = ClientActionItem.Create("OpenLogFolder", UtilsOutputLog.OpenLogFolder, __instance);
             }
-            if (UnloadMod == null || UnloadMod.ToggleButton == null)
+            if (Main.IsAndroid() is false)
             {
-                UnloadMod = ClientActionItem.Create("UnloadMod", ModUnloaderScreen.Show, __instance);
-            }
-            if ((ForceEnd == null || ForceEnd.ToggleButton == null) && AmongUsClient.Instance.AmHost)
-            {
-                ForceEnd = ClientActionItem.Create("ForceEnd", ForceEndProcess, __instance);
-            }
-            if (UseWebHook == null || UseWebHook.ToggleButton == null)
-            {
-                UseWebHook = ClientOptionItem.Create("UseWebHook", Main.UseWebHook, __instance);
-            }
-            if (Yomiage == null || Yomiage.ToggleButton == null)
-            {
-                Yomiage = ClientOptionItem.Create("UseYomiage", Main.UseYomiage, __instance);
+                if (UnloadMod == null || UnloadMod.ToggleButton == null)
+                {
+                    UnloadMod = ClientActionItem.Create("UnloadMod", ModUnloaderScreen.Show, __instance);
+                }
+                if ((ForceEnd == null || ForceEnd.ToggleButton == null) && AmongUsClient.Instance.AmHost)
+                {
+                    ForceEnd = ClientActionItem.Create("ForceEnd", ForceEndProcess, __instance);
+                }
+                if (UseWebHook == null || UseWebHook.ToggleButton == null)
+                {
+                    UseWebHook = ClientOptionItem.Create("UseWebHook", Main.UseWebHook, __instance);
+                }
+                if (Yomiage == null || Yomiage.ToggleButton == null)
+                {
+                    Yomiage = ClientOptionItem.Create("UseYomiage", Main.UseYomiage, __instance);
+                }
             }
             if (CustomSprite == null || CustomSprite.ToggleButton == null)
             {
@@ -83,7 +86,8 @@ namespace TownOfHost
             }
             if (AutoSaveScreenShot == null || AutoSaveScreenShot.ToggleButton == null)
             {
-                AutoSaveScreenShot = ClientOptionItem.Create("AutoSaveScreenShot", Main.AutoSaveScreenShot, __instance);
+                if (Main.IsAndroid() is false)
+                    AutoSaveScreenShot = ClientOptionItem.Create("AutoSaveScreenShot", Main.AutoSaveScreenShot, __instance);
             }
 #if DEBUG
             if (ViewPingDetails == null || ViewPingDetails.ToggleButton == null)

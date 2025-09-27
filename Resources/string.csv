@@ -2368,6 +2368,7 @@
 "PublicNotAvailableOnThisVersion","Public lobbies are not available on this version.\nPlease visit our GitHub.","このバージョンでは公開ルームは使用できません。\n詳しくはGitHubをご覧ください。"
 "CanNotModClientJoin","This version does not allow mod installers to participate","このバージョンではMod導入者の参加はできません"
 "CantPublickAndJoin","This Mod version does not join game and find game","このバージョンではMod導入状態で参加はできません"
+"CantAndroidCreateGame","This Mod version does not create Game for Android.","Android版では、現在参加のみサポートしてます。"
 "DontCreatetext","Do not use custom servers for mods other than TOH-K!","他Mod様のカスタムサーバーを利用して\nTOH-Kを建てるのは迷惑だョ..."
 "StandardHAS","Hide And Seek with Roles","役職入りでかくれんぼ","在躲猫猫模式中加入职业","在躲貓貓中加入多職業模式中的職業","Прятки с Ролями","Esconde-Esconde com Classes",""
 "StandardHASWaitingTime","Standby","待機時間","躲猫猫猎人等待时间","躲貓貓偽裝者等待時間","Время ожидания","Tempo de Espera",""

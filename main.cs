@@ -372,6 +372,20 @@ namespace TownOfHost
                 return false;
             else return true;
         }
+        public static bool IsAndroid()//参考元、SNR
+        {
+            //Android対応は参加者限定で一旦様子見たいなぁって思ってます。
+            //
+            try
+            {
+                return Constants.GetPlatformType() == Platforms.Android;
+            }
+            catch (Exception e)
+            {
+                TownOfHost.Logger.Error(e.Message, "IsAndroidError");
+                return false;
+            }
+        }
 
         public static bool IsPublicRoomAllowed(bool AllowCS = true)
         {

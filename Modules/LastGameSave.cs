@@ -18,6 +18,7 @@ public static class LastGameSave
     [PluginModuleInitializer]
     public static void Init()
     {
+        if (Main.IsAndroid()) return;
         CreateIfNotExists(true);
         if (!ScreenShotFolder.Exists)
         {
@@ -27,6 +28,7 @@ public static class LastGameSave
 
     public static void CreateIfNotExists(bool delete = false, bool destroy = false)
     {
+        if (Main.IsAndroid()) return;
         if (!File.Exists(PATH))
         {
             try
@@ -125,6 +127,7 @@ public static class LastGameSave
     }
     public static void SeveImage(bool autosave = false)
     {
+        if (Main.IsAndroid()) return;
         if (autosave && !Main.AutoSaveScreenShot.Value) return;
         var endGameNavigation = GameObject.Find("EndGameNavigation");
         if (!autosave)
