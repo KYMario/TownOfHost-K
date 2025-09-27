@@ -75,7 +75,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         OptAddWin = BooleanOptionItem.Create(RoleInfo, 15, OptionName.CountKillerAddWin, false, false);
         SoloWinOption.Create(RoleInfo, 16, show: () => !OptAddWin.GetBool(), defo: 1);
         Optpresent = BooleanOptionItem.Create(RoleInfo, 17, OptionName.SantaClausGivePresent, true, false);
-        OverrideTasksData.Create(RoleInfo, 20, tasks: (true, 2, 2, 2));
+        OverrideTasksData.Create(RoleInfo, 20, tasks: (true, 0, 0, 3));
     }
     public override void Add() => SetPresentVent();
     public override void ApplyGameOptions(IGameOptions opt)
