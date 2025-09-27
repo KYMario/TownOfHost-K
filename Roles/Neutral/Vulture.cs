@@ -6,6 +6,8 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
+using TownOfHost.Roles.Vanilla;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -49,6 +51,7 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
     {
         EatCount = 0;
         staticEatedPlayers.Clear();
+        Viperkilledplayers = new();
 
         OptAddWinEatcount = OptionAddWinEatCount.GetInt();
         OptWinEatcount = OptionWinEatCount.GetInt();
@@ -73,6 +76,7 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
 
     int EatCount;//食べたかず
     Dictionary<byte, Vector2> DiePlayerPos = new();//死体の矢印
+    Dictionary<byte, float> Viperkilledplayers = new();//とける予定の死体
     static List<byte> staticEatedPlayers = new();//食べられたおにく
     enum OptionName
     {
@@ -167,6 +171,9 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
         var pos = info.AppearanceTarget.GetTruePosition();
         DiePlayerPos.Add(info.AppearanceTarget.PlayerId, pos);
         GetArrow.Add(Player.PlayerId, pos);
+        //Viperの死体なら削除検知を
+        if (info.AppearanceKiller.GetCustomRole() is CustomRoles.Viper) Viperkilledplayers.Add(info.AppearanceTarget.PlayerId, Viper.ViperDissolveTime);
+        RpcAddDiePlayerPos(info.AppearanceTarget.PlayerId, pos);
 
         //キルフラッシュが見えるタスク数なら～
         return OptKillflashTaskcount <= MyTaskState.CompletedTasksCount;
@@ -203,8 +210,11 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
         }
         return "";
     }
-    public override void AfterMeetingTasks() => staticEatedPlayers.Clear();
-
+    public override void AfterMeetingTasks()
+    {
+        Viperkilledplayers.Clear();
+        staticEatedPlayers.Clear();
+    }
     public bool CheckWin(ref CustomRoles winnerRole)
     {
         if (OptAddWinEatcount is 0) return false;
@@ -213,5 +223,79 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
 
         //生きてて小腹が満たせれば勝
         return OptAddWinEatcount <= EatCount && Player.IsAlive();
+    }
+    public override void OnFixedUpdate(PlayerControl player)
+    {
+        if (AmongUsClient.Instance.AmHost is false || Viperkilledplayers.Count is 0) return;
+
+        for (byte i = 0; i < Viperkilledplayers.Count; i++)
+        {
+            if (Viperkilledplayers.TryGetValue(i, out var timer))
+            {
+                timer -= Time.fixedDeltaTime;
+                Viperkilledplayers[i] = timer;
+
+                if (timer <= 0)
+                {
+                    Viperkilledplayers.Remove(i);
+                    DiePlayerPos.Where(poss => poss.Key == i).Do(poss => GetArrow.Remove(Player.PlayerId, poss.Value));
+                    RpcEatPlayer(i);//Eatcountも送られるけど多分。。。大丈夫。
+                }
+            }
+        }
+    }
+
+    public void RpcEatPlayer(byte targetId)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.EatPlayer);
+        sender.Writer.Write(EatCount);
+        sender.Writer.Write(targetId);
+    }
+
+    public void RpcAddDiePlayerPos(byte targetId, Vector2 pos)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.AddDiePlayerPos);
+        sender.Writer.Write(targetId);
+        NetHelpers.WriteVector2(pos, sender.Writer);
+    }
+
+    public void RpcClearDiePlayerPos()
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.ClearDiePlayerPos);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        switch ((RPC_Types)reader.ReadPackedInt32())
+        {
+            case RPC_Types.EatPlayer:
+                EatCount = reader.ReadInt32();
+                var targetId = reader.ReadByte();
+                staticEatedPlayers.Add(targetId);
+                DiePlayerPos.Where(poss => poss.Key == targetId).Do(poss => GetArrow.Remove(Player.PlayerId, poss.Value));
+                break;
+            case RPC_Types.AddDiePlayerPos:
+                var playerPos = NetHelpers.ReadVector2(reader);
+                DiePlayerPos.Add(reader.ReadByte(), playerPos);
+                GetArrow.Add(Player.PlayerId, playerPos);
+                break;
+            case RPC_Types.ClearDiePlayerPos:
+                DiePlayerPos.Do(oniku => GetArrow.Remove(Player.PlayerId, oniku.Value));
+                DiePlayerPos.Clear();
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        EatPlayer,
+        AddDiePlayerPos,
+        ClearDiePlayerPos
     }
 }
