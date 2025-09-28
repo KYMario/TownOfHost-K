@@ -50,8 +50,8 @@ namespace TownOfHost.Roles.Impostor
 
         static float KillDelay;
         static float Blastrange;
-        static int BomberExplosion;
         static float Cooldown;
+        int BomberExplosion;
 
         public bool CanBeLastImpostor { get; } = false;
         Dictionary<byte, float> BomberExplosionPlayers = new(14);
