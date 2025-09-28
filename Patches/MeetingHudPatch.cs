@@ -108,6 +108,7 @@ public static class MeetingHudPatch
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 pc.GetPlayerState().IsBlackOut = false;
+                pc.Data.Role.NameColor = Palette.White;
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId].Clear();
 
                 if (Main.CheckShapeshift.TryGetValue(pc.PlayerId, out var shapeshifting) && shapeshifting)

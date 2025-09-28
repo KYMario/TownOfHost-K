@@ -138,6 +138,11 @@ public static class ReactorTaskCompletePatch
 {
     public static void Postfix() => SabotageComplete.CompleteSabotage();
 }
+[HarmonyPatch(typeof(HudOverrideTask), nameof(HudOverrideTask.Complete))]
+public static class HudOverrideTaskCompletePatch
+{
+    public static void Postfix() => SabotageComplete.CompleteSabotage();
+}
 public static class SabotageComplete
 {
     public static void CompleteSabotage()

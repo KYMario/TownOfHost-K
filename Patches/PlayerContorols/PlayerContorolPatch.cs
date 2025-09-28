@@ -65,6 +65,7 @@ namespace TownOfHost
 
             return true;
         }
+        public static void Postfix(PlayerControl __instance) => __instance.Data.Role.NameColor = Palette.White;
     }
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.Die))]
     public static class PlayerControlDiePatch

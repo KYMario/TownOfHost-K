@@ -368,7 +368,7 @@
 "MadTrackerInfo","Use your abilities to assist the Imposter","能力を駆使し、インポスターの援助をしよう"
 "MadChangerInfo","We've switched!?","僕達...入れ替わってる...!?"
 "MadSuicideInfo","For the Impostor...","ご主人様の為なら..."
-"MadBetrayerInfo","","ご主人は我の手駒"
+"MadBetrayerInfo","To suit one's own convenience","ご主人は我の手駒"
 "#MadmateInfo"
 
 "# 特殊クルー役職"
@@ -474,7 +474,7 @@
 "VegaInfo","Meet Altair...","彦星に会いたくて"
 "AltairInfo","Let's make this ship a shooting star","この船を流れ星にしよう"
 "StrawdollInfo","Use him as a substitute","アイツを身代わりに"
-"MissioneerInfo","","課題をこなせ"
+"MissioneerInfo","Mission is impossible","課題をこなせ"
 "#NeutralInfo"
 
 "# HideAndSeek"
