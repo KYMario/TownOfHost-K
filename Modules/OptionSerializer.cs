@@ -12,7 +12,7 @@ public static class OptionSerializer
 {
     private static LogHandler logger = Logger.Handler(nameof(OptionSerializer));
     private const string Header = "%TOH-KOptions%", Footer = "%End%";
-    private static readonly DirectoryInfo exportDir = new("./TOHK_DATA/OptionOutputs");
+    private static readonly DirectoryInfo exportDir = new(Main.BaseDirectory + "/OptionOutputs");
     public static void SaveToClipboard()
     {
         GUIUtility.systemCopyBuffer = GenerateOptionsString();

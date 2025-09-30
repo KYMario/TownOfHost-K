@@ -17,7 +17,7 @@ namespace TownOfHost
     public class CustomSpawnEditor
     {
         public static Dictionary<int, List<Vector2>> CustomSpawnPosition = new();
-        private static readonly string FILE_PATH = "./TOHK_DATA/CustomSpawns.txt";
+        private static readonly string FILE_PATH = Main.BaseDirectory + "/CustomSpawns.txt";
         private readonly static LogHandler logger = Logger.Handler("CustomSpawnEditor");
 
         [PluginModuleInitializer]
@@ -154,15 +154,14 @@ namespace TownOfHost
 
         public static void CreateIfNotExists()
         {
-            if (Main.IsAndroid()) return;
             if (!File.Exists(FILE_PATH))
             {
                 try
                 {
-                    if (!Directory.Exists(@"TOHK_DATA")) Directory.CreateDirectory(@"TOHK_DATA");
-                    if (File.Exists(@"./CustomSpawns.txt"))
+                    if (!Directory.Exists(Main.BaseDirectory)) Directory.CreateDirectory(Main.BaseDirectory);
+                    if (File.Exists(Main.BaseDirectory + "/CustomSpawns.txt"))
                     {
-                        File.Move(@"./CustomSpawns.txt", FILE_PATH);
+                        File.Move(Main.BaseDirectory + "/CustomSpawns.txt", FILE_PATH);
                     }
                     else
                     {

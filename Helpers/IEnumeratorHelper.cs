@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
+using HarmonyLib;
 using Il2CppInterop.Runtime;
 
 namespace TownOfHost;
 
-public class CoroutinPatcher
+public class CoroutinPatcher : Attribute
 {
     Dictionary<string, Action> _prefixActions = [];
     Dictionary<string, Action> _postfixActions = [];

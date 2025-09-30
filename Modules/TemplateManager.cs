@@ -13,7 +13,7 @@ namespace TownOfHost
 {
     public static class TemplateManager
     {
-        private static readonly string TEMPLATE_FILE_PATH = "./TOHK_DATA/template.txt";
+        private static readonly string TEMPLATE_FILE_PATH = Main.BaseDirectory + "/template.txt";
         private static Dictionary<string, Func<string>> _replaceDictionary = new()
         {
             ["RoomCode"] = () => InnerNet.GameCode.IntToGameName(AmongUsClient.Instance.GameId),
@@ -42,18 +42,16 @@ namespace TownOfHost
         [PluginModuleInitializer]
         public static void Init()
         {
-            if (Main.IsAndroid()) return;
             CreateIfNotExists();
         }
 
         public static void CreateIfNotExists()
         {
-            if (Main.IsAndroid()) return;
             if (!File.Exists(TEMPLATE_FILE_PATH))
             {
                 try
                 {
-                    if (!Directory.Exists(@"TOHK_DATA")) Directory.CreateDirectory(@"TOHK_DATA");
+                    if (!Directory.Exists(Main.BaseDirectory)) Directory.CreateDirectory(Main.BaseDirectory);
                     if (File.Exists(@"./template.txt"))
                     {
                         File.Move(@"./template.txt", TEMPLATE_FILE_PATH);

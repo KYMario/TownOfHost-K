@@ -13,6 +13,7 @@ using UnityEngine;
 using TownOfHost.Attributes;
 using TownOfHost.Roles.Core;
 using TownOfHost.Modules;
+using System.IO;
 
 [assembly: AssemblyFileVersionAttribute(TownOfHost.Main.PluginVersion)]
 [assembly: AssemblyInformationalVersionAttribute(TownOfHost.Main.PluginVersion)]
@@ -172,6 +173,10 @@ namespace TownOfHost
 
         public const float RoleTextSize = 2f;
         public static Main Instance;
+        public static string BaseDirectory
+            => Path.GetFullPath(Path.Combine(
+                string.IsNullOrEmpty(BepInEx.Paths.BepInExRootPath) ? Application.persistentDataPath : BepInEx.Paths.BepInExRootPath,
+                "../TOHK_DATA"));
         public override void Load()
         {
             GameCount = 0;
@@ -358,7 +363,7 @@ namespace TownOfHost
 
             ClassInjector.RegisterTypeInIl2Cpp<ErrorText>();
 
-            Harmony.PatchAll();
+            Harmony.PatchAll(Assembly.GetExecutingAssembly());
             Application.quitting += new Action(UtilsOutputLog.SaveNowLog);
             Application.quitting += new Action(SaveStatistics.Save);
             Statistics.NowStatistics = SaveStatistics.Load();
@@ -386,7 +391,6 @@ namespace TownOfHost
                 return false;
             }
         }
-
         public static bool IsPublicRoomAllowed(bool AllowCS = true)
         {
             if (!VersionChecker.IsSupported)

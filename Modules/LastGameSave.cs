@@ -12,13 +12,12 @@ namespace TownOfHost.Modules;
 
 public static class LastGameSave
 {
-    private static readonly string PATH = new("./TOHK_DATA/LastGameResult.txt");
-    private static readonly DirectoryInfo ScreenShotFolder = new("./TOHK_DATA/ScreenShots/");
+    private static readonly string PATH = new(Main.BaseDirectory + "/LastGameResult.txt");
+    private static readonly DirectoryInfo ScreenShotFolder = new(Main.BaseDirectory + "/ScreenShots/");
 
     [PluginModuleInitializer]
     public static void Init()
     {
-        if (Main.IsAndroid()) return;
         CreateIfNotExists(true);
         if (!ScreenShotFolder.Exists)
         {
@@ -28,12 +27,11 @@ public static class LastGameSave
 
     public static void CreateIfNotExists(bool delete = false, bool destroy = false)
     {
-        if (Main.IsAndroid()) return;
         if (!File.Exists(PATH))
         {
             try
             {
-                if (!Directory.Exists(@"TOHK_DATA")) Directory.CreateDirectory(@"TOHK_DATA");
+                if (!Directory.Exists(Main.BaseDirectory)) Directory.CreateDirectory(Main.BaseDirectory);
                 if (File.Exists(@"./LastGameResult.txt"))
                 {
                     File.Move(@"./LastGameResult.txt", PATH);
@@ -61,7 +59,7 @@ public static class LastGameSave
         }
         else
         {
-            if (!Directory.Exists(@"TOHK_DATA")) Directory.CreateDirectory(@"TOHK_DATA");
+            if (!Directory.Exists(Main.BaseDirectory)) Directory.CreateDirectory(Main.BaseDirectory);
             if (File.Exists(@"./LastGameResult.txt"))
             {
                 if (delete)
@@ -127,7 +125,6 @@ public static class LastGameSave
     }
     public static void SeveImage(bool autosave = false)
     {
-        if (Main.IsAndroid()) return;
         if (autosave && !Main.AutoSaveScreenShot.Value) return;
         var endGameNavigation = GameObject.Find("EndGameNavigation");
         if (!autosave)

@@ -23,6 +23,7 @@ namespace TownOfHost
             var patcher = new CoroutinPatcher(__result);
             //ShowRoleはステートマシンクラスになっているためその実行前にパッチを当てる
             //元々Postfixだが、タイミング的にはPrefixの方が適切なのでPrefixに当てる
+            //androidは_ShowRole_d__41なんてないよとエラーを吐く。
             patcher.AddPrefix(typeof(IntroCutscene._ShowRole_d__41), () => SetUpRoleTextPatch.Postfix(__instance));
             __result = patcher.EnumerateWithPatch();
         }
@@ -360,7 +361,7 @@ namespace TownOfHost
             BeginCrewmatePatch.Postfix(__instance, ref yourTeam);
         }
     }
-    [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]
+    [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.OnDestroy))]//android、このPatch適応されないっぽい。
     class IntroCutsceneDestroyPatch
     {
         public static void Postfix(IntroCutscene __instance)

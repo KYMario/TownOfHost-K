@@ -10,7 +10,7 @@ namespace TownOfHost
 {
     public static class ClientOptionsManager
     {
-        private static readonly string OPTIONS_FILE_PATH = "./TOHK_DATA/options.txt";
+        private static readonly string OPTIONS_FILE_PATH = Main.BaseDirectory + "/options.txt";
         private static readonly string DEFAULT = "//default:none\nWebHookUrl:none\n//default:50080\nYomiagePort:50080\n\n// Don't Change The Value. / この値を変更しないでください。\nverison:1";
         private static readonly int Version = 1;
         public static string WebhookUrl = "none";
@@ -23,15 +23,14 @@ namespace TownOfHost
 
         public static void CreateIfNotExists()
         {
-            if (Main.IsAndroid()) return;
             if (!File.Exists(OPTIONS_FILE_PATH))
             {
                 try
                 {
-                    if (!Directory.Exists(@"TOHK_DATA")) Directory.CreateDirectory(@"TOHK_DATA");
-                    if (File.Exists(@"./options.txt"))
+                    if (!Directory.Exists(Main.BaseDirectory)) Directory.CreateDirectory(Main.BaseDirectory);
+                    if (File.Exists(Main.BaseDirectory + "/options.txt"))
                     {
-                        File.Move(@"./options.txt", OPTIONS_FILE_PATH);
+                        File.Move(Main.BaseDirectory + "/options.txt", OPTIONS_FILE_PATH);
                     }
                     else
                     {

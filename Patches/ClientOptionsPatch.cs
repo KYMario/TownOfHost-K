@@ -47,30 +47,32 @@ namespace TownOfHost
             }
             if (DumpLog == null || DumpLog.ToggleButton == null)
             {
-                DumpLog = ClientActionItem.Create("DumpLog", UtilsOutputLog.DumpLog, __instance);
+                if (Main.IsAndroid() is false)
+                    DumpLog = ClientActionItem.Create("DumpLog", UtilsOutputLog.DumpLog, __instance);
             }
             if (OpenLogFolder == null || OpenLogFolder.ToggleButton == null)
             {
-                OpenLogFolder = ClientActionItem.Create("OpenLogFolder", UtilsOutputLog.OpenLogFolder, __instance);
+                if (Main.IsAndroid() is false)
+                    OpenLogFolder = ClientActionItem.Create("OpenLogFolder", UtilsOutputLog.OpenLogFolder, __instance);
             }
-            if (Main.IsAndroid() is false)
+            if (UnloadMod == null || UnloadMod.ToggleButton == null)
             {
-                if (UnloadMod == null || UnloadMod.ToggleButton == null)
-                {
+                if (Main.IsAndroid() is false)
                     UnloadMod = ClientActionItem.Create("UnloadMod", ModUnloaderScreen.Show, __instance);
-                }
-                if ((ForceEnd == null || ForceEnd.ToggleButton == null) && AmongUsClient.Instance.AmHost)
-                {
-                    ForceEnd = ClientActionItem.Create("ForceEnd", ForceEndProcess, __instance);
-                }
-                if (UseWebHook == null || UseWebHook.ToggleButton == null)
-                {
+            }
+            if ((ForceEnd == null || ForceEnd.ToggleButton == null) && AmongUsClient.Instance.AmHost)
+            {
+                ForceEnd = ClientActionItem.Create("ForceEnd", ForceEndProcess, __instance);
+            }
+            if (UseWebHook == null || UseWebHook.ToggleButton == null)
+            {
+                if (Main.IsAndroid() is false)
                     UseWebHook = ClientOptionItem.Create("UseWebHook", Main.UseWebHook, __instance);
-                }
-                if (Yomiage == null || Yomiage.ToggleButton == null)
-                {
+            }
+            if (Yomiage == null || Yomiage.ToggleButton == null)
+            {
+                if (Main.IsAndroid() is false)
                     Yomiage = ClientOptionItem.Create("UseYomiage", Main.UseYomiage, __instance);
-                }
             }
             if (CustomSprite == null || CustomSprite.ToggleButton == null)
             {

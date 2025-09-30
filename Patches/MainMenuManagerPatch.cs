@@ -428,7 +428,7 @@ namespace TownOfHost
             }
             if (Main.IsAndroid())
             {
-                createbutton.GetComponent<BoxCollider2D>().offset = new(100f, 100);
+                //    createbutton.GetComponent<BoxCollider2D>().offset = new(100f, 100);
             }
 
             if (CredentialsPatch.TohkLogo != null)
