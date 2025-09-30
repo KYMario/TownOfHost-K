@@ -147,6 +147,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
     float IKiller.CalculateKillCooldown() => nuekillcool;
     bool IKiller.CanUseSabotageButton() => false;
     bool IKiller.CanUseImpostorVentButton() => false;
+    bool IKiller.CanUseKillButton() => GuessedFool;
 
     void IKiller.OnCheckMurderAsKiller(MurderInfo info)
     {
