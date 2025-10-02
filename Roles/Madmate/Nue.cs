@@ -47,6 +47,8 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
         GuessedFool = false;
         IsKilled = false;
         IsSeeImpostor = false;
+
+        MyTaskState.NeedTaskCount = canseetaskcount > 0 && canusevotecount < canseetaskcount ? canseetaskcount : canusevotecount;
     }
     static OptionItem OptionNueKillcool; static float nuekillcool;
     static OptionItem OptionNueCanSeeImpostorTaskcount; static int canseetaskcount;
@@ -148,6 +150,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
     bool IKiller.CanUseSabotageButton() => false;
     bool IKiller.CanUseImpostorVentButton() => false;
     bool IKiller.CanUseKillButton() => GuessedFool;
+    public override bool CanTask() => GuessedFool is false;
 
     void IKiller.OnCheckMurderAsKiller(MurderInfo info)
     {

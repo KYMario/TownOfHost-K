@@ -93,11 +93,6 @@ namespace TownOfHost
             }
             else meg = GetString("ModSettingInfo9");
 
-            if (Widthratio is not 1 || Heightratio is not 1)
-            {
-                meg = $"<size=60%>{meg}</size><size=70%>\n\n{GetString("ModSettingInfo_Camratio")}";
-            }
-
             if (tabNum == 1)
             {
                 _ = new LateTask(() =>
