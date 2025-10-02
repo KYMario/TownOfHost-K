@@ -17,7 +17,8 @@ namespace TownOfHost
     public static class CredentialsPatch
     {
         public static SpriteRenderer TohkLogo { get; private set; }
-        public static TextMeshPro credentialsText;
+        private static TextMeshPro pingTrackerCredential = null;
+        private static AspectPosition pingTrackerCredentialAspectPos = null;
         private static float deltaTime = 0.0f;
         public static bool a = false;
         public static List<float> fpss = new();
@@ -29,16 +30,23 @@ namespace TownOfHost
             static StringBuilder exSb = new();
             static void Postfix(PingTracker __instance)
             {
-                if (!credentialsText)
+                if (pingTrackerCredential == null)
                 {
-                    credentialsText = Object.Instantiate(__instance.text, __instance.transform.parent);
-                    credentialsText.name = "credentialsText";
-                    credentialsText.transform.parent = __instance.transform.parent;
-                    Object.Destroy(credentialsText.GetComponent<PingTracker>());
-                    Object.Destroy(credentialsText.GetComponent<AspectPosition>());
+                    var uselessPingTracker = Object.Instantiate(__instance, __instance.transform.parent);
+                    pingTrackerCredential = uselessPingTracker.GetComponent<TextMeshPro>();
+                    Object.Destroy(uselessPingTracker);
+                    pingTrackerCredential.alignment = TextAlignmentOptions.TopRight;
+                    pingTrackerCredential.rectTransform.pivot = new(1f, 0.8f);  // 中心を右上角に設定
+                    pingTrackerCredentialAspectPos = pingTrackerCredential.GetComponent<AspectPosition>();
+                    pingTrackerCredentialAspectPos.Alignment = AspectPosition.EdgeAlignments.RightTop;
+                    pingTrackerCredential.gameObject.name = "CredentialText";
                 }
-
-                credentialsText.alignment = TextAlignmentOptions.TopRight;
+                if (pingTrackerCredentialAspectPos)
+                {
+                    pingTrackerCredentialAspectPos.DistanceFromEdge = DestroyableSingleton<HudManager>.InstanceExists && DestroyableSingleton<HudManager>.Instance.Chat.chatButton.gameObject.active
+                        ? new(2.5f, 0, 0)
+                        : new(1.8f, 0, 0);
+                }
 
                 if ((FixedUpdatePatch.timer is 1 && GameStates.InGame) || GameStates.IsLobby)
                 {
@@ -79,17 +87,13 @@ namespace TownOfHost
                         sb.Append("\r\n<size=50%>").Append(exSb).Append("</size>");
                     }
 
-                    var offset_x = 2.5f; //右端からのオフセット
-                    if (HudManager.InstanceExists && HudManager._instance.Chat.gameObject.active) offset_x += 0.6f; //チャットがある場合の追加オフセット
-                    credentialsText.transform.localPosition = new Vector3((5.6779f * GameSettingMenuStartPatch.Heightratio) - offset_x, 3.0745f, 0f);
-
                     if (GameStates.IsLobby)
                     {
                         if (Options.IsStandardHAS && !CustomRoles.Sheriff.IsEnable() && !CustomRoles.SerialKiller.IsEnable() && CustomRoles.Egoist.IsEnable())
                             sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("Warning.EgoistCannotWin")));
                     }
 
-                    credentialsText.text = sb.ToString();
+                    pingTrackerCredential.text = sb.ToString();
                 }
 #if DEBUG
                 if (Main.ViewPingDetails.Value)

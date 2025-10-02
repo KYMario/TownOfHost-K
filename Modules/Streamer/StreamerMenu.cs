@@ -21,7 +21,7 @@ namespace TownOfHost
             {
                 OpenMenu = MainMenuManagerPatch.CreateButton(
                     "OpenStreamMenu",
-                    new Vector3(2.4036f * Widthratio, -2.6963f, 1f),
+                    new Vector3(2.4036f, -2.6963f, 1f),
                     new(245, 46, 32, byte.MaxValue),
                     new(212, 113, 106, byte.MaxValue),
                     () =>

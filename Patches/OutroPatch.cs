@@ -182,11 +182,10 @@ namespace TownOfHost
             //#######################################
 
             var showInitially = Main.ShowResults.Value;
-            var x = GameSettingMenuStartPatch.Widthratio == 1 ? 0 : 0.3f;
             showHideButton = new SimpleButton(
                 __instance.transform,
                 "ShowHideResultsButton",
-                new(-4.5f + x, 2.6f, -14f),  // BackgroundLayer(z=-13)より手前
+                new(-4.5f, 2.6f, -14f),  // BackgroundLayer(z=-13)より手前
                 new(0, 136, 209, byte.MaxValue),
                 new(0, 196, byte.MaxValue, byte.MaxValue),
                 () =>
@@ -205,7 +204,7 @@ namespace TownOfHost
             ScreenShotbutton = new SimpleButton(
                 __instance.transform,
                 "ScreenShotButton",
-                new(-3.5f + x, 2.6f, -14f),
+                new(-3.5f, 2.6f, -14f),
                 new(0, 245, 185, byte.MaxValue),
                 new(66, 245, 185, byte.MaxValue),
                 () =>

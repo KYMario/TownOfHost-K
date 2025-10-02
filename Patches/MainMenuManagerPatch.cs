@@ -9,7 +9,6 @@ using AmongUs.Data;
 using Assets.InnerNet;
 
 using TownOfHost.Templates;
-using static TownOfHost.GameSettingMenuStartPatch;
 using Object = UnityEngine.Object;
 
 namespace TownOfHost
@@ -46,7 +45,7 @@ namespace TownOfHost
             {
                 discordButton = CreateButton(
                     "DiscordButton",
-                    new(-2.5f * Widthratio, -1f, 1f),
+                    new(-2.5f, -1f, 1f),
                     new(88, 101, 242, byte.MaxValue),
                     new(148, 161, byte.MaxValue, byte.MaxValue),
                     () => Application.OpenURL(Main.DiscordInviteUrl),
@@ -59,7 +58,7 @@ namespace TownOfHost
             {
                 gitHubButton = CreateButton(
                     "GitHubButton",
-                    new(-0.8f * Widthratio, -1f, 1f),//-1f
+                    new(-0.8f, -1f, 1f),//-1f
                     new(153, 153, 153, byte.MaxValue),
                     new(209, 209, 209, byte.MaxValue),
                     () => Application.OpenURL("https://github.com/KYMario/TownOfHost-K"),
@@ -71,7 +70,7 @@ namespace TownOfHost
             {
                 TwitterXButton = CreateButton(
                     "TwitterXButton",
-                    new(0.9f * Widthratio, -1f, 1f),
+                    new(0.9f, -1f, 1f),
                     new(0, 202, 255, byte.MaxValue),
                     new(60, 255, 255, byte.MaxValue),
                     () => Application.OpenURL("https://twitter.com/Tohkserver_k"),
@@ -82,7 +81,7 @@ namespace TownOfHost
             {
                 TOHkBOTButton = CreateButton(
                     "TOHkBOTButton",
-                    new(2.6f * Widthratio, -1f, 1f),
+                    new(2.6f, -1f, 1f),
                     new(0, 201, 87, byte.MaxValue),
                     new(60, 201, 87, byte.MaxValue),
                     () => Application.OpenURL("https://discord.com/api/oauth2/authorize?client_id=1198276538563567716&permissions=8&scope=bot"),
@@ -132,7 +131,7 @@ namespace TownOfHost
             {
                 NextButton = CreateButton(
                     "NextButton",
-                    new(3.1f * Widthratio, -2.2f, -6f),
+                    new(3.1f, -2.2f, -6f),
                     new(255, 242, 104, byte.MaxValue),
                     new(255, 248, 173, byte.MaxValue),
                     () =>
@@ -155,7 +154,7 @@ namespace TownOfHost
             {
                 BackButton = CreateButton(
                     "BackButton",
-                    new(2.5f * Widthratio, -2.2f, -6),
+                    new(2.5f, -2.2f, -6),
                     new(255, 242, 104, byte.MaxValue),
                     new(255, 248, 173, byte.MaxValue),
                     () =>
@@ -231,7 +230,7 @@ namespace TownOfHost
             {
                 betaversionchange = CreateButton(
                     "betaversionchange",
-                    new(-2.3f * Widthratio, -2.6963f, 1f),
+                    new(-2.3f, -2.6963f, 1f),
                     new(0, 255, 183, byte.MaxValue),
                     new(60, 255, 183, byte.MaxValue),
                     () =>
@@ -312,7 +311,7 @@ namespace TownOfHost
                 {
                     VersionChangeButton = CreateButton(
                         "VersionChangeButton",
-                        new(2.4036f * Widthratio, -1.6963f, 1f),
+                        new(2.4036f, -1.6963f, 1f),
                         new(0, 202, 255, byte.MaxValue),
                         new(60, 255, 255, byte.MaxValue),
                         () =>

@@ -203,13 +203,6 @@ namespace TownOfHost
             {
                 if (GameSettingMenu.Instance && (GameSettingMenuStartPatch.search?.gameObject?.active ?? false))
                 {
-                    /*
-                    if (!(HudManager.Instance?.Chat?.IsOpenOrOpening ?? false) && GetKeysDown(KeyCode.Escape) && (GameSettingMenuStartPatch.ModSettingsTab?.gameObject?.active ?? false))
-                    {
-                        GameSettingMenuStartPatch.ModSettingsTab?.CloseMenu();
-                        GameSettingMenu.Instance?.GameSettingsTab?.CloseMenu();
-                        GameSettingMenu.Instance?.RoleSettingsTab?.CloseMenu();
-                    }*/
                     if (GetKeysDown(KeyCode.Return))
                     {
                         if (GameSettingMenuStartPatch.search?.textArea?.text is not "")
@@ -345,38 +338,6 @@ namespace TownOfHost
         static bool ORGetKeysDown(params KeyCode[] keys) => keys.Any(k => Input.GetKeyDown(k));
     }
 
-    [HarmonyPatch(typeof(ResolutionManager), nameof(ResolutionManager.SetResolution))]
-    class ResolutionManagerPatch
-    {
-        public static int Width = 1920;
-        public static int Height = 1080;
-        public static void Postfix([HarmonyArgument(0)] int width, [HarmonyArgument(1)] int height)
-        {
-            Width = width;
-            Height = height;
-            var (wh, he) = Ratio(Width, Height);
-            GameSettingMenuStartPatch.Widthratio = wh == 16 ? 1 : Mathf.Clamp(0.6f + (0.4f * (wh / 16)), 0.6f, 0.9f);
-            GameSettingMenuStartPatch.Heightratio = he == 9 ? 1 : Mathf.Clamp(0.6f + (0.4f * (he / 9)), 0.6f, 0.9f);
-
-            static (float, float) Ratio(float w, float h)
-            {
-                float Width = w / GetMax(w, h);
-                float Height = h / GetMax(w, h);
-                return (Width, Height);
-            }
-            static float GetMax(float w, float h)
-            {
-                if (w < h) return GetMax(h, w);
-                while (h != 0)
-                {
-                    float remain = w % h;
-                    w = h;
-                    h = remain;
-                }
-                return w;
-            }
-        }
-    }
     [HarmonyPatch(typeof(ConsoleJoystick), nameof(ConsoleJoystick.HandleHUD))]
     class ConsoleJoystickHandleHUDPatch
     {

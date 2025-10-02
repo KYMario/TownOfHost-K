@@ -21,8 +21,6 @@ namespace TownOfHost
             {
                 if (priset)
                 {
-                    priset.transform.localPosition = new Vector3(0f, 3.2f);
-                    search.transform.localPosition = new Vector3(0f, 3.5f);
                     search.transform.localScale = priset.transform.localScale = new Vector3(0.4f, 0.4f, 0f);
 
                     activeonly.transform.localPosition = new Vector3(-2.05f, 3.3f);
@@ -82,7 +80,7 @@ namespace TownOfHost
             if (NowRoleTab is not CustomRoles.NotAssigned)
             {
                 float numItems = __instance.Children.Count;
-                var offset = Heightratio is 1 ? 2.7f : 2f;
+                var offset = 2.7f;
                 var y = 0.713f;
                 foreach (var option in OptionItem.AllOptions)
                 {
@@ -128,7 +126,7 @@ namespace TownOfHost
                     }
                     enabled = AmongUsClient.Instance.AmHost && !option.IsHiddenOn(Options.CurrentGameMode);
                     Color color = new Color32(200, 200, 200, 255);
-                    Vector2 size = new(5.0f * Widthratio, 0.68f * Heightratio);
+                    Vector2 size = new(5.0f, 0.68f);
 
                     if (option.Tab is TabGroup.MainSettings && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
                     {
@@ -158,26 +156,26 @@ namespace TownOfHost
                             break;
                         case 1:
                             color = new Color32(40, 50, 80, 255);
-                            size = new(4.6f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.8566f * Widthratio, 0f);
+                            size = new(4.6f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.8566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.4f, 0.6f);
                             break;
                         case 2:
                             color = new Color32(20, 60, 40, 255);
-                            size = new(4.4f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.7566f * Widthratio, 0f);
+                            size = new(4.4f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.7566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.35f, 0.6f);
                             break;
                         case 3:
                             color = new Color32(60, 20, 40, 255);
-                            size = new(4.2f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.6566f * Widthratio, 0f);
+                            size = new(4.2f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.3f, 0.6f);
                             break;
                         case 4:
                             color = new Color32(60, 40, 10, 255);
-                            size = new(4.0f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.6566f * Widthratio, 0f);
+                            size = new(4.0f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.25f, 0.6f);
                             break;
                     }
@@ -188,16 +186,16 @@ namespace TownOfHost
                         opt.color = color;
                         opt.size = size;
 
-                        offset -= option.IsHeader ? (0.68f * Heightratio) : (0.45f * Heightratio);
+                        offset -= option.IsHeader ? 0.68f : 0.45f;
                         option.OptionBehaviour.transform.localPosition = new Vector3(
                             option.OptionBehaviour.transform.localPosition.x,//0.952f,
-                            offset - (1.5f * Heightratio),//y,
+                            offset - 1.5f,//y,
                             option.OptionBehaviour.transform.localPosition.z);//-120f);
-                        y -= option.IsHeader ? (0.68f * Heightratio) : (0.45f * Heightratio);
+                        y -= option.IsHeader ? 0.68f : 0.45f;
 
                         if (option.IsHeader)
                         {
-                            numItems += (0.5f * Heightratio);
+                            numItems += 0.5f;
                         }
                     }
                     else
@@ -205,7 +203,7 @@ namespace TownOfHost
                         numItems--;
                     }
                 }
-                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = -(offset * 3 - (Heightratio * offset * (Heightratio == 1 ? 2f : 2.2f))) + 0.75f;
+                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = -offset + 0.75f;
                 return;
             }
 
@@ -215,7 +213,7 @@ namespace TownOfHost
                 if (__instance.gameObject.name != tab + "-Stg") continue;
 
                 float numItems = __instance.Children.Count;
-                var offset = Heightratio is 1 ? 2.7f : 2f;
+                var offset = 2.7f;
                 var y = 0.713f;
 
                 foreach (var option in OptionItem.AllOptions)
@@ -296,7 +294,7 @@ namespace TownOfHost
                     }
 
                     Color color = new Color32(200, 200, 200, 255);
-                    Vector2 size = new(5.0f * Widthratio, 0.68f * Heightratio);
+                    Vector2 size = new(5.0f, 0.68f);
 
                     if (option.Tab is TabGroup.MainSettings && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
                     {
@@ -338,26 +336,26 @@ namespace TownOfHost
                             break;
                         case 1:
                             color = new Color32(40, 50, 80, 255);
-                            size = new(4.6f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.8566f * Heightratio, 0f);
+                            size = new(4.6f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.8566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.4f, 0.6f);
                             break;
                         case 2:
                             color = new Color32(20, 60, 40, 255);
-                            size = new(4.4f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.7566f * Widthratio, 0f);
+                            size = new(4.4f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.7566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.35f, 0.6f);
                             break;
                         case 3:
                             color = new Color32(60, 20, 40, 255);
-                            size = new(4.2f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.6566f * Widthratio, 0f);
+                            size = new(4.2f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.3f, 0.6f);
                             break;
                         case 4:
                             color = new Color32(60, 40, 10, 255);
-                            size = new(4.0f * Widthratio, 0.68f * Heightratio);
-                            titleText.transform.localPosition = new Vector3(-1.6566f * Widthratio, 0f);
+                            size = new(4.0f, 0.68f);
+                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
                             titleTextRect.sizeDelta = new Vector2(6.25f, 0.6f);
                             break;
                     }
@@ -367,16 +365,16 @@ namespace TownOfHost
                     {
                         opt.color = color;
                         opt.size = size;
-                        offset -= option.IsHeader ? (0.68f * Heightratio) : (0.45f * Heightratio);
+                        offset -= option.IsHeader ? 0.68f : 0.45f;
                         option.OptionBehaviour.transform.localPosition = new Vector3(
                             option.OptionBehaviour.transform.localPosition.x,//0.952f,
-                            offset - (1.5f * Heightratio),//y,
+                            offset - 1.5f,//y,
                             option.OptionBehaviour.transform.localPosition.z);//-120f);
-                        y -= option.IsHeader ? (0.68f * Heightratio) : (0.45f * Heightratio);
+                        y -= option.IsHeader ? 0.68f : 0.45f;
 
                         if (option.IsHeader)
                         {
-                            numItems += (0.5f * Heightratio);
+                            numItems += 0.5f;
                         }
                     }
                     else
@@ -384,7 +382,7 @@ namespace TownOfHost
                         numItems--;
                     }
                 }
-                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = -(offset * 3 - (Heightratio * offset * (Heightratio == 1 ? 2f : 2.2f))) + 0.75f;
+                __instance.GetComponentInParent<Scroller>().ContentYBounds.max = -offset + 0.75f;
             }
             #endregion
         }
@@ -412,6 +410,20 @@ namespace TownOfHost
             }
             if (allButton?.active == true)
                 allButton?.SetActive(false);
+        }
+    }
+    [HarmonyPatch(typeof(FreeChatInputField), nameof(FreeChatInputField.UpdateCharCount))]
+    class BlockUpdateCharCount
+    {
+        public static bool Prefix(FreeChatInputField __instance)
+        {
+            if (__instance.transform.name is "SearchSet" or "PresetSet")
+            {
+                __instance.textArea.characterLimit = 20;
+                __instance.charCountText.text = $"{__instance.textArea.text.Length}/20";
+                return false;
+            }
+            return true;
         }
     }
 }

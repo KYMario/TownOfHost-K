@@ -25,7 +25,6 @@ namespace TownOfHost
             if (Main.NormalOptions.NumImpostors == 0 && GameStates.IsOnlineGame)
                 Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetInt(Int32OptionNames.NumImpostors, 1);
 
-            ResolutionManager.SetResolution(Screen.width, Screen.height, Screen.fullScreen);
             Logger.Info($"{__instance.GameId}に参加", "OnGameJoined");
             SelectRolesPatch.Disconnected.Clear();
             GameStates.IsOutro = false;

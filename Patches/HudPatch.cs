@@ -27,7 +27,7 @@ namespace TownOfHost
         public static int LastSetNameDesyncCount = 0;
         public static float TaskBattleTimer = 0.0f;
         public static TMPro.TextMeshPro LowerInfoText;
-        public static TMPro.TextMeshPro GameSettings;
+        public static TMPro.TextMeshPro GameSettings; public static AspectPosition GameSettingsAspectPos;
         private static readonly int Desat = Shader.PropertyToID("_Desat");
         public static void Postfix(HudManager __instance)
         {
@@ -72,17 +72,20 @@ namespace TownOfHost
                     if (DestroyableSingleton<HudManager>.Instance?.TaskPanel?.taskText?.font != null) GameSettings.font = DestroyableSingleton<HudManager>.Instance?.TaskPanel?.taskText?.font;
                     GameSettings.alignment = TMPro.TextAlignmentOptions.TopLeft;
                     GameSettings.transform.SetParent(__instance.roomTracker.transform.parent);
-                    GameSettings.transform.localPosition = new(-3.325f, 2.78f);
+                    GameSettings.rectTransform.pivot = new(-0.67f, 1.13f);
+                    GameSettingsAspectPos = GameSettings.gameObject.AddComponent<AspectPosition>();
+                    GameSettingsAspectPos.OnEnable();
+                    GameSettingsAspectPos.Alignment = AspectPosition.EdgeAlignments.LeftTop;
+                    GameSettingsAspectPos.DistanceFromEdge = new(-2.5f, 0, 0);
                 }
 
                 GameSettings.text = Main.ShowGameSettingsTMP.Value ? OptionShower.GetText() : "";
                 GameSettings.SetOutlineColor(Color.black);
                 GameSettings.SetOutlineThickness(0.13f);
-                GameSettings.transform.localPosition = new(-3.325f * GameSettingMenuStartPatch.Widthratio, 2.78f);
                 GameSettings.fontSizeMin =
                 GameSettings.fontSizeMax = (TranslationController.Instance.currentLanguage.languageID == SupportedLangs.Japanese || Main.ForceJapanese.Value) ? 1.05f : 1.2f;
 
-                var settaskPanel = GameStates.IsLobby && !GameStates.IsCountDown && !GameStates.InGame && GameSettingMenu.Instance && (GameSettingMenuStartPatch.ModSettingsButton?.selected ?? false);// && GameSettingMenuStartPatch.NowRoleTab is not CustomRoles.NotAssigned;
+                var settaskPanel = GameStates.IsLobby && !GameStates.Intro && !GameStates.IsCountDown && !GameStates.InGame && GameSettingMenu.Instance && (GameSettingMenuStartPatch.ModSettingsButton?.selected ?? false);// && GameSettingMenuStartPatch.NowRoleTab is not CustomRoles.NotAssigned;
                 GameObject.Find("Main Camera/Hud/TaskDisplay")?.gameObject?.SetActive(settaskPanel);
                 GameObject.Find("Main Camera/Hud/TaskDisplay")?.transform?.SetLocalZ(settaskPanel ? -500 : 5);
 
