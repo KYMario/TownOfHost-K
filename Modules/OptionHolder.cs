@@ -348,7 +348,7 @@ namespace TownOfHost
         public static OptionItem RandomSpawnFungleComms;
 
         // CustomSpawn
-        public static OptionItem CustomSpawn;
+        public static OptionItem EnableCustomSpawn;
         public static OptionItem RandomSpawnCustom1;
         public static OptionItem RandomSpawnCustom2;
         public static OptionItem RandomSpawnCustom3;

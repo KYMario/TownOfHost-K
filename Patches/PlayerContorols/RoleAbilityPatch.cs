@@ -24,12 +24,6 @@ namespace TownOfHost
 
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target, [HarmonyArgument(1)] bool shouldAnimate)
         {
-            if (Main.EditMode && GameStates.IsFreePlay)
-            {
-                CustomSpawnEditor.CheckShapeshift(__instance, target);
-                return false;
-            }
-
             if (AmongUsClient.Instance.IsGameOver || !AmongUsClient.Instance.AmHost)
             {
                 return false;

@@ -106,7 +106,7 @@ namespace TownOfHost
                 __instance.KillButton.Hide();
                 __instance.SabotageButton.Hide();
                 __instance.AbilityButton.Show();
-                __instance.AbilityButton.OverrideText(GetString("EditCSp"));
+                __instance.AbilityButton.OverrideText(GetString("ED.SetSpawnLabel"));
                 return;
             }
             //ゲーム中でなければ以下は実行されない
@@ -565,6 +565,11 @@ namespace TownOfHost
         public static bool Prefix(MapBehaviour __instance, ref MapOptions opts)
         {
             if (GameStates.IsMeeting) return true;
+            if (GameStates.IsFreePlay && Main.EditMode)
+            {
+                opts.Mode = MapOptions.Modes.Normal;
+                return true;
+            }
 
             if (opts.Mode == MapOptions.Modes.CountOverlay && PlayerControl.LocalPlayer.IsAlive() && MapBehaviour.Instance && __instance)
             {

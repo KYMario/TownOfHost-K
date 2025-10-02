@@ -86,23 +86,8 @@ namespace TownOfHost
         {
             Logger.CurrentMethod();
             Logger.Info("-----------ゲーム開始-----------", "Phase");
-            if (GameStates.IsFreePlay && Main.EditMode)
-            {
-                CustomSpawnEditor.CustomSpawnPosition.TryAdd(AmongUsClient.Instance.TutorialMapId, new List<Vector2>());
-                _ = new LateTask(() =>
-                {
-                    try
-                    {
-                        CustomSpawnEditor.Setup();
-                    }
-                    catch
-                    {
-                        Logger.Error("0.2f後でErrorが発生したた2秒後に再度実行", "SetCustomSporn");
-                        _ = new LateTask(() => CustomSpawnEditor.Setup(), 2f, "SetCustomSporn");
-                    }
-                }, 0.2f, "SetCustomSporn");
-                return;
-            }
+            if (GameStates.IsFreePlay && Main.EditMode) return;
+
             if (GameStates.IsModHost && Main.UseWebHook.Value) UtilsWebHook.WH_ShowActiveRoles();
             PlayerCatch.CountAlivePlayers(true);
             Main.RTAMode = Options.CurrentGameMode == CustomGameMode.TaskBattle && PlayerCatch.AllPlayerControls.Count() == (Options.EnableGM.GetBool() ? 2 : 1);

@@ -68,14 +68,7 @@ namespace TownOfHost
         MiningPit,
         Highlands,//Fungleの高地
         Precipice,//StringNamesにない文言 string.csvに追加
-        Custom1, //カスタム
-        Custom2,
-        Custom3,
-        Custom4,
-        Custom5,
-        Custom6,
-        Custom7,
-        Custom8
+        Custom, //カスタム
     }
     class RandomSpawn
     {
@@ -185,7 +178,7 @@ namespace TownOfHost
                     return false;
                 }
                 // ランダムスポーンが有効ならバニラの湧きをキャンセル
-                if (IsRandomSpawn())// || (!MeetingStates.FirstMeeting && Options.BlackOutwokesitobasu.GetBool()))
+                if (IsRandomSpawn())
                 {
                     // バニラ処理のRpcSnapToForcedをAirshipSpawnに置き換えたもの
                     __instance.gotButton = true;
@@ -250,16 +243,23 @@ namespace TownOfHost
             }
             PlayerState.GetByPlayerId(player.PlayerId).HasSpawned = true;
         }
-        public static bool IsRandomSpawn(bool CheckCustomSpawn = false)
+        public static bool CheckCustomSpawn()
         {
-            var CustomSpawns = CustomSpawnEditor.CustomSpawnPosition.Count;
+            if (!Options.EnableRandomSpawn.GetBool() || !Options.EnableCustomSpawn.GetBool()) return false;
+
+            var spawnMaps = CustomSpawnManager.Data.CurrentPreset.SpawnMaps;
+            var hasData = spawnMaps.TryGetValue((MapNames)Main.NormalOptions.MapId, out var mapData);
+
+            return hasData && mapData.Points.Count > 0;
+
+        }
+        public static bool IsRandomSpawn(bool checkCustomSpawn = true)
+        {
             if (!Options.EnableRandomSpawn.GetBool()) return false;
-            var cp = Options.CustomSpawn.GetBool() && SpawnMap.AddCustomSpawnPoint() is not null && CustomSpawns != 0;
-            if (CheckCustomSpawn)
-                return cp;
-            else
-            if (cp)
-                return true;
+
+            //カスタムスポーンがあるなら
+            if (checkCustomSpawn && CheckCustomSpawn()) return true;
+
             switch (Main.NormalOptions.MapId)
             {
                 case 0:
@@ -374,15 +374,15 @@ namespace TownOfHost
             Options.RandomSpawnFunglePrecipice = BooleanOptionItem.Create(103520, SpawnPoint.Precipice, false, TabGroup.MainSettings, false).SetParent(Options.RandomSpawnFungle).SetGameMode(CustomGameMode.All);
 
             // CustomSpawn
-            Options.CustomSpawn = BooleanOptionItem.Create(105900, "CustomSpawn", false, TabGroup.MainSettings, false).SetColor(Color.yellow).SetParent(Options.EnableRandomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom1 = BooleanOptionItem.Create(105901, SpawnPoint.Custom1, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom2 = BooleanOptionItem.Create(105902, SpawnPoint.Custom2, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom3 = BooleanOptionItem.Create(105903, SpawnPoint.Custom3, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom4 = BooleanOptionItem.Create(105904, SpawnPoint.Custom4, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom5 = BooleanOptionItem.Create(105905, SpawnPoint.Custom5, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom6 = BooleanOptionItem.Create(105906, SpawnPoint.Custom6, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom7 = BooleanOptionItem.Create(105907, SpawnPoint.Custom7, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
-            Options.RandomSpawnCustom8 = BooleanOptionItem.Create(105908, SpawnPoint.Custom8, false, TabGroup.MainSettings, false).SetParent(Options.CustomSpawn).SetGameMode(CustomGameMode.All);
+            Options.EnableCustomSpawn = BooleanOptionItem.Create(105900, "CustomSpawn", false, TabGroup.MainSettings, false).SetColor(Color.yellow).SetParent(Options.EnableRandomSpawn).SetGameMode(CustomGameMode.All);
+            Options.RandomSpawnCustom1 = BooleanOptionItem.Create(105901, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(0));
+            Options.RandomSpawnCustom2 = BooleanOptionItem.Create(105902, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(1));
+            Options.RandomSpawnCustom3 = BooleanOptionItem.Create(105903, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(2));
+            Options.RandomSpawnCustom4 = BooleanOptionItem.Create(105904, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(3));
+            Options.RandomSpawnCustom5 = BooleanOptionItem.Create(105905, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(4));
+            Options.RandomSpawnCustom6 = BooleanOptionItem.Create(105906, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(5));
+            Options.RandomSpawnCustom7 = BooleanOptionItem.Create(105907, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(6));
+            Options.RandomSpawnCustom8 = BooleanOptionItem.Create(105908, SpawnPoint.Custom, false, TabGroup.MainSettings, false).SetParent(Options.EnableCustomSpawn).SetGameMode(CustomGameMode.All).SetEnabled(() => CustomSpawnManager.CheckActiveSpawns(7));
         }
 
         public abstract class SpawnMap
@@ -428,11 +428,12 @@ namespace TownOfHost
                 List<Vector2> EnableLocations = new();
                 foreach (var data in Positions.Where(o => o.Key.GetBool()))
                     EnableLocations.Add(data.Value);
-                if (AddCustomSpawnPoint() != null)
-                {
-                    EnableLocations.AddRange(AddCustomSpawnPoint());
-                }
-                var locations = EnableLocations.Count > 0 ? EnableLocations : !IsRandomSpawn(true) ? Positions.Values.ToList() : CustomSpawnEditor.CustomSpawnPosition[Main.NormalOptions.MapId];
+
+                List<Vector2> AllLocations = Positions.Values.ToList();
+
+                AddCustomSpawnPoint(EnableLocations, AllLocations);
+
+                var locations = EnableLocations.Count > 0 ? EnableLocations : AllLocations;
                 if (first) return locations[0];
                 var location = locations.OrderBy(_ => Guid.NewGuid()).Take(1).FirstOrDefault();
                 {
@@ -475,45 +476,46 @@ namespace TownOfHost
                 return location;
             }
 
-            public static List<Vector2> AddCustomSpawnPoint()
+            public static void AddCustomSpawnPoint(List<Vector2> enableLocations, List<Vector2> allLocations)
             {
-                //カスランスポがOFFならさっさとnull。
-                if (!Options.CustomSpawn.GetBool()) return null;
+                //カスランスポがOFFならさっさとreturn
+                if (!Options.EnableCustomSpawn.GetBool()) return;
 
-                var CustomSpawn = CustomSpawnEditor.CustomSpawnPosition;
-                if (!CustomSpawn.ContainsKey(Main.NormalOptions.MapId)) return null;
+                var customSpawnMaps = CustomSpawnManager.Data.CurrentPreset.SpawnMaps;
+                if (!customSpawnMaps.TryGetValue((MapNames)Main.NormalOptions.MapId, out var customSpawns)) return;
 
-                var CustomSpawns = CustomSpawnEditor.CustomSpawnPosition[Main.NormalOptions.MapId];
-                List<Vector2> EnableLocations = new(8);
-                if (CustomSpawns is null || !Options.CustomSpawn.GetBool() || CustomSpawns.Count == 0) return null;
+                var spawnPoints = customSpawns.Points;
 
-                if (Options.RandomSpawnCustom1.GetBool() && CustomSpawns.Count > 0)
-                    EnableLocations.Add(CustomSpawns[0]);
+                //カススポが全く登録されていなかった場合は既存のランスポに切り替え
+                if (spawnPoints == null || !spawnPoints.Any()) return;
 
-                if (Options.RandomSpawnCustom2.GetBool() && CustomSpawns.Count > 1)
-                    EnableLocations.Add(CustomSpawns[1]);
+                //既存のランダムスポーンがOFFの場合はカススポだけを候補に
+                if (!IsRandomSpawn(false)) allLocations.Clear();
+                allLocations.AddRange(spawnPoints.Select(x => x.Position).ToList());
 
-                if (Options.RandomSpawnCustom3.GetBool() && CustomSpawns.Count > 2)
-                    EnableLocations.Add(CustomSpawns[2]);
+                if (Options.RandomSpawnCustom1.GetBool() && spawnPoints.Count > 0)
+                    enableLocations.Add(spawnPoints[0].Position);
 
-                if (Options.RandomSpawnCustom4.GetBool() && CustomSpawns.Count > 3)
-                    EnableLocations.Add(CustomSpawns[3]);
+                if (Options.RandomSpawnCustom2.GetBool() && spawnPoints.Count > 1)
+                    enableLocations.Add(spawnPoints[1].Position);
 
-                if (Options.RandomSpawnCustom5.GetBool() && CustomSpawns.Count > 4)
-                    EnableLocations.Add(CustomSpawns[4]);
+                if (Options.RandomSpawnCustom3.GetBool() && spawnPoints.Count > 2)
+                    enableLocations.Add(spawnPoints[2].Position);
 
-                if (Options.RandomSpawnCustom6.GetBool() && CustomSpawns.Count > 5)
-                    EnableLocations.Add(CustomSpawns[5]);
+                if (Options.RandomSpawnCustom4.GetBool() && spawnPoints.Count > 3)
+                    enableLocations.Add(spawnPoints[3].Position);
 
-                if (Options.RandomSpawnCustom7.GetBool() && CustomSpawns.Count > 6)
-                    EnableLocations.Add(CustomSpawns[6]);
+                if (Options.RandomSpawnCustom5.GetBool() && spawnPoints.Count > 4)
+                    enableLocations.Add(spawnPoints[4].Position);
 
-                if (Options.RandomSpawnCustom8.GetBool() && CustomSpawns.Count > 7)
-                    EnableLocations.Add(CustomSpawns[7]);
+                if (Options.RandomSpawnCustom6.GetBool() && spawnPoints.Count > 5)
+                    enableLocations.Add(spawnPoints[5].Position);
 
-                if (EnableLocations.Count is 0) return null;
+                if (Options.RandomSpawnCustom7.GetBool() && spawnPoints.Count > 6)
+                    enableLocations.Add(spawnPoints[6].Position);
 
-                return EnableLocations;
+                if (Options.RandomSpawnCustom8.GetBool() && spawnPoints.Count > 7)
+                    enableLocations.Add(spawnPoints[7].Position);
             }
         }
 

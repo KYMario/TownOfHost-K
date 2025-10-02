@@ -43,6 +43,7 @@ namespace TownOfHost
                 if (pc == null) continue;
                 Logger.Info($"FriendCore:{pc.FriendCode},Puid:{pc.GetClient()?.ProductUserId}", "Session");
             }
+            CustomSpawnManager.UpdateOptionName();
             if (AmongUsClient.Instance.AmHost) //以下、ホストのみ実行
             {
                 if (Main.NormalOptions.KillCooldown == 0f)
@@ -90,7 +91,7 @@ namespace TownOfHost
 
             if (GameStates.IsFreePlay && Main.EditMode)
             {
-                CustomSpawnEditor.Save();
+                CustomSpawnManager.Save();
                 Main.EditMode = false;
             }
 

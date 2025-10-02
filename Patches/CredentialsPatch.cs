@@ -48,43 +48,50 @@ namespace TownOfHost
                         : new(1.8f, 0, 0);
                 }
 
-                if ((FixedUpdatePatch.timer is 1 && GameStates.InGame) || GameStates.IsLobby)
+                if ((FixedUpdatePatch.timer is 1 && GameStates.InGame) || GameStates.IsLobby || GameStates.IsFreePlay)
                 {
                     sb.Clear();
 
                     sb.Append("\r\n").Append($"<{Main.ModColor}>{Main.ModName}</color> v{Main.PluginShowVersion}");
                     if (Main.DebugVersion) sb.Append($"<{Main.ModColor}>☆Debug☆</color>");
 
-                    if ((Options.NoGameEnd.OptionMeGetBool() && GameStates.IsLobby) || (Main.DontGameSet && !GameStates.IsLobby)) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("NoGameEnd")));
-                    if (Options.IsStandardHAS) sb.Append($"\r\n").Append(Utils.ColorString(Color.yellow, GetString("StandardHAS")));
-                    if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("HideAndSeek")));
-                    if (Options.CurrentGameMode == CustomGameMode.TaskBattle) sb.Append($"\r\n").Append(Utils.ColorString(Color.cyan, GetString("TaskBattle")));
-                    if (SuddenDeathMode.SuddenDeathModeActive.InfoGetBool()) sb.Append("\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode")));
-                    if (Options.EnableGM.OptionMeGetBool()) sb.Append($"\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.GM), GetString("GM")));
-                    if (!GameStates.IsModHost) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("Warning.NoModHost")));
-                    if (DebugModeManager.IsDebugMode)
+                    if (!GameStates.IsFreePlay)
                     {
-                        sb.Append("\r\n");
-                        sb.Append(DebugModeManager.EnableTOHkDebugMode.OptionMeGetBool() ? "<#0066de>DebugMode</color>" : Utils.ColorString(Color.green, "デバッグモード"));
+                        if ((Options.NoGameEnd.OptionMeGetBool() && GameStates.IsLobby) || (Main.DontGameSet && !GameStates.IsLobby)) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("NoGameEnd")));
+                        if (Options.IsStandardHAS) sb.Append($"\r\n").Append(Utils.ColorString(Color.yellow, GetString("StandardHAS")));
+                        if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("HideAndSeek")));
+                        if (Options.CurrentGameMode == CustomGameMode.TaskBattle) sb.Append($"\r\n").Append(Utils.ColorString(Color.cyan, GetString("TaskBattle")));
+                        if (SuddenDeathMode.SuddenDeathModeActive.InfoGetBool()) sb.Append("\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode")));
+                        if (Options.EnableGM.OptionMeGetBool()) sb.Append($"\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.GM), GetString("GM")));
+                        if (!GameStates.IsModHost) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("Warning.NoModHost")));
+                        if (DebugModeManager.IsDebugMode)
+                        {
+                            sb.Append("\r\n");
+                            sb.Append(DebugModeManager.EnableTOHkDebugMode.OptionMeGetBool() ? "<#0066de>DebugMode</color>" : Utils.ColorString(Color.green, "デバッグモード"));
+                        }
+
+                        exSb.Clear();
+
+                        // #ffef39
+                        if (Options.ExHideChatCommand.GetBool())
+                            exSb.Append($"<#ffdfaf>Ⓗ</color> ");
+                        if (Options.ExAftermeetingflash.GetBool())
+                            exSb.Append($"<#d62c12>Ⓚ</color> ");
+                        if (Options.FixSpawnPacketSize.GetBool())
+                            exSb.Append($"<#ffef39>Ⓟ</color> ");
+                        if (Options.ExOldIntroSystem.GetBool())
+                            exSb.Append($"<#8839ff>Ⓘ</color> ");
+                        if (Options.ExRpcWeightR.GetBool())
+                            exSb.Append($"<#3d83c5>Ⓡ</color> ");
+
+                        if (exSb.Length > 0)
+                        {
+                            sb.Append("\r\n<size=50%>").Append(exSb).Append("</size>");
+                        }
                     }
-
-                    exSb.Clear();
-
-                    // #ffef39
-                    if (Options.ExHideChatCommand.GetBool())
-                        exSb.Append($"<#ffdfaf>Ⓗ</color> ");
-                    if (Options.ExAftermeetingflash.GetBool())
-                        exSb.Append($"<#d62c12>Ⓚ</color> ");
-                    if (Options.FixSpawnPacketSize.GetBool())
-                        exSb.Append($"<#ffef39>Ⓟ</color> ");
-                    if (Options.ExOldIntroSystem.GetBool())
-                        exSb.Append($"<#8839ff>Ⓘ</color> ");
-                    if (Options.ExRpcWeightR.GetBool())
-                        exSb.Append($"<#3d83c5>Ⓡ</color> ");
-
-                    if (exSb.Length > 0)
+                    else if (Main.EditMode)
                     {
-                        sb.Append("\r\n<size=50%>").Append(exSb).Append("</size>");
+                        sb.Append($"\r\n").Append(Utils.ColorString(Color.cyan, GetString("ED.CSE")));
                     }
 
                     if (GameStates.IsLobby)
