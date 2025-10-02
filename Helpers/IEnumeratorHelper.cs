@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
-using HarmonyLib;
 using Il2CppInterop.Runtime;
 
 namespace TownOfHost;
@@ -17,23 +14,21 @@ public class CoroutinPatcher : Attribute
     {
         _enumerator = enumerator;
     }
-    public void AddPrefix(Type type, Action action)
+    public void AddPrefix(Type type, string key, Action action)
     {
-        var key = Il2CppType.From(type).FullName;
         Logger.Info($"AddPrefix: {key}", "CoroutinPatcher");
-        _prefixActions[key] = action;
+        _prefixActions[$"{type}+<{key}>"] = action;
     }
-    public void AddPostfix(Type type, Action action)
+    public void AddPostfix(Type type, string key, Action action)
     {
-        var key = Il2CppType.From(type).FullName;
         Logger.Info($"AddPostfix: {key}", "CoroutinPatcher");
-        _postfixActions[key] = action;
+        _postfixActions[$"{type}+<{key}>"] = action;
     }
     public Il2CppSystem.Collections.IEnumerator EnumerateWithPatch()
     {
         return EnumerateWithPatchInternal().WrapToIl2Cpp();
     }
-    public System.Collections.IEnumerator EnumerateWithPatchInternal()
+    public System.Collections.IEnumerator EnumerateWithPatchInternal()//絶対もっといい方法ある。
     {
         Logger.Info("ExecEnumerator", "CoroutinPatcher");
         while (_enumerator.MoveNext())
@@ -47,17 +42,25 @@ public class CoroutinPatcher : Attribute
             }
             Logger.Info($"Current: {fullName}", "CoroutinPatcher");
 
-            if (_prefixActions.TryGetValue(fullName, out var prefixAction))
+            foreach (var info in _prefixActions)
             {
-                Logger.Info($"Exec Prefix: {fullName}", "CoroutinPatcher");
-                prefixAction();
+                if (fullName.Contains(info.Key))
+                {
+                    Logger.Info($"Exec Prefix: {fullName}", "CoroutinPatcher");
+                    info.Value();
+                }
             }
+
             Logger.Info($"Yield Return: {fullName}", "CoroutinPatcher");
             yield return _enumerator.Current;
-            if (_postfixActions.TryGetValue(fullName, out var postfixAction))
+
+            foreach (var info in _postfixActions)
             {
-                Logger.Info($"Exec Postfix: {fullName}", "CoroutinPatcher");
-                postfixAction();
+                if (fullName.Contains(info.Key))
+                {
+                    Logger.Info($"Exec Postfix: {fullName}", "CoroutinPatcher");
+                    info.Value();
+                }
             }
         }
         Logger.Info("ExecEnumerator End", "CoroutinPatcher");

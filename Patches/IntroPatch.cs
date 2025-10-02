@@ -24,7 +24,7 @@ namespace TownOfHost
             //ShowRoleはステートマシンクラスになっているためその実行前にパッチを当てる
             //元々Postfixだが、タイミング的にはPrefixの方が適切なのでPrefixに当てる
             //androidは_ShowRole_d__41なんてないよとエラーを吐く。
-            patcher.AddPrefix(typeof(IntroCutscene._ShowRole_d__41), () => SetUpRoleTextPatch.Postfix(__instance));
+            patcher.AddPrefix(typeof(IntroCutscene), nameof(IntroCutscene.ShowRole), () => SetUpRoleTextPatch.Postfix(__instance));
             __result = patcher.EnumerateWithPatch();
         }
     }

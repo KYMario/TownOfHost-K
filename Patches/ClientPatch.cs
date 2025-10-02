@@ -95,7 +95,7 @@ namespace TownOfHost
             if (ServerManager.Instance?.CurrentRegion?.Name == null) return;
 
             var nowserver = ServerManager.Instance.CurrentRegion.Name;
-            if (nowserver is "ExROfficialTokyo" || nowserver.Contains("Nebula on the Ship JP") || nowserver.Contains("<color=#ffa500>Super</color>"))
+            if ((Main.IsAndroid() && !Main.IsCs()) || nowserver is "ExROfficialTokyo" || nowserver.Contains("Nebula on the Ship JP") || nowserver.Contains("<color=#ffa500>Super</color>"))
             {
                 obj.transform.localPosition = new Vector3(100f, 100f, 100f);
             }

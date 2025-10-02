@@ -36,7 +36,7 @@ namespace TownOfHost
                 var pathcer = new CoroutinPatcher(__result);
                 //WrapUpAndSpawnはステートマシンとしてクラス化されているためそのクラス実行前にパッチを当てる
                 //元々Postfixだが、タイミング的にはPrefixの方が適切なのでPrefixに当てる
-                pathcer.AddPrefix(typeof(AirshipExileController._WrapUpAndSpawn_d__11), () =>
+                pathcer.AddPrefix(typeof(AirshipExileController), nameof(AirshipExileController.WrapUpAndSpawn), () =>
                     AirshipExileControllerPatch.Postfix(__instance)
                 );
                 __result = pathcer.EnumerateWithPatch();
@@ -293,10 +293,10 @@ namespace TownOfHost
                         __instance.completeString = Translator.GetString(StringNames.NoExileSkip);
                     }
                 }
-            }
-            if (result.Value.Exiled.Object?.GetRoleClass() is Assassin && Assassin.NowUse)
-            {
-                __instance.completeString = MeetingVoteManager.Voteresult + "<size=0>";
+                if (result.Value.Exiled.Object?.GetRoleClass() is Assassin && Assassin.NowUse)
+                {
+                    __instance.completeString = MeetingVoteManager.Voteresult + "<size=0>";
+                }
             }
             SecondBegin = false;
         }
