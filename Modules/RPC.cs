@@ -151,9 +151,12 @@ namespace TownOfHost
                         optionSync.SetValue(reader.ReadPackedInt32());
                         break;
                     }
-                    foreach (OptionItem co in OptionItem.AllOptions)
+                    int indexId = reader.ReadPackedInt32();
+                    int maxId = reader.ReadPackedInt32();
+                    //foreach (OptionItem co in OptionItem.AllOptions)
                         //すべてのカスタムオプションについてインデックス値で受信
-                        co.SetValue(reader.ReadPackedInt32());
+                    for (var i = indexId; i < maxId; i++)
+                        OptionItem.AllOptions[i].SetValue(reader.ReadPackedInt32());
                     break;
                 case CustomRPC.SetDeathReason:
                     RPC.GetDeathReason(reader);
@@ -241,11 +244,23 @@ namespace TownOfHost
             // Modclientがおり、部屋主じゃない時のみ
             if (!PlayerCatch.AnyModClient()) return;
 
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable, -1);
-            writer.WritePacked(-1);
+            int count = 0;
+            MessageWriter writer = null;
+
             foreach (OptionItem co in OptionItem.AllOptions)
+            {
+                if (count == 0 || count % 500 == 0)
+                {
+                    if (writer != null) AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable, -1);
+                    writer.WritePacked(-1);
+                    writer.WritePacked(count);
+                    writer.WritePacked(Math.Min(OptionItem.AllOptions.Count, count + 500));
+                }
                 //すべてのカスタムオプションについてインデックス値で送信
                 writer.WritePacked(co.GetValue());
+                count++;
+            }
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
         public static void SyncCustomSettingsRPC(OptionItem item)
