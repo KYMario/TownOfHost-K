@@ -28,7 +28,8 @@ namespace TownOfHost
         SetMadonnaLovers,
         SyncRoomTimer,
         SyncYomiage,
-        ModUnload,
+        ModUnload = 111,
+        MeetingInfo,
         CustomRoleSync,
         CustomSubRoleSync,
         ShowMeetingKill
@@ -202,6 +203,12 @@ namespace TownOfHost
                     break;
                 case CustomRPC.ModUnload:
                     RPC.RpcModUnload(__instance.PlayerId);
+                    break;
+                case CustomRPC.MeetingInfo:
+                    if (reader.ReadBoolean())
+                        ReportDeadBodyPatch.CancelMeeting(reader);
+                    else
+                        ReportDeadBodyPatch.SetMeetingInfo(reader);
                     break;
                 case CustomRPC.CustomRoleSync:
                     CustomRoleManager.DispatchRpc(reader);

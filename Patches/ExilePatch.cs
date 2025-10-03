@@ -75,7 +75,14 @@ namespace TownOfHost
             }
 
             bool DecidedWinner = false;
-            if (!AmongUsClient.Instance.AmHost) return; //ホスト以外はこれ以降の処理を実行しません
+
+            //ホスト以外はこれ以降の処理を実行しません
+            if (!AmongUsClient.Instance.AmHost)
+            {
+                UtilsGameLog.day++;
+                return;
+            }
+
             AntiBlackout.RestoreIsDead(doSend: false);
             if (exiled != null)
             {
@@ -194,6 +201,14 @@ namespace TownOfHost
                     });
                     Main.AfterMeetingDeathPlayers.Clear();
                 }, 0.6f, "AfterMeetingDeathPlayer", null);
+            }
+            else
+            {
+                _ = new LateTask(() =>
+                {
+                    GameStates.task = true;
+                    Logger.Info("タスクフェイズ開始", "Phase");
+                }, 0.52f, "TaskTurn Start");
             }
             if (Main.NormalOptions.MapId is 4 && !AntiBlackout.OverrideExiledPlayer())
             {

@@ -42,7 +42,13 @@ namespace TownOfHost
 
             GameStates.CalledMeeting = true;
             if (Options.IsStandardHAS && target != null && __instance == target.Object) return true; //[StandardHAS] ボタンでなく、通報者と死体が同じなら許可
-            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.TaskBattle || Options.IsStandardHAS) return false;
+
+            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.TaskBattle || Options.IsStandardHAS)
+            {
+                GameStates.CalledMeeting = false;
+                return false;
+            }
+
             if (!CanReport[__instance.PlayerId])
             {
                 GameStates.CalledMeeting = false;
@@ -54,6 +60,7 @@ namespace TownOfHost
                     if (check.reason == DontReportreson.wait) return false;
                 }
                 if (!DontReport.TryAdd(__instance.PlayerId, (0, DontReportreson.wait))) DontReport[__instance.PlayerId] = (0, DontReportreson.wait);
+                RpcCancelMeeting(__instance);
                 _ = new LateTask(() =>
                 {
                     if (!GameStates.CalledMeeting) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: __instance);
@@ -62,7 +69,11 @@ namespace TownOfHost
             }
 
             //ホスト以外はこの先処理しない
-            if (!AmongUsClient.Instance.AmHost) return true;
+            if (!AmongUsClient.Instance.AmHost)
+            {
+                GameStates.CalledMeeting = false;
+                return true;
+            }
 
             if (!CheckMeeting(__instance, target)) return false;
 
@@ -107,12 +118,14 @@ namespace TownOfHost
                 }
                 MeetingHudPatch.Oniku = (check ? DieName : UtilsName.GetPlayerColor(target, true)) + Translator.GetString("Meeting.Report") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true));
                 UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[__instance.PlayerId].ColorId]) + "<#ffffff>" + string.Format(Translator.GetString("MI.die"), DieName.Color(color)) + "</u></color>";
+                RpcSyncMeetingInfo(__instance, target, check ? DieName : null);
             }
             else
             {
                 UtilsGameLog.AddGameLog("Meeting", Translator.GetString("Meeting.Button") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true)));
                 MeetingHudPatch.Oniku = Translator.GetString("Meeting.Button") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true));
                 UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[__instance.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
+                RpcSyncMeetingInfo(__instance, target);
             }
 
             foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -232,18 +245,22 @@ namespace TownOfHost
                     }
                     MeetingHudPatch.Oniku = (check ? DieName : UtilsName.GetPlayerColor(target, true)) + Translator.GetString("Meeting.Report") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
                     UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + string.Format(Translator.GetString("MI.die"), DieName.Color(color)) + "</u></color>";
+                    RpcSyncMeetingInfo(reporter, target, check ? DieName : null);
                 }
                 else
                 {
                     UtilsGameLog.AddGameLog("Meeting", Translator.GetString("Meeting.Button") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true)));
                     MeetingHudPatch.Oniku = Translator.GetString("Meeting.Button") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
                     UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
+                    RpcSyncMeetingInfo(reporter, target);
                 }
             }
             else
             {
-                MeetingHudPatch.Oniku = Meetinginfo;
-                UtilsNotifyRoles.ExtendedMeetingText = $"<color={colorcode}><u>★" + Meetinginfo + "</u></color>";
+                var info = GetString(Meetinginfo);
+                MeetingHudPatch.Oniku = info;
+                UtilsNotifyRoles.ExtendedMeetingText = $"<color={colorcode}><u>★" + info + "</u></color>";
+                RpcSyncMeetingInfo(reporter, target, meetingInfo: Meetinginfo, infoColor: colorcode);
             }
             reporternetid = reporter.NetId;
             targetid = target?.PlayerId ?? byte.MaxValue;
@@ -334,10 +351,11 @@ namespace TownOfHost
                     {
                         Logger.Info($"{role}によって会議はキャンセルされました。{reason}", "ReportDeadBody");
                         GameStates.CalledMeeting = false;
-                        AddDontrepo(repoter, reason);
+                        AddDontrepo(repoter, reason, false);
                         check = true;
                     }
                 }
+                RpcCancelMeeting(repoter, null);
                 return false;
             }
 
@@ -427,10 +445,12 @@ namespace TownOfHost
                 {
                     Logger.Info($"{role}によって会議はキャンセルされました。{reason}", "ReportDeadBody");
                     GameStates.CalledMeeting = false;
-                    AddDontrepo(repoter, reason);
+                    AddDontrepo(repoter, reason, false);
                     check = true;
                 }
             }
+            RpcCancelMeeting(repoter, null);
+
             if (check) return false;
 
             if (Options.SyncButtonMode.GetBool() && target == null)
@@ -447,14 +467,120 @@ namespace TownOfHost
             }
             return true;
 
-            void AddDontrepo(PlayerControl pc, DontReportreson repo)
+            void AddDontrepo(PlayerControl pc, DontReportreson repo, bool sync = true)
             {
                 if (!DontReport.TryAdd(pc.PlayerId, (0, repo))) DontReport[pc.PlayerId] = (0, repo);
+                if (sync) RpcCancelMeeting(pc, repo);
+
                 _ = new LateTask(() =>
                 {
                     if (!GameStates.CalledMeeting) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: pc);
                 }, 0.2f, "", true);
             }
+        }
+
+        public static void RpcCancelMeeting(PlayerControl target, DontReportreson? reason = null)
+        {
+            if (!AmongUsClient.Instance.AmHost || !PlayerCatch.AnyModClient()) return;
+
+            reason ??= DontReport.TryGetValue(target.PlayerId, out var value) ? value.reason : null;
+            if (reason == null) return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeetingInfo, Hazel.SendOption.Reliable);
+            writer.Write(true);
+            writer.Write(target.PlayerId);
+            writer.WritePacked((int)reason.Value);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public static void RpcSyncMeetingInfo(PlayerControl reporter, NetworkedPlayerInfo target, string dieName = null, string meetingInfo = null, string infoColor = "")
+        {
+            if (!AmongUsClient.Instance.AmHost || !PlayerCatch.AnyModClient() || reporter == null) return;
+
+            var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.MeetingInfo, Hazel.SendOption.Reliable);
+            writer.Write(false);
+            writer.Write(reporter.PlayerId);
+            writer.Write(target?.PlayerId ?? byte.MaxValue);
+
+            bool flag1 = dieName != null;
+            writer.Write(flag1);
+            if (flag1) writer.Write(dieName);
+
+            bool flag2 = meetingInfo != null;
+            writer.Write(flag2);
+            if (flag2)
+            {
+                writer.Write(meetingInfo);
+                writer.Write(infoColor);
+            }
+
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
+        public static void CancelMeeting(Hazel.MessageReader reader)
+        {
+            if (AmongUsClient.Instance.AmHost) return;
+
+            var target = PlayerCatch.GetPlayerById(reader.ReadByte());
+            var reason = (DontReportreson)reader.ReadPackedInt32();
+
+            if (target == null) return;
+
+            if (!DontReport.TryAdd(target.PlayerId, (0, reason))) DontReport[target.PlayerId] = (0, reason);
+            Logger.Info($"ホストが会議をキャンセルしました: {reason}", "CancelMeeting");
+        }
+
+        public static void SetMeetingInfo(Hazel.MessageReader reader)
+        {
+            if (AmongUsClient.Instance.AmHost) return;
+
+            var reporterId = reader.ReadByte();
+            var targetId = reader.ReadByte();
+
+            var reporter = reporterId == byte.MaxValue ? null : PlayerCatch.GetPlayerById(reporterId);
+            var target = targetId == byte.MaxValue ? null : PlayerCatch.GetPlayerById(targetId);
+
+            var overrideDieName = reader.ReadBoolean();
+            var output = overrideDieName ? reader.ReadString() : string.Empty;
+
+            var overrideInfo = reader.ReadBoolean();
+            var meetingInfo = overrideInfo ? reader.ReadString() : string.Empty;
+            var infoColorCode = overrideInfo ? reader.ReadString() : string.Empty;
+
+            GameStates.task = false;
+
+            DisableDevice.StartMeeting();
+            AdminProvider.CalculateAdmin(true);
+
+            foreach (var kvp in PlayerState.AllPlayerStates)
+            {
+                var pc = PlayerCatch.GetPlayerById(kvp.Key);
+                kvp.Value.LastRoom = pc?.GetPlainShipRoom();
+            }
+
+            if (overrideInfo)
+            {
+                MeetingHudPatch.Oniku = GetString(meetingInfo);
+                UtilsNotifyRoles.ExtendedMeetingText = $"<color={infoColorCode}><u>★" + GetString(meetingInfo) + "</u></color>";
+                return;
+            }
+
+            //レポート
+            if (target != null)
+            {
+                var check = overrideDieName;
+                var colorid = Camouflage.PlayerSkins[target.PlayerId].ColorId;
+                var DieName = overrideDieName ? output : Palette.GetColorName(colorid);
+                var color = overrideDieName ? ModColors.NeutralGray : Palette.PlayerColors[colorid];
+
+                MeetingHudPatch.Oniku = (check ? DieName : UtilsName.GetPlayerColor(target, true)) + Translator.GetString("Meeting.Report") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
+                UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + string.Format(Translator.GetString("MI.die"), DieName.Color(color)) + "</u></color>";
+                return;
+            }
+
+            //ボタン
+            MeetingHudPatch.Oniku = Translator.GetString("Meeting.Button") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
+            UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
         }
     }
 }

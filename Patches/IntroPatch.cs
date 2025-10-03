@@ -394,19 +394,27 @@ namespace TownOfHost
                         }, 0.7f, "FixKillCooldownTask", null);
                     }
                     else if (Options.FixFirstKillCooldown.GetBool())
+                    {
                         _ = new LateTask(() =>
                         {
                             PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown((Main.AllPlayerKillCooldown.TryGetValue(pc.PlayerId, out var time) ? time : Main.LastKillCooldown.Value) - 0.7f, force: true, delay: true));
                         }, 0.7f, "FixKillCooldownTask", null);
-                    else _ = new LateTask(() =>
+                    }
+                    else
+                    {
+                        _ = new LateTask(() =>
                         {
                             PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown(10f, force: true, delay: true));
                         }, 0.7f, "FixKillCooldownTask", null);
+                    }
+
                     GameStates.Intro = false;
                     GameStates.AfterIntro = true;
                 }
+
                 if (!(Options.CurrentGameMode is CustomGameMode.Standard && Main.SetRoleOverride))
                     _ = new LateTask(() => PlayerCatch.AllPlayerControls.Do(pc => pc.RpcSetRoleDesync(RoleTypes.Shapeshifter, -3)), 2f, "SetImpostorForServer");
+
                 if (PlayerControl.LocalPlayer.Is(CustomRoles.GM))
                 {
                     PlayerControl.LocalPlayer.RpcExile();
@@ -442,6 +450,7 @@ namespace TownOfHost
                     kvp.Value.IsBlackOut = false;
                 }
                 UtilsOption.MarkEveryoneDirtySettings();
+
                 //役職選定後に処理する奴。
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
@@ -471,6 +480,7 @@ namespace TownOfHost
                 {
                     PlayerControl.LocalPlayer.Data.Role.AffectedByLightAffectors = false;
                 }
+
                 GameStates.task = true;
                 Logger.Info("タスクフェイズ開始", "Phase");
 
@@ -492,6 +502,7 @@ namespace TownOfHost
                             pl.Data.Role.NameColor = Palette.White;
                         if (pl.Is(CustomRoles.OneWolf))
                             pl.Data.Role.NameColor = Palette.White;
+
                         List<uint> TaskList = new();
                         if (pl.Data.Tasks != null)
                             foreach (var task in pl.Data.Tasks) TaskList.Add(task.Id);
@@ -516,7 +527,7 @@ namespace TownOfHost
                 if (Options.firstturnmeeting)
                 {
                     _ = new LateTask(() =>
-                        ReportDeadBodyPatch.ExReportDeadBody(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data, false, GetString("Firstmeetinginfo"), "#23dbc0"), 0.7f + Main.LagTime, "", true);
+                        ReportDeadBodyPatch.ExReportDeadBody(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data, false, "Firstmeetinginfo", "#23dbc0"), 0.7f + Main.LagTime, "", true);
                 }
                 else
                 {
@@ -527,6 +538,18 @@ namespace TownOfHost
                             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                     }, 15f, "Intro", true);
                 }
+            }
+            else
+            {
+                //私が把握できていない処理でホストの挙動がバグると困るので、
+                //別でフラグ更新書いておきます 問題なかったらまとめても大丈夫です
+                GameStates.Intro = false;
+                GameStates.AfterIntro = true;
+                GameStates.task = true;
+
+                Logger.Info("タスクフェイズ開始", "Phase");
+                _ = new LateTask(() => CustomButtonHud.BottonHud(true), 0.3f, "SetHudButton", true);
+
             }
             _ = new LateTask(() => Main.showkillbutton = true, 0.5f, "", true);
             Logger.Info("OnDestroy", "IntroCutscene");
