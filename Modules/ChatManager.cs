@@ -494,6 +494,7 @@ namespace TownOfHost.Modules.ChatManager
         }
         public static void StratMeetingSetDead()
         {
+            if (!AmongUsClient.Instance.AmHost) return;
             _ = new LateTask(() =>
             {
                 if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;

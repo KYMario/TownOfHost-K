@@ -15,6 +15,7 @@ class StandardIntro
 {
     public static void CoGameIntroWeight()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
         // イントロ通信分割
         if (!Options.ExOldIntroSystem.GetBool() && Options.CurrentGameMode is CustomGameMode.Standard)//役職配布前に通信擬装をしておく。
         {
