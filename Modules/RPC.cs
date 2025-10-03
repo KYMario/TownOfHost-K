@@ -154,7 +154,7 @@ namespace TownOfHost
                     int indexId = reader.ReadPackedInt32();
                     int maxId = reader.ReadPackedInt32();
                     //foreach (OptionItem co in OptionItem.AllOptions)
-                        //すべてのカスタムオプションについてインデックス値で受信
+                    //すべてのカスタムオプションについてインデックス値で受信
                     for (var i = indexId; i < maxId; i++)
                         OptionItem.AllOptions[i].SetValue(reader.ReadPackedInt32());
                     break;
@@ -375,15 +375,10 @@ namespace TownOfHost
         public static void SetCustomRole(byte targetId, CustomRoles role)
         {
             RoleBase roleClass = CustomRoleManager.GetByPlayerId(targetId);
-            if (roleClass != null && role < CustomRoles.NotAssigned)
-            {
-                PlayerControl player = roleClass.Player;
-                roleClass.Dispose();
-                CustomRoleManager.CreateInstance(role, player);
-            }
-            else if (role < CustomRoles.NotAssigned)
+            if (role < CustomRoles.NotAssigned)
             {
                 PlayerState.GetByPlayerId(targetId).SetMainRole(role);
+                if (roleClass != null) roleClass.Dispose();
                 CustomRoleManager.CreateInstance(role, PlayerCatch.GetPlayerById(targetId));
             }
             else if (role >= CustomRoles.NotAssigned)   //500:NoSubRole 501~:SubRole
