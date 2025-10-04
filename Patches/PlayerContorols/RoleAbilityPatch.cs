@@ -213,14 +213,12 @@ namespace TownOfHost
     }
     #endregion
     #region Phantom
-    [HarmonyPatch(typeof(PlayerControl))]
+    //[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.CheckVanish))]
     class PlayerControlPhantomPatch
     {
-        [HarmonyPatch(nameof(PlayerControl.CheckVanish)), HarmonyPrefix]
-        public static bool Prefix(PlayerControl __instance)
+        public static bool CheckVanish(PlayerControl __instance)
         {
             if (__instance.PlayerId == PlayerControl.LocalPlayer.PlayerId) return false;
-            Logger.Info($"{__instance?.Data?.PlayerName}", "CheckVanish and Appear");
             var AdjustKillCooldown = true;
             bool? ResetCooldown = true;
 

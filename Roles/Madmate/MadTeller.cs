@@ -54,7 +54,7 @@ public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
     public bool? CheckKillFlash(MurderInfo info) => canSeeKillFlash;
     public bool? CheckSeeDeathReason(PlayerControl seen) => canSeeDeathReason;
     public override CustomRoles TellResults(PlayerControl player) => Options.MadTellOpt();
-    public float collect;
+    public static float collect;
     public bool srole;
     public float Max;
     public AbilityVoteMode Votemode;
@@ -142,7 +142,7 @@ public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         if (!target.IsAlive()) return;
         count++;
         MeetingUsedcount++;
-        if (chance < collect)
+        if (chance <= collect || collect is 100)
         {
             Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}(成功)", "MadTeller");
             var role = target.GetTellResults(Player); //結果を変更するかチェック

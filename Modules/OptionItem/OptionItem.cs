@@ -217,7 +217,11 @@ namespace TownOfHost
         }
         public virtual string GetTextString()
         {
-            return GetString(false);
+            if (this is StringOptionItem stringOptionItem)
+            {
+                return stringOptionItem.GetString();
+            }
+            return GetString();
         }
         public virtual int GetValue() => IsSingleValue ? SingleValue : AllValues[CurrentPreset];
 

@@ -587,6 +587,21 @@ namespace TownOfHost
 
             return sb.ToString();
         }
+        public static string GetLoverRoleMark(byte id)
+        {
+            var sb = new StringBuilder();
+            var player = id.GetPlayerControl();
+            var lover = player?.GetLoverRole();
+            if (lover?.IsLovers() ?? false)
+            {
+                if (lover != CustomRoles.OneLove)
+                {
+                    sb.Append($" + ");
+                    sb.Append(ColorString(GetRoleColor((CustomRoles)lover), "♥"));
+                }
+            }
+            return sb.ToString();
+        }
         public static string GetRoleColorAndtext(CustomRoles role) => ColorString(GetRoleColor(role), GetString($"{role}"));
 
         public static string GetExpelledText(byte expelledid, bool istie, bool isskip)

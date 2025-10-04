@@ -60,6 +60,8 @@ namespace TownOfHost
                         var mark = GetSubRolesText(pp.PlayerId, mark: true);
                         if (!UtilsGameLog.LastLogSubRole.TryAdd(pp.PlayerId, mark))
                             UtilsGameLog.LastLogSubRole[pp.PlayerId] = mark;
+                        if (!UtilsGameLog.LastLogLoveRole.TryAdd(pp.PlayerId, ""))
+                            UtilsGameLog.LastLogLoveRole[pp.PlayerId] = GetLoverRoleMark(pp.PlayerId);
                     }
                 }
             if (CustomWinnerHolder.WinnerTeam != CustomWinner.Default && !Main.DontGameSet) return;
@@ -424,6 +426,8 @@ namespace TownOfHost
                         var mark = GetSubRolesText(pp.PlayerId, mark: true);
                         if (!UtilsGameLog.LastLogSubRole.TryAdd(pp.PlayerId, mark))
                             UtilsGameLog.LastLogSubRole[pp.PlayerId] = mark;
+                        if (!UtilsGameLog.LastLogLoveRole.TryAdd(pp.PlayerId, ""))
+                            UtilsGameLog.LastLogLoveRole[pp.PlayerId] = GetLoverRoleMark(pp.PlayerId);
                     }
                 }
             if (CustomWinnerHolder.WinnerTeam != CustomWinner.Default && !Main.DontGameSet) return;

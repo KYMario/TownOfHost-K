@@ -33,7 +33,7 @@ namespace TownOfHost
             float maxHeight = 0f;
             if (CustomRolesFolder != null && CustomRolesFolder.FolderName == taskFolder.FolderName)
             {
-                var crewBehaviour = DestroyableSingleton<RoleManager>.Instance.AllRoles.Where(role => role.Role == RoleTypes.Crewmate).FirstOrDefault();
+                var crewBehaviour = DestroyableSingleton<RoleManager>.Instance.AllRoles.ToArray().Where(role => role.Role == RoleTypes.Crewmate).FirstOrDefault();
                 foreach (var cRole in CustomRolesHelper.AllRoles)
                 {
                     /*if(cRole == CustomRoles.Crewmate ||

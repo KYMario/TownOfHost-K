@@ -50,6 +50,7 @@ public abstract class RoleBase : IDisposable
             RoleTypes.Engineer or
             RoleTypes.Scientist or
             RoleTypes.Tracker or
+            RoleTypes.Detective or
             RoleTypes.GuardianAngel or
             RoleTypes.CrewmateGhost or
             RoleTypes.ImpostorGhost;
@@ -412,7 +413,7 @@ public abstract class RoleBase : IDisposable
     /// </summary>
     public virtual string GetAbilityButtonText()
     {
-        StringNames? str = Player.Data.Role.Role switch
+        StringNames? str = Player?.Data?.Role?.Role switch
         {
             RoleTypes.Engineer => StringNames.VentAbility,
             RoleTypes.Scientist => StringNames.VitalsAbility,
@@ -420,6 +421,7 @@ public abstract class RoleBase : IDisposable
             RoleTypes.Shapeshifter => StringNames.ShapeshiftAbility,
             RoleTypes.Phantom => StringNames.PhantomAbility,
             RoleTypes.GuardianAngel => StringNames.ProtectAbility,
+            RoleTypes.Detective => StringNames.DetectiveAbilityNotes,
             RoleTypes.ImpostorGhost or RoleTypes.CrewmateGhost => StringNames.HauntAbilityName,
             _ => null//アプデ対応用
         };
@@ -508,9 +510,9 @@ public abstract class RoleBase : IDisposable
     /// </summary>
     public virtual CustomRoles Misidentify() => CustomRoles.NotAssigned;
     protected static AudioClip GetIntroSound(RoleTypes roleType) =>
-        RoleManager.Instance.AllRoles.Where((role) => role.Role == roleType).FirstOrDefault().IntroSound;
+        RoleManager.Instance.AllRoles.ToArray().Where((role) => role.Role == roleType).FirstOrDefault().IntroSound;
     public static AudioClip GetIntrosound(RoleTypes roleType) =>
-        RoleManager.Instance.AllRoles.Where((role) => role.Role == roleType).FirstOrDefault().IntroSound;
+        RoleManager.Instance.AllRoles.ToArray().Where((role) => role.Role == roleType).FirstOrDefault().IntroSound;
     public static FloatValueRule OptionBaseCoolTime => new(0, 180, 0.5f);
 
     //一々Translator参照戦でいいから多分楽 

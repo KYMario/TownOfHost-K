@@ -43,7 +43,7 @@ public sealed class Reloader : RoleBase, IImpostor, IUsePhantomButton
     private static float Cooldown;
     private static float KillCooldown;
     private static float ReloadKillCooldown;
-    private static int Count;
+    private int Count;
     private static void SetupOptionItem()
     {
         OptionKillCooldown = FloatOptionItem.Create(RoleInfo, 9, GeneralOption.KillCooldown, new(0f, 180f, 0.5f), 30f, false)

@@ -97,25 +97,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
             if (NowJumpcount == 1) ShowMark = true;
             UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
             player.RpcSnapToForced(NowJumpcount == Jumpcount ? JumpToPosition : new Vector2(UsePosition.x + JumpX * NowJumpcount, UsePosition.y + JumpY * NowJumpcount));
-            _ = new LateTask(() =>
-            {
-                if (!GameStates.IsMeeting && player.IsAlive())
-                {
-                    foreach (var target in PlayerCatch.AllAlivePlayerControls)
-                    {
-                        if (target.Is(CustomRoles.King) || target.PlayerId == player.PlayerId) continue;
 
-                        float Distance = Vector2.Distance(player.transform.position, target.transform.position);
-                        if (Distance <= (Jumpdistance == 1 ? 1.22f : (Jumpdistance == 2 ? 1.82f : 2.2)))
-                        {
-                            if (CustomRoleManager.OnCheckMurder(player, target, target, target, true, Killpower: 3))
-                            {
-                                PlayerState.GetByPlayerId(target.PlayerId).DeathReason = CustomDeathReason.Bombed;
-                            }
-                        }
-                    }
-                }
-            }, Jumpdis - 0.19f, "abo-n", null);
             if (Jumpcount <= NowJumpcount)
             {
                 Jumping = false;
@@ -127,6 +109,28 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
                 player.SetKillCooldown();
                 Player.RpcSetColor((byte)PlayerColor);
                 _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(ForceLoop: true), 0.2f, "JumperEndNotify", null);
+            }
+            else
+            {
+                _ = new LateTask(() =>
+                    {
+                        if (!GameStates.IsMeeting && player.IsAlive())
+                        {
+                            foreach (var target in PlayerCatch.AllAlivePlayerControls)
+                            {
+                                if (target.Is(CustomRoles.King) || target.PlayerId == player.PlayerId) continue;
+
+                                float Distance = Vector2.Distance(player.transform.position, target.transform.position);
+                                if (Distance <= (Jumpdistance == 1 ? 1.22f : (Jumpdistance == 2 ? 1.82f : 2.2)))
+                                {
+                                    if (CustomRoleManager.OnCheckMurder(player, target, target, target, true, Killpower: 3))
+                                    {
+                                        PlayerState.GetByPlayerId(target.PlayerId).DeathReason = CustomDeathReason.Bombed;
+                                    }
+                                }
+                            }
+                        }
+                    }, Jumpdis - 0.19f, "abo-n", null);
             }
             NowJumpcount++;
             timer = 0;

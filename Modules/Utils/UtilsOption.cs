@@ -155,6 +155,7 @@ namespace TownOfHost
                         if (role.IsLovers()) mark = "Ⓛ";
 
                         sb.Append($"\n<{GetRoleColorCode(role, true)}><u>{mark}{UtilsRoleText.GetCombinationName(role, false)}</color></u>×{role.GetCount()}\n\n");
+                        CheckPageChange(PlayerId, sb);
                         if (!(role is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder)) ShowChildrenSettings(Options.CustomRoleSpawnChances[role], ref sb, 1);
                         CheckPageChange(PlayerId, sb);
                     }

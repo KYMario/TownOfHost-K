@@ -36,7 +36,8 @@ namespace TownOfHost
                     Logger.Error($"全体のタスクが255を超えています", "CoStartGame ChTask");
                 }
             }
-            StandardIntro.CoGameIntroWeight();
+            Main.NormalOptions.SetInt(Int32OptionNames.TaskBarMode, 2);
+            Main.NormalOptions.SetBool(BoolOptionNames.ConfirmImpostor, false);
 
             UtilsGameLog.Reset();
             PlayerState.Clear();
@@ -157,6 +158,7 @@ namespace TownOfHost
                     Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
                 }
             }
+            StandardIntro.CoGameIntroWeight();
             if (Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special))
             {
                 PlayerCatch.AllPlayerControls.Do(pc =>
@@ -202,7 +204,7 @@ namespace TownOfHost
                 else Main.LagTime = 0.23f;
             }
             else Main.LagTime = 0.23f;
-            Logger.Info($"LagTime : {Main.LagTime} PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
+            Logger.Info($"LagTime : {Main.LagTime} ,({AmongUsClient.Instance.Ping}) PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
         }
     }
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
@@ -235,7 +237,7 @@ namespace TownOfHost
                 }
                 else
                 {
-                    RoleTypes[] RoleTypesList = { RoleTypes.Scientist, RoleTypes.Engineer, RoleTypes.Tracker, RoleTypes.Noisemaker, RoleTypes.Shapeshifter, RoleTypes.Phantom };
+                    RoleTypes[] RoleTypesList = { RoleTypes.Scientist, RoleTypes.Engineer, RoleTypes.Tracker, RoleTypes.Noisemaker, RoleTypes.Shapeshifter, RoleTypes.Phantom, RoleTypes.Detective, RoleTypes.Viper };
                     foreach (var roleTypes in RoleTypesList)
                     {
                         var roleOpt = Main.NormalOptions.roleOptions;
@@ -331,9 +333,11 @@ namespace TownOfHost
             List<PlayerControl> Engineers = new();
             List<PlayerControl> Trackers = new();
             List<PlayerControl> Noisemakers = new();
+            List<PlayerControl> Detectives = new();
             List<PlayerControl> GuardianAngels = new();
             List<PlayerControl> Shapeshifters = new();
             List<PlayerControl> Phantoms = new();
+            List<PlayerControl> Vipers = new();
 
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -368,6 +372,10 @@ namespace TownOfHost
                         Noisemakers.Add(pc);
                         role = CustomRoles.Noisemaker;
                         break;
+                    case RoleTypes.Detective:
+                        Detectives.Add(pc);
+                        role = CustomRoles.Detective;
+                        break;
                     case RoleTypes.GuardianAngel:
                         GuardianAngels.Add(pc);
                         role = CustomRoles.GuardianAngel;
@@ -379,6 +387,10 @@ namespace TownOfHost
                     case RoleTypes.Phantom:
                         Phantoms.Add(pc);
                         role = CustomRoles.Phantom;
+                        break;
+                    case RoleTypes.Viper:
+                        Vipers.Add(pc);
+                        role = CustomRoles.Viper;
                         break;
                     default:
                         Logger.seeingame(string.Format(GetString("Error.InvalidRoleAssignment"), pc?.Data?.GetLogPlayerName()));
@@ -448,10 +460,12 @@ namespace TownOfHost
                         RoleTypes.Impostor => Impostors,
                         RoleTypes.Shapeshifter => Shapeshifters,
                         RoleTypes.Phantom => Phantoms,
+                        RoleTypes.Viper => Vipers,
                         RoleTypes.Scientist => Scientists,
                         RoleTypes.Engineer => Engineers,
                         RoleTypes.Tracker => Trackers,
                         RoleTypes.Noisemaker => Noisemakers,
+                        RoleTypes.Detective => Detectives,
                         RoleTypes.GuardianAngel => GuardianAngels,
                         _ => Crewmates,
                     };
@@ -491,7 +505,7 @@ namespace TownOfHost
                     }
                 }
 
-                RoleTypes[] RoleTypesList = { RoleTypes.Scientist, RoleTypes.Engineer, RoleTypes.Tracker, RoleTypes.Noisemaker, RoleTypes.Shapeshifter, RoleTypes.Phantom };
+                RoleTypes[] RoleTypesList = { RoleTypes.Scientist, RoleTypes.Engineer, RoleTypes.Tracker, RoleTypes.Noisemaker, RoleTypes.Shapeshifter, RoleTypes.Phantom, RoleTypes.Detective, RoleTypes.Viper };
                 foreach (var roleTypes in RoleTypesList)
                 {
                     var roleOpt = Main.NormalOptions.roleOptions;
@@ -556,7 +570,7 @@ namespace TownOfHost
 
             if (Options.CurrentGameMode == CustomGameMode.Standard)
                 StandardIntro.CoResetRoleY();
-            RPC.RpcSyncAllNetworkedPlayer();
+            //RPC.RpcSyncAllNetworkedPlayer();
 
             PlayerCatch.CountAlivePlayers(true);
             UtilsOption.SyncAllSettings();
@@ -613,7 +627,7 @@ namespace TownOfHost
         }
         public static void MakeDesyncSender(Dictionary<byte, CustomRpcSender> senders, Dictionary<(byte, byte), RoleTypes> rolesMap)
         {
-            if (Options.ExIntroWeight.GetBool()) return;
+            if (!Options.ExOldIntroSystem.GetBool()) return;
             var hostId = PlayerControl.LocalPlayer.PlayerId;
             foreach (var seer in PlayerCatch.AllPlayerControls)
             {
@@ -661,8 +675,7 @@ namespace TownOfHost
                         player.RpcSetColor(2);
                     else if (player.Is(CustomRoles.HASFox))
                         player.RpcSetColor(3);
-                    SetColorPatch.IsAntiGlitchDisabled = false;
-                    return AssignedPlayers;
+                    continue;
                 }
 
                 if (role.GetRoleInfo().IsCantSeeTeammates && player != PlayerControl.LocalPlayer && !SuddenDeathMode.NowSuddenDeathMode)
@@ -714,7 +727,7 @@ namespace TownOfHost
             }
             public static void Release()
             {
-                if (Options.ExIntroWeight.GetBool() && Options.CurrentGameMode is CustomGameMode.Standard)
+                if (!Options.ExOldIntroSystem.GetBool() && Options.CurrentGameMode is CustomGameMode.Standard)
                 {
                     foreach (var pair in StoragedData)
                     {

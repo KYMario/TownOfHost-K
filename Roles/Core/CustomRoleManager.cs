@@ -152,7 +152,7 @@ public static class CustomRoleManager
                             HaveGuardCount += data.Value;
                         });
 
-                        UtilsGameLog.AddGameLog($"Guard", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true) + $"(<b>{UtilsRoleText.GetTrueRoleName(attemptKiller.PlayerId, false)}</b>)"));
+                        UtilsGameLog.AddGameLog($"Guard", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
                         Logger.Info($"{attemptTarget.GetNameWithRole().RemoveHtmlTags()} ガード残り : {HaveGuardCount}", "Guarding");
                         break;
                     case 1: //Guardianangel
@@ -160,14 +160,14 @@ public static class CustomRoleManager
                         PlayerCatch.AllPlayerControls.Where(pc => pc is not null && !pc.IsAlive())
                             .Do(pc => attemptKiller.RpcProtectedMurderPlayer(pc, attemptTarget));
                         GuardianAngel.MeetingNotify |= true;
-                        UtilsGameLog.AddGameLog($"GuardianAngel", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true) + $"(<b>{UtilsRoleText.GetTrueRoleName(attemptKiller.PlayerId, false)}</b>)"));
+                        UtilsGameLog.AddGameLog($"GuardianAngel", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
                         Logger.Info($"{attemptKiller.GetNameWithRole().RemoveHtmlTags()} => {attemptTarget.GetNameWithRole().RemoveHtmlTags()}守護天使ちゃんのガード!", "GuardianAngel");
                         if (GuardianAngel.Guarng.ContainsKey(attemptTarget.PlayerId))
                             GuardianAngel.Guarng[attemptTarget.PlayerId] = 999f;
                         break;
                     case 2://AsistingAngel
                         UtilsGameLog.AddGameLog($"AsistingAngel", UtilsName.GetPlayerColor(PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.AsistingAngel)).FirstOrDefault())
-                        + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true) + $"(<b>{UtilsRoleText.GetTrueRoleName(attemptKiller.PlayerId, false)}</b>)"));
+                        + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
                         break;
                     case 3://Role
                         break;
@@ -185,6 +185,14 @@ public static class CustomRoleManager
         //キル可能だった場合のみMurderPlayerに進む
         if (info.CanKill && info.DoKill)//ノイメ対応
         {
+            if (appearanceKiller.GetCustomRole() is CustomRoles.Viper)//DesyncImp役職だと死体が溶けないので一瞬だけViperにする。
+            {
+                if (AmongUsClient.Instance.AmHost)
+                    foreach (var pc in PlayerCatch.AllPlayerControls)
+                    {
+                        appearanceKiller.RpcSetRoleDesync(RoleTypes.Viper, pc.GetClientId());
+                    }
+            }
             if (info.DontRoleAbility is false)
             {
                 if (appearanceTarget.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() == RoleTypes.Noisemaker)
@@ -218,6 +226,16 @@ public static class CustomRoleManager
             //MurderPlayer用にinfoを保存
             CheckMurderInfos[appearanceKiller.PlayerId] = info;
             appearanceKiller.RpcMurderPlayer(appearanceTarget);
+
+            if (info.AppearanceKiller.GetCustomRole() is CustomRoles.Viper)
+            {
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    if (pc.IsModClient()) continue;
+                    if (pc.PlayerId == info.AppearanceKiller.PlayerId || (pc.GetCustomRole().IsImpostor()) || pc.GetCustomRole() is CustomRoles.Egoist) continue;
+                    _ = new LateTask(() => info.AppearanceKiller.RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId()), 0.5f, "SetCrew", true); ;
+                }
+            }
             return true;
         }
         else
@@ -676,6 +694,7 @@ public enum CustomRoles
     Impostor,
     Shapeshifter,
     Phantom,
+    Viper,
     //Impostor
     BountyHunter,
     FireWorks,
@@ -753,6 +772,7 @@ public enum CustomRoles
     Scientist,
     Tracker,
     Noisemaker,
+    Detective,
     //Crewmate
     Bait,
     Lighter,

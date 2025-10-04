@@ -67,7 +67,7 @@ public sealed class GuardMaster : RoleBase
         if (CanSeeProtect && Awakened) target.RpcProtectedMurderPlayer(target);
         info.GuardPower = 1;
         Guard--;
-        UtilsGameLog.AddGameLog($"GuardMaster", UtilsName.GetPlayerColor(Player) + ":  " + string.Format(GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(killer, true) + $"(<b>{UtilsRoleText.GetTrueRoleName(killer.PlayerId, false)}</b>)"));
+        UtilsGameLog.AddGameLog($"GuardMaster", UtilsName.GetPlayerColor(Player) + ":  " + string.Format(GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(killer, true)));
         Logger.Info($"{target.GetNameWithRole().RemoveHtmlTags()} : ガード残り{Guard}回", "GuardMaster");
         UtilsNotifyRoles.NotifyRoles();
         return true;

@@ -31,9 +31,16 @@ public sealed class Inspector : RoleBase
     {
         Awakened = !OptAwakening.GetBool();
         Max = OptionMaximum.GetInt();
+        Votemode = (AbilityVoteMode)OptionVoteMode.GetValue();
+        IsSetRect = OptionSetRect.GetBool();
+        rectdeathreason = OptionDeathReason.GetFloat();
+        rectkillercolor = OptionKillerColor.GetFloat();
+        recttargetteam = OptionTargetTeam.GetFloat();
+        rectkillerrole = OptionKillerRole.GetFloat();
+        rectdeathtimer = OptionDeathTimer.GetFloat();
+        recttargetroom = OptionTargetroom.GetFloat();
         count = 0;
         TargetPlayerId = byte.MaxValue;
-        Votemode = (AbilityVoteMode)OptionVoteMode.GetValue();
         Isdie = false;
         deadtimer = 0;
     }
@@ -42,6 +49,13 @@ public sealed class Inspector : RoleBase
     static OptionItem OptAwakening;
     static OptionItem OptAwakeningTaskcount;
     static OptionItem OptionVoteMode;
+    static OptionItem OptionSetRect;/*確率を設定する*/ static bool IsSetRect;
+    static OptionItem OptionDeathReason; static float rectdeathreason;
+    static OptionItem OptionKillerColor; static float rectkillercolor;
+    static OptionItem OptionTargetTeam; static float recttargetteam;
+    static OptionItem OptionKillerRole; static float rectkillerrole;
+    static OptionItem OptionDeathTimer; static float rectdeathtimer;
+    static OptionItem OptionTargetroom; static float recttargetroom;
     public AbilityVoteMode Votemode;
     static int Max;
     int count;
@@ -51,7 +65,14 @@ public sealed class Inspector : RoleBase
 
     enum OptionName
     {
-        InspectVoteMode
+        InspectVoteMode,
+        InspectSetRect,
+        InspectDeathReason,
+        InspectColor,
+        InspectTargetTeam,
+        InspectKillerRole,
+        InspectDeathTimer,
+        InspectTargetRoom
     }
 
     enum Infom
@@ -69,6 +90,13 @@ public sealed class Inspector : RoleBase
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, GeneralOption.OptionCount, new(1, 99, 1), 1, false)
             .SetValueFormat(OptionFormat.Times);
         OptionVoteMode = StringOptionItem.Create(RoleInfo, 11, OptionName.InspectVoteMode, EnumHelper.GetAllNames<AbilityVoteMode>(), 1, false);
+        OptionSetRect = BooleanOptionItem.Create(RoleInfo, 14, OptionName.InspectSetRect, false, false);
+        OptionDeathReason = FloatOptionItem.Create(RoleInfo, 15, OptionName.InspectDeathReason, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
+        OptionKillerColor = FloatOptionItem.Create(RoleInfo, 16, OptionName.InspectColor, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
+        OptionTargetTeam = FloatOptionItem.Create(RoleInfo, 17, OptionName.InspectTargetTeam, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
+        OptionKillerRole = FloatOptionItem.Create(RoleInfo, 18, OptionName.InspectKillerRole, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
+        OptionDeathTimer = FloatOptionItem.Create(RoleInfo, 19, OptionName.InspectDeathTimer, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
+        OptionTargetroom = FloatOptionItem.Create(RoleInfo, 20, OptionName.InspectTargetRoom, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
         OptAwakening = BooleanOptionItem.Create(RoleInfo, 12, GeneralOption.TaskAwakening, false, false);
         OptAwakeningTaskcount = IntegerOptionItem.Create(RoleInfo, 13, GeneralOption.AwakeningTaskcount, new(1, 255, 1), 5, false, OptAwakening);
     }
@@ -111,66 +139,82 @@ public sealed class Inspector : RoleBase
         {
             PlayerState targetstate = TargetPlayerId.GetPlayerState();
             StringBuilder sb = new();
-            var chance = (Infom)IRandom.Instance.Next(EnumHelper.GetAllValues<Infom>().Count());
-            switch (chance)
+            //for (var i = 0; i == 1; i++) 
             {
-                case Infom.Color:
-                    if (Camouflage.PlayerSkins.TryGetValue(targetstate.RealKiller.killerid, out var cos))
-                    {
-                        var lightName = "";
-                        if (cos.ColorId is 0 or 1 or 2 or 6 or 8 or 9 or 12 or 15 or 16)
-                        {
-                            lightName = Palette.GetColorName((int)ModColors.PlayerColor.Black);
-                        }
-                        else lightName = Palette.GetColorName((int)ModColors.PlayerColor.white);
+                var type = (Infom)IRandom.Instance.Next(EnumHelper.GetAllValues<Infom>().Count());
+                if (IsSetRect)
+                {
+                    var all = rectdeathreason + rectkillercolor + recttargetteam + rectkillerrole + rectdeathtimer + recttargetroom;
+                    var chance = IRandom.Instance.Next((int)all);
 
-                        sb.AppendFormat(GetString("Inspector.InfoColor"), UtilsName.GetPlayerColor(TargetPlayerId), lightName);
-                    }
-                    break;
-                case Infom.DeathReason:
-                    sb.AppendFormat(GetString("Inspector.InfoDeathReason"), UtilsName.GetPlayerColor(TargetPlayerId), GetString($"DeathReason.{targetstate.DeathReason}"));
-                    break;
-                case Infom.DeathTimer:
-                    sb.AppendFormat(GetString("Inspector.InfoTimer"), UtilsName.GetPlayerColor(TargetPlayerId), (int)deadtimer);
-                    break;
-                case Infom.KillerRole:
-                    sb.AppendFormat(GetString("Inspector.InfoRole"), UtilsName.GetPlayerColor(TargetPlayerId), UtilsRoleText.GetTrueRoleName(targetstate.RealKiller.killerid, false));
-                    break;
-                case Infom.TargetTeam:
-                    string str = "";
-                    switch (targetstate.MainRole.GetCustomRoleTypes())
-                    {
-                        case CustomRoleTypes.Crewmate:
-                            str = UtilsRoleText.GetRoleColorAndtext(CustomRoles.Crewmate);
-                            break;
-                        case CustomRoleTypes.Impostor:
-                            str = UtilsRoleText.GetRoleColorAndtext(CustomRoles.Impostor);
-                            break;
-                        case CustomRoleTypes.Madmate:
-                            str = UtilsRoleText.GetRoleColorAndtext(CustomRoles.Madmate);
-                            break;
-                        case CustomRoleTypes.Neutral:
-                            str = Utils.ColorString(ModColors.Gray, GetString("Neutral"));
-                            break;
-                    }
-                    sb.AppendFormat(GetString("Inspector.InfoTeam"), UtilsName.GetPlayerColor(TargetPlayerId), str);
-                    break;
-                case Infom.TargetRoom:
-                    if (targetstate.KillRoom is "")
-                    {
+                    if (chance <= rectdeathreason) { type = Infom.DeathReason; }
+                    else if (chance <= rectdeathreason + rectkillercolor) { type = Infom.Color; }
+                    else if (chance <= rectdeathreason + rectkillercolor + recttargetteam) { type = Infom.TargetTeam; }
+                    else if (chance <= rectdeathreason + rectkillercolor + recttargetteam + rectkillerrole) { type = Infom.KillerRole; }
+                    else if (chance <= rectdeathreason + rectkillercolor + recttargetteam + rectkillerrole + rectdeathtimer) { type = Infom.DeathTimer; }
+                    else { type = Infom.TargetRoom; }
+                }
+
+                switch (type)
+                {
+                    case Infom.Color:
+                        if (Camouflage.PlayerSkins.TryGetValue(targetstate.RealKiller.killerid, out var cos))
+                        {
+                            var lightName = "";
+                            if (cos.ColorId is 0 or 1 or 2 or 6 or 8 or 9 or 12 or 15 or 16)
+                            {
+                                lightName = Palette.GetColorName((int)ModColors.PlayerColor.Black);
+                            }
+                            else lightName = Palette.GetColorName((int)ModColors.PlayerColor.white);
+
+                            sb.AppendFormat(GetString("Inspector.InfoColor"), UtilsName.GetPlayerColor(TargetPlayerId), lightName);
+                        }
+                        break;
+                    case Infom.DeathReason:
                         sb.AppendFormat(GetString("Inspector.InfoDeathReason"), UtilsName.GetPlayerColor(TargetPlayerId), GetString($"DeathReason.{targetstate.DeathReason}"));
                         break;
-                    }
-                    sb.AppendFormat(GetString("Inspector.InfoRoom"), UtilsName.GetPlayerColor(TargetPlayerId), targetstate.KillRoom);
-                    break;
-                default:
-                    sb.Append("???");
-                    break;
+                    case Infom.DeathTimer:
+                        sb.AppendFormat(GetString("Inspector.InfoTimer"), UtilsName.GetPlayerColor(TargetPlayerId), (int)deadtimer);
+                        break;
+                    case Infom.KillerRole:
+                        sb.AppendFormat(GetString("Inspector.InfoRole"), UtilsName.GetPlayerColor(TargetPlayerId), UtilsRoleText.GetTrueRoleName(targetstate.RealKiller.killerid, false));
+                        break;
+                    case Infom.TargetTeam:
+                        string str = "";
+                        switch (targetstate.MainRole.GetCustomRoleTypes())
+                        {
+                            case CustomRoleTypes.Crewmate:
+                                str = UtilsRoleText.GetRoleColorAndtext(CustomRoles.Crewmate);
+                                break;
+                            case CustomRoleTypes.Impostor:
+                                str = UtilsRoleText.GetRoleColorAndtext(CustomRoles.Impostor);
+                                break;
+                            case CustomRoleTypes.Madmate:
+                                str = UtilsRoleText.GetRoleColorAndtext(CustomRoles.Madmate);
+                                break;
+                            case CustomRoleTypes.Neutral:
+                                str = Utils.ColorString(ModColors.Gray, GetString("Neutral"));
+                                break;
+                        }
+                        sb.AppendFormat(GetString("Inspector.InfoTeam"), UtilsName.GetPlayerColor(TargetPlayerId), str);
+                        break;
+                    case Infom.TargetRoom:
+                        if (targetstate.KillRoom is "")
+                        {
+                            sb.AppendFormat(GetString("Inspector.InfoDeathReason"), UtilsName.GetPlayerColor(TargetPlayerId), GetString($"DeathReason.{targetstate.DeathReason}"));
+                            break;
+                        }
+                        sb.AppendFormat(GetString("Inspector.InfoRoom"), UtilsName.GetPlayerColor(TargetPlayerId), targetstate.KillRoom);
+                        break;
+                    default:
+                        sb.Append("???");
+                        break;
+                }
+                Logger.Info($"{Player.Data.GetLogPlayerName()} => {type}", "Inspector");
+                _ = new LateTask(() =>
+                    Utils.SendMessage(sb.ToString(), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{GetString("Inspector.Title")}</color>")
+                    , 3, "InspectorSend", true);
             }
-            Logger.Info($"{Player.Data.GetLogPlayerName()} => {chance}", "Inspector");
-            _ = new LateTask(() =>
-                Utils.SendMessage(sb.ToString(), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{GetString("Inspector.Title")}</color>")
-                , 3, "InspectorSend", true);
         }
         deadtimer = 0;
         Isdie = false;

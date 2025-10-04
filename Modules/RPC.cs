@@ -65,6 +65,9 @@ namespace TownOfHost
                     PlayerControl p = PlayerCatch.GetPlayerById(subReader.ReadByte());
                     Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()} => {p?.GetNameWithRole().RemoveHtmlTags() ?? "null"}", "StartMeeting");
                     break;
+                case RpcCalls.CheckVanish:
+                    if (PlayerControlPhantomPatch.CheckVanish(__instance) is false) return false;
+                    break;
             }
             if (__instance.PlayerId != 0
                 && Enum.IsDefined(typeof(CustomRPC), (int)callId)

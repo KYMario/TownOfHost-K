@@ -80,6 +80,6 @@ public sealed class Comebacker : RoleBase
         if (isForMeeting || !Player.IsAlive() || ComebackPosString == "") return "";
 
         if (isForHud) return $"<color={RoleInfo.RoleColorCode}>{string.Format(GetString("ComebackLowerText"), ComebackPosString)}</color>";
-        return $"<size=50%><color={RoleInfo.RoleColorCode}{string.Format(GetString("ComebackLowerText"), ComebackPosString)}</color></size>";
+        return $"<size=50%><color={RoleInfo.RoleColorCode}>{string.Format(GetString("ComebackLowerText"), ComebackPosString)}</color></size>";
     }
 }

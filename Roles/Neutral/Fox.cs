@@ -143,7 +143,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
             if ((PlayerCatch.AllPlayerControls.Any(pc => pc.Is(CustomRoles.Guesser)) || CustomRolesHelper.CheckGuesser()) && !Options.ExHideChatCommand.GetBool())
                 ChatManager.SendPreviousMessagesToAll();
 
-            UtilsGameLog.AddGameLog($"MeetingSheriff", $"{UtilsName.GetPlayerColor(Player, true)}(<b>{UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)}</b>) [{Utils.GetVitalText(Player.PlayerId, true)}]");
+            UtilsGameLog.AddGameLog($"Fox", $"{UtilsName.GetPlayerColor(Player, true)}(<b>{UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)}</b>) [{Utils.GetVitalText(Player.PlayerId, true)}]");
             UtilsGameLog.AddGameLogsub($"\n\t┗ {GetString("Skillplayer")}{UtilsName.GetPlayerColor(player, true)}(<b>{UtilsRoleText.GetTrueRoleName(player.PlayerId, false)}</b>)");
 
             var meetingHud = MeetingHud.Instance;

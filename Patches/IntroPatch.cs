@@ -151,21 +151,22 @@ namespace TownOfHost
                 }
             }
             logger.Info("------------基本設定------------");
-            var tmp = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(GameData.Instance ? GameData.Instance.PlayerCount : 10).Split("\r\n").Skip(1).SkipLast(8);
+            var tmp = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(GameData.Instance ? GameData.Instance.PlayerCount : 10).Split("\r\n").Skip(1).SkipLast(10);
             foreach (var t in tmp) logger.Info(t);
             logger.Info("------------詳細設定------------");
             foreach (var o in OptionItem.AllOptions)
                 if (!o.IsHiddenOn(Options.CurrentGameMode) && (o.Parent == null ? !o.GetString().Equals("0%") : o.Parent.InfoGetBool()))
-                    logger.Info($"{(o.Parent == null ? o.Name.PadRightV2(40) : $"┗ {o.Name}".PadRightV2(41))}:{o.GetString().RemoveSN().RemoveHtmlTags()}");
+                    logger.Info($"{(o.Parent == null ? o.Name.PadRightV2(40) : $"┗ {o.Name}".PadRightV2(41))}:{o.GetTextString().RemoveSN().RemoveHtmlTags()}");
             logger.Info("-------------その他-------------");
             logger.Info($"プレイヤー数: {PlayerCatch.AllPlayerControls.Count()}人");
-            if (Options.CurrentGameMode is not CustomGameMode.Standard || !Options.ExIntroWeight.GetBool())
+            GameStates.InGame = true;
+
+            if (Options.CurrentGameMode is not CustomGameMode.Standard)
             {
                 PlayerCatch.AllPlayerControls.Do(x => PlayerState.GetByPlayerId(x.PlayerId).InitTask(x));
                 GameData.Instance.RecomputeTaskCounts();
                 TaskState.InitialTotalTasks = GameData.Instance.TotalTasks;
             }
-            GameStates.InGame = true;
         }
     }
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]
@@ -490,10 +491,14 @@ namespace TownOfHost
                         if (pl.Data.Tasks != null)
                             foreach (var task in pl.Data.Tasks) TaskList.Add(task.Id);
                         Main.AllPlayerTask.TryAdd(pl.PlayerId, TaskList);
+                        if (pl.isDummy && Main.NormalOptions.MapId is 4)
+                        {
+                            new RandomSpawn.AirshipSpawnMap().RandomTeleport(pl);
+                        }
                     }
                     ExtendedRpc.RpcResetAbilityCooldownAllPlayer();
                     CustomButtonHud.BottonHud(true);
-                }, 0.3f, "", true);
+                }, 0.3f, "setnames", true);
 
                 _ = new LateTask(() =>
                 {
@@ -501,7 +506,7 @@ namespace TownOfHost
                     UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
                     SuddenDeathMode.NotTeamKill();
                     ExtendedRpc.AllPlayerOnlySeeMePet();
-                }, 1.25f, "", true);
+                }, 1.25f, "setcolorandpet", true);
 
                 if (Options.firstturnmeeting)
                 {

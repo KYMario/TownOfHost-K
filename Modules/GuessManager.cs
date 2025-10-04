@@ -273,6 +273,9 @@ public static class GuessManager
             case CustomRoles.Noisemaker:
                 if (role == CustomRoles.Noisemaker) result = false;
                 break;
+            case CustomRoles.Detective:
+                if (role == CustomRoles.Detective) result = false;
+                break;
             case CustomRoles.Impostor:
                 if (role == CustomRoles.Impostor) result = false;
                 break;
@@ -281,6 +284,9 @@ public static class GuessManager
                 break;
             case CustomRoles.Phantom:
                 if (role == CustomRoles.Phantom) result = false;
+                break;
+            case CustomRoles.Viper:
+                if (role == CustomRoles.Viper) result = false;
                 break;
         }
 
@@ -490,6 +496,9 @@ public static class GuessManager
             case CustomRoles.Noisemaker:
                 role = CustomRoles.Noisemaker;
                 break;
+            case CustomRoles.Detective:
+                role = CustomRoles.Detective;
+                break;
             case CustomRoles.Impostor:
                 role = CustomRoles.Impostor;
                 break;
@@ -498,6 +507,9 @@ public static class GuessManager
                 break;
             case CustomRoles.Phantom:
                 role = CustomRoles.Phantom;
+                break;
+            case CustomRoles.Viper:
+                role = CustomRoles.Viper;
                 break;
         }
 

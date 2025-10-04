@@ -304,14 +304,6 @@ public static class MeetingHudPatch
                     return text;
                 }
             }
-            foreach (var pva in __instance.playerStates)
-            {
-                var pc = PlayerCatch.GetPlayerById(pva.TargetPlayerId);
-                if (pc == null) continue;
-
-                if (MeetingStates.FirstMeeting) UtilsShowOption.SendRoleInfo(pc);
-                else if (Utils.RoleSendList.Contains(pva.TargetPlayerId)) UtilsShowOption.SendRoleInfo(pc);
-            }
             MeetingVoteManager.Voteresult = "";
             Oniku = "";
             Utils.RoleSendList.Clear();
@@ -332,12 +324,23 @@ public static class MeetingHudPatch
                 {
                     MeetingStates.Sending = false;
                     ChatUpdatePatch.DoBlockChat = false;
-                }, 2f, "Send to Chat", true);
+                    _ = new LateTask(() =>
+                    {
+                        foreach (var pva in __instance.playerStates)
+                        {
+                            var pc = PlayerCatch.GetPlayerById(pva.TargetPlayerId);
+                            if (pc == null) continue;
+
+                            if (MeetingStates.FirstMeeting) UtilsShowOption.SendRoleInfo(pc);
+                            else if (Utils.RoleSendList.Contains(pva.TargetPlayerId)) UtilsShowOption.SendRoleInfo(pc);
+                        }
+                    }, 1, "sendroleinfo");
+                }, 2.5f, "Send to Chat", true);
                 _ = new LateTask(() =>
                 {
                     ChatUpdatePatch.BlockSendName = false;
                     NameColorManager.RpcMeetingColorName();
-                }, 5f, "SetName", true);
+                }, 5.5f, "SetName", true);
             }
             Main.IsActiveSabotage =
                 Utils.IsActive(SystemTypes.Reactor)

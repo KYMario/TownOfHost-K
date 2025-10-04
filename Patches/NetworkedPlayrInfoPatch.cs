@@ -6,6 +6,7 @@ namespace TownOfHost.Patches;
 class GameDataSerializePatch
 {
     public static int SerializeMessageCount;
+    public static bool DontTouch;
 
     public static bool Prefix(NetworkedPlayerInfo __instance, ref bool __result)
     {
@@ -13,6 +14,12 @@ class GameDataSerializePatch
         {
             __result = true;
             return true;
+        }
+        if (DontTouch)
+        {
+            __instance.ClearDirtyBits();
+            __result = false;
+            return false;
         }
         if (SerializeMessageCount > 0)
         {

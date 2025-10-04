@@ -375,7 +375,7 @@ namespace TownOfHost
 
                     if (!oldname.TryAdd(target.PlayerId, nametext))
                     {
-                        oldname[target.PlayerId] = nametext;
+                        oldname[target.PlayerId] = nametext + (Suffix.ToString() is "" && (!TemporaryName || (TemporaryName && !nomarker)) ? "\r\n" + Suffix.ToString() : "");
                     }
 
                     if (Suffix.ToString() != "" && (!TemporaryName || (TemporaryName && !nomarker)))

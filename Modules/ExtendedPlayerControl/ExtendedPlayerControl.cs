@@ -240,7 +240,7 @@ namespace TownOfHost
 
         public static bool CanUseKillButton(this PlayerControl pc)
         {
-            if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId && !Main.showkillbutton && Main.CustomSprite.Value) return false;
+            if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId && !Main.showkillbutton) return false;
             if (!pc.IsAlive()) return false;
             if (pc?.Data?.Role?.Role == RoleTypes.GuardianAngel) return false;
 
@@ -374,7 +374,7 @@ namespace TownOfHost
         }
         public static PlayerControl TryGetKilltarget(this PlayerControl pc, bool IsOneclick = false)//SNR参考!(((
         {
-            float killdis = NormalGameOptionsV09.KillDistances[Mathf.Clamp(GameManager.Instance.LogicOptions.currentGameOptions.GetInt(Int32OptionNames.KillDistance), 0, 2)];
+            float killdis = NormalGameOptionsV10.KillDistances[Mathf.Clamp(GameManager.Instance.LogicOptions.currentGameOptions.GetInt(Int32OptionNames.KillDistance), 0, 2)];
 
             if (pc.Data.IsDead || pc.inVent) return null;
 

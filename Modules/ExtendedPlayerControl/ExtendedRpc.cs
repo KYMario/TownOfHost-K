@@ -109,7 +109,7 @@ namespace TownOfHost
             if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId && GameStates.AfterIntro && role < CustomRoles.NotAssigned)
             {
                 CustomButtonHud.BottonHud(true);
-                _ = new LateTask(() => Main.showkillbutton = true, 0.02f, "", true);
+                _ = new LateTask(() => Main.showkillbutton = true, 0.5f, "", true);
             }
 
             void SetRole()

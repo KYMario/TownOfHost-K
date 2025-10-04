@@ -396,7 +396,7 @@ namespace TownOfHost
 
             if (GameStates.IsLobby && !Iscountdown && (force || (pc.name != "Player(Clone)" && pc.PlayerId != PlayerControl.LocalPlayer.PlayerId && !pc.IsModClient())))
             {
-                //if (Main.MessagesToSend.Count > 0) return;
+                /*
                 var info = "<size=80%>";
                 var at = "";
                 if (Options.NoGameEnd.OptionMeGetBool()) info += $"\r\n" + ColorString(Color.red, GetString("NoGameEnd")); else at += "\r\n";
@@ -408,9 +408,9 @@ namespace TownOfHost
                 if (DebugModeManager.IsDebugMode)
                     info += "\r\n" + (DebugModeManager.EnableTOHkDebugMode.OptionMeGetBool() ? "<#0066de>DebugMode</color>" : ColorString(Color.green, "デバッグモード"));
                 else at += "\r\n";
-
-                info += "</size>";
-                n = "<size=120%><line-height=-1450%>\n\r<b></line-height>" + name + "\n<line-height=-100%>" + info.RemoveText() + at + $"<line-height=-1400%>\r\n<size=120%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}<size=120%></line-height>{info}{at}</b><size=0>　";
+                info += "</size>";*/
+                //n = "<size=120%><line-height=-1450%>\n\r<b></line-height>" + name + "\n<line-height=-100%>" + info.RemoveText() + at + $"<line-height=-1400%>\r\n{name}<size=120%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}<size=120%></line-height>{info}{at}</b><size=0>　";
+                n = "<line-height=-100%>\n<b></line-height>" + name + $"\n<line-height=-200%>\n<size=60%><line-height=0%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}</size><line-height=100%>\n<size=0> ";
                 if (force)
                     PlayerCatch.AllPlayerControls.DoIf(x => x.name != "Player(Clone)" && x.PlayerId != PlayerControl.LocalPlayer.PlayerId && !x.IsModClient(), x => PlayerControl.LocalPlayer.RpcSetNamePrivate(n, true, x, true));
                 else if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)
@@ -795,6 +795,7 @@ namespace TownOfHost
         [GameModuleInitializer]
         public static void Init()
         {
+            GameDataSerializePatch.DontTouch = false;
             Camouflage.ventplayr.Clear();
             PlayerCatch.OldAlivePlayerControles.Clear();
             ReportDeadBodyPatch.DontReport.Clear();

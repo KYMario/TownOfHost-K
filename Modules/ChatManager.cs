@@ -368,7 +368,6 @@ namespace TownOfHost.Modules.ChatManager
                 {
                     int seerclientid = seer.GetClientId();
                     string playername = seer.GetRealName(isMeeting: true);
-                    playername = playername.ApplyNameColorData(seer, seer, true);
                     if (!GameStates.IsMeeting && Main.LastNotifyNames.TryGetValue((seer.PlayerId, seer.PlayerId), out var lastname))
                     {
                         playername = lastname;
@@ -389,6 +388,7 @@ namespace TownOfHost.Modules.ChatManager
                     .EndRpc();
                     Nwriter.EndMessage();
                     Nwriter.SendMessage();
+
                 }
                 chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
             }
@@ -446,6 +446,14 @@ namespace TownOfHost.Modules.ChatManager
             {
                 chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
             }
+            if (Main.MessagesToSend.Count < 1)
+                _ = new LateTask(() =>
+                {
+                    if (senderplayer.Data.PlayerName != name)
+                    {
+                        senderplayer.RpcSetName(name);
+                    }
+                }, 0.25f, "checkname", true);
         }
         public static void OnDisconnectOrDeadPlayer(byte id)
         {

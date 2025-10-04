@@ -190,7 +190,7 @@ public sealed class Madonna : RoleBase
             MyState.SetDead();
             MyState.DeathReason = CustomDeathReason.Suicide;
             ReportDeadBodyPatch.IgnoreBodyids[Player.PlayerId] = false;
-            UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("log.AM"), UtilsName.GetPlayerColor(PlayerCatch.GetPlayerById(Player.PlayerId)), UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)));
+            UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("log.AM"), UtilsName.GetPlayerColor(PlayerCatch.GetPlayerById(Player.PlayerId))));
             Logger.Info($"{Player.GetNameWithRole().RemoveHtmlTags()}は指定ターン経過したため自殺。", "Madonna");
         }
     }

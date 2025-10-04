@@ -89,8 +89,7 @@ class Penguin : RoleBase, IImpostor
         CheckMurderPatch.TimeSinceLastKill[Player.PlayerId] = 0f;
         AbductVictim = target;
         AbductTimer = AbductTimerLimit;
-        Player.SyncSettings();
-        Player.RpcResetAbilityCooldown();
+        Player.RpcResetAbilityCooldown(Sync: true);
         SendRPC();
     }
     void RemoveVictim()
@@ -102,8 +101,7 @@ class Penguin : RoleBase, IImpostor
         }
         MyState.CanUseMovingPlatform = true;
         AbductTimer = 255f;
-        Player.SyncSettings();
-        Player.RpcResetAbilityCooldown();
+        Player.RpcResetAbilityCooldown(Sync: true);
         SendRPC();
     }
     public void OnCheckMurderAsKiller(MurderInfo info)
@@ -265,7 +263,7 @@ class Penguin : RoleBase, IImpostor
         else if (AbductTimer <= 100f)
         {
             AbductTimer = 255f;
-            Player.RpcResetAbilityCooldown();
+            Player.RpcResetAbilityCooldown(Sync: true);
         }
     }
 }

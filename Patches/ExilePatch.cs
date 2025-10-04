@@ -158,6 +158,23 @@ namespace TownOfHost
                     {
                         exiled.Object.RpcExileV2();
                     }
+
+                    if (Options.ExAftermeetingflash.GetBool())
+                        Utils.AllPlayerKillFlash();
+
+                    if (Main.NormalOptions.MapId is not 4 || AntiBlackout.OverrideExiledPlayer())
+                    {
+                        PlayerCatch.AllPlayerControls.Do(pc =>
+                        {
+                            AntiBlackout.ResetSetRole(pc);
+                        });
+                    }
+
+                    GameStates.task = true;
+                    Logger.Info("タスクフェイズ開始", "Phase");
+                }, 0.52f, "AfterMeetingDeathPlayers Task");
+                _ = new LateTask(() =>
+                {
                     Main.AfterMeetingDeathPlayers.Do(x =>
                     {
                         var player = PlayerCatch.GetPlayerById(x.Key);
@@ -176,21 +193,7 @@ namespace TownOfHost
                             Executioner.ChangeRoleByTarget(x.Key);
                     });
                     Main.AfterMeetingDeathPlayers.Clear();
-
-                    if (Options.ExAftermeetingflash.GetBool())
-                        Utils.AllPlayerKillFlash();
-
-                    if (Main.NormalOptions.MapId is not 4 || AntiBlackout.OverrideExiledPlayer())
-                    {
-                        PlayerCatch.AllPlayerControls.Do(pc =>
-                        {
-                            AntiBlackout.ResetSetRole(pc);
-                        });
-                    }
-
-                    GameStates.task = true;
-                    Logger.Info("タスクフェイズ開始", "Phase");
-                }, 0.52f, "AfterMeetingDeathPlayers Task");
+                }, 0.6f, "AfterMeetingDeathPlayer", null);
             }
             if (Main.NormalOptions.MapId is 4 && !AntiBlackout.OverrideExiledPlayer())
             {

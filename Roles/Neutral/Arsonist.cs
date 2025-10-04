@@ -319,6 +319,9 @@ public sealed class Arsonist : RoleBase, IKiller, IUsePhantomButton
             {
                 CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
             }
+            return;
         }
+        ResetCooldown = true;
+        AdjustKillCooldown = true;
     }
 }

@@ -102,6 +102,8 @@ namespace TownOfHost
                             del.Add(release);
                             continue;
                         }
+                        //動かないバージョンに切り替えれないようにするための応急手当。.31になる頃には消す。
+                        if (tag.Contains(".30.1") || tag.Contains(".30.21") || tag.Contains(".30.22") || tag is "51.13.30") continue;//そのバージョンの奴じゃないなら除外
                         foreach (var asset in assets)
                         {
                             if (asset.Name == "TownOfHost-K_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)

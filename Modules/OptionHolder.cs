@@ -24,6 +24,7 @@ namespace TownOfHost
     public static class Options
     {
         //static Task taskOptionsLoad;
+        public static bool LoadError;
         [HarmonyPatch(typeof(TranslationController), nameof(TranslationController.Initialize)), HarmonyPostfix]
         public static void OptionsLoadStart(TranslationController __instance)
         {
@@ -37,7 +38,16 @@ namespace TownOfHost
             Main.DebugChatopen.Value  =false;
 #endif
             //taskOptionsLoad = Task.Run(Load);
-            Load();
+            try
+            {
+                Load();
+                LoadError = false;
+            }
+            catch (Exception ex)
+            {
+                LoadError = true;
+                Logger.Exception(ex, "Options");
+            }
         }
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix]
         public static void WaitOptionsLoad()
@@ -127,7 +137,7 @@ namespace TownOfHost
         public static OptionItem ExAftermeetingflash;
         public static OptionItem ExHideChatCommand;
         public static OptionItem FixSpawnPacketSize;
-        public static OptionItem ExIntroWeight;
+        public static OptionItem ExOldIntroSystem;
         public static OptionItem ExRpcWeightR;
         public static OptionItem ExCallMeetingBlackout;
 
@@ -612,10 +622,6 @@ namespace TownOfHost
                 .SetColor(new Color32(255, 255, 0, 255))
                 .SetGameMode(CustomGameMode.All)
                 .SetInfo(Translator.GetString("FixSpawnPacketSizeInfo"));
-            ExIntroWeight = BooleanOptionItem.Create(105011, "ExIntroWeight", false, TabGroup.MainSettings, false)
-                .SetColor(new Color32(byte.MaxValue, byte.MaxValue, 0, byte.MaxValue))
-                .SetGameMode(CustomGameMode.All)
-                .SetInfo(Translator.GetString("ExIntroWeightInfo"));
 
             // Impostor
             CreateRoleOption(sortedRoleInfo, CustomRoleTypes.Impostor);
@@ -1221,6 +1227,11 @@ namespace TownOfHost
             UseZoom = BooleanOptionItem.Create(1_000_008, "UseZoom", true, TabGroup.MainSettings, false)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#9199a1");
+            ExOldIntroSystem = BooleanOptionItem.Create(105014, "ExOldIntroSystem", false, TabGroup.MainSettings, false)
+                .SetColor(new Color32(0, byte.MaxValue, 100, byte.MaxValue))
+                .SetHeader(true)
+                .SetGameMode(CustomGameMode.All)
+                .SetInfo($"<#ff1919>{Translator.GetString("ExOldIntroSystemInfo")}</color>");
 
             ApplyDenyNameList = BooleanOptionItem.Create(1_000_100, "ApplyDenyNameList", true, TabGroup.MainSettings, true)
                 .SetHeader(true)
@@ -1282,11 +1293,13 @@ namespace TownOfHost
                     case CustomRoles.Impostor: id = 10; break;
                     case CustomRoles.Shapeshifter: id = 30; break;
                     case CustomRoles.Phantom: id = 40; break;
+                    case CustomRoles.Viper: id = 23050; break;
                     case CustomRoles.Crewmate: id = 11; break;
                     case CustomRoles.Engineer: id = 200; break;
                     case CustomRoles.Scientist: id = 250; break;
                     case CustomRoles.Tracker: id = 300; break;
                     case CustomRoles.Noisemaker: id = 350; break;
+                    case CustomRoles.Detective: id = 23100; break;
                 }
             }
             assignCountRule ??= new(1, 15, 1);

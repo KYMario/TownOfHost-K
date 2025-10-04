@@ -74,6 +74,7 @@ namespace TownOfHost
         public static Dictionary<byte, string> LastLogRole = new();
         public static Dictionary<byte, string> LastLogPro = new();
         public static Dictionary<byte, string> LastLogSubRole = new();
+        public static Dictionary<byte, string> LastLogLoveRole = new();
         public static string GetLogtext(byte pc)
         {
             var longestNameByteCount = Main.AllPlayerNames?.Values?.Select(name => name.GetByteCount())?.OrderByDescending(byteCount => byteCount)?.FirstOrDefault() ?? 10;
@@ -85,7 +86,7 @@ namespace TownOfHost
             var pro = LastLogPro.TryGetValue(pc, out var prog) ? prog : "(????)";
             var role = LastLogRole.TryGetValue(pc, out var rolelog) ? rolelog : "??????";
             var addon = "??";
-            addon = LastLogSubRole.TryGetValue(pc, out var m) ? m : GetSubRolesText(pc, mark: true);
+            addon = LastLogLoveRole.TryGetValue(pc, out var m) ? m : "";// : GetSubRolesText(pc, mark: true);
 
             return name + pro + " : " + GetVitalText(pc, true) + " " + role + addon;
         }
@@ -319,18 +320,34 @@ namespace TownOfHost
 
             foreach (var pc in cloneRoles) if (GetPlayerById(pc) == null) continue;
 
+            var count = 0;
             foreach (var id in Main.winnerList)
             {
                 sb.Append($"\n★ ".Color(winnerColor)).Append(GetLogtext(id));
                 cloneRoles.Remove(id);
+                CheckMeg();
+                count++;
             }
             foreach (var id in cloneRoles)
             {
                 sb.Append($"\n　 ").Append(GetLogtext(id));
+                CheckMeg();
+                count++;
             }
             sb.Append("</color>   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             sb.Append(string.Format(GetString("Result.Task"), Main.Alltask));
             SendMessage(sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
+
+            void CheckMeg()
+            {
+                if (sb.Length > 700 && PlayerState.AllPlayerStates.Keys.Count() / 1.8f < count)
+                {
+                    count = 0;
+                    SendMessage(sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
+                    sb.Clear();
+                    sb.Append("<size=65%>");
+                }
+            }
         }
         public static void ShowLastWins(byte PlayerId = byte.MaxValue)
         {
@@ -372,7 +389,7 @@ namespace TownOfHost
                     break;
                 }
 
-                if (mes.Length > 700 && log.Key < day)
+                if (mes.Length > 500 && log.Key < day)
                 {
                     SendMessage(mes.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
                     mes = mes.Clear();

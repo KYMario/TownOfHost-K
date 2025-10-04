@@ -152,7 +152,7 @@ public sealed class Puppeteer : RoleBase, IImpostor
 
             var min = targetDistance.OrderBy(c => c.Value).FirstOrDefault();//一番値が小さい
             var target = min.Key;
-            var KillRange = NormalGameOptionsV09.KillDistances[Mathf.Clamp(PuppetKillDis.GetValue(), 0, 2)];
+            var KillRange = NormalGameOptionsV10.KillDistances[Mathf.Clamp(PuppetKillDis.GetValue(), 0, 2)];
             if (min.Value <= KillRange && puppet.CanMove && target.CanMove)
             {
                 PuppetCooltime.Remove(puppet.PlayerId);

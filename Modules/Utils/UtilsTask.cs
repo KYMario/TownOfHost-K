@@ -75,6 +75,7 @@ namespace TownOfHost
                                         case RoleTypes.Scientist:
                                         case RoleTypes.Noisemaker:
                                         case RoleTypes.Tracker:
+                                        case RoleTypes.Detective:
                                             ch = true;
                                             break;
                                     }

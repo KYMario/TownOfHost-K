@@ -35,6 +35,7 @@ namespace TownOfHost
                 roleCommands.Add((CustomRoles)(-1), $"【=== {GetString("Impostor")} ===】");  // 区切り用
                 roleCommands.Add(CustomRoles.Shapeshifter, "She");
                 //roleCommands.Add(CustomRoles.Phantom, "Pha");//アプデ対応用 仮
+                roleCommands.Add(CustomRoles.Viper, "vi");
                 ConcatCommands(CustomRoleTypes.Impostor);
 
                 // Madmate役職
@@ -48,6 +49,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.Scientist, "Sci");
                 roleCommands.Add(CustomRoles.Tracker, "Trac");
                 roleCommands.Add(CustomRoles.Noisemaker, "Nem");//アプデ対応用 仮
+                roleCommands.Add(CustomRoles.Detective, "Det");
 
                 ConcatCommands(CustomRoleTypes.Crewmate);
 
@@ -120,99 +122,102 @@ namespace TownOfHost
 
             var msg = "";
             var rolemsg = $"{GetString("Command.h_args")}";
-            switch (role)
+            if (Main.DebugVersion is false)//デバッグバージョンなら役職一覧表示させへん。
             {
-                case "i":
-                case "I":
-                case "imp":
-                case "インポスター":
-                case "impostor":
-                case "impostors":
-                case "インポス":
-                    rolemsg = $"{GetString("h_r_impostor").Color(Palette.ImpostorRed)}</u><size=50%>";
-                    foreach (var im in roleCommands.Where(r => r.Key.IsImpostor()))
-                    {
-                        if (!Event.CheckRole(im.Key)) continue;
-                        rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
-                    }
-                    if (player == byte.MaxValue) player = 0;
-                    SendMessage(rolemsg, player);
-                    return;
-                case "c":
-                case "C":
-                case "crew":
-                case "crewmate":
-                case "クルー":
-                case "クルーメイト":
-                    rolemsg = $"{GetString("h_r_crew").Color(Color.blue)}</u><size=50%>";
-                    foreach (var im in roleCommands.Where(r => r.Key.IsCrewmate()))
-                    {
-                        if (!Event.CheckRole(im.Key)) continue;
-                        rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
-                    }
-                    if (player == byte.MaxValue) player = 0;
-                    SendMessage(rolemsg, player);
-                    return;
-                case "n":
-                case "N":
-                case "Neu":
-                case "Neutral":
-                case "第三":
-                case "第三陣営":
-                case "ニュートラル":
-                    rolemsg = $"{GetString("h_r_Neutral").Color(Palette.DisabledGrey)}</u><size=50%>";
-                    foreach (var im in roleCommands.Where(r => r.Key.IsNeutral()))
-                    {
-                        if (!Event.CheckRole(im.Key)) continue;
-                        rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
-                    }
-                    if (player == byte.MaxValue) player = 0;
-                    SendMessage(rolemsg, player);
-                    return;
-                case "m":
-                case "Mad":
-                case "マッド":
-                case "狂人":
-                case "M":
-                    rolemsg = $"{GetString("h_r_MadMate").Color(ModColors.MadMateOrenge)}</u><size=50%>";
-                    foreach (var im in roleCommands.Where(r => r.Key.IsMadmate()))
-                    {
-                        if (!Event.CheckRole(im.Key)) continue;
-                        rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
-                    }
-                    if (player == byte.MaxValue) player = 0;
-                    SendMessage(rolemsg, player);
-                    return;
-                case "a":
-                case "A":
-                case "Addon":
-                case "アドオン":
-                case "属性":
-                case "モディフィア":
-                case "重複役職":
-                    rolemsg = $"{GetString("h_r_Addon").Color(ModColors.AddonsColor)}</u><size=50%>";
-                    foreach (var im in roleCommands.Where(r => r.Key.IsAddOn() || r.Key is CustomRoles.Amanojaku))
-                    {
-                        if (!Event.CheckRole(im.Key)) continue;
-                        rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
-                    }
-                    if (player == byte.MaxValue) player = 0;
-                    SendMessage(rolemsg, player);
-                    return;
-                case "g":
-                case "G":
-                case "Ghost":
-                case "幽霊":
-                case "幽霊役職":
-                    rolemsg = $"{GetString("h_r_GhostRole").Color(ModColors.GhostRoleColor)}</u><size=50%>";
-                    foreach (var im in roleCommands.Where(r => r.Key.IsGhostRole()))
-                    {
-                        if (!Event.CheckRole(im.Key)) continue;
-                        rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
-                    }
-                    if (player == byte.MaxValue) player = 0;
-                    SendMessage(rolemsg, player);
-                    return;
+                switch (role)
+                {
+                    case "i":
+                    case "I":
+                    case "imp":
+                    case "インポスター":
+                    case "impostor":
+                    case "impostors":
+                    case "インポス":
+                        rolemsg = $"{GetString("h_r_impostor").Color(Palette.ImpostorRed)}</u><size=50%>";
+                        foreach (var im in roleCommands.Where(r => r.Key.IsImpostor()))
+                        {
+                            if (!Event.CheckRole(im.Key)) continue;
+                            rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
+                        }
+                        if (player == byte.MaxValue) player = 0;
+                        SendMessage(rolemsg, player);
+                        return;
+                    case "c":
+                    case "C":
+                    case "crew":
+                    case "crewmate":
+                    case "クルー":
+                    case "クルーメイト":
+                        rolemsg = $"{GetString("h_r_crew").Color(Color.blue)}</u><size=50%>";
+                        foreach (var im in roleCommands.Where(r => r.Key.IsCrewmate()))
+                        {
+                            if (!Event.CheckRole(im.Key)) continue;
+                            rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
+                        }
+                        if (player == byte.MaxValue) player = 0;
+                        SendMessage(rolemsg, player);
+                        return;
+                    case "n":
+                    case "N":
+                    case "Neu":
+                    case "Neutral":
+                    case "第三":
+                    case "第三陣営":
+                    case "ニュートラル":
+                        rolemsg = $"{GetString("h_r_Neutral").Color(Palette.DisabledGrey)}</u><size=50%>";
+                        foreach (var im in roleCommands.Where(r => r.Key.IsNeutral()))
+                        {
+                            if (!Event.CheckRole(im.Key)) continue;
+                            rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
+                        }
+                        if (player == byte.MaxValue) player = 0;
+                        SendMessage(rolemsg, player);
+                        return;
+                    case "m":
+                    case "Mad":
+                    case "マッド":
+                    case "狂人":
+                    case "M":
+                        rolemsg = $"{GetString("h_r_MadMate").Color(ModColors.MadMateOrenge)}</u><size=50%>";
+                        foreach (var im in roleCommands.Where(r => r.Key.IsMadmate()))
+                        {
+                            if (!Event.CheckRole(im.Key)) continue;
+                            rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
+                        }
+                        if (player == byte.MaxValue) player = 0;
+                        SendMessage(rolemsg, player);
+                        return;
+                    case "a":
+                    case "A":
+                    case "Addon":
+                    case "アドオン":
+                    case "属性":
+                    case "モディフィア":
+                    case "重複役職":
+                        rolemsg = $"{GetString("h_r_Addon").Color(ModColors.AddonsColor)}</u><size=50%>";
+                        foreach (var im in roleCommands.Where(r => r.Key.IsAddOn() || r.Key is CustomRoles.Amanojaku))
+                        {
+                            if (!Event.CheckRole(im.Key)) continue;
+                            rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
+                        }
+                        if (player == byte.MaxValue) player = 0;
+                        SendMessage(rolemsg, player);
+                        return;
+                    case "g":
+                    case "G":
+                    case "Ghost":
+                    case "幽霊":
+                    case "幽霊役職":
+                        rolemsg = $"{GetString("h_r_GhostRole").Color(ModColors.GhostRoleColor)}</u><size=50%>";
+                        foreach (var im in roleCommands.Where(r => r.Key.IsGhostRole()))
+                        {
+                            if (!Event.CheckRole(im.Key)) continue;
+                            rolemsg += $"\n{GetString($"{im.Key}")}({im.Value})";
+                        }
+                        if (player == byte.MaxValue) player = 0;
+                        SendMessage(rolemsg, player);
+                        return;
+                }
             }
             foreach (var roledata in roleCommands)
             {
@@ -286,6 +291,7 @@ namespace TownOfHost
                 "魔女" or "ウィッチ" => GetString("Witch"),
                 "プロボウラー" or "プロボーラー" => GetString("ProBowler"),
                 "一途な狼" or "一途" or "いちず" => GetString("EarnestWolf"),
+                "ヴァイパー" or "バイパー" => GetString("Viper"),
 
                 //マッドメイト
                 "サイドキックマッドメイト" => GetString("SKMadmate"),

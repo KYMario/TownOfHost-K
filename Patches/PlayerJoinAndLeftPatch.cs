@@ -23,7 +23,7 @@ namespace TownOfHost
         {
             while (!Options.IsLoaded) System.Threading.Tasks.Task.Delay(1);
             if (Main.NormalOptions.NumImpostors == 0 && GameStates.IsOnlineGame)
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().SetInt(Int32OptionNames.NumImpostors, 1);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetInt(Int32OptionNames.NumImpostors, 1);
 
             ResolutionManager.SetResolution(Screen.width, Screen.height, Screen.fullScreen);
             Logger.Info($"{__instance.GameId}に参加", "OnGameJoined");
@@ -54,15 +54,17 @@ namespace TownOfHost
                 if (AURoleOptions.ShapeshifterCooldown == 0f)
                     AURoleOptions.ShapeshifterCooldown = Main.LastShapeshifterCooldown.Value;
 
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
-                Main.NormalOptions.roleOptions.TryGetRoleOptions(RoleTypes.GuardianAngel, out GuardianAngelRoleOptionsV09 roleData);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().SetBool(BoolOptionNames.ConfirmImpostor, false);
-                Main.NormalOptions.TryCast<NormalGameOptionsV09>().SetInt(Int32OptionNames.TaskBarMode, 2);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Scientist, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Engineer, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Tracker, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Noisemaker, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Shapeshifter, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Phantom, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().RoleOptions.SetRoleRate(RoleTypes.Viper, 0, 0);
+                Main.NormalOptions.roleOptions.TryGetRoleOptions(RoleTypes.GuardianAngel, out GuardianAngelRoleOptionsV10 roleData);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetBool(BoolOptionNames.ConfirmImpostor, false);
+                Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetInt(Int32OptionNames.TaskBarMode, 2);
                 if (Main.NormalOptions.MaxPlayers > 15)
                 {
                     Main.NormalOptions.SetInt(Int32OptionNames.MaxPlayers, 15);
@@ -214,7 +216,7 @@ namespace TownOfHost
             {
                 Logger.Warn($"正常に完了しなかった切断 - 名前:{(data == null || data.PlayerName == null ? "(不明)" : data.PlayerName)}, 理由:{reason}, ping:{AmongUsClient.Instance.Ping}, Platform:{data?.PlatformData?.Platform ?? Platforms.Unknown} , friendcode:{data?.FriendCode ?? "???"} , PuId:{data?.ProductUserId ?? "???"}", "Session");
                 ErrorText.Instance.AddError(AmongUsClient.Instance.GameState is InnerNetClient.GameStates.Started ? ErrorCode.OnPlayerLeftPostfixFailedInGame : ErrorCode.OnPlayerLeftPostfixFailedInLobby);
-                IsIntroError = GameStates.Intro && Options.ExIntroWeight.GetBool() is false;
+                IsIntroError = GameStates.Intro; //&& Options.ExOldIntroSystem.GetBool() is false;
             }
 
             void SetDisconnect(ClientData data)
