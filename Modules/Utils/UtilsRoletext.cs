@@ -494,7 +494,7 @@ namespace TownOfHost
             }
             return (text, color);
         }
-        public static string GetSubRolesText(byte id, bool disableColor = false, bool amkesu = false, bool mark = false)
+        public static string GetSubRolesText(byte id, bool disableColor = false, bool amkesu = false, bool mark = false, bool onlyaddon = false)
         {
             var state = PlayerState.GetByPlayerId(id);
             if (state == null) return "";
@@ -503,29 +503,35 @@ namespace TownOfHost
             var player = GetPlayerById(id);
             if (SubRoles.Count == 0) return "";
             var sb = new StringBuilder();
-            foreach (var role in SubRoles)
+            if (onlyaddon is false)
             {
-                if (role is CustomRoles.NotAssigned or
-                            CustomRoles.LastImpostor or
-                            CustomRoles.LastNeutral or
-                            CustomRoles.Amanojaku
-                ) continue;
-                if (role is CustomRoles.Amnesia && amkesu) continue;
-                if (role.IsAddOn() && mark) continue;
-                if (role.IsLovers() && mark) continue;
+                foreach (var role in SubRoles)
+                {
+                    if (role is CustomRoles.NotAssigned or
+                                CustomRoles.LastImpostor or
+                                CustomRoles.LastNeutral or
+                                CustomRoles.Amanojaku
+                    ) continue;
+                    if (role is CustomRoles.Amnesia && amkesu) continue;
+                    if (role.IsAddOn() && mark) continue;
+                    if (role.IsLovers() && mark) continue;
 
-                var RoleText = disableColor ? GetRoleName(role) : ColorString(GetRoleColor(role), GetRoleName(role));
-                sb.Append($"{ColorString(Color.gray, " + ")}{RoleText}");
+                    var RoleText = disableColor ? GetRoleName(role) : ColorString(GetRoleColor(role), GetRoleName(role));
+                    sb.Append($"{ColorString(Color.gray, " + ")}{RoleText}");
+                }
             }
             if (mark)
             {
-                var lover = player?.GetLoverRole();
-                if (lover?.IsLovers() ?? false)
+                if (onlyaddon is false)
                 {
-                    if (lover != CustomRoles.OneLove)
+                    var lover = player?.GetLoverRole();
+                    if (lover?.IsLovers() ?? false)
                     {
-                        sb.Append($"{ColorString(Color.gray, " + ")}");
-                        sb.Append(ColorString(GetRoleColor((CustomRoles)lover), "♥"));
+                        if (lover != CustomRoles.OneLove)
+                        {
+                            sb.Append($" + ");
+                            sb.Append(ColorString(GetRoleColor((CustomRoles)lover), "♥"));
+                        }
                     }
                 }
                 var Subrole = new List<CustomRoles>(state.SubRoles);
@@ -579,12 +585,10 @@ namespace TownOfHost
                             if (LastNeutral.GiveTiebreaker.GetBool()) Subrole.Add(CustomRoles.Tiebreaker);
                             if (LastNeutral.GiveWatching.GetBool()) Subrole.Add(CustomRoles.Watching);
                         }
-
                     }
                 var marks = GetSubRoleMarks(Subrole, PlayerState.GetByPlayerId(id).MainRole);
-                sb.Append(marks.RemoveHtmlTags() == "" ? "" : $"{ColorString(Color.gray, " + ")}{marks}");
+                sb.Append(marks.RemoveHtmlTags() == "" ? "" : $"{" + "}{marks}");
             }
-
             return sb.ToString();
         }
         public static string GetLoverRoleMark(byte id)
@@ -599,6 +603,24 @@ namespace TownOfHost
                     sb.Append($" + ");
                     sb.Append(ColorString(GetRoleColor((CustomRoles)lover), "♥"));
                 }
+            }
+            var state = id.GetPlayerState();
+            if (state is not null)
+            {
+                foreach (var subrole in state.SubRoles)
+                    switch (subrole)
+                    {
+                        case CustomRoles.Twins:
+                            sb.Append(GetRoleColorAndtext(CustomRoles.Twins));
+                            break;
+                        case CustomRoles.Faction:
+                            sb.Append(GetRoleColorAndtext(CustomRoles.Faction));
+                            break;
+                        case CustomRoles.OneWolf:
+                            sb.Append(GetRoleColorAndtext(CustomRoles.OneWolf));
+                            break;
+                    }
+                sb.Append(GetSubRolesText(id, mark: true, onlyaddon: true).RemoveColorTags().RemoveDeltext(" + ", ","));
             }
             return sb.ToString();
         }

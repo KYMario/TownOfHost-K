@@ -1,12 +1,14 @@
 using HarmonyLib;
+using UnityEngine;
 
 namespace TownOfHost.Patches
 {
     [HarmonyPatch(typeof(ChatBubble), nameof(ChatBubble.SetName))]
     class ChatBubbleSetNamePatch
     {
-        public static void Postfix(ChatBubble __instance)
+        public static void Postfix(ChatBubble __instance, ref Color color)
         {
+            color = Palette.White;
             if (GameStates.IsInGame)
             {
                 if (!__instance.playerInfo._object) return;
