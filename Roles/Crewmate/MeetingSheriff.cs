@@ -163,6 +163,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
             }
 
             MeetingVoteManager.ResetVoteManager(target.PlayerId);
+            Player.RpcMeetingKill(target);
             return;
         }
         Player.RpcExileV2();
@@ -187,6 +188,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
         }
 
         MeetingVoteManager.ResetVoteManager(Player.PlayerId);
+        Player.RpcMeetingKill(Player);
     }
     bool CanBeKilledBy(CustomRoles role)
     {

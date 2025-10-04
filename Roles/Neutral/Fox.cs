@@ -165,6 +165,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
                 Utils.SendMessage(string.Format(GetString("FoxTelldie"), UtilsName.GetPlayerColor(Player, true)), go.PlayerId, GetString("RMSKillTitle"));
             }
             MeetingVoteManager.ResetVoteManager(Player.PlayerId);
+            Player.RpcMeetingKill(Player);
         }
         return CustomRoles.NotAssigned;
     }

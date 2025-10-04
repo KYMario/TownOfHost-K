@@ -138,6 +138,11 @@ namespace TownOfHost
                 CustomRoles.InfoPoor
                 ;
         }
+        public static bool IsCombinationRole(this CustomRoles role) => role is
+        CustomRoles.Assassin or CustomRoles.Merlin or
+        CustomRoles.Driver or CustomRoles.Braid or
+        CustomRoles.Vega or CustomRoles.Altair or
+        CustomRoles.Fool or CustomRoles.Nue;
         public static bool IsCrewmate(this RoleTypes role) =>
             role is RoleTypes.Crewmate or RoleTypes.CrewmateGhost or
                     RoleTypes.Engineer or RoleTypes.GuardianAngel or

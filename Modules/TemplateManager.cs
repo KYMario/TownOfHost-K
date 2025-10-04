@@ -42,11 +42,13 @@ namespace TownOfHost
         [PluginModuleInitializer]
         public static void Init()
         {
+            if (Main.IsAndroid()) return;
             CreateIfNotExists();
         }
 
         public static void CreateIfNotExists()
         {
+            if (Main.IsAndroid()) return;
             if (!File.Exists(TEMPLATE_FILE_PATH))
             {
                 try

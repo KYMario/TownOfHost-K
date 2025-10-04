@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AmongUs.GameOptions;
 using HarmonyLib;
 using Hazel;
+using TownOfHost.Modules;
 using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
 using static TownOfHost.Translator;
@@ -27,7 +28,8 @@ namespace TownOfHost
         SyncYomiage,
         ModUnload,
         CustomRoleSync,
-        SetAntiTeleporterPosition
+        CustomSubRoleSync,
+        ShowMeetingKill
     }
     public enum Sounds
     {
@@ -183,7 +185,12 @@ namespace TownOfHost
                 case CustomRPC.CustomRoleSync:
                     CustomRoleManager.DispatchRpc(reader);
                     break;
-
+                case CustomRPC.CustomSubRoleSync:
+                    SubRoleRPCSender.DispatchRpc(reader);
+                    break;
+                case CustomRPC.ShowMeetingKill:
+                    MeetingVoteManager.ResetVoteManager(reader.ReadByte());
+                    break;
             }
         }
     }
@@ -240,6 +247,12 @@ namespace TownOfHost
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncRoomTimer, SendOption.None, -1);
             writer.Write($"{GameStartManagerPatch.GetTimer()}");
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+        public static void RpcShowMeetingKill(byte targetId)
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShowMeetingKill, SendOption.None, -1);
+            writer.Write(targetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
         public static void SendDeathReason(byte playerId, CustomDeathReason deathReason)
@@ -395,7 +408,7 @@ namespace TownOfHost
             foreach (var player in GameData.Instance.AllPlayers)
             {
                 // データを分割して送信
-                if (writer.Length > 750)
+                if (writer.Length > 400)
                 {
                     writer.EndMessage();
                     AmongUsClient.Instance.SendOrDisconnect(writer);

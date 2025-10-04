@@ -60,7 +60,7 @@ class PresetMenu
             foreach (var option in Options.CustomRoleSpawnChances)
             {
                 var role = option.Key;
-                if (role is CustomRoles.NotAssigned or CustomRoles.Assassin) continue;
+                if (role is CustomRoles.NotAssigned) continue;
                 if (Event.CheckRole(role) is false) continue;
                 if (role.IsImpostor() || role.IsCrewmate() || role.IsMadmate() || role.IsNeutral())
                 {

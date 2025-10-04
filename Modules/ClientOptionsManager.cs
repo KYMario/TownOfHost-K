@@ -23,6 +23,7 @@ namespace TownOfHost
 
         public static void CreateIfNotExists()
         {
+            if (Main.IsAndroid()) return;
             if (!File.Exists(OPTIONS_FILE_PATH))
             {
                 try

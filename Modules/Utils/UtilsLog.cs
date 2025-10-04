@@ -32,6 +32,7 @@ namespace TownOfHost
         }
         public static void DumpLog()
         {
+            if (Main.IsAndroid()) return;
             var logs = GetLogFolder();
             var filename = CopyLog(logs.FullName);
             OpenDirectory(filename);
@@ -40,6 +41,7 @@ namespace TownOfHost
         }
         public static void SaveNowLog()
         {
+            if (Main.IsAndroid()) return;
             var logs = GetLogFolder(true);
             // 3日以上前のログを削除 /* 元は7だけど、7も保存しててもなので...*/
             logs.EnumerateFiles().Where(f => f.CreationTime < DateTime.Now.AddDays(-3)).ToList().ForEach(f => f.Delete());
@@ -47,6 +49,7 @@ namespace TownOfHost
         }
         public static string CopyLog(string path)
         {
+            if (Main.IsAndroid()) return "";
             string t = DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss");
             string subver = CredentialsPatch.Subver.RemoveHtmlTags();
             if (subver != "") subver = $"({subver})";
@@ -57,6 +60,7 @@ namespace TownOfHost
         }
         public static void OpenLogFolder()
         {
+            if (Main.IsAndroid()) return;
             var logs = GetLogFolder(true);
             OpenDirectory(logs.FullName);
         }

@@ -508,6 +508,7 @@ namespace TownOfHost
         None,
         AssassinandMerlin,
         DriverandBraid,
+        FoolandNue,
         VegaandAltair
     }
 }

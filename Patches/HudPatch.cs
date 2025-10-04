@@ -595,7 +595,7 @@ namespace TownOfHost
             {
                 var text = "";
                 var desc = "";
-                var inforole = GameSettingMenuStartPatch.NowRoleTab is CustomRoles.NotAssigned ? GameSettingMenuStartPatch.Nowinfo : GameSettingMenuStartPatch.NowRoleTab;
+                var inforole = GameSettingMenuStartPatch.NowRoleTab is CustomRoles.NotAssigned || GameSettingMenuStartPatch.NowRoleTab.IsCombinationRole() ? GameSettingMenuStartPatch.Nowinfo : GameSettingMenuStartPatch.NowRoleTab;
                 var inforoleinfo = inforole.GetRoleInfo();
 
                 text = $"<size=150%><{UtilsRoleText.GetRoleColorCode(inforole)}>{UtilsRoleText.GetRoleName(inforole)}\n</size>";

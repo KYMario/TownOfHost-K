@@ -89,6 +89,7 @@
 "MadSuicide","MadSuicide","マッドスーサイド"
 "MadBetrayer","MadBetrayer","マッドベトレイヤー"
 "Betrayer","Betrayer","ベトレイヤー"
+"Nue","Nue","鵺"
 "#MadmateName"
 
 "# 特殊クルー役職"
@@ -187,6 +188,7 @@
 "Turncoat","Turncoat","裏切者"
 "Strawdoll","Strawdoll","藁人形"
 "Missioneer","Missioneer","ミッショナー"
+"Fool","Fool","愚か者"
 "#NeutralName"
 
 "#コンビネーション役職"
@@ -200,7 +202,8 @@
 "Faction","Faction","徒党"
 "Vega","Vega","織姫"
 "Altair","Altair","彦星"
-"VegaandAltair","Vega And Altair","織姫</color>と<color=#b0c4de>彦星</color>"
+"VegaandAltair","Vega And Altair","織姫</color>と<#b0c4de>彦星</color>"
+"FoolandNue","FoolandNue","<#8b6d61>愚か者</color>と<#be7c35>鵺</color>"
 
 "# HideAndSeek"
 "HASFox","Fox","狐","狐狸","狐妖","Лис","Raposa","Raposa"
@@ -369,6 +372,7 @@
 "MadChangerInfo","We've switched!?","僕達...入れ替わってる...!?"
 "MadSuicideInfo","For the Impostor...","ご主人様の為なら..."
 "MadBetrayerInfo","To suit one's own convenience","ご主人は我の手駒"
+"NueInfo","Possess me to Impostor","あの愚図を見つけ出し、吸収せよ"
 "#MadmateInfo"
 
 "# 特殊クルー役職"
@@ -475,6 +479,7 @@
 "AltairInfo","Let's make this ship a shooting star","この船を流れ星にしよう"
 "StrawdollInfo","Use him as a substitute","アイツを身代わりに"
 "MissioneerInfo","Mission is impossible","課題をこなせ"
+"FoolInfo","Great power demands great justice","大いなる力は大いなる正義のために"
 "#NeutralInfo"
 
 "# HideAndSeek"
@@ -611,6 +616,7 @@
 "BraidInfoLong","Combination role with <#ff1919>driver</color>. \n they are on the side of the imposter. \n imposter and \n cannot recognize each other. \n itself completes a certain number of tasks, \n <#ff1919>driver</color> is given various abilities. will be granted to the \n <#ff1919>driver</color>.","<#ff1919>ドライバー</color>とのコンビネーション役職。\n\nクルーだがインポスターの味方をする。\nインポスターと互いに認識できない。\n自身が一定数タスクを完了させると\n<#ff1919>ドライバー</color>に様々な能力が付与される。"
 "MadSuicideInfoLong","You are a crewmate, but you act as the impostors\n You have two suicide ability.","クルーだがインポスターの味方をする。\nインポスターと互いに認識できない。\n2つの自決能力を持つマッドメイト。\nキルボタンを使用することでシェリフ誤爆のように自決する。\n※他視点からはキルターゲットに殺されるがONの場合は、\n　キルターゲットからは自爆、\n　他視点からはキルターゲットがキルしたように見える。\n\nワンクリックボタンを使用することでその場で自決する。"
 "MadBetrayerInfoLong","","クルーだがインポスターの味方をする。\n全てのタスクを完了させるとインポスターをキルできる能力を持つ。\n\nインポスターをキルすると、役職がベトレイヤーに変化し、全員を殺すことができるようになる。\nベトレイヤーになると勝利条件が\n「有害なキル役職が死亡しており、生き残っているベトレイヤーの人数がクルーと同じかそれ以上」に変化する。"
+"NueInfoLong","","<#8b6d61>愚か者</color>とのコンビネーション役職。\n\nクルーだがインポスターの味方をする。\n鵺(ぬえ)は一定数タスクを完了させ、会議で自投票することで推測モードになる\n推測モード中に愚か者に投票することで、愚か者が死亡する\n死亡後、会議が即座に終了し、鵺に自爆特攻能力が解放される。\n推測に失敗すると自身が死亡する。\n\n自爆特攻が解放されると、キルを行った後、一定時間後に自身が自殺する。"
 "#MadmateInfoLong"
 
 "# 特殊クルー役職"
@@ -704,6 +710,7 @@
 "AltairInfoLong","","<color=#f1d9d9>織姫</color>とのコンビネーション役職。\n\n織姫のために船を沈めようとする彦星。\nキルボタンを持ちベントを使える。\n織姫と合流し逢い引きする事で様々なバフ属性を貰える。\nまた、逢い引き回数に応じてキルクール短縮、キル可能役職がわかる等の強化が施される。"
 "StrawdollInfoLong","","変身した状態で設定回数キルを身代わりさせれば勝利。\n\nキルボタンでターゲットを指定し、ファントムボタンを押すことでターゲットに変身することができる。\n変身した状態でターゲットと近付くと自身が死亡する。\nターゲットが生存かつ変身中にキルされるとキルを防ぎ、ターゲットが代わりに死亡する\nその後、変身が解除され、発動地点にテレポートする。"
 "MissioneerInfoLong","","毎ターン複数から一つのミッションを選ぶことができる。\n\nミッションをこなすと「レベル + カテゴリ」の設定合計ポイントを入手できる。\nミッションは再設定するまで変更されない。\n\n一定ポイントに達すると勝利。"
+"FoolInfoLong","","<#be7c35>鵺(ぬえ)</color>とのコンビネーション役職。\n\n・キル可能役職を1度キルし,クルーが勝利\n・設定有効かつ,自身が生存した状態でクルーが勝利\nのどちらかの条件を満たすと追加勝利。\n体がインポスターになってしまいキル、ベントが解放されたニュートラル\n\n鵺に推測されると死亡し、鵺が自爆特攻能力を持つようになってしまう。\n占い結果がインポスターになる。"
 "#NeutralInfoLong"
 
 "# ImpostorDescInfos"
@@ -1648,6 +1655,10 @@
 "BraidCanSeeDriver","Braid can see Driver","ブレイドがドライバーを視認できる"
 "DriverTaskTrigger","TaskTrigger","効果を発動するタスク数(ブレイド)"
 "BraidCanVent","CanVent (Braid)","ベントを使える(ブレイド)"
+"FoolIsTellResultImpostor","Tell result is Impostor","占い結果をインポスターにする"
+"FoolAlivetoWin","FoolAlivetoWin","生存した状態でも勝利できる"
+"FoolAndNueCanUseVotecount","can guess task count","推測できるタスク数"
+"NueSuicidetimer","Suicide timer","キル後、自殺するまでの時間"
 
 "## 属性設定"
 "AssignOnlyTo%role%","Assign Only To %role%","%role%のみに割り当てる","只赋予%role%","","Назначить только для %role%","Atribuir Apenas a %role%",""
@@ -1820,6 +1831,7 @@
 "Mode.ConnectSaver","Connect Mode","<#ff1919>コネクト</color>モード"
 "Mode.AlienUetuke"," Mode","<#ff1919>植え付け</color>モード"
 "Mode.Dictator","Dictator","<#df9b00>独裁</color>モード"
+"Mode.Guess","Guess Mode","<#be7c35>推測</color>モード"
 
 "Mode.CrewSatellite","Search Mode","<#00e1ff>探知</color>モード","","","","",""
 
@@ -1832,6 +1844,7 @@
 "Vote.Madonna","Vote→Confession","誰かに投票→告白"
 "Vote.Dictator","Vote → DictatorAbility","誰かに投票 → その人を追放"
 "Vote.AlienUetuke","Vote(for Impostor) → Precision","仲間のインポスターに投票 → その人に能力を植え付け"
+"Vote.Nue","Vote → Guess Fool.\n\nif guessed fool , you get kill and suicide ability.","投票 → 愚か者を推測\n\n愚か者を推測すると、\n誰か一人をキルした後に自殺する能力が解放されます。"
 
 "Vote.CrewSatellite","Vote→","投票 → 対象がいた部屋を1つ表示","","","","",""
 
@@ -1970,6 +1983,8 @@
 "Rgobaku","Oy... \nLooks like {0} tried to ghettoize {1} with {2} and misfired...","ん...?\n{0}は{1}を{2}でゲスしようとして誤爆したようだね..."
 "MMeetingKill","{0} => {1}","{0}が{1}に対してシェリフ凸したんだってさ。見事に成功したようだよ"
 "MMeetingKillfall","{0} => {1}","{0}が{1}に対してシェリフ凸したんだってさ。残念ながら誤爆したようだね"
+"NunGuess","{0} => {1}","{0}が{1}を愚か者だと思って魂を吸収してみたらしい。\n吸収に成功して新たな力を手に入れたようだ。"
+"NunGuessFall","{0} => {1}","{0}が{1}を愚か者だと思って魂を吸収してみたらしい。\n吸収に失敗して死んじゃったようだけド。"
 "MassMediaChance","Vote for the murderer of <#512513>★</color>","<#512513>★</color>を殺した犯人に投票せよ"
 "MadAvengerCo","{0} is NeutralKiller.","マッドアベンジャーが{0}を推測した。\n革命に一歩近づいた。"
 "MadAvengerDie","{0} fall.","マッドアベンジャーが{0}を推測した。\n残念だったな。"

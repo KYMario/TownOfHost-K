@@ -768,6 +768,7 @@ public enum CustomRoles
     MadSuicide,
     //DEBUG only Madmate
     MadBetrayer,
+    Nue,
     //Crewmate(Vanilla)
     Engineer,
     Scientist,
@@ -826,9 +827,7 @@ public enum CustomRoles
     AllArounder,
     Observer,
     //DEBUG only Crewmate
-    //DEBUG only Crewmate
     Satellite,
-    //DEBUG only Crewmate
     Merlin,
     //Neutral
     Arsonist,
@@ -867,6 +866,7 @@ public enum CustomRoles
     //DEBUG only Neutral.
     Missioneer,
     Strawdoll,
+    Fool,
     //HideAndSeek
     HASFox,
     HASTroll,

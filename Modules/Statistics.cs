@@ -15,6 +15,7 @@ namespace TownOfHost
         private static readonly string PATH = new($"{Application.persistentDataPath}/TownOfHost_K/Statistics.txt");
         public static void SetLogFolder()
         {
+            if (Main.IsAndroid()) return;
             try
             {
                 if (!Directory.Exists($"{Application.persistentDataPath}/TownOfHost_K"))
@@ -25,6 +26,7 @@ namespace TownOfHost
 
         public static void Save()
         {
+            if (Main.IsAndroid()) return;
             try
             {
                 SetLogFolder();
@@ -100,6 +102,7 @@ namespace TownOfHost
         }
         public static Statistics Load()
         {
+            if (Main.IsAndroid()) return null;
             try
             {
                 SetLogFolder();

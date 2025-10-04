@@ -15,6 +15,7 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Ghost;
+using TownOfHost.Patches;
 
 namespace TownOfHost
 {
@@ -225,10 +226,10 @@ namespace TownOfHost
                     var playerInfo = GameData.Instance.GetPlayerById(playerId);
                     // 蘇生
                     playerInfo.IsDead = false;
-                    // 送信
-                    playerInfo.MarkDirty();
-                    AmongUsClient.Instance.SendAllStreamedObjects();
                 }
+                GameDataSerializePatch.SerializeMessageCount++;
+                RPC.RpcSyncAllNetworkedPlayer();
+                GameDataSerializePatch.SerializeMessageCount--;
                 // ゲーム終了を確実に最後に届けるための遅延
                 yield return new WaitForSeconds(EndGameDelay);
             }
