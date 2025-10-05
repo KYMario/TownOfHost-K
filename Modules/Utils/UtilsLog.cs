@@ -329,29 +329,16 @@ namespace TownOfHost
             {
                 sb.Append($"\n★ ".Color(winnerColor)).Append(GetLogtext(id));
                 cloneRoles.Remove(id);
-                CheckMeg();
                 count++;
             }
             foreach (var id in cloneRoles)
             {
                 sb.Append($"\n　 ").Append(GetLogtext(id));
-                CheckMeg();
                 count++;
             }
             sb.Append("</color>   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             sb.Append(string.Format(GetString("Result.Task"), Main.Alltask));
-            SendMessage(sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
-
-            void CheckMeg()
-            {
-                if (sb.Length > 700 && PlayerState.AllPlayerStates.Keys.Count() / 1.8f < count)
-                {
-                    count = 0;
-                    SendMessage(sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId);
-                    sb.Clear();
-                    sb.Append("<size=65%>");
-                }
-            }
+            SendMessage(sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId, checkl: true);
         }
         public static void ShowLastWins(byte PlayerId = byte.MaxValue)
         {
