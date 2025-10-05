@@ -191,7 +191,7 @@ class ColorLovers
                 //生きていて死ぬ予定でなければスキップ
                 if (!loversPlayer.Data.IsDead && loversPlayer.PlayerId != deathId) continue;
 
-                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId;
+                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId);
                 IsLoversDead = true;
                 foreach (var partnerPlayer in LoverPlayer)
                 {
@@ -203,7 +203,7 @@ class ColorLovers
                     if (partnerPlayer.PlayerId != deathId && !partnerPlayer.Data.IsDead)
                     {
                         PlayerState.GetByPlayerId(partnerPlayer.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
-                        if (isExiled || GameStates.IsMeeting || AntiBlackout.IsSet || GameStates.ExiledAnimate)
+                        if (isExiled)
                         {
                             MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.FollowingSuicide, partnerPlayer.PlayerId);
                             ReportDeadBodyPatch.IgnoreBodyids[loversPlayer.PlayerId] = false;

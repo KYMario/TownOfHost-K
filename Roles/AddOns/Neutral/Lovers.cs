@@ -138,7 +138,7 @@ class Lovers
                 foreach (var loversPlayer in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.OneLove)))
                 {
                     if (!loversPlayer.Data.IsDead && loversPlayer.PlayerId != deathId) continue;
-                    isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId;
+                    isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId);
 
                     isOneLoveDead = true;
                     foreach (var partnerPlayer in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.OneLove)))
@@ -147,7 +147,7 @@ class Lovers
                         if (partnerPlayer.PlayerId != deathId && !partnerPlayer.Data.IsDead)
                         {
                             PlayerState.GetByPlayerId(partnerPlayer.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
-                            if (isExiled || GameStates.IsMeeting || AntiBlackout.IsSet)
+                            if (isExiled)
                             {
                                 MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.FollowingSuicide, partnerPlayer.PlayerId);
                                 ReportDeadBodyPatch.IgnoreBodyids[loversPlayer.PlayerId] = false;
@@ -168,7 +168,7 @@ class Lovers
                 if (my.PlayerId != deathId && !my.Data.IsDead)
                 {
                     PlayerState.GetByPlayerId(my.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
-                    if (isExiled || GameStates.IsMeeting || AntiBlackout.IsSet)
+                    if (isExiled)
                     {
                         MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.FollowingSuicide, my.PlayerId);
                         ReportDeadBodyPatch.IgnoreBodyids[my.PlayerId] = false;
@@ -186,8 +186,7 @@ class Lovers
             foreach (var MadonnaLoversPlayer in MaMadonnaLoversPlayers)
             {
                 if (!MadonnaLoversPlayer.Data.IsDead && MadonnaLoversPlayer.PlayerId != deathId) continue;
-
-                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == MadonnaLoversPlayer.PlayerId;
+                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == MadonnaLoversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(MadonnaLoversPlayer.PlayerId);
 
                 isMadonnaLoversDead = true;
                 foreach (var partnerPlayer in MaMadonnaLoversPlayers)
@@ -196,7 +195,7 @@ class Lovers
                     if (partnerPlayer.PlayerId != deathId && !partnerPlayer.Data.IsDead)
                     {
                         PlayerState.GetByPlayerId(partnerPlayer.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
-                        if (isExiled || GameStates.IsMeeting || AntiBlackout.IsSet)
+                        if (isExiled)
                         {
                             MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.FollowingSuicide, partnerPlayer.PlayerId);
                             ReportDeadBodyPatch.IgnoreBodyids[MadonnaLoversPlayer.PlayerId] = false;
