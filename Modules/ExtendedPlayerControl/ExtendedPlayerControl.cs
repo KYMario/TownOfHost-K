@@ -544,7 +544,7 @@ namespace TownOfHost
 
             if (Options.GhostIgnoreTasks.GetBool())
             {
-                if (Options.GhostIgnoreTasksplayer.GetInt() <= (PlayerCatch.AllAlivePlayersCount - 1))
+                if (Options.GhostIgnoreTasksplayer.GetInt() <= PlayerCatch.AllAlivePlayersCount)
                 {
                     Main.DisableTaskPlayerList.Add(target.PlayerId);
                 }

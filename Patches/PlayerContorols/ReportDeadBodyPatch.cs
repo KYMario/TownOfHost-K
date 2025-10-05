@@ -8,6 +8,7 @@ using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Neutral;
 using static TownOfHost.Roles.Core.RoleBase;
+using TownOfHost.Roles;
 
 namespace TownOfHost
 {
@@ -93,7 +94,7 @@ namespace TownOfHost
             {
                 var pc = PlayerCatch.GetPlayerById(kvp.Key);
                 kvp.Value.LastRoom = pc?.GetPlainShipRoom();
-                if (Options.ExCallMeetingBlackout.GetBool())
+                if (Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable())
                     kvp.Value.IsBlackOut = true;
             }
             UtilsOption.MarkEveryoneDirtySettings();
@@ -171,7 +172,7 @@ namespace TownOfHost
                     .SendMessage();
                 }, 0.2f, "Startmeeting", true);
                 Wait = false;
-            }, Options.ExCallMeetingBlackout.GetBool() ? 0.12f : 0, "StartMeeting", true);
+            }, Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable() ? 0.12f : 0, "StartMeeting", true);
 
             return false;
         }
@@ -219,7 +220,7 @@ namespace TownOfHost
             {
                 var pc = PlayerCatch.GetPlayerById(kvp.Key);
                 kvp.Value.LastRoom = pc?.GetPlainShipRoom();
-                if (Options.ExCallMeetingBlackout.GetBool())
+                if (Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable())
                     kvp.Value.IsBlackOut = true;
             }
 
@@ -303,7 +304,7 @@ namespace TownOfHost
                     .SendMessage();
                 }, 0.2f, "Startmeeting", true);
                 Wait = false;
-            }, Options.ExCallMeetingBlackout.GetBool() ? 0.12f : 0, "StartMeeting", true);
+            }, Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable() ? 0.12f : 0, "StartMeeting", true);
         }
         public static Dictionary<byte, (float time, DontReportreson reason)> DontReport = new();
         public static string GetDontReportMark(PlayerControl seer, PlayerControl seen, bool isForMeeting = false)
