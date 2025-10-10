@@ -33,6 +33,12 @@ namespace TownOfHost
         {
             //色変更バグ対策
             if (!AmongUsClient.Instance.AmHost || __instance.CurrentOutfit.ColorId == bodyColor || IsAntiGlitchDisabled) return true;
+            if (bodyColor < 0 && __instance.name is not "Player(Clone)")
+            {
+                Logger.Warn($"{__instance.Data.GetLogPlayerName()} => ColorError", "SetColor");
+                Logger.seeingame($"{__instance.name}のColorが存在しません!");
+                return false;
+            }
             if (AmongUsClient.Instance.IsGameStarted && Options.CurrentGameMode == CustomGameMode.HideAndSeek)
             {
                 //ゲーム中に色を変えた場合

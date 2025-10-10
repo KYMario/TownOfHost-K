@@ -42,6 +42,8 @@ namespace TownOfHost
             {
                 if (pc == null) continue;
                 Logger.Info($"FriendCore:{pc.FriendCode},Puid:{pc.GetClient()?.ProductUserId}", "Session");
+
+                OnPlayerJoinedPatch.checkjoin(pc.GetClient());
             }
             CustomSpawnManager.UpdateOptionName();
             if (AmongUsClient.Instance.AmHost) //以下、ホストのみ実行
@@ -109,6 +111,10 @@ namespace TownOfHost
     class OnPlayerJoinedPatch
     {
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
+        {
+            checkjoin(client);
+        }
+        public static void checkjoin(ClientData client)
         {
             Logger.Info($"{client.PlayerName}(ClientID:{client.Id})(FriendCode:{client?.FriendCode ?? "???"})(PuId:{client?.ProductUserId ?? "???"})が参加", "Session");
             if (AmongUsClient.Instance.AmHost && client.FriendCode == "" && Options.KickPlayerFriendCodeNotExist.GetBool() && !GameStates.IsLocalGame && !Main.IsCs() && !BanManager.CheckWhiteList(client?.FriendCode, client?.ProductUserId))
