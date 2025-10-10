@@ -264,10 +264,10 @@ namespace TownOfHost
             ExiledAnimate = false;
             canmusic = false;
         }
-        public static bool InGame = false;
-        public static bool IsOutro = false;
-        public static bool AlreadyDied = false;
-        public static bool IsModHost => PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == 0 && x.IsModClient());
+        public static bool InGame = false; //AllClient
+        public static bool IsOutro = false; //HostOnly
+        public static bool AlreadyDied = false; //AllClient
+        public static bool IsModHost => Main.playerVersion.ContainsKey(0);//PlayerControl.AllPlayerControls.ToArray().FirstOrDefault(x => x.PlayerId == 0 && x.IsModClient());
         public static bool IsLobby => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Joined;
         public static bool IsInGame => InGame;
         public static bool IsEnded => AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Ended;
@@ -276,15 +276,15 @@ namespace TownOfHost
         public static bool IsLocalGame => AmongUsClient.Instance.NetworkMode == NetworkModes.LocalGame;
         public static bool IsFreePlay => AmongUsClient.Instance.NetworkMode == NetworkModes.FreePlay;
         public static bool IsInTask => task;
-        public static bool CalledMeeting;
-        public static bool ExiledAnimate;
+        public static bool CalledMeeting; //HostOnly
+        public static bool ExiledAnimate; //HostOnly
         public static bool IsMeeting => InGame && MeetingHud.Instance;
         public static bool IsCountDown => GameStartManager.InstanceExists && GameStartManager.Instance.startState == GameStartManager.StartingStates.Countdown;
-        public static bool Intro;
-        public static bool AfterIntro;
-        public static bool task;
-        public static bool canmusic;
-        public static bool introDestroyed = false;
+        public static bool Intro; //AllClient
+        public static bool AfterIntro;  //AllClient
+        public static bool task; //AllClient
+        public static bool canmusic;  //AllClient
+        public static bool introDestroyed = false; //AllClient
     }
     public static class MeetingStates
     {
