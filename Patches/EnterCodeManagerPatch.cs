@@ -264,12 +264,12 @@ namespace TownOfHost
         {
             // if (!AmongUsClient.Instance.AmHost) return;
             backupPlatformName = __instance.PlatformName;
-            //__instance.PlatformName += EnterCodeManagerPatch.VersionTag;
+            __instance.PlatformName += EnterCodeManagerPatch.VersionTag;
         }
         private static void Postfix(PlatformSpecificData __instance)
         {
             //if (!AmongUsClient.Instance.AmHost) return;
-            // __instance.PlatformName = backupPlatformName;
+            __instance.PlatformName = backupPlatformName;
         }
     }
 }
