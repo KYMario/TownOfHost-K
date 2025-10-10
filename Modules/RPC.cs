@@ -388,7 +388,15 @@ namespace TownOfHost
             }
 
             HudManager.Instance.SetHudActive(true);
-            if (PlayerControl.LocalPlayer.PlayerId == targetId) RemoveDisableDevicesPatch.UpdateDisableDevices();
+            if (PlayerControl.LocalPlayer.PlayerId == targetId)
+            {
+                if (GameStates.AfterIntro && role < CustomRoles.NotAssigned)
+                {
+                    CustomButtonHud.BottonHud(true);
+                }
+
+                RemoveDisableDevicesPatch.UpdateDisableDevices();
+            }
         }
         public static void SyncLoversPlayers(CustomRoles lover)
         {
