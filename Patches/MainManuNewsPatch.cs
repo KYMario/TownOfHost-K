@@ -440,7 +440,7 @@ public class ModNewsHistory
                     Date = "2024-10-12T00:00:00Z"
                 };
                 AllModNews.Add(news);
-            }
+            }*/
             {
                 var news = new ModNews
                 {
@@ -482,7 +482,7 @@ public class ModNewsHistory
                     Date = "2024-10-31T00:00:00Z"
                 };
                 AllModNews.Add(news);
-            }
+            }/*
             {
                 var news = new ModNews
                 {
