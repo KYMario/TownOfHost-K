@@ -72,7 +72,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
 
     private static void SetUpOptionItem()
     {
-        optionKillCooldown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, new(2.5f, 180f, 2.5f), 30f, false)
+        optionKillCooldown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, new(2.5f, 180f, 0.5f), 30f, false)
                 .SetValueFormat(OptionFormat.Seconds);
         optionGatherCooldown = FloatOptionItem.Create(RoleInfo, 11, OptionName.CharismaStarGatherCooldown, new(2.5f, 180f, 2.5f), 30f, false)
         .SetValueFormat(OptionFormat.Seconds);
