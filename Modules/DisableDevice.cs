@@ -6,6 +6,7 @@ using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Ghost;
 using static TownOfHost.DisableDevice;
+using Hazel;
 
 namespace TownOfHost
 {
@@ -224,8 +225,16 @@ namespace TownOfHost
             {
                 if (p == pos)
                 {
+                    var oldgametimer = GameAdminTimer;
+                    var oldturntimer = TurnAdminTimer;
                     if (optTimeLimitDevices) GameAdminTimer += Time.fixedDeltaTime;
                     if (optTurnTimeLimitDevice) TurnAdminTimer += Time.fixedDeltaTime;
+
+                    if ((optTimeLimitAdmin <= GameAdminTimer && optTimeLimitAdmin > oldgametimer) ||
+                        (optTurnTimeLimitAdmin <= TurnAdminTimer && optTurnTimeLimitAdmin > oldturntimer))
+                    {//使用不可 && 前の奴が超えてないだとRpcを送る。
+                        SendMessage();
+                    }
                 }
                 else AdminPoss[pc.PlayerId] = pos;
             }
@@ -237,8 +246,16 @@ namespace TownOfHost
             {
                 if (p == pos)
                 {
+                    var oldgametimer = GameLogAndCamTimer;
+                    var oldturntimer = TurnLogAndCamTimer;
                     if (optTimeLimitDevices) GameLogAndCamTimer += Time.fixedDeltaTime;
                     if (optTurnTimeLimitDevice) TurnLogAndCamTimer += Time.fixedDeltaTime;
+
+                    if ((optTimeLimitCamAndLog <= GameLogAndCamTimer && optTimeLimitCamAndLog > oldgametimer) ||
+                        (optTurnTimeLimitCamAndLog <= TurnLogAndCamTimer && optTurnTimeLimitCamAndLog > oldturntimer))
+                    {
+                        SendMessage();
+                    }
                 }
                 else LogPoss[pc.PlayerId] = pos;
             }
@@ -250,8 +267,16 @@ namespace TownOfHost
             {
                 if (p == pos)
                 {
+                    var oldgametimer = GameVitalTimer;
+                    var oldturntimer = TurnVitalTimer;
                     if (optTimeLimitDevices) GameVitalTimer += Time.fixedDeltaTime;
                     if (optTurnTimeLimitDevice) TurnVitalTimer += Time.fixedDeltaTime;
+
+                    if ((optTimeLimitVital <= GameVitalTimer && optTimeLimitVital > oldgametimer) ||
+                        (optTurnTimeLimitVital <= TurnVitalTimer && optTurnTimeLimitVital > oldturntimer))
+                    {
+                        SendMessage();
+                    }
                 }
                 else VitalPoss[pc.PlayerId] = pos;
             }
@@ -263,8 +288,7 @@ namespace TownOfHost
             {
                 try
                 {
-                    if (pc.IsModClient()) continue;
-
+                    if (pc.AmOwner) continue;//ホストの場合は処理しない
                     bool doComms = false;
                     bool RoleDisable = false;
                     bool IsComms = Utils.IsActive(SystemTypes.Comms);
@@ -363,6 +387,7 @@ namespace TownOfHost
                                 break;
                         }
                     }
+                    if (pc.IsModClient()) continue;//Modクライアントの場合は以降の処理を行わない
                     if (check) doComms = false;
                     if ((RoleDisable || doComms) && !pc.inVent && GameStates.IsInTask)
                     {
@@ -400,6 +425,50 @@ namespace TownOfHost
                     Logger.Exception(ex, "DisableDevice");
                 }
             }
+        }
+        public static void SendMessage()
+        {
+            if (PlayerCatch.AnyModClient() is false || !AmongUsClient.Instance.AmHost) return;
+
+            var Map = (MapNames)Main.NormalOptions.MapId;
+            var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None, -1);
+            sender.Write((int)RPC.ModSystem.SyncDeviceTimer);
+            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.MiraHQ or MapNames.Polus or MapNames.Skeld)
+            {
+                sender.Write(GameAdminTimer);
+                sender.Write(TurnAdminTimer);
+            }
+            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.MiraHQ or MapNames.Polus or MapNames.Skeld)
+            {
+                sender.Write(GameLogAndCamTimer);
+                sender.Write(TurnLogAndCamTimer);
+            }
+            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.Polus or MapNames.Fungle)
+            {
+                sender.Write(GameVitalTimer);
+                sender.Write(TurnVitalTimer);
+            }
+            AmongUsClient.Instance.FinishRpcImmediately(sender);
+        }
+        public static void ReadMessage(MessageReader reader)
+        {
+            var Map = (MapNames)Main.NormalOptions.MapId;
+            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.MiraHQ or MapNames.Polus or MapNames.Skeld)
+            {
+                GameAdminTimer = reader.ReadSingle();
+                TurnAdminTimer = reader.ReadSingle();
+            }
+            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.MiraHQ or MapNames.Polus or MapNames.Skeld)
+            {
+                GameLogAndCamTimer = reader.ReadSingle();
+                TurnLogAndCamTimer = reader.ReadSingle();
+            }
+            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.Polus or MapNames.Fungle)
+            {
+                GameVitalTimer = reader.ReadSingle();
+                TurnVitalTimer = reader.ReadSingle();
+            }
+            RemoveDisableDevicesPatch.UpdateDisableDevices();
         }
     }
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
@@ -484,23 +553,20 @@ namespace TownOfHost
         public static bool Ability;
         public static void Postfix(VitalsMinigame __instance)
         {
-            if (AmongUsClient.Instance.AmHost)
-            {
-                if (Ability && PlayerControl.LocalPlayer.IsAlive()) return;
-                if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
+            if (Ability && PlayerControl.LocalPlayer.IsAlive()) return;
+            if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
 
-                if (PlayerControl.LocalPlayer.IsAlive())
+            if (PlayerControl.LocalPlayer.IsAlive())
+            {
+                if ((optTimeLimitVital > 0 && GameVitalTimer > optTimeLimitVital)
+                || (optTurnTimeLimitVital > 0 && TurnVitalTimer > optTurnTimeLimitVital))
                 {
-                    if ((optTimeLimitVital > 0 && GameVitalTimer > optTimeLimitVital)
-                    || (optTurnTimeLimitVital > 0 && TurnVitalTimer > optTurnTimeLimitVital))
-                    {
-                        __instance.Close();
-                    }
-                    else
-                    {
-                        if (optTimeLimitDevices) GameVitalTimer += Time.deltaTime;
-                        if (optTurnTimeLimitDevice) TurnVitalTimer += Time.deltaTime;
-                    }
+                    __instance.Close();
+                }
+                else if (AmongUsClient.Instance.AmHost)
+                {
+                    if (optTimeLimitDevices) GameVitalTimer += Time.deltaTime;
+                    if (optTurnTimeLimitDevice) TurnVitalTimer += Time.deltaTime;
                 }
             }
         }
@@ -511,16 +577,13 @@ namespace TownOfHost
     {
         public static void Postfix(PlanetSurveillanceMinigame __instance)
         {
-            if (AmongUsClient.Instance.AmHost)
+            if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
+            if (PlayerControl.LocalPlayer.IsAlive() && __instance)
             {
-                if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
-                if (PlayerControl.LocalPlayer.IsAlive() && __instance)
+                if ((optTimeLimitCamAndLog > 0 && GameLogAndCamTimer > optTimeLimitCamAndLog)
+                || (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog))
                 {
-                    if ((optTimeLimitCamAndLog > 0 && GameLogAndCamTimer > optTimeLimitCamAndLog)
-                    || (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog))
-                    {
-                        __instance.Close();
-                    }
+                    __instance.Close();
                 }
             }
         }
@@ -530,16 +593,13 @@ namespace TownOfHost
     {
         public static void Postfix(SurveillanceMinigame __instance)
         {
-            if (AmongUsClient.Instance.AmHost)
-            {
-                if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
+            if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
 
-                if (PlayerControl.LocalPlayer.IsAlive() && __instance)
-                {
-                    if ((optTimeLimitCamAndLog > 0 && GameLogAndCamTimer > optTimeLimitCamAndLog)
-                    || (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog))
-                        __instance.Close();
-                }
+            if (PlayerControl.LocalPlayer.IsAlive() && __instance)
+            {
+                if ((optTimeLimitCamAndLog > 0 && GameLogAndCamTimer > optTimeLimitCamAndLog)
+                || (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog))
+                    __instance.Close();
             }
         }
     }
@@ -549,22 +609,19 @@ namespace TownOfHost
     {
         public static void Postfix(SecurityLogGame __instance)
         {
-            if (AmongUsClient.Instance.AmHost)
-            {
-                if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
+            if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility) __instance.Close();
 
-                if (PlayerControl.LocalPlayer.IsAlive() && __instance)
+            if (PlayerControl.LocalPlayer.IsAlive() && __instance)
+            {
+                if ((optTimeLimitCamAndLog > 0 && GameLogAndCamTimer > optTimeLimitCamAndLog)
+                || (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog))
                 {
-                    if ((optTimeLimitCamAndLog > 0 && GameLogAndCamTimer > optTimeLimitCamAndLog)
-                    || (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog))
-                    {
-                        __instance.Close();
-                    }
-                    else
-                    {
-                        if (optTimeLimitDevices) GameLogAndCamTimer += Time.deltaTime;
-                        if (optTurnTimeLimitDevice) TurnLogAndCamTimer += Time.deltaTime;
-                    }
+                    __instance.Close();
+                }
+                else if (AmongUsClient.Instance.AmHost)
+                {
+                    if (optTimeLimitDevices) GameLogAndCamTimer += Time.deltaTime;
+                    if (optTurnTimeLimitDevice) TurnLogAndCamTimer += Time.deltaTime;
                 }
             }
         }
@@ -575,27 +632,24 @@ namespace TownOfHost
     {
         public static void Prefix(MapCountOverlay __instance)
         {
-            if (AmongUsClient.Instance.AmHost)
-            {
-                if (GameStates.IsFreePlay && Main.EditMode) return;
+            if (GameStates.IsFreePlay && Main.EditMode) return;
 
-                if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility)
+            if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility)
+            {
+                MapBehaviour.Instance.Close();
+                return;
+            }
+            if (PlayerControl.LocalPlayer.IsAlive() && MapBehaviour.Instance && __instance)
+            {
+                if ((optTimeLimitAdmin > 0 && GameAdminTimer > optTimeLimitAdmin)
+                || (optTurnTimeLimitAdmin > 0 && TurnAdminTimer > optTurnTimeLimitAdmin))
                 {
                     MapBehaviour.Instance.Close();
-                    return;
                 }
-                if (PlayerControl.LocalPlayer.IsAlive() && MapBehaviour.Instance && __instance)
+                else if (AmongUsClient.Instance.AmHost)
                 {
-                    if ((optTimeLimitAdmin > 0 && GameAdminTimer > optTimeLimitAdmin)
-                    || (optTurnTimeLimitAdmin > 0 && TurnAdminTimer > optTurnTimeLimitAdmin))
-                    {
-                        MapBehaviour.Instance.Close();
-                    }
-                    else
-                    {
-                        if (optTimeLimitDevices) GameAdminTimer += Time.deltaTime;
-                        if (optTurnTimeLimitDevice) TurnAdminTimer += Time.deltaTime;
-                    }
+                    if (optTimeLimitDevices) GameAdminTimer += Time.deltaTime;
+                    if (optTurnTimeLimitDevice) TurnAdminTimer += Time.deltaTime;
                 }
             }
         }

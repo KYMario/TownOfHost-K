@@ -32,7 +32,9 @@ namespace TownOfHost
         MeetingInfo,
         CustomRoleSync,
         CustomSubRoleSync,
-        ShowMeetingKill
+        ShowMeetingKill,
+        ClientSendHideMessage,
+        SyncModSystem
     }
     public enum Sounds
     {
@@ -77,7 +79,7 @@ namespace TownOfHost
             }
             if (__instance.PlayerId != 0
                 && Enum.IsDefined(typeof(CustomRPC), (int)callId)
-                && !(callId == (byte)CustomRPC.VersionCheck || callId == (byte)CustomRPC.RequestRetryVersionCheck || callId == (byte)CustomRPC.ModUnload)) //ホストではなく、CustomRPCで、VersionCheckではない
+                && !(callId is (byte)CustomRPC.VersionCheck or (byte)CustomRPC.RequestRetryVersionCheck or (byte)CustomRPC.ModUnload or (byte)CustomRPC.ClientSendHideMessage)) //ホストではなく、CustomRPCで、VersionCheckではない
             {
                 Logger.Warn($"{__instance?.Data?.GetLogPlayerName()}:{callId}({RPC.GetRpcName(callId)}) ホスト以外から送信されたためキャンセルしました。", "CustomRPC");
                 if (AmongUsClient.Instance.AmHost)
@@ -98,7 +100,7 @@ namespace TownOfHost
 
             try
             {
-                if (!((CustomRPC)callId is CustomRPC.VersionCheck or CustomRPC.RequestRetryVersionCheck)
+                if (!((CustomRPC)callId is CustomRPC.VersionCheck or CustomRPC.RequestRetryVersionCheck or CustomRPC.ClientSendHideMessage)
                 && reader.ReadString() != Main.ForkId)
                 {
                     Logger.Warn($"別MODのRPCをキャンセルしました {__instance.PlayerId}", "cancel");
@@ -221,6 +223,12 @@ namespace TownOfHost
                     break;
                 case CustomRPC.ShowMeetingKill:
                     MeetingVoteManager.ResetVoteManager(reader.ReadByte());
+                    break;
+                case CustomRPC.ClientSendHideMessage:
+                    ChatCommands.OnReceiveChat(__instance, reader.ReadString(), out var cancld, true);
+                    break;
+                case CustomRPC.SyncModSystem:
+                    RPC.RpcModSetting(reader);
                     break;
             }
         }
@@ -506,6 +514,22 @@ namespace TownOfHost
 
             AmongUsClient.Instance.SendOrDisconnect(writer);
             writer.Recycle();
+        }
+        public enum ModSystem
+        {
+            SyncDeviceTimer
+        }
+        public static void RpcModSetting(MessageReader reader)
+        {
+            if (AmongUsClient.Instance.AmHost) return;
+
+            switch ((ModSystem)reader.ReadInt32())
+            {
+                case ModSystem.SyncDeviceTimer:
+                    DisableDevice.ReadMessage(reader);
+                    break;
+
+            }
         }
     }
     [HarmonyPatch(typeof(InnerNet.InnerNetClient), nameof(InnerNet.InnerNetClient.StartRpcImmediately))]
