@@ -163,8 +163,8 @@ public sealed class Stealth : RoleBase, IImpostor, IUsePhantomButton
         if (AmongUsClient.Instance.AmHost)
         {
             ResetDarkenState();
-            adddarkenroom.Clear();
         }
+        adddarkenroom.Clear();
     }
     private void RpcDarken(SystemTypes? roomType)
     {

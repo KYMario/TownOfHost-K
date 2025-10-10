@@ -98,8 +98,8 @@ namespace TownOfHost.Roles.Neutral
                 {
                     killer.SetKillCooldown(delay: true);
                     GrimPlayers.Add(target.PlayerId, OptionGrimActiveTime.GetFloat());
-                    RpcAddList(target.PlayerId);
                     cankill = false;
+                    RpcAddList(target.PlayerId);
                 }
                 UtilsNotifyRoles.NotifyRoles(SpecifySeer: [Player]);
             }
@@ -199,12 +199,15 @@ namespace TownOfHost.Roles.Neutral
         public void RpcAddList(byte targetId)
         {
             using var sender = CreateSender();
+            sender.Writer.Write(true);
             sender.Writer.Write(targetId);
+            sender.Writer.Write(cankill);
         }
 
         public override void ReceiveRPC(MessageReader reader)
         {
             var targetId = reader.ReadByte();
+            cankill = reader.ReadBoolean();
             var result = GrimPlayers.TryAdd(targetId, OptionGrimActiveTime.GetFloat());
             if (!result)
             {

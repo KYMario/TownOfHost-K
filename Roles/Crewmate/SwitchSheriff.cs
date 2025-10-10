@@ -150,11 +150,13 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
         using var sender = CreateSender();
         sender.Writer.Write(ShotLimit);
         sender.Writer.Write(Taskmode);
+        sender.Writer.Write(nowcool);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
         ShotLimit = reader.ReadInt32();
         Taskmode = reader.ReadBoolean();
+        nowcool = reader.ReadSingle();
     }
     public bool CanUseKillButton()
         => Player.IsAlive()

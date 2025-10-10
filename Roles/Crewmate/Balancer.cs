@@ -327,7 +327,7 @@ public sealed class Balancer : RoleBase, ISelfVoter
             _ = new LateTask(() =>
             {
                 _ = new LateTask(() => Utils.AllPlayerKillFlash(), 1f, "BMkillf", true);
-                ReportDeadBodyPatch.ExReportDeadBody(reporter, oniku.Data, false, GetString("Balancer.meeting"), UtilsRoleText.GetRoleColorCode(CustomRoles.Balancer));
+                ReportDeadBodyPatch.ExReportDeadBody(reporter, oniku.Data, false, "Balancer.meeting", UtilsRoleText.GetRoleColorCode(CustomRoles.Balancer));
             }, 2f, "BalanerMeeting");
 
             //対象の名前を天秤の色に

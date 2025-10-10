@@ -233,16 +233,18 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
 
     public void SendRPC()
     {
+        bool isPos999 = JumpToPosition == new Vector2(999f, 999f);
         using var sender = CreateSender();
         sender.Writer.Write(Jumping);
         sender.Writer.Write(ShowMark);
-        NetHelpers.WriteVector2(JumpToPosition, sender.Writer);
+        sender.Writer.Write(isPos999);
+        if (!isPos999) NetHelpers.WriteVector2(JumpToPosition, sender.Writer);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
         Jumping = reader.ReadBoolean();
         ShowMark = reader.ReadBoolean();
-        JumpToPosition = NetHelpers.ReadVector2(reader);
+        JumpToPosition = reader.ReadBoolean() ? new Vector2(999f, 999f) : NetHelpers.ReadVector2(reader);
     }
 }

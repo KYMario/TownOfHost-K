@@ -6,6 +6,7 @@ using UnityEngine;
 using HarmonyLib;
 
 using TownOfHost.Roles.Core;
+using Hazel;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -68,6 +69,7 @@ public sealed class Comebacker : RoleBase
         Logger.Info("ベントを設定するよ!", "Comebacker");
 
         ComebackPosString = Player.GetShipRoomName();
+        RpcSetVent();
 
         UtilsNotifyRoles.NotifyRoles(Player, OnlyMeName: true);
         return true;
@@ -81,5 +83,16 @@ public sealed class Comebacker : RoleBase
 
         if (isForHud) return $"<color={RoleInfo.RoleColorCode}>{string.Format(GetString("ComebackLowerText"), ComebackPosString)}</color>";
         return $"<size=50%><color={RoleInfo.RoleColorCode}>{string.Format(GetString("ComebackLowerText"), ComebackPosString)}</color></size>";
+    }
+
+    public void RpcSetVent()
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Logger.Info("ベントを設定するよ!", "Comebacker");
+        ComebackPosString = Player.GetShipRoomName();
     }
 }

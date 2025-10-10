@@ -48,7 +48,7 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
     byte target1;
     byte target2;
     static float Max;
-    float usedcount;
+    int usedcount;
     bool IsUseing;
     public static readonly CustomDeathReason[] deathReasons =
     {

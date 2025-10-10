@@ -100,7 +100,12 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             MagicCooldown = DefaultCooldown;
     }
 
-    public void OnMurderPlayerAsKiller(MurderInfo info) => HaveKillCount++;
+    public void OnMurderPlayerAsKiller(MurderInfo info)
+    {
+        HaveKillCount++;
+        SendRPC();
+    }
+
     bool IUsePhantomButton.IsPhantomRole => MagicCount < Maximum || Maximum is 0;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {

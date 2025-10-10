@@ -50,7 +50,7 @@ public sealed class WhiteHacker : RoleBase
     private static float cantaskcount;
     private int targetId;
     static float Maximum;
-    float count;
+    int count;
     bool Useing;
     bool NowTracker;
     enum Option
@@ -123,9 +123,8 @@ public sealed class WhiteHacker : RoleBase
     }
     public override void AfterMeetingTasks()
     {
-        if (!AmongUsClient.Instance.AmHost || Useing) return;
+        if (Useing) return;
         targetId = 255;
-        SendRPC();
     }
     public override void OnReportDeadBody(PlayerControl _, NetworkedPlayerInfo __) => Useing = false;
     // 表示系の関数群

@@ -167,6 +167,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
                 {
                     CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
                 }
+                SetPresentVent();
                 return false;
             }
             else
@@ -214,6 +215,8 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
     }
     void SetPresentVent()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
+
         // プレゼントの配達先リスト
         List<Vent> AllVents = new(ShipStatus.Instance.AllVents);
 
@@ -283,28 +286,31 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         sender.Writer.Write(EntotuVentId.HasValue);
         if (EntotuVentId.HasValue)
             sender.Writer.Write(EntotuVentId.Value);
-
-        NetHelpers.WriteVector2(EntotuVentPos ?? new Vector2(999f, 999f), sender.Writer);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
+        var oldVentId = EntotuVentId;
+
         havepresent = reader.ReadInt32();
         giftpresent = reader.ReadInt32();
         EntotuVentId = reader.ReadBoolean() ? reader.ReadInt32() : null;
 
-        var newVentPos = NetHelpers.ReadVector2(reader);
-
         //posが更新されたときのみ処理
-        if (newVentPos != (Vector2)EntotuVentPos)
+        if (oldVentId != EntotuVentId)
         {
+            var vent = ShipStatus.Instance.AllVents.FirstOrDefault(x => x.Id == EntotuVentId);
+            Vector3? pos = vent == null ? null : new Vector3(vent.transform.position.x, vent.transform.position.y);
+
             if (EntotuVentPos.HasValue)
                 GetArrow.Remove(Player.PlayerId, EntotuVentPos.Value);
 
-            if (newVentPos != new Vector2(999f, 999f))
-                GetArrow.Add(Player.PlayerId, newVentPos);
+            if (vent != null && pos.HasValue)
+            {
+                GetArrow.Add(Player.PlayerId, pos.Value);
+            }
 
-            EntotuVentPos = newVentPos;
+            EntotuVentPos = pos;
         }
     }
 }

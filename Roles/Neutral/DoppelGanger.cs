@@ -104,6 +104,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         }
         Cankill = true;
         Target = target.PlayerId;
+        SendRPC();
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 1f, "DoppelSetNotify", true);
         return true;
     }
@@ -113,6 +114,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         Cankill = false;
         Target = byte.MaxValue;
         Afterkill = false;
+        SendRPC();
     }
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
@@ -130,7 +132,11 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         if (Target == byte.MaxValue || target.PlayerId != Target || !Cankill || Afterkill)
             return;
 
-        if (info.CanKill && info.DoKill) Afterkill = true;
+        if (info.CanKill && info.DoKill)
+        {
+            Afterkill = true;
+            SendRPC();
+        }
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false)
     {
@@ -158,7 +164,6 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
-        if (!AmongUsClient.Instance.AmHost) return;
         if (!player.IsAlive()) return;
         var UseingShape = false;
         if (Afterkill)
@@ -178,7 +183,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         if (OptionAddWinCount.GetFloat() <= Seconds && !SecondsWin)
         {
             SecondsWin = true;
-            SendRPC();
+            if (AmongUsClient.Instance.AmHost) SendRPC();//念のためホスト側から同期
         }
         if (OptionSoloWinCount.GetFloat() <= Seconds)
         {
@@ -195,7 +200,6 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         if (Count != (int)Seconds)
         {
             Count = (int)Seconds;
-            SendRPC();
             UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
         }
     }
@@ -207,11 +211,15 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         using var sender = CreateSender();
         sender.Writer.Write(Count);
         sender.Writer.Write(SecondsWin);
+        sender.Writer.Write(Target);
+        sender.Writer.Write(Afterkill);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
         Count = reader.ReadInt32();
         SecondsWin = reader.ReadBoolean();
+        Target = reader.ReadByte();
+        Afterkill = reader.ReadBoolean();
     }
 }

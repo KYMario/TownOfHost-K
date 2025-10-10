@@ -287,7 +287,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     {
         if (IsBlackOut)
         {
-            opt.SetFloat(Player.IsModClient() ? FloatOptionNames.CrewLightMod : FloatOptionNames.ImpostorLightMod, OptionBlackVision.GetFloat());
+            opt.SetFloat(Player == PlayerControl.LocalPlayer ? FloatOptionNames.CrewLightMod : FloatOptionNames.ImpostorLightMod, OptionBlackVision.GetFloat());
         }
         else
         {
@@ -304,17 +304,19 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
 
     public void SendRPC()
     {
+        var isPos999 = TargetPosition == new Vector3(999f, 999f);
         using var sender = CreateSender();
         sender.Writer.Write(GuessMode);
         sender.Writer.Write(Targetid);
-        NetHelpers.WriteVector2(TargetPosition, sender.Writer);
+        sender.Writer.Write(isPos999);
+        if (!isPos999) NetHelpers.WriteVector2(TargetPosition, sender.Writer);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
         GuessMode = reader.ReadBoolean();
         var newTargetId = reader.ReadByte();
-        Vector2 newTargetPosition = NetHelpers.ReadVector2(reader);
+        Vector2 newTargetPosition = reader.ReadBoolean() ? new Vector3(999f, 999f) : NetHelpers.ReadVector2(reader);
 
         //idが更新されたときのみ処理
         if (newTargetId != Targetid)

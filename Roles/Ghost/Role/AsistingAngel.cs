@@ -175,11 +175,13 @@ namespace TownOfHost.Roles.Ghost
 
         public static void SendRPC(byte playerId)
         {
+            var isPos999 = pos == new Vector3(999f, 999f);
             using var sender = new SubRoleRPCSender(CustomRoles.AsistingAngel, playerId);
             sender.Writer.Write(Limit);
             sender.Writer.Write(Track);
             sender.Writer.Write(Asist?.PlayerId ?? byte.MaxValue);
-            NetHelpers.WriteVector2(pos, sender.Writer);
+            sender.Writer.Write(isPos999);
+            if (!isPos999) NetHelpers.WriteVector2(pos, sender.Writer);
         }
 
         public static void ReceiveRPC(MessageReader reader, byte playerId)
@@ -189,7 +191,7 @@ namespace TownOfHost.Roles.Ghost
             var AsistId = reader.ReadByte();
             Asist = AsistId == byte.MaxValue ? null : PlayerCatch.GetPlayerById(AsistId);
 
-            var newPos = NetHelpers.ReadVector2(reader);
+            var newPos = reader.ReadBoolean() ? new Vector2(999f, 999f) : NetHelpers.ReadVector2(reader);
 
             if (newPos != (Vector2)pos)
             {

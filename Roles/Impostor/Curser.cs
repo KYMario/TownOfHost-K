@@ -97,6 +97,7 @@ public sealed class Curser : RoleBase, IImpostor
                 Main.AllPlayerKillCooldown[killer.PlayerId] = CurseKillCooldown;
                 TargetId = byte.MaxValue;
                 Player.SyncSettings(); // キルクールダウンを同期
+                SendRPC();
             }
             else
             {
