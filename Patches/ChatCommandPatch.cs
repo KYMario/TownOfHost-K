@@ -87,6 +87,17 @@ namespace TownOfHost
                         SendMessage("使用方法:\n/vo 音質 音量 速度 音程\n/vo set プレイヤーid 音質 音量 速度 音程\n\n音質の一覧表示:\n /vo get\n /vo g", PlayerControl.LocalPlayer.PlayerId);
                     break;
                 default:
+                    if (AmongUsClient.Instance.AmHost) break;
+                    //Modクライアントは秘匿チャットでの死亡判定を弄りたくない。
+                    if (args[0].StartsWith("/") && text.Length < 30 /* 30超えると送信しない*/ && Options.ExHideChatCommand.GetBool())
+                    {
+                        canceled = true;
+                        var sender = CustomRpcSender.Create("CommandSender")
+                            .AutoStartRpc(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ClientSendHideMessage)
+                            .Write(text)
+                            .EndRpc();
+                        sender.SendMessage();
+                    }
                     break;
             }
             if (AmongUsClient.Instance.AmHost)
@@ -1188,7 +1199,7 @@ namespace TownOfHost
             return !canceled;
         }
 
-        public static void OnReceiveChat(PlayerControl player, string text, out bool canceled)
+        public static void OnReceiveChat(PlayerControl player, string text, out bool canceled, bool Isclient = false)
         {
             if (player != null)
             {
@@ -1197,7 +1208,17 @@ namespace TownOfHost
 
             canceled = false;
 
-            if (!AmongUsClient.Instance.AmHost) return;
+            if (!AmongUsClient.Instance.AmHost)
+            {
+                if (text.StartsWith("/") && Options.ExHideChatCommand.GetBool())
+                {
+                    canceled = true;
+                }
+                return;
+            }
+            if ((Isclient && !player.IsModClient()) ||
+            (!Isclient && player.IsModClient())) return;
+
             string[] args = text.Split(' ');
             string subArgs = "";
             if (text.RemoveHtmlTags() != text) return;//システムメッセージなら処理しない
@@ -1385,7 +1406,7 @@ namespace TownOfHost
                         foreach (var imp in AllPlayerControls)
                         {
                             if ((imp.GetRoleClass() as Amnesiac)?.Realized == false && imp.IsAlive()) continue;
-                            if (imp && ((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist) || (!imp.IsAlive() && PlayerControl.LocalPlayer.PlayerId == imp?.PlayerId)) && imp.PlayerId != player.PlayerId)
+                            if (imp && ((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist) || (!imp.IsAlive() && PlayerControl.LocalPlayer.PlayerId == imp?.PlayerId) || (Isclient && !imp.IsAlive())) && (imp.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {
@@ -1414,7 +1435,7 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "JackalChat");
                         foreach (var jac in AllPlayerControls)
                         {
-                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || (PlayerControl.LocalPlayer.PlayerId == jac?.PlayerId && !jac.IsAlive())) && jac.PlayerId != player.PlayerId)
+                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || (PlayerControl.LocalPlayer.PlayerId == jac?.PlayerId && !jac.IsAlive()) || (Isclient && !jac.IsAlive())) && (jac.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {
@@ -1455,7 +1476,7 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "LoversChat");
                         foreach (var lover in AllPlayerControls)
                         {
-                            if (lover && (lover.GetLoverRole() == loverrole || (PlayerControl.LocalPlayer.PlayerId == lover?.PlayerId && !lover.IsAlive())) && lover.PlayerId != player.PlayerId)
+                            if (lover && (lover.GetLoverRole() == loverrole || (PlayerControl.LocalPlayer.PlayerId == lover?.PlayerId && !lover.IsAlive()) || (Isclient && !lover.IsAlive())) && (lover.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {
@@ -1483,7 +1504,7 @@ namespace TownOfHost
 
                         foreach (var twins in AllPlayerControls)
                         {
-                            if (twins && (twins.PlayerId == twinsid || (PlayerControl.LocalPlayer.PlayerId == twins?.PlayerId && !twins.IsAlive())) && twins.PlayerId != player.PlayerId)
+                            if (twins && (twins.PlayerId == twinsid || (PlayerControl.LocalPlayer.PlayerId == twins?.PlayerId && !twins.IsAlive()) || (Isclient && !twins.IsAlive())) && (twins.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {
@@ -1509,7 +1530,7 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "Connectingchat");
                         foreach (var connect in AllPlayerControls)
                         {
-                            if (connect && ((connect.Is(CustomRoles.Connecting) && !connect.Is(CustomRoles.WolfBoy)) || (PlayerControl.LocalPlayer.PlayerId == connect?.PlayerId && !connect.IsAlive())) && connect.PlayerId != player.PlayerId)
+                            if (connect && ((connect.Is(CustomRoles.Connecting) && !connect.Is(CustomRoles.WolfBoy)) || (PlayerControl.LocalPlayer.PlayerId == connect?.PlayerId && !connect.IsAlive()) || (Isclient && !connect.IsAlive())) && (connect.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {
@@ -1548,6 +1569,7 @@ namespace TownOfHost
                     }*/
 
                     if (!Options.ExHideChatCommand.GetBool()) break;
+                    if (player.IsModClient()) return;
 
                     if (GameStates.CalledMeeting && GameStates.IsMeeting && !AntiBlackout.IsSet && !AntiBlackout.IsCached && !canceled)
                     {
