@@ -75,29 +75,24 @@ namespace TownOfHost
             }
 
             bool DecidedWinner = false;
-
-            //ホスト以外はこれ以降の処理を実行しません
-            if (!AmongUsClient.Instance.AmHost)
+            if (AmongUsClient.Instance.AmHost)
             {
-                UtilsGameLog.day++;
-                return;
-            }
-
-            AntiBlackout.RestoreIsDead(doSend: false);
-            if (exiled != null)
-            {
-                var role = exiled.GetCustomRole();
-                var info = role.GetRoleInfo();
-
-                exiled.IsDead = true;
-                PlayerState.GetByPlayerId(exiled.PlayerId).DeathReason = CustomDeathReason.Vote;
-
-                foreach (var roleClass in CustomRoleManager.AllActiveRoles.Values)
+                AntiBlackout.RestoreIsDead(doSend: false);
+                if (exiled != null)
                 {
-                    roleClass.OnExileWrapUp(exiled, ref DecidedWinner);
-                }
+                    var role = exiled.GetCustomRole();
+                    var info = role.GetRoleInfo();
 
-                if (CustomWinnerHolder.WinnerTeam != CustomWinner.Terrorist) PlayerState.GetByPlayerId(exiled.PlayerId).SetDead();
+                    exiled.IsDead = true;
+                    PlayerState.GetByPlayerId(exiled.PlayerId).DeathReason = CustomDeathReason.Vote;
+
+                    foreach (var roleClass in CustomRoleManager.AllActiveRoles.Values)
+                    {
+                        roleClass.OnExileWrapUp(exiled, ref DecidedWinner);
+                    }
+
+                    if (CustomWinnerHolder.WinnerTeam != CustomWinner.Terrorist) PlayerState.GetByPlayerId(exiled.PlayerId).SetDead();
+                }
             }
             AfterMeetingTasks();
         }
@@ -135,15 +130,17 @@ namespace TownOfHost
                             break;
                     }
                 }
-                FallFromLadder.Reset();
-                PlayerCatch.CountAlivePlayers(true);
-                Utils.AfterMeetingTasks();
-                if (Main.NormalOptions.MapId != 4)
+            }
+
+            FallFromLadder.Reset();
+            PlayerCatch.CountAlivePlayers(true);
+            Utils.AfterMeetingTasks();
+
+            if (AmongUsClient.Instance.AmHost && Main.NormalOptions.MapId != 4)
+            {
+                foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
-                    foreach (var pc in PlayerCatch.AllPlayerControls)
-                    {
-                        pc.GetRoleClass()?.OnSpawn();
-                    }
+                    pc.GetRoleClass()?.OnSpawn();
                 }
             }
         }

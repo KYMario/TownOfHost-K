@@ -669,24 +669,27 @@ namespace TownOfHost
                     if (AsistingAngel.CanSetAsistTarget())
                     {
                         AsistingAngel.Limit++;
-                        AsistingAngel.SendRPC(AsistingAngel.AsistingAngelId);
                     }
 
                     UtilsGameLog.day++;
                     UtilsGameLog.AddGameLogsub("\n" + string.Format(GetString("Message.Day").RemoveDeltext("【").RemoveDeltext("】"), UtilsGameLog.day).Color(Palette.Orange));
                 }
             }
-            if (Options.AirShipVariableElectrical.GetBool()) AirShipElectricalDoors.Initialize();
-            DoorsReset.ResetDoors();
-            // 空デデンバグ対応 会議後にベントを空にする
-            var ventilationSystem = ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Ventilation, out var systemType) ? systemType.TryCast<VentilationSystem>() : null;
-            if (ventilationSystem != null)
+
+            if (AmongUsClient.Instance.AmHost)
             {
-                ventilationSystem.PlayersInsideVents.Clear();
-                ventilationSystem.IsDirty = true;
+                if (Options.AirShipVariableElectrical.GetBool()) AirShipElectricalDoors.Initialize();
+                DoorsReset.ResetDoors();
+                // 空デデンバグ対応 会議後にベントを空にする
+                var ventilationSystem = ShipStatus.Instance.Systems.TryGetValue(SystemTypes.Ventilation, out var systemType) ? systemType.TryCast<VentilationSystem>() : null;
+                if (ventilationSystem != null)
+                {
+                    ventilationSystem.PlayersInsideVents.Clear();
+                    ventilationSystem.IsDirty = true;
+                }
+                GuessManager.Reset();//会議後にリセット入れる
+                GameStates.ExiledAnimate = false;
             }
-            GuessManager.Reset();//会議後にリセット入れる
-            GameStates.ExiledAnimate = false;
         }
         #endregion
         public static void ChangeInt(ref int ChangeTo, int input, int max)
