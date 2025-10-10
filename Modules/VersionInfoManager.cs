@@ -26,6 +26,7 @@ class VersionInfoManager
     private static bool IsSupported = true;
     private static int totalSeconds = 0;
     private static TextMeshPro ModInfoText;
+    private static ulong CustomFlags = 0;
 
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix, HarmonyPriority(Priority.Last)]
     public static void StartPostfix(MainMenuManager __instance)
@@ -127,6 +128,17 @@ class VersionInfoManager
                 if (button) InitButton(__instance, button);
             }
             catch (Exception ex) { Logger.Exception(ex, "VersionInfo"); }
+        }
+
+        if (version.CustomFlags != null)
+        {
+            ulong bits = 0;
+            foreach (var kv in version.CustomFlags)
+            {
+                if (kv.Value && kv.Key >= 0 && kv.Key < 64)
+                    bits |= 1UL << kv.Key;
+            }
+            CustomFlags = bits;
         }
     }
 
@@ -272,6 +284,10 @@ class VersionInfoManager
         }
     }
 
+    /// <summary>カスタムなフラグを取得 </summary> <param name="id">0から63まで</param>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    public static bool GetCustomFlag(int id) => ((CustomFlags >> id) & 1UL) != 0;
+
     public class VersionInfo
     {
         public bool? BlockPublicRoom { get; set; }
@@ -283,6 +299,7 @@ class VersionInfoManager
         public UpdateInfo Update { get; set; }
         public List<BugInfo> BugInfos { get; set; }
         public List<EventData> Events { get; set; }
+        public Dictionary<int, bool> CustomFlags { get; set; } //intは0から63まで
 
         public class UpdateInfo
         {
