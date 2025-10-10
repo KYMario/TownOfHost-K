@@ -289,6 +289,9 @@ namespace TownOfHost
         {
             var user = PlayerControl.LocalPlayer;
             var id = __instance.Id;
+
+            if (!AmongUsClient.Instance.AmHost) return true;
+
             if (CoEnterVentPatch.VentPlayers.ContainsKey(user.PlayerId)) return true;
 
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek && Options.IgnoreVent.GetBool())
@@ -382,7 +385,7 @@ namespace TownOfHost
                     VentilationSystemUpdateSystemPatch.NowVentId[user.PlayerId] = (byte)id;
                 }
 
-                if (user.IsModClient() is false)
+                if (user != PlayerControl.LocalPlayer)
                 {
                     if ((!roleClass?.OnEnterVent(__instance, id) ?? false) || !CanUse(__instance, id))
                     {
