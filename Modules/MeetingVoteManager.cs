@@ -214,7 +214,7 @@ public class MeetingVoteManager
         {
             foreach (var player in PlayerCatch.AllPlayerControls)
             {
-                if (player.GetClient() is null || player.IsModClient() || player.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                if (player.GetClient() is null ||/* player.IsModClient() ||*/ player.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
                 var sender = CustomRpcSender.Create("DeMeetingEndRpc");
                 sender.StartMessage(player.GetClientId());
                 sender.StartRpc(meetingHud.NetId, RpcCalls.VotingComplete)
