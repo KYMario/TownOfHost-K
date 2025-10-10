@@ -277,12 +277,14 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// タスクターンが始まる直前に毎回呼ばれる関数
+    /// [全クライアント]
     /// </summary>
     public virtual void AfterMeetingTasks()
     { }
     /// <summary>
     /// タスクターンにスポーンした時に呼ばれる関数
     /// 実行後必ず、SyncSettings()、RpcResetAbilityCooldown()が呼ばれる
+    /// [ホストのみ]
     /// </summary>
     /// <param name="initialState">ゲーム最初のスポーンかどうか</param>
     public virtual void OnSpawn(bool initialState = false)
@@ -290,6 +292,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// ゲーム開始のイントロ後に呼ばれる関数。
     /// ※アムネシア制御効かないので個別で処理
+    /// [ホストのみ]
     /// </summary>
     public virtual void StartGameTasks()
     { }
