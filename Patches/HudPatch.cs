@@ -467,7 +467,7 @@ namespace TownOfHost
                     Mark.Append($"<color=blue>♦</color>");
                 }
                 //エーリアン
-                if ((seerRole as Alien)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                if ((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
                         Mark.Append($"<color=blue>♦</color>");
@@ -477,7 +477,7 @@ namespace TownOfHost
                     {
                         Mark.Append($"<color=blue>♦</color>");
                     }
-                if ((seerRole as AlienHijack)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                if ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
                         Mark.Append($"<color=blue>♦</color>");

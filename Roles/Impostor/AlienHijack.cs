@@ -67,7 +67,8 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     {
         SyncPuppet,
         StealthDarken,
-        Penguin
+        Penguin,
+        SyncAlienMode
     }
     #endregion
 
@@ -100,7 +101,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
             }
         }
         if (!Player.IsAlive()) return;
-        if (modeEvilHacker)
+        if (mode == AlienMode.EvilHacker)
         {
             var admins = AdminProvider.CalculateAdmin();
             var builder = new StringBuilder(512);
@@ -147,14 +148,14 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         if (AmongUsClient.Instance.AmHost)
             ResetDarkenState();
     }
-    public override CustomRoles TellResults(PlayerControl player) => modeTairo ? CustomRoles.Crewmate : CustomRoles.Alien;
+    public override CustomRoles TellResults(PlayerControl player) => mode == AlienMode.Tairo ? CustomRoles.Crewmate : CustomRoles.Alien;
     public override (byte? votedForId, int? numVotes, bool doVote) ModifyVote(byte voterId, byte sourceVotedForId, bool isIntentional)
     {
         // 既定値
         var (votedForId, numVotes, doVote) = base.ModifyVote(voterId, sourceVotedForId, isIntentional);
 
         if (Options.firstturnmeeting && Options.FirstTurnMeetingCantability.GetBool() && MeetingStates.FirstMeeting) return (votedForId, numVotes, doVote);
-        if (voterId == Player.PlayerId && modeMayor)
+        if (voterId == Player.PlayerId && mode == AlienMode.Mayor)
         {
             numVotes = AdditionalVote + 1;
         }
@@ -166,10 +167,9 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         var sec = -(TimeThiefDecreaseMeetingTime * Count);
         return sec;
     }
-    public bool DoRevenge(CustomDeathReason deathReason) => modeNekokabocha && revengeOnExile && deathReason == CustomDeathReason.Vote;
+    public bool DoRevenge(CustomDeathReason deathReason) => mode == AlienMode.NekoKabocha && revengeOnExile && deathReason == CustomDeathReason.Vote;
     public override void AfterMeetingTasks()
     {
-        if (!AmongUsClient.Instance.AmHost) return;
         if (!Player.IsAlive()) return;
 
         RestartAbduct();
@@ -192,7 +192,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
         var (killer, target) = info.AttemptTuple;
-        if (modeLimiter)//爆弾最優先
+        if (mode == AlienMode.Limiter)//爆弾最優先
         {
             var Targets = new List<PlayerControl>(PlayerCatch.AllAlivePlayerControls);
             info.DoKill = false;
@@ -226,7 +226,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
             RemoveVictim();
             return;
         }
-        if (modeRemotekiller || modeVampire)
+        if (mode is AlienMode.RemoteKiller or AlienMode.Vampire)
         {
             if (!info.CanKill) return;
             if (target.Is(CustomRoles.Bait)) return;
@@ -238,7 +238,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                 return;
             }
             info.DoKill = false;
-            if (modeRemotekiller)
+            if (mode == AlienMode.RemoteKiller)
             {
                 Remotekillertarget = target.PlayerId;
                 killer.SetKillCooldown(target: target);
@@ -254,7 +254,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                 return;
             }
         }
-        if (modePuppeteer)
+        if (mode == AlienMode.Puppeteer)
         {
             Puppets[target.PlayerId] = this;
             PuppetCooltime[target.PlayerId] = 0;
@@ -264,7 +264,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
             info.DoKill = false;
             return;
         }
-        if (modeStealth)
+        if (mode == AlienMode.Stealth)
         {
             if (!info.CanKill || !info.DoKill || info.IsSuicide || info.IsAccident || info.IsFakeSuicide) return;
             IEnumerable<PlayerControl> playersToDarken = null;
@@ -294,26 +294,26 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
             }
             return;
         }
-        if (modeNotifier)
+        if (mode == AlienMode.Notifier)
         {
             if (!info.IsSuicide)
                 if (IRandom.Instance.Next(1, 101) <= NotifierCance)
                     Utils.AllPlayerKillFlash();
             return;
         }
-        if (modeTimeThief)//タイムシーフはタイムシーフモード中じゃないと会議時間を減らさない。
+        if (mode == AlienMode.TimeThief)//タイムシーフはタイムシーフモード中じゃないと会議時間を減らさない。
         {
             if (!info.IsSuicide && info.CanKill && info.DoKill)
                 Count++;//キルが成功したらカウントを1増やす。
             return;
         }
-        if (modeinsider)
+        if (mode == AlienMode.Insider)
         {
             if (!info.IsSuicide && info.CanKill && info.DoKill)
                 InsiderCansee.Add(info.AttemptTarget.PlayerId);
             return;
         }
-        if (modepenguin)//拉致中処理は上でしてる。
+        if (mode == AlienMode.Penguin)//拉致中処理は上でしてる。
         {
             info.DoKill = false;
             PlayerState.GetByPlayerId(target.PlayerId).CanUseMovingPlatform = MyState.CanUseMovingPlatform = false;
@@ -330,7 +330,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     }
     public override void OnMurderPlayerAsTarget(MurderInfo info)
     {
-        if (modeNekokabocha)
+        if (mode == AlienMode.NekoKabocha)
         {
             // 普通のキルじゃない．もしくはキルを行わない時はreturn
             if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill) return;
@@ -361,7 +361,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     }
     public bool CheckSheriffKill(PlayerControl target)
     {
-        if (target == Player) return modeTairo;
+        if (target == Player) return mode == AlienMode.Tairo;
         return false;
     }
     void KillBitten(PlayerControl target, bool isButton = false)
@@ -389,7 +389,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
-        if (modeVampire)
+        if (mode == AlienMode.Vampire)
         {
             if (!GameStates.IsInTask) return;
 
@@ -427,7 +427,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
             }
             return;
         }
-        if (modeStealth)
+        if (mode == AlienMode.Stealth)
         {
             if (darkenedPlayers != null)
             {
@@ -521,7 +521,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     public void OnFixedUpdateOthers(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
-        if (!modePuppeteer) return;
+        if (mode != AlienMode.Puppeteer) return;
 
         if (Puppets.TryGetValue(player.PlayerId, out var puppeteer))
         {
@@ -576,17 +576,17 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     public override string GetMark(PlayerControl seer, PlayerControl seen, bool _ = false)
     {
         seen ??= seer;
-        if (modePuppeteer)
+        if (mode == AlienMode.Puppeteer)
         {
             if (!(Puppets.ContainsValue(this) && Puppets.ContainsKey(seen.PlayerId))) return "";
             return Utils.ColorString(RoleInfo.RoleColor, "◆");
         }
-        if (modeStealth)
+        if (mode == AlienMode.Stealth)
         {
             if (seer != Player || seen != Player || !darkenedRoom.HasValue) return base.GetSuffix(seer, seen);
             return string.Format(GetString("StealthDarkened"), DestroyableSingleton<TranslationController>.Instance.GetString(darkenedRoom.Value));
         }
-        if (modeProgresskiller)
+        if (mode == AlienMode.ProgressKiller)
         {
             if (ProgressKillerMadseen && seen.Is(CustomRoleTypes.Madmate) && seer.Is(CustomRoles.Alien) && seer != seen)
                 if (seen.GetPlayerTaskState().IsTaskFinished) return Utils.ColorString(RoleInfo.RoleColor, "☆");
@@ -599,7 +599,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         seen ??= seer;
         foreach (var al in Aliens)
         {
-            if (al.modeProgresskiller && al.Player == seen)
+            if (al.mode == AlienMode.ProgressKiller && al.Player == seen)
             {
                 if (seer.Is(CustomRoles.Alien) && !seen.Is(CustomRoleTypes.Madmate) && seer != seen)
                 {
@@ -641,7 +641,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     #region Vent
     public override bool OnEnterVent(PlayerPhysics physics, int ventId)
     {
-        if (Tp != new Vector2(999f, 999f) && modeComebaker)
+        if (Tp != new Vector2(999f, 999f) && mode == AlienMode.Comebacker)
         {
             var tp = Tp;
             _ = new LateTask(() =>
@@ -651,7 +651,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         }
         ShipStatus.Instance.AllVents.DoIf(vent => vent.Id == ventId, vent => Tp = (Vector2)vent.transform.position);
 
-        if (modeRemotekiller)
+        if (mode == AlienMode.RemoteKiller)
         {
             var user = physics.myPlayer;
             if (Remotekillertarget is not 111 && Player.PlayerId == user.PlayerId)
@@ -679,7 +679,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                 return !Alien.OptionKillAnimation.GetBool();
             }
         }
-        if (modeMole)//モグラ
+        if (mode == AlienMode.Mole)//モグラ
         {
             _ = new LateTask(() =>
             {
@@ -691,8 +691,8 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     }
     public override bool CanVentMoving(PlayerPhysics physics, int ventId)
     {
-        if (modeMole) return false;
-        if (modeComebaker) return false;
+        if (mode == AlienMode.Mole) return false;
+        if (mode == AlienMode.Comebacker) return false;
 
         return true;
     }
@@ -705,6 +705,15 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         sender.Writer.Write((byte)RPC_type.SyncPuppet);
         sender.Writer.Write(typeId);
         sender.Writer.Write(targetId);
+    }
+
+    public void RpcSyncAlienMode()
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+
+        sender.Writer.Write((byte)RPC_type.SyncAlienMode);
+        sender.Writer.Write((int)mode);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
@@ -746,6 +755,10 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                     AbductVictim = PlayerCatch.GetPlayerById(victim);
                     AbductTimer = AbductTimerLimit;
                 }
+                break;
+
+            case RPC_type.SyncAlienMode:
+                mode = (AlienMode)reader.ReadInt32();
                 break;
         }
     }
@@ -803,95 +816,63 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     {
         if (!Player.IsAlive()) return "";
 
-        if (modeVampire) return "<color=#ff1919>" + GetString("Vampire") + "</color>";
-        if (modeEvilHacker) return "<color=#ff1919>" + GetString("EvilHacker") + "</color>";
-        if (modeLimiter) return "<color=#ff1919>" + GetString("Limiter") + "</color>";
-        if (modePuppeteer) return "<color=#ff1919>" + GetString("Puppeteer") + "</color>";
-        if (modeStealth) return "<color=#ff1919>" + GetString("Stealth") + "</color>";
-        if (modeRemotekiller) return "<color=#8f00ce>" + GetString("Remotekiller") + "</color>";
-        if (modeNotifier) return "<color=#ff1919>" + GetString("Notifier") + "</color>";
-        if (modeTimeThief) return "<color=#ff1919>" + GetString("TimeThief") + "</color>";
-        if (modeTairo) return "<color=#ff1919>" + GetString("Tairou") + "</color>";
-        if (modeMayor) return "<color=#204d42>" + GetString("Mayor") + "</color>";
-        if (modeMole) return "<color=#ff1919>" + GetString("Mole") + "</color>";
-        if (modeProgresskiller) return "<color=#ff1919>" + GetString("ProgressKiller") + "</color>";
-        if (modeNekokabocha) return "<color=#ff1919>" + GetString("NekoKabocha") + "</color>";
-        if (modeinsider) return "<color=#ff1919>" + GetString("Insider") + "</color>";
-        if (modepenguin) return "<color=#ff1919>" + GetString("Penguin") + "</color>";
-        if (modeComebaker) return "<color=#ff9966>" + GetString("Comebacker") + "</color>";
-
-        return "<color=#ff1919>？</color>";
+        return mode switch
+        {
+            AlienMode.Vampire => "<color=#ff1919>" + GetString("Vampire") + "</color>",
+            AlienMode.EvilHacker => "<color=#ff1919>" + GetString("EvilHacker") + "</color>",
+            AlienMode.Limiter => "<color=#ff1919>" + GetString("Limiter") + "</color>",
+            AlienMode.Puppeteer => "<color=#ff1919>" + GetString("Puppeteer") + "</color>",
+            AlienMode.Stealth => "<color=#ff1919>" + GetString("Stealth") + "</color>",
+            AlienMode.RemoteKiller => "<color=#8f00ce>" + GetString("Remotekiller") + "</color>",
+            AlienMode.Notifier => "<color=#ff1919>" + GetString("Notifier") + "</color>",
+            AlienMode.TimeThief => "<color=#ff1919>" + GetString("TimeThief") + "</color>",
+            AlienMode.Tairo => "<color=#ff1919>" + GetString("Tairou") + "</color>",
+            AlienMode.Mayor => "<color=#204d42>" + GetString("Mayor") + "</color>",
+            AlienMode.Mole => "<color=#ff1919>" + GetString("Mole") + "</color>",
+            AlienMode.ProgressKiller => "<color=#ff1919>" + GetString("ProgressKiller") + "</color>",
+            AlienMode.NekoKabocha => "<color=#ff1919>" + GetString("NekoKabocha") + "</color>",
+            AlienMode.Insider => "<color=#ff1919>" + GetString("Insider") + "</color>",
+            AlienMode.Penguin => "<color=#ff1919>" + GetString("Penguin") + "</color>",
+            AlienMode.Comebacker => "<color=#ff9966>" + GetString("Comebacker") + "</color>",
+            _ => "<color=#ff1919>？</color>"
+        };
     }
     void Init()
     {
-        modeVampire = false;
-        modeEvilHacker = false;
-        modeLimiter = false;
-        modePuppeteer = false;
-        modeStealth = false;
-        modeRemotekiller = false;
-        modeNotifier = false;
-        modeTimeThief = false;
-        modeTairo = false;
-        modeMayor = false;
-        modeProgresskiller = false;
-        modeMole = false;
-        modeNekokabocha = false;
-        modeinsider = false;
-        modepenguin = false;
         Tp = new(999f, 999f);
+        mode = AlienMode.None;
     }
     public RoleBase MaenoRole;
     public CustomRoles MaenoCRole;
     public static HashSet<AlienHijack> Aliens = new();
     //ヴァンパイア
     Dictionary<byte, float> BittenPlayers = new(14);
-    public bool modeVampire;
     //イビルハッカー
-    public bool modeEvilHacker;
     static Dictionary<byte, string> NameAddmin = new();
-    //リミッター
-    public bool modeLimiter;
     //パペッティア
     static Dictionary<byte, float> PuppetCooltime = new(15);
     static Dictionary<byte, AlienHijack> Puppets = new(15);
-    public bool modePuppeteer;
     //リモートキラー
-    public bool modeRemotekiller;
     byte Remotekillertarget;
     //ステルス
-    public bool modeStealth;
     float darkenTimer;
     PlayerControl[] darkenedPlayers;
     SystemTypes? darkenedRoom = null;
-    //ノーティファー
-    public bool modeNotifier;
     //タイムシーフ
-    public bool modeTimeThief;
     int Count;
     public bool RevertOnDie => Alien.TimeThiefReturnStolenTimeUponDeath;
-    //大狼
-    public bool modeTairo;
-    //メイヤー
-    public bool modeMayor;
-    //モグラ
-    public bool modeMole;
-    //プログレスキラー
-    public bool modeProgresskiller;
-    //ネコカボチャ
-    public bool modeNekokabocha;
     //インサイダー
     List<byte> InsiderCansee = new();
-    public bool modeinsider;
     //ペンギン
     PlayerControl AbductVictim;
-    public bool modepenguin;
     float AbductTimer;
     bool stopCount;
     //カムバッカー
-    public bool modeComebaker;
     private Vector2 Tp;
     // 戻るなら
     int UetukeNokori;
+
+    //モード
+    public AlienMode mode = AlienMode.None;
 }
 #endregion

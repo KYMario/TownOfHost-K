@@ -336,10 +336,10 @@ namespace TownOfHost
 
                                 if (targetsubrole.Contains(CustomRoles.Workhorse))
                                 {
-                                    if (((seerRole as Alien)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                                    if (((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                                     || ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
                                     || (role is CustomRoles.ProgressKiller && ProgressKiller.ProgressWorkhorseseen)
-                                    || ((seerRole as AlienHijack)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen))
+                                    || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                     {
                                         TargetMark.Append($"<color=blue>♦</color>");
                                     }
@@ -692,10 +692,10 @@ namespace TownOfHost
 
                                 if (targetsubrole.Contains(CustomRoles.Workhorse))
                                 {
-                                    if (((seerRole as Alien)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                                    if (((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller == true && Alien.ProgressWorkhorseseen)
                                     || ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
                                     || (role is CustomRoles.ProgressKiller && ProgressKiller.ProgressWorkhorseseen)
-                                    || ((seerRole as AlienHijack)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen))
+                                    || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                     {
                                         TargetMark.Append($"<color=blue>♦</color>");
                                     }
