@@ -119,6 +119,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
         InfectCount = InfectLimit;
 
         InfectActive = true;
+        NonPlague = false;
         if (Main.NormalOptions.MapId == 4)
             //エアシップのリスポーン選択分固定で遅延させる
             InfectInactiveTime += 5f;
@@ -279,7 +280,7 @@ public sealed class PlagueDoctor : RoleBase, IKiller
     public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (!CanInfect(seen)) return "";
+        if (!CanInfect(seen) || NonPlague) return "";
         if (!seer.Is(CustomRoles.PlagueDoctor) && seer.IsAlive()) return "";
         var str = new StringBuilder(40);
         str.Append($"<color={RoleInfo.RoleColorCode}>");
