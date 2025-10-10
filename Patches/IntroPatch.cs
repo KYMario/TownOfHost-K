@@ -166,7 +166,7 @@ namespace TownOfHost
 
             GameStates.InGame = true;
 
-            if (Options.CurrentGameMode is not CustomGameMode.Standard)
+            if (!AmongUsClient.Instance.AmHost || Options.CurrentGameMode is not CustomGameMode.Standard)
             {
                 PlayerCatch.AllPlayerControls.Do(x => PlayerState.GetByPlayerId(x.PlayerId).InitTask(x));
                 GameData.Instance.RecomputeTaskCounts();
@@ -546,6 +546,7 @@ namespace TownOfHost
                 GameStates.Intro = false;
                 GameStates.AfterIntro = true;
                 GameStates.task = true;
+                Main.CanUseAbility = true;
 
                 Logger.Info("タスクフェイズ開始", "Phase");
                 _ = new LateTask(() => CustomButtonHud.BottonHud(true), 0.3f, "SetHudButton", true);
