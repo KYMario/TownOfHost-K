@@ -130,17 +130,18 @@ namespace TownOfHost
                     VentManager.UpdateDesyncVentCleaning(player, roleclass);
                     DoubleTrigger.OnFixedUpdate(player);
                     (roleclass as IUsePhantomButton)?.FixedUpdate(player);
-                }
 
-                Utils.ApplySuffix(__instance);
-            }
-            //LocalPlayer専用
-            if (__instance.AmOwner)
-            {
-                timer = (timer + 1) % 10;
-                if (GameStates.InGame)
-                {
                     VentManager.CheckVentLimit();
+                    ChatManager.IntaskCheckSendMessage(player);
+                    if (!GameStates.IsMeeting && timer is 7)
+                    {
+                        foreach (var Ldata in ColorLovers.Alldatas.Values)
+                        {
+                            Ldata.LoversSuicide();
+                        }
+                        Lovers.MadonnLoversSuicide();
+                        Lovers.OneLoveSuicide();
+                    }
                     if (DisableDevice.DoDisable)
                     {
                         DisableDevice.FixedUpdate();
@@ -170,21 +171,22 @@ namespace TownOfHost
                             }
                         }
                     }
+                    SuddenDeathMode.UpdateTeam();
+                }
+
+                Utils.ApplySuffix(__instance);
+            }
+            //LocalPlayer専用
+            if (__instance.AmOwner)
+            {
+                timer = (timer + 1) % 10;
+                if (GameStates.InGame)
+                {
                     if (Main.IsActiveSabotage)
                     {
                         Main.SabotageActivetimer += Time.fixedDeltaTime;
                     }
 
-                    ChatManager.IntaskCheckSendMessage(player);
-                    if (!GameStates.IsMeeting && timer is 7)
-                    {
-                        foreach (var data in ColorLovers.Alldatas.Values)
-                        {
-                            data.LoversSuicide();
-                        }
-                        Lovers.MadonnLoversSuicide();
-                        Lovers.OneLoveSuicide();
-                    }
                     //サドンデスモード
                     if (SuddenDeathMode.NowSuddenDeathMode)
                     {
@@ -192,12 +194,7 @@ namespace TownOfHost
                         if (SuddenDeathMode.SuddenPlayerArrow.GetBool()) SuddenDeathMode.ItijohoSend();
                     }
                 }
-                else
-                {
-                    SuddenDeathMode.UpdateTeam();
-                }
 
-                //if (timer is 3)
                 {
                     var kiruta = GameStates.IsInTask && !GameStates.Intro && ((__instance.Is(CustomRoles.Amnesiac) && !(roleclass as Amnesiac).Realized) || __instance.Is(CustomRoles.OneWolf));
                     //キルターゲットの上書き処理

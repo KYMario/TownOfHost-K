@@ -231,6 +231,7 @@ namespace TownOfHost
         }
         public static void RpcSetRoleDesync(this PlayerControl player, RoleTypes role, int clientId, SendOption sendoption = SendOption.Reliable)
         {
+            if (AmongUsClient.Instance.AmHost is false) return;
             if (clientId == -1)
             {
                 Logger.Error($"clientIdが-1!", "RpcSetRoleDesync");

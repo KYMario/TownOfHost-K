@@ -16,6 +16,7 @@ namespace TownOfHost
         }
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target, [HarmonyArgument(1)] ZiplineBehaviour ziplineBehaviour, [HarmonyArgument(2)] bool fromTop)
         {
+            if (AmongUsClient.Instance.AmHost is false) return true;
             if (!fromTop && Options.CantUseZipLineTotop.GetBool()) return false;
             if (fromTop && Options.CantUseZipLineTodown.GetBool()) return false;
 

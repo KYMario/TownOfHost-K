@@ -130,49 +130,41 @@ namespace TownOfHost
                 pc.RemoveProtection();
                 Main.KillCount.Add(pc.PlayerId, 0);
 
-                if (Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special))
+                if (__instance.AmHost)
                 {
-                    var tageId = IRandom.Instance.Next(players.Count);
-                    var pl = players.OrderBy(x => Guid.NewGuid()).ToArray()[tageId];
-                    Logger.Info($"{pc?.Data?.PlayerName} => {pl?.Data?.PlayerName}", "Shuffle");
-                    UtilsGameLog.AddGameLogsub($"{pc?.Data?.PlayerName}のシャッフル先 : {pl?.Data?.PlayerName}");
+                    if (Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special))
+                    {
+                        var tageId = IRandom.Instance.Next(players.Count);
+                        var pl = players.OrderBy(x => Guid.NewGuid()).ToArray()[tageId];
+                        Logger.Info($"{pc?.Data?.PlayerName} => {pl?.Data?.PlayerName}", "Shuffle");
+                        UtilsGameLog.AddGameLogsub($"{pc?.Data?.PlayerName}のシャッフル先 : {pl?.Data?.PlayerName}");
 
-                    var colorId = pl.Data.DefaultOutfit.ColorId;
+                        var colorId = pl.Data.DefaultOutfit.ColorId;
 
-                    Main.AllPlayerNames[pc.PlayerId] = pl?.Data?.PlayerName;
-                    Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
-                    pc.cosmetics.nameText.text = pl.name;
+                        Main.AllPlayerNames[pc.PlayerId] = pl?.Data?.PlayerName;
+                        Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
+                        pc.cosmetics.nameText.text = pl.name;
 
-                    var outfit = pl.Data.DefaultOutfit;
-                    Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
+                        var outfit = pl.Data.DefaultOutfit;
+                        Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
 
-                    players.Remove(pl);
-                }
-                else
-                {
-                    var colorId = pc.Data.DefaultOutfit.ColorId;
-                    if (AmongUsClient.Instance.AmHost && Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(colorId));
+                        players.Remove(pl);
+                    }
+                    else
+                    {
+                        var colorId = pc.Data.DefaultOutfit.ColorId;
+                        if (AmongUsClient.Instance.AmHost && Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(colorId));
 
-                    Main.AllPlayerNames[pc.PlayerId] = pc?.Data?.PlayerName;
-                    Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
-                    pc.cosmetics.nameText.text = pc.name;
+                        Main.AllPlayerNames[pc.PlayerId] = pc?.Data?.PlayerName;
+                        Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
+                        pc.cosmetics.nameText.text = pc.name;
 
-                    var outfit = pc.Data.DefaultOutfit;
-                    Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
+                        var outfit = pc.Data.DefaultOutfit;
+                        Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
+                    }
                 }
             }
             StandardIntro.CoGameIntroWeight();
-            if (Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special))
-            {
-                PlayerCatch.AllPlayerControls.Do(pc =>
-                {
-                    Camouflage.RpcSetSkin(pc);
-                    if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
-
-                    if (AmongUsClient.Instance.AmHost && Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
-                    else if (AmongUsClient.Instance.AmHost) pc.RpcSetName(outfit.PlayerName);
-                });
-            }
 
             Main.VisibleTasksCount = true;
             if (__instance.AmHost)
@@ -186,6 +178,17 @@ namespace TownOfHost
                 if (Options.IsStandardHAS)
                 {
                     Options.HideAndSeekKillDelayTimer = Options.StandardHASWaitingTime.GetFloat();
+                }
+                if (Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special))
+                {
+                    PlayerCatch.AllPlayerControls.Do(pc =>
+                    {
+                        Camouflage.RpcSetSkin(pc);
+                        if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
+
+                        if (AmongUsClient.Instance.AmHost && Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
+                        else if (AmongUsClient.Instance.AmHost) pc.RpcSetName(outfit.PlayerName);
+                    });
                 }
             }
 

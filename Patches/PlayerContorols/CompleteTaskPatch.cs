@@ -45,19 +45,22 @@ namespace TownOfHost
 
                     taskState.hasTasks = UtilsTask.HasTasks(pc.Data, false);
 
-                    if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)
-                        pc.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), pc.GetClientId());
-                    else
-                    if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                        if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType.Invoke() is not null and not RoleTypes.Impostor)
-                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
-
-                    pc.SyncSettings();
-                    _ = new LateTask(() =>
+                    if (AmongUsClient.Instance.AmHost)
                     {
-                        pc.SetKillCooldown(Main.AllPlayerKillCooldown[pc.PlayerId], force: true, delay: true);
-                        pc.RpcResetAbilityCooldown(Sync: true);
-                    }, 0.2f, "ResetAbility");
+                        if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+                            pc.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), pc.GetClientId());
+                        else
+                            if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                            if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType.Invoke() is not null and not RoleTypes.Impostor)
+                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
+
+                        pc.SyncSettings();
+                        _ = new LateTask(() =>
+                        {
+                            pc.SetKillCooldown(Main.AllPlayerKillCooldown[pc.PlayerId], force: true, delay: true);
+                            pc.RpcResetAbilityCooldown(Sync: true);
+                        }, 0.2f, "ResetAbility");
+                    }
                 }
 
             //属性クラスの扱いを決定するまで仮置き

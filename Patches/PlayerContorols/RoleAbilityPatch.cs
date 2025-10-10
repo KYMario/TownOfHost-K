@@ -212,6 +212,7 @@ namespace TownOfHost
     {
         public static bool CheckVanish(PlayerControl __instance)
         {
+            if (AmongUsClient.Instance.AmHost is false) return false;
             if (__instance.PlayerId == PlayerControl.LocalPlayer.PlayerId) return false;
             var AdjustKillCooldown = true;
             bool? ResetCooldown = true;
@@ -491,6 +492,7 @@ namespace TownOfHost
     {
         public static bool Prefix(PlayerPhysics __instance)
         {
+            if (AmongUsClient.Instance.AmHost is false) return true;
             CoEnterVentPatch.VentPlayers.Remove(__instance.myPlayer.PlayerId);
 
             var player = __instance.myPlayer;

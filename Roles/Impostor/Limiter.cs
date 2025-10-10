@@ -217,7 +217,6 @@ namespace TownOfHost.Roles.Impostor
                 MyState.DeathReason = CustomDeathReason.Bombed;
                 Player.SetRealKiller(Player);
                 Player.RpcMurderPlayer(Player, true);
-                RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
             }
         }
 

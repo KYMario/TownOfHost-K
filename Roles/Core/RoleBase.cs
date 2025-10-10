@@ -496,7 +496,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// 自身がゲッサーされそうになった時に呼ばれる関数
     /// falseを返すと返り討ち。
-    /// nullなら流す
+    /// nullなら流す 
     /// </summary>
     /// <param name="killer"></param>
     /// <returns></returns>

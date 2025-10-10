@@ -57,6 +57,7 @@ namespace TownOfHost
             var targetName = __instance.GetNameWithRole().RemoveHtmlTags();
             canOverrideRole = true;
             Logger.Info($"{targetName} => {roleType}", "PlayerControl.RpcSetRole");
+            if (AmongUsClient.Instance.AmHost is false) return true;
             if (GameStates.IsFreePlay && Main.EditMode)
             {
                 roleType = RoleTypes.Shapeshifter;

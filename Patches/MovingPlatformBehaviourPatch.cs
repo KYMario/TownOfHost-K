@@ -33,6 +33,7 @@ public static class MovingPlatformBehaviourPatch
     [HarmonyPatch(nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl)), HarmonyPrefix]
     public static bool UsePrefix([HarmonyArgument(0)] PlayerControl player)
     {
+        if (AmongUsClient.Instance.AmHost is false) return true;
         // プレイヤーがぬーん使用不可状態のときに使用をブロック
         if (!PlayerState.GetByPlayerId(player.PlayerId).CanUseMovingPlatform)
         {
@@ -67,6 +68,7 @@ public static class MovingPlatformBehaviourPatch
 
     public static void SetPlatfrom()
     {
+        if (AmongUsClient.Instance.AmHost is false) return;
         if (Main.NormalOptions.MapId is not 4) return;
         AirshipStatus airshipStatus = GameObject.FindObjectOfType<AirshipStatus>();
         if (airshipStatus && Options.AirShipPlatform.GetBool())

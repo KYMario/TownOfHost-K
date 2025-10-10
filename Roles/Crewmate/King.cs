@@ -81,11 +81,14 @@ public sealed class King : RoleBase
     }
     public override void OnLeftPlayer(PlayerControl player)
     {
-        if (player == Player)
-            if (IsExiled && !IsDead)
-            {
-                _ = new LateTask(() => CrewMateAbooooon(), 20f, "KingExdie");
-            }
+        if (AmongUsClient.Instance.AmHost)
+        {
+            if (player == Player)
+                if (IsExiled && !IsDead)
+                {
+                    _ = new LateTask(() => CrewMateAbooooon(), 20f, "KingExdie");
+                }
+        }
         if (player == Player) IsDead = true;
     }
     public override bool OnCheckMurderAsTarget(MurderInfo info)

@@ -352,6 +352,7 @@ public static class CustomRoleManager
             CustomWinnerHolder.ResetAndSetWinner(CustomWinner.HASTroll);
             CustomWinnerHolder.WinnerIds.Add(appearanceTarget.PlayerId);
         }
+
         if (Main.KillCount.ContainsKey(appearanceKiller.PlayerId))
             if (appearanceKiller.Is(CustomRoles.Amnesia) && Amnesia.OptionCanRealizeKill.GetBool())
             {
@@ -360,25 +361,28 @@ public static class CustomRoleManager
                     if (!Utils.RoleSendList.Contains(appearanceKiller.PlayerId)) Utils.RoleSendList.Add(appearanceKiller.PlayerId);
                     Amnesia.RemoveAmnesia(appearanceKiller.PlayerId);
 
-                    if (appearanceKiller.PlayerId != PlayerControl.LocalPlayer.PlayerId)
-                        appearanceKiller.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), appearanceKiller.GetClientId());
-                    else
-                    if (appearanceKiller.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+
+                    if (AmongUsClient.Instance.AmHost)
                     {
-                        if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType?.Invoke() != RoleTypes.Impostor)
-                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
-                        else if (roleinfo?.BaseRoleType.Invoke() == RoleTypes.Shapeshifter)
+                        if (appearanceKiller.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+                            appearanceKiller.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), appearanceKiller.GetClientId());
+                        else if (appearanceKiller.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                         {
-                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.Shapeshifter);
+                            if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType?.Invoke() != RoleTypes.Impostor)
+                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
+                            else if (roleinfo?.BaseRoleType.Invoke() == RoleTypes.Shapeshifter)
+                            {
+                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.Shapeshifter);
+                            }
                         }
+                        appearanceKiller.ResetKillCooldown();
+                        _ = new LateTask(() =>
+                        {
+                            appearanceKiller.RpcResetAbilityCooldown(Sync: true);
+                            appearanceKiller.SetKillCooldown(delay: true);
+                            UtilsNotifyRoles.NotifyRoles();
+                        }, 0.2f, "SetKillCOolDown");
                     }
-                    appearanceKiller.ResetKillCooldown();
-                    _ = new LateTask(() =>
-                    {
-                        appearanceKiller.RpcResetAbilityCooldown(Sync: true);
-                        appearanceKiller.SetKillCooldown(delay: true);
-                        UtilsNotifyRoles.NotifyRoles();
-                    }, 0.2f, "SetKillCOolDown");
                 }
             }
     }

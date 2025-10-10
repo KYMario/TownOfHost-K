@@ -224,6 +224,7 @@ namespace TownOfHost.Modules
         }
         public static void NotTeamKill()
         {
+            if (AmongUsClient.Instance.AmHost is false) return;
             if (NowSuddenDeathTemeMode)
             {
                 foreach (var p in PlayerCatch.AllAlivePlayerControls)
@@ -248,34 +249,38 @@ namespace TownOfHost.Modules
             {
                 IsActiveSabotage = true;
 
-                var systemtypes = Utils.GetCriticalSabotageSystemType();
-                ShipStatus.Instance.RpcUpdateSystem(systemtypes, 128);
-                Logger.Info("ｷﾐﾊﾓｳｼﾞｷｼﾇ...!!", "SuddenDeath");
-                UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    var systemtypes = Utils.GetCriticalSabotageSystemType();
+                    ShipStatus.Instance.RpcUpdateSystem(systemtypes, 128);
+                    Logger.Info("ｷﾐﾊﾓｳｼﾞｷｼﾇ...!!", "SuddenDeath");
+                    UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                }
                 return;
             }
             if (SuddendeathRoundTime - SuddenDeathtime < 10 && Remaining10s is false)
             {
                 Remaining10s = true;
-                UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+
+                if (AmongUsClient.Instance.AmHost) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 return;
             }
             if (SuddendeathRoundTime - SuddenDeathtime < 15 && Remaining15s is false)
             {
                 Remaining15s = true;
-                UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                if (AmongUsClient.Instance.AmHost) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 return;
             }
             if (SuddendeathRoundTime - SuddenDeathtime < 30 && Remaining30s is false)
             {
                 Remaining30s = true;
-                UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                if (AmongUsClient.Instance.AmHost) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 return;
             }
             if (SuddendeathRoundTime - SuddenDeathtime < 60 && Remaining60s is false)
             {
                 Remaining60s = true;
-                UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                if (AmongUsClient.Instance.AmHost) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 return;
             }
         }

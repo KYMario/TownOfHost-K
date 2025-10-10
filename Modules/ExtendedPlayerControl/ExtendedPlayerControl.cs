@@ -144,6 +144,10 @@ namespace TownOfHost
         /// <summary>たぶんホスト以外が送信したらあぶないやつ</summary>
         public static void SyncSettings(this PlayerControl player)
         {
+            if (AmongUsClient.Instance.AmHost is false)
+            {
+                Logger.Warn($"NotHost Send Setting sendto:{player.PlayerId}", "SyncSettings");
+            }
             if (player.isDummy) return;
             PlayerGameOptionsSender.SetDirty(player.PlayerId);
             GameOptionsSender.SendAllGameOptions();

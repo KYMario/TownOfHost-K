@@ -40,6 +40,7 @@ public static class MeetingHudPatch
     {
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] byte srcPlayerId /* 投票した人 */ , [HarmonyArgument(1)] byte suspectPlayerId /* 投票された人 */ )
         {
+            if (AmongUsClient.Instance.AmHost is false) return true;
             if (Options.firstturnmeeting && Options.FirstTurnMeetingCantability.GetBool() && MeetingStates.FirstMeeting)
             {
                 MeetingVoteManager.Instance?.SetVote(srcPlayerId, 253);
@@ -111,13 +112,13 @@ public static class MeetingHudPatch
                 pc.Data.Role.NameColor = Palette.White;
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId].Clear();
 
-                if (Main.CheckShapeshift.TryGetValue(pc.PlayerId, out var shapeshifting) && shapeshifting)
+                if (Main.CheckShapeshift.TryGetValue(pc.PlayerId, out var shapeshifting) && shapeshifting && AmongUsClient.Instance.AmHost)
                 {
                     pc.RpcShapeshift(pc, false);
                 }
                 if (!pc.IsAlive() && !Assassin.NowUse)
                 {
-                    pc.RpcExileV2();
+                    if (AmongUsClient.Instance.AmHost) pc.RpcExileV2();
                 }//  会議時に生きてたぜリスト追加
                 else
                 {

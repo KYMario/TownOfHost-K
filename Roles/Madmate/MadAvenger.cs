@@ -91,6 +91,7 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
     public override string GetAbilityButtonText() => MyTaskState.IsTaskFinished && !(PlayerCatch.AllAlivePlayersCount >= Count) ? GetString("MadAvengerAbility") : GetString(StringNames.VentAbility);
     public override bool OnEnterVent(PlayerPhysics physics, int ventId)
     {
+        if (AmongUsClient.Instance.AmHost is false) return true;
         if ((!IsTaskFinished && PlayerCatch.AllAlivePlayersCount >= Count) || !can)
         {
             return OptionVent.GetBool();

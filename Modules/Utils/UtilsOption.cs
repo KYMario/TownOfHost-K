@@ -916,6 +916,10 @@ namespace TownOfHost
         /// <summary>たぶんホスト以外が送信したらあぶないやつ</summary>
         public static void SyncAllSettings()
         {
+            if (AmongUsClient.Instance.AmHost is false)
+            {
+                Logger.Warn("NotHost Send All Setting", "SyncAllSetting");
+            }
             PlayerGameOptionsSender.SetDirtyToAll();
             GameOptionsSender.SendAllGameOptions();
         }
