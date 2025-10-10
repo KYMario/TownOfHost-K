@@ -49,6 +49,9 @@ namespace TownOfHost
                 }
             }
 
+            TargetArrow.OnFixedUpdate(player);
+            GetArrow.OnFixedUpdate(player);
+
             CustomRoleManager.OnFixedUpdate(player);
 
             var roleclass = player.GetRoleClass();
@@ -125,8 +128,6 @@ namespace TownOfHost
                         FallFromLadder.FixedUpdate(player);
                     }
                     VentManager.UpdateDesyncVentCleaning(player, roleclass);
-                    TargetArrow.OnFixedUpdate(player);
-                    GetArrow.OnFixedUpdate(player);
                     DoubleTrigger.OnFixedUpdate(player);
                     (roleclass as IUsePhantomButton)?.FixedUpdate(player);
                 }
@@ -346,10 +347,10 @@ namespace TownOfHost
 
                             if (target.Is(CustomRoles.Workhorse))
                             {
-                                if (((seerRole as Alien)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen)
+                                if (((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                                 || ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
                                 || ((seerRole is ProgressKiller) && ProgressKiller.ProgressWorkhorseseen)
-                                || ((seerRole as AlienHijack)?.modeProgresskiller == true && Alien.ProgressWorkhorseseen))
+                                || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                 {
                                     Mark.Append($"<color=blue>♦</color>");
                                 }
