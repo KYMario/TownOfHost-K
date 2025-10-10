@@ -446,6 +446,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     private void SendRPC()
     {
         using var sender = CreateSender();
+        sender.Writer.Write((int)NowMission);
         sender.Writer.Write(NowPoint);
         sender.Writer.Write(target);
         sender.Writer.Write(Gotovent);
@@ -455,6 +456,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     }
     public override void ReceiveRPC(MessageReader reader)
     {
+        NowMission = (MissionList)reader.ReadInt32();
         NowPoint = reader.ReadInt32();
         target = reader.ReadByte();
         Gotovent = reader.ReadBoolean();
