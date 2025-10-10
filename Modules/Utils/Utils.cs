@@ -341,14 +341,14 @@ namespace TownOfHost
                         if (tagtext == "") continue;
                         switch (tagtext.Substring(0, 1))
                         {
-                            case "s": tag.size = $"<{tagtext.Split(">")[0]}>"; break;
+                            case "s": if (!tagtext.Contains("sub")) tag.size = $"<{tagtext.Split(">")[0]}>"; break;
                             case "c": case "#": tag.color = $"<{tagtext.Split(">")[0]}>"; break;
                             case "l": tag.hi = $"<{tagtext.Split(">")[0]}>"; break;
                             case "b": tag.b = $"<{tagtext.Split(">")[0]}>"; break;
                             case "/":
                                 switch (tagtext.Substring(1, 1))
                                 {
-                                    case "s": tag.size = ""; break;
+                                    case "s": if (!tagtext.Contains("sub")) tag.size = ""; break;
                                     case "c": tag.color = ""; break;
                                     case "l": tag.hi = ""; break;
                                     case "b": tag.b = ""; break;
@@ -358,7 +358,7 @@ namespace TownOfHost
                     }
                 }
                 var send = "";
-                for (var ii = i; ii < alltext.Count(); ii++)
+                for (var ii = i + 1; ii < alltext.Count(); ii++)
                 {
                     send += $"{alltext[ii]}\n";
                 }
@@ -385,6 +385,7 @@ namespace TownOfHost
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
+            Logger.Info($"{fir}{text}", "aaa");
             if (towsend is not "")
             {
                 SendMessage(towsend, sendTo, title, rob, true);
