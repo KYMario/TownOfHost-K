@@ -395,7 +395,7 @@ namespace TownOfHost.Modules.ChatManager
         }
         public static void SendmessageInLobby(ChatController chatController)
         {
-            PlayerControl senderplayer = PlayerCatch.AllAlivePlayerControls.Where(x => x.PlayerId is not 0).OrderBy(x => x.PlayerId).FirstOrDefault();
+            PlayerControl senderplayer = PlayerCatch.AllAlivePlayerControls.Where(x => x.PlayerId is not 0 && x.name is not "Player(Clone)").OrderBy(x => x.PlayerId).FirstOrDefault();
             if (senderplayer == null)
             {
                 if (PlayerControl.LocalPlayer is not null)
