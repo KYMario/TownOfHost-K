@@ -541,6 +541,12 @@ namespace TownOfHost
             }
             else
             {
+                var roleInfo = PlayerControl.LocalPlayer.GetCustomRole().GetRoleInfo();
+                var amDesyncImpostor = roleInfo?.IsDesyncImpostor == true;
+                if (amDesyncImpostor && PlayerControl.LocalPlayer.GetCustomRole() is not CustomRoles.BakeCat)
+                {
+                    PlayerControl.LocalPlayer.Data.Role.AffectedByLightAffectors = false;
+                }
                 //私が把握できていない処理でホストの挙動がバグると困るので、
                 //別でフラグ更新書いておきます 問題なかったらまとめても大丈夫です
                 GameStates.Intro = false;
