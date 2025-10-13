@@ -886,7 +886,7 @@ namespace TownOfHost
                         //モードがタスバトじゃない時はメッセージ表示
                         if (Options.CurrentGameMode != CustomGameMode.TaskBattle)
                         {
-                            __instance.AddChat(PlayerControl.LocalPlayer, "選択されているモードが<color=cyan>タスクバトル</color>のみ実行可能です。\nロビーにある設定から変えてみてね><");
+                            __instance.AddChat(PlayerControl.LocalPlayer, "選択されているモードが<color=#9adfff>タスクバトル</color>のみ実行可能です。\nロビーにある設定から変えてみてね><");
                             break;
                         }
 
