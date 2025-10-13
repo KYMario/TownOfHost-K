@@ -12,6 +12,7 @@ using TMPro;
 using UnityEngine;
 
 using TownOfHost.Roles.Core;
+using UnityEngine.Networking;
 
 namespace TownOfHost.Modules;
 
@@ -259,18 +260,24 @@ class VersionInfoManager
     public static async Task<bool> CheckVersionsJson(bool force = false)
     {
         if (Versions != null && !force) return true;
-        if (Main.IsAndroid()) return false;
+
         try
         {
-            using HttpClient client = new();
-            client.DefaultRequestHeaders.Add("User-Agent", "TownOfHost-K VersionChecker");
-            using var response = await client.GetAsync(new Uri(URL), HttpCompletionOption.ResponseContentRead);
-            if (!response.IsSuccessStatusCode || response.Content == null)
+            UnityWebRequest request = UnityWebRequest.Get(URL);
+            request.SetRequestHeader("User-Agent", "TownOfHost-K VersionChecker");
+
+            var operation = request.SendWebRequest();
+
+            while (!operation.isDone)
+                await Task.Yield();
+
+            if (request.isNetworkError || request.isHttpError)
             {
-                Logger.Error($"ステータスコード: {response.StatusCode}", "CheckVersionJson");
+                Logger.Error($"ステータスコード: {request.responseCode.ToString()}", "CheckVersionJson");
                 return false;
             }
-            var result = await response.Content.ReadAsStringAsync();
+
+            var result = request.downloadHandler.text;
             var versions = JsonSerializer.Deserialize<Dictionary<string, VersionInfo>>(result);
             if (versions == null) return false;
             Versions = versions;
