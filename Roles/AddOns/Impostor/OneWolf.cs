@@ -47,6 +47,7 @@ namespace TownOfHost.Roles.AddOns.Common
             {
                 foreach (var imp in PlayerCatch.AllPlayerControls.Where(pc => pc.GetCustomRole().IsImpostor() && playerIdList.Contains(pc.PlayerId) is false))
                 {
+                    if (player.PlayerId == imp.PlayerId) continue;
                     if (AmongUsClient.Instance.AmHost)
                     {
                         imp.RpcSetRoleDesync(imp.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, player.GetClientId());
