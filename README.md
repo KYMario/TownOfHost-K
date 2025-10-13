@@ -22,7 +22,7 @@ TOH-Kで起きたバグは本家や他MODには報告しないでまずはkに�
 ## [Wiki](https://github.com/KYMario/TownOfHost-K/wiki)もあるよ!
 
 ## リリース
-AmongUsバージョン : **16.0.5**<br>
+AmongUsバージョン : **17.0.0**<br>
 
 **最新版は[こちら](https://github.com/KYMario/TownOfHost-K/releases/latest)**
 
@@ -160,7 +160,7 @@ HostModなので部屋主のみModを導入すれば、<br>
 　会議時の役職表示、会議拡張、ワーカホリック,属性名を参考/移植させて頂きました！<br>
 
 [Town Of Host For E](https://github.com/AsumuAkaguma/TownOfHost_ForE) <br>
-　機能や一部処理の参考にさせて頂きました！<br>
+　機能やコメント取得一部処理の参考にさせて頂きました！<br>
 
 [Revolutionary Host Roles](https://github.com/sansaaaaai/Revolutionary-host-roles)<br>
 　カスタムボタンの参考、リローダー、スタッフ、インセンダーを移行させていただきました！<br>
