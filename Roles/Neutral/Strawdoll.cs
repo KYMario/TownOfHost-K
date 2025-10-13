@@ -91,6 +91,8 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
+        opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
+        opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultCrewmateVision);
         opt.SetVision(false);
         AURoleOptions.PhantomCooldown = ShapeCooldown;
     }
@@ -256,6 +258,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             Player.SetKillCooldown(1);
         }
     }
+    public override string GetAbilityButtonText() => GetString(StringNames.ShapeshiftAbility);
 
     public void SendRPC()
     {
