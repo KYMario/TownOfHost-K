@@ -175,6 +175,7 @@ namespace TownOfHost
                 }
 
                 Utils.ApplySuffix(__instance);
+                StreamerInfo.FixUpdate();
             }
             //LocalPlayer専用
             if (__instance.AmOwner)

@@ -64,7 +64,7 @@ namespace TownOfHost
                     () =>
                     {
                         var url = GUIUtility.systemCopyBuffer;
-                        if (url.StartsWith("https://youtu.be") || url.StartsWith("https://www.youtube.com/"))
+                        if (url.StartsWith("https://youtube") || url.StartsWith("https://www.youtube.com/"))
                         {
                             StreamerInfo.StreamURL = url;
                             NowURLText.text = StreamerInfo.StreamURL;

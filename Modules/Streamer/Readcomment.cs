@@ -31,6 +31,10 @@ class StreamerInfo
             {
                 streamkey = StreamURL.RemoveDeltext("https://youtu.be/").Split("?")[0];
             }
+            else if (StreamURL.StartsWith("https://youtube.com/live/"))
+            {
+                streamkey = StreamURL.RemoveDeltext("https://youtube.com/live/").Split("?")[0];
+            }
             else
             {
                 streamkey = StreamURL.Split("=")[1];
@@ -149,6 +153,7 @@ class StreamerInfo
 
         var node = JsonNode.Parse(response);
         var a = node?["continuationContents"]?["liveChatContinuation"]?["actions"];
+        // ↓ 夜藍の環境だとここでreturnされたのでまた確認がいりそう。
         if (a == null) return comments;
 
         foreach (var item in a.AsArray())
