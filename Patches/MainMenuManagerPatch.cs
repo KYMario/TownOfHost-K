@@ -27,7 +27,7 @@ namespace TownOfHost
         private static SimpleButton gitHubButton;
         private static SimpleButton TwitterXButton;
         private static SimpleButton TOHkBOTButton;
-        private static SimpleButton VersionChangeButton;
+        //private static SimpleButton VersionChangeButton;
         private static SimpleButton betaversionchange;
         public static TextMeshPro Statistisc;
         public static GameObject VersionMenu;
@@ -291,6 +291,20 @@ namespace TownOfHost
             }
             // フリープレイが消えるのでHowToPlayをセンタリング | 消えないのでしません☆
             //howToPlayButton.transform.SetLocalX(0);
+#endif
+#if DEBUG
+            var csbutton = GameObject.Instantiate(freeplayButton, freeplayButton.parent);
+            var textm = csbutton.transform.FindChild("Text_TMP").GetComponent<TextMeshPro>();
+            textm.DestroyTranslator();
+            textm.text = Translator.GetString("EditCSp");
+
+            csbutton.transform.localPosition = new Vector3(2.8704f, -1.9916f);
+            csbutton.transform.localScale = new Vector3(0.6f, 0.6f);
+            var pb = csbutton.GetComponent<PassiveButton>();
+            pb.inactiveSprites.GetComponent<SpriteRenderer>().color = new(88, 101, 242, byte.MaxValue);
+            pb.activeSprites.GetComponent<SpriteRenderer>().color = new(148, 161, byte.MaxValue, byte.MaxValue);
+            pb.OnClick.AddListener((Action)(() => Main.EditMode = true));
+            freeplayButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Main.EditMode = false));//ボタンを生成
 #endif
         }
 
