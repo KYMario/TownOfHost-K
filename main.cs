@@ -218,6 +218,8 @@ namespace TownOfHost
             TownOfHost.Logger.Disable("CoroutinPatcher");
             //TownOfHost.Logger.isDetail = true;
 
+            System.Console.OutputEncoding = System.Text.Encoding.UTF8;
+
             // 認証関連-初期化
             DebugKeyAuth = new HashAuth(DebugKeyHash, DebugKeySalt);
             ExplosionKeyAuth = new HashAuth(ExplosionKeyHash, DebugKeySalt);
