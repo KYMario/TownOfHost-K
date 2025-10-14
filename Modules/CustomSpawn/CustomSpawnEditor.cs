@@ -203,12 +203,11 @@ public class CustomSpawnEditor
             EditColor
         }
 
-        [HarmonyPatch(typeof(TutorialManager._RunTutorial_d__3), nameof(TutorialManager._RunTutorial_d__3.MoveNext)), HarmonyPrefix]
-        public static void RunTutorialPatch(TutorialManager._RunTutorial_d__3 __instance)
+        [HarmonyPatch(typeof(TutorialManager), nameof(TutorialManager.Awake)), HarmonyPostfix]
+        public static void RunTutorialPatch(TutorialManager __instance)
         {
-            if (__instance.__1__state != 0 || !Main.EditMode) return;
-            __instance.__4__this.StartCoroutine(RunEditor().WrapToIl2Cpp());
-        }
+            __instance.StartCoroutine(RunEditor().WrapToIl2Cpp());
+        }//PostFixなら多分行けると思う。
 
         public static IEnumerator RunEditor()
         {
