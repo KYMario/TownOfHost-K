@@ -30,6 +30,7 @@ namespace TownOfHost
         public static bool IsActive(SystemTypes type)
         {
             if (GameStates.IsFreePlay && Main.EditMode) return false;
+            if (ShipStatus.Instance is null) return false;
             // ないものはfalse
             if (!ShipStatus.Instance.Systems.ContainsKey(type))
             {
