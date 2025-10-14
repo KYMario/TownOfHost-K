@@ -310,6 +310,11 @@ namespace TownOfHost
                     MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(user.MyPhysics.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, user.GetClientId());
                     writer.Write(id);
                     AmongUsClient.Instance.FinishRpcImmediately(writer);
+
+                    if (user?.Data?.Role?.Role is RoleTypes.Engineer)
+                    {
+                        user.Data.Role.SetCooldown();
+                    }
                     return false;
                 }
             }
