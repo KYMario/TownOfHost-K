@@ -25,7 +25,6 @@ class VentilationSystemUpdateSystemPatch
         }
         last_opId = opId;
 
-
         if (!NowVentId.TryAdd(player.PlayerId, ventId))
         {
             NowVentId[player.PlayerId] = ventId;

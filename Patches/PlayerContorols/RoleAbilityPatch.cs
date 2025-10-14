@@ -422,16 +422,29 @@ namespace TownOfHost
                         writer.WritePacked(127);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);*/
 
+                        int clientId = user.GetClientId();
+                        _ = new LateTask(() =>
+                        {
+                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
+                            writer2.Write(id);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                        }, 0.1f, "Vent- BootFromVent", true);
+                        _ = new LateTask(() =>
+                        {
+                            VentPlayers.TryAdd(__instance.myPlayer.PlayerId, 0);
+                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.EnterVent, SendOption.None, clientId);
+                            writer2.Write(id);
+                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                        }, 0.25f, "Vent- EnterVent", true);
                         __instance.myPlayer.inVent = false;
                         _ = new LateTask(() =>
                         {
-                            int clientId = user.GetClientId();
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
                             writer2.Write(id);
                             AmongUsClient.Instance.FinishRpcImmediately(writer2);
                             __instance.myPlayer.RpcSnapToForced(pos);
                             __instance.myPlayer.inVent = false;
-                        }, 0.8f, "Fix DesyncImpostor Stuck", null);
+                        }, 0.8f, "Fix DesyncImpostor Stuck", true);
                         return false;
                     }
                 }
