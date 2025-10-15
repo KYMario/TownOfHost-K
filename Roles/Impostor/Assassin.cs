@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using AmongUs.GameOptions;
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
@@ -8,7 +10,7 @@ using UnityEngine;
 
 namespace TownOfHost.Roles.Impostor;
 
-public sealed class Assassin : RoleBase, IImpostor
+public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -22,6 +24,7 @@ public sealed class Assassin : RoleBase, IImpostor
             "as",
             OptionSort: (2, 0),
             tab: TabGroup.Combinations,
+            introSound: () => GetIntroSound(RoleTypes.Detective),
             assignInfo: new RoleAssignInfo(CustomRoles.Assassin, CustomRoleTypes.Impostor)
             {
                 AssignUnitRoles = [CustomRoles.Assassin, CustomRoles.Merlin]
@@ -51,6 +54,9 @@ public sealed class Assassin : RoleBase, IImpostor
     static OptionItem OptionCanCallMeetingKill; static bool cancallmeetingkill;
     static OptionItem OptionHasOtherRole;
     static FilterOptionItem OptionHaveRole; static CustomRoles haverole;
+
+    static OverrideTasksData OptionMerlinNomalTask;
+    public static OptionItem OptionMerlinWorkTask;
     RoleBase AddRole;
     public enum AssassinMeeting
     {
@@ -67,7 +73,7 @@ public sealed class Assassin : RoleBase, IImpostor
         foreach (var data in CustomRoleManager.AllRolesInfo)
         {
             if (data.Key.IsImpostor() is false && data.Key is not CustomRoles.NotAssigned) continue;
-            if (data.Value?.BaseRoleType?.Invoke() is RoleTypes.Phantom || data.Key is CustomRoles.AlienHijack or CustomRoles.EvilSatellite or CustomRoles.ConnectSaver
+            if (data.Key is CustomRoles.AlienHijack or CustomRoles.EvilSatellite or CustomRoles.ConnectSaver
             or CustomRoles.Limiter or CustomRoles.Assassin)
             {
                 InvalidRoles.Add(data.Key);
@@ -80,7 +86,8 @@ public sealed class Assassin : RoleBase, IImpostor
     {
         AssasinCanCallMeetingKill,
         AssasinHasOtherRole,
-        AssassinHaveRole
+        AssassinHaveRole,
+        WalkerWalkTaskCount
     }
     public static void SetupOptionItem()
     {
@@ -88,6 +95,9 @@ public sealed class Assassin : RoleBase, IImpostor
         OptionCanCallMeetingKill = BooleanOptionItem.Create(RoleInfo, 10, OptionName.AssasinCanCallMeetingKill, false, false);
         OptionHasOtherRole = BooleanOptionItem.Create(RoleInfo, 13, OptionName.AssasinHasOtherRole, false, false);
         OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, () => InvalidRoles());
+
+        OptionMerlinNomalTask = OverrideTasksData.Create(RoleInfo, 15, rolename: CustomRoles.Merlin, tasks: (true, 2, 0, 0));
+        OptionMerlinWorkTask = IntegerOptionItem.Create(RoleInfo, 16, OptionName.WalkerWalkTaskCount, (0, 99, 1), 6, false);
     }
     public override void Add()
     {
@@ -109,6 +119,10 @@ public sealed class Assassin : RoleBase, IImpostor
     }
     public override void OnDestroy()
     {
+        if (AddRole is not null)
+        {
+            AddRole?.OnDestroy();
+        }
         AddRole = null;
         haverole = CustomRoles.NotAssigned;
         NowUse = false;
@@ -146,7 +160,7 @@ public sealed class Assassin : RoleBase, IImpostor
             _ = new LateTask(() =>
             {
                 MyState.IsDead = false;
-                ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "アサシン会議", "#ff1919");
+                ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "AssassinMeeting", "#ff1919");
                 Utils.AllPlayerKillFlash();
             }, 3, "", true);
         }
@@ -187,7 +201,7 @@ public sealed class Assassin : RoleBase, IImpostor
                     AntiBlackout.SendGameData();
                     GameDataSerializePatch.SerializeMessageCount--;
                     _ = new LateTask(() =>
-                    ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "アサシン会議", "#ff1919"), 3, "", true);
+                    ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "AssassinMeeting", "#ff1919"), 3, "", true);
                 }
             }//, 0.5f, "AssassinShori");
         }
@@ -426,5 +440,25 @@ public sealed class Assassin : RoleBase, IImpostor
         }
         text = default;
         return false;
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        try
+        {
+            AddRole.ReceiveRPC(reader);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error($"{ex}", "Assassin");
+        }
+    }
+    bool IUsePhantomButton.IsPhantomRole => AddRole is IUsePhantomButton iusephantom && iusephantom?.IsPhantomRole is true;
+    bool IUsePhantomButton.UseOneclickButton => AddRole is IUsePhantomButton iusephantom && iusephantom?.UseOneclickButton is true;
+    public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
+    {
+        if (AddRole is IUsePhantomButton iusephantom)
+        {
+            iusephantom.OnClick(ref AdjustKillCooldown, ref ResetCooldown);
+        }
     }
 }
