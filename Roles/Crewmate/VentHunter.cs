@@ -83,7 +83,7 @@ public sealed class VentHunter : RoleBase
         if (checkKiller)
         {
             var state = PlayerState.GetByPlayerId(Player.PlayerId);
-            state.DeathReason = CustomDeathReason.Revenge2;
+            state.DeathReason = CustomDeathReason.Counter;
             Player.RpcMurderPlayer(Player, true);
             state.SetDead();
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);

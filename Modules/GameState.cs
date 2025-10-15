@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 using HarmonyLib;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Crewmate;
+using TownOfHost.Roles.Impostor;
 
 namespace TownOfHost
 {
@@ -198,9 +199,10 @@ namespace TownOfHost
             }
             hasTasks = true;
             AllTasksCount = player.Data.Tasks.Count;
-            if (player.Is(CustomRoles.Walker))
+            switch (player.GetCustomRole())
             {
-                AllTasksCount += Walker.WalkTaskCount.GetInt();
+                case CustomRoles.Walker: AllTasksCount += Walker.WalkTaskCount.GetInt(); break;
+                case CustomRoles.Merlin: AllTasksCount += Assassin.OptionMerlinWorkTask.GetInt(); break;
             }
             Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}: TaskCounts = {CompletedTasksCount}/{AllTasksCount}", "TaskState.Init");
         }

@@ -152,7 +152,7 @@ public sealed class Merlin : RoleBase
     {
         seen ??= seer;
         if (isForMeeting || seer != seen || completeroom == worktask || TaskRoom == null) return "";
-        return $"<color=#057a2c>{GetArrow.GetArrows(seer, [RoomArrow])} {string.Format(GetString("FoxRoomMission"), $"<color=#cccccc><b>{GetString($"{TaskRoom}")}<b></color>")}</color>";
+        return $"<color=#8cc2ff>{GetArrow.GetArrows(seer, [RoomArrow])} {string.Format(GetString("FoxRoomMission"), $"<color=#cccccc><b>{GetString($"{TaskRoom}")}<b></color>")}</color>";
     }
 
     public void SendRPC_CompleteRoom()

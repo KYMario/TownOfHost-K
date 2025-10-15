@@ -259,6 +259,7 @@ namespace TownOfHost
         {
             if (!GameStates.InGame) return;
             if (target == null) target = killer;
+            if (target.IsModClient()) return;
 
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)RpcCalls.MurderPlayer, SendOption.None, target.GetClientId());
             messageWriter.WriteNetObject(target);

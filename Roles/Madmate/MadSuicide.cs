@@ -41,7 +41,7 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
     static OptionItem OptionKillSuicidetargetkiller;
     public static readonly CustomDeathReason[] deathReasons =
     {
-        CustomDeathReason.Kill,CustomDeathReason.Suicide,CustomDeathReason.Misfire,CustomDeathReason.Revenge1
+        CustomDeathReason.Kill,CustomDeathReason.Suicide,CustomDeathReason.Misfire,CustomDeathReason.Counter
     };
     enum OptionName
     {

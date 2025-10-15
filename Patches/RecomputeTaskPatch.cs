@@ -1,6 +1,7 @@
 using HarmonyLib;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Crewmate;
+using TownOfHost.Roles.Impostor;
 
 namespace TownOfHost
 {
@@ -34,6 +35,11 @@ namespace TownOfHost
                     {
                         __instance.TotalTasks += Walker.WalkTaskCount.GetInt();
                         __instance.CompletedTasks += walker.completeroom;
+                    }
+                    if (roleclass is Merlin merlin)
+                    {
+                        __instance.TotalTasks += Assassin.OptionMerlinWorkTask.GetInt();
+                        __instance.CompletedTasks += merlin.completeroom;
                     }
                 }
             }
