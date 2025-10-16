@@ -96,8 +96,8 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         OptionHasOtherRole = BooleanOptionItem.Create(RoleInfo, 13, OptionName.AssasinHasOtherRole, false, false);
         OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, () => InvalidRoles());
 
-        OptionMerlinNomalTask = OverrideTasksData.Create(RoleInfo, 15, rolename: CustomRoles.Merlin, tasks: (true, 2, 0, 0));
-        OptionMerlinWorkTask = IntegerOptionItem.Create(RoleInfo, 16, OptionName.WalkerWalkTaskCount, (0, 99, 1), 6, false);
+        OptionMerlinNomalTask = OverrideTasksData.Create(RoleInfo, 16, rolename: CustomRoles.Merlin, tasks: (true, 2, 0, 0));
+        OptionMerlinWorkTask = IntegerOptionItem.Create(RoleInfo, 15, OptionName.WalkerWalkTaskCount, (0, 99, 1), 6, false);
     }
     public override void Add()
     {
