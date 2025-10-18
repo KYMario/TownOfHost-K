@@ -2,7 +2,6 @@ using TMPro;
 using UnityEngine;
 
 using TownOfHost.Templates;
-using static TownOfHost.GameSettingMenuStartPatch;
 using static TownOfHost.Translator;
 using Object = UnityEngine.Object;
 

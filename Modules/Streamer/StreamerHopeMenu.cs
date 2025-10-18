@@ -34,7 +34,7 @@ public static class StreamerHopeMenu
         CancelButton.name = "Cancel";
         CancelButton.transform.localPosition = new(2.2f, -2.4f, -2);
         CancelButton.transform.localScale = new(0.3f, 0.7f, 1f);
-        CancelButton.Text.text = Translator.GetString("ED.back");
+        CancelButton.Text.text = Translator.GetString("ED.Back");
         var cancelPassiveButton = CancelButton.GetComponent<PassiveButton>();
         cancelPassiveButton.OnClick = new();
         cancelPassiveButton.OnClick.AddListener((Action)Hide);

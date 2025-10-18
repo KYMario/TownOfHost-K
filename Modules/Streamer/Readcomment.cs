@@ -153,7 +153,7 @@ class StreamerInfo
 
         var node = JsonNode.Parse(response);
         var a = node?["continuationContents"]?["liveChatContinuation"]?["actions"];
-        // ↓ 夜藍の環境だとここでreturnされたのでまた確認がいりそう。
+        // ↓ 取得してないコメントがある場合、ここれreturnされる。
         if (a == null) return comments;
 
         foreach (var item in a.AsArray())
