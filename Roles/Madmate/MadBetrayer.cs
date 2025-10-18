@@ -116,12 +116,12 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false) => IsBetray ? $"<{RoleInfo.RoleColorCode}>★</color>" : "";
 
-    public override RoleTypes? AfterMeetingRole => IsTaskFinished ? RoleTypes.Impostor : RoleTypes.Engineer;
+    public override RoleTypes? AfterMeetingRole => IsTaskFinished || IsBetray ? RoleTypes.Impostor : RoleTypes.Engineer;
     bool IKiller.CanUseImpostorVentButton() => CanVent && IsTaskFinished;
     public override bool CanUseAbilityButton() => CanVent;
     bool IKiller.CanUseSabotageButton() => IsBetray && CanUseSabotage;
     float IKiller.CalculateKillCooldown() => KillCooldown;
-    bool IKiller.CanUseKillButton() => IsTaskFinished;
+    bool IKiller.CanUseKillButton() => IsTaskFinished || IsBetray;
 
     public override bool OnCompleteTask(uint taskid)
     {
@@ -142,6 +142,10 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
     void IKiller.OnCheckMurderAsKiller(MurderInfo info)
     {
         var (killer, target) = info.AppearanceTuple;
+        if (IsBetray is true)
+        {
+            return;
+        }
 
         if (IsTaskFinished is false || (IsBetray is false && target.GetCustomRole().IsImpostor() is false))
         {
@@ -154,6 +158,8 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
             IsBetray = true;
             SendRPC();
             UtilsGameLog.AddGameLog("MadBetrayer", GetString("MadBetrayerLog"));
+
+            _ = new LateTask(() => Player.SetKillCooldown(force: true), 0.2f, "SetImpostorKillCool", true);
         }
     }
 

@@ -884,19 +884,22 @@ namespace TownOfHost
         {
             if (HasImpVision)
             {
-                opt.SetFloat(FloatOptionNames.CrewLightMod, opt.GetFloat(FloatOptionNames.ImpostorLightMod));
+                opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultImpostorVision);
+                opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
                 if (IsActive(SystemTypes.Electrical))
                 {
-                    opt.SetFloat(FloatOptionNames.CrewLightMod, opt.GetFloat(FloatOptionNames.CrewLightMod) * AURoleOptions.ElectricalCrewVision);
+                    opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultImpostorVision * AURoleOptions.ElectricalCrewVision);
                 }
                 return;
             }
             else
             {
-                opt.SetFloat(FloatOptionNames.ImpostorLightMod, opt.GetFloat(FloatOptionNames.CrewLightMod));
+                opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultCrewmateVision);
+                opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
                 if (IsActive(SystemTypes.Electrical))
                 {
-                    opt.SetFloat(FloatOptionNames.ImpostorLightMod, opt.GetFloat(FloatOptionNames.ImpostorLightMod) / 5);
+                    opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
+                    opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultCrewmateVision / 5);
                 }
                 return;
             }
