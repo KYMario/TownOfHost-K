@@ -120,7 +120,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     bool IKiller.CanKill => NowMission is not MissionList.Non && (int)NowMission < 10;
     public bool CanUseKillButton() => NowMission is not MissionList.Non && (int)NowMission < 10;         //↓こうしないとエンジニアベントが弾かれる
     public bool CanUseImpostorVentButton() => (NowMission is not MissionList.Non && (int)NowMission < 10) || !Player.IsModClient();
-    public override bool CanUseAbilityButton() => !(NowMission is not MissionList.Non && (int)NowMission < 10);
+    public override bool CanUseAbilityButton() => !(NowMission is not MissionList.Non && (int)NowMission < 10) || NowMission is MissionList.Non;
     public bool CanUseSabotageButton() => false;
     public float CalculateKillCooldown() => KillCooldown;
 
@@ -395,6 +395,10 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         if (AddWinAssignmentpoint <= NowPoint && WinAssignmentpoint is not 0)//追加
         {
             AddWin = true;
+        }
+        if (NowMission is not MissionList.Non && (int)NowMission < 10)
+        {
+            Player.RpcSetRoleDesync(RoleTypes.Engineer, Player.GetClientId());
         }
 
         //リセット処理

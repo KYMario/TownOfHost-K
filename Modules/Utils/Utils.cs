@@ -386,7 +386,6 @@ namespace TownOfHost
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
-            Logger.Info($"{fir}{text}", "aaa");
             if (towsend is not "")
             {
                 SendMessage(towsend, sendTo, title, rob, true);
