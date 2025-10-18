@@ -331,7 +331,7 @@ namespace TownOfHost
 
                 Options.DefaultKillCooldown = Main.NormalOptions.KillCooldown;
                 Main.LastKillCooldown.Value = Main.NormalOptions.KillCooldown;
-                Main.NormalOptions.KillCooldown = 0f;
+                //Main.NormalOptions.KillCooldown = 0f;
 
                 var opt = Main.NormalOptions.Cast<IGameOptions>();
                 AURoleOptions.SetOpt(opt);
