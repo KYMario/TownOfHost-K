@@ -285,7 +285,7 @@ public sealed class EvilTracker : RoleBase, IImpostor, IKillFlashSeeable, ISidek
         if (TargetId != byte.MaxValue)
         {
             sb.Append(Utils.ColorString(Color.white, TargetArrow.GetArrows(Player, TargetId)));
-            if (PlayerCatch.GetPlayerById(TargetId).IsAlive())
+            if (PlayerCatch.GetPlayerById(TargetId).IsAlive() && CanSeeDistance)
             {
                 sb.Append($"<color=#ffffff><size=60%>({disting})</color></size>");
             }
