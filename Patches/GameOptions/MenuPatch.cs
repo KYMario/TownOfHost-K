@@ -25,8 +25,10 @@ namespace TownOfHost
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Close))]
     class GameSettingMenuClosePatch
     {
+        public static bool Prefix() => ShowFilter.CallEsc(true) is false;
         public static void Postfix()
         {
+            if (ShowFilter.CallEsc()) return;
             ModSettingsButton = null;
             ModSettingsTab = null;
             activeonly = null;
@@ -46,7 +48,7 @@ namespace TownOfHost
             ModoruTabu = (TabGroup.MainSettings, 0);
             timer = -100;
             tabGenerated = null;
-            ShowFilter.CheckAndReset();
+            ShowFilter.CloseOptionMenu();
         }
     }
 
@@ -106,7 +108,6 @@ namespace TownOfHost
             {
                 var size = __instance.transform.localScale;
                 __instance.transform.localScale = new(1, 1, 1);
-                ShowFilter.CheckAndReset();
                 timer = -100;
                 ModoruTabu = (TabGroup.MainSettings, 0);
                 roleopts = new();
@@ -356,7 +357,7 @@ namespace TownOfHost
                             Object.Destroy(sub.gameObject);
                         }
 
-                        CreateOptions(tab, menus, crmenus);
+                        CreateOptions(tab, menus, crmenus, __instance.RoleSettingsTab.transform.parent);
                     }));
 
                     ModSettingsTab.roleTabs.Add(tabButton);
@@ -537,7 +538,7 @@ namespace TownOfHost
             }
         }
 
-        public static void CreateOptions(TabGroup tab, Dictionary<TabGroup, GameObject> menus, Dictionary<CustomRoles, GameObject> crmenus, bool forceAllTabs = false)
+        public static void CreateOptions(TabGroup tab, Dictionary<TabGroup, GameObject> menus, Dictionary<CustomRoles, GameObject> crmenus, Transform tabtransfrom, bool forceAllTabs = false)
         {
             if (!forceAllTabs && tabGenerated.Contains(tab)) return;
             var template = GetTeamplate();
@@ -569,28 +570,37 @@ namespace TownOfHost
                             stringOption.MinusBtn.transform.localPosition = new Vector3(100, 100, 100);
                         }
                         // フィルターオプション、属性設定なら
-                        if (option is FilterOptionItem)
+                        if (option is FilterOptionItem or AssignOptionItem)
                         {
                             stringOption.MinusBtn.OnClick = new();
                             stringOption.MinusBtn.OnClick.AddListener((System.Action)(() =>
                             {
                                 if (option is FilterOptionItem filterOptionItem) filterOptionItem.SetRoleValue(parentrole);
+                                if (option is AssignOptionItem assignoptionitem) assignoptionitem.SetRoleValue(new());
                             }));
                             stringOption.MinusBtn.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "<size=80%>←";
                             stringOption.PlusBtn.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "<rotate=-20>ρ";
                             stringOption.PlusBtn.OnClick = new();
                             stringOption.PlusBtn.OnClick.AddListener((System.Action)(() =>
                             {
-                                if (rolebutton.TryGetValue(parentrole, out var button))
+                                CustomRoles[] notAssign = [];
+                                var (imp, mad, crew, neu) = (true, true, true, true);
+                                if (option is FilterOptionItem filterOptionItem)
                                 {
-                                    button?.OnClick?.Invoke();
+                                    notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
+                                    (imp, mad, crew, neu) = filterOptionItem.roles;
                                 }
-                                _ = new LateTask(() =>
+                                if (option is AssignOptionItem assignoptionitem)
                                 {
-                                    ShowFilter.NosetOptin = option;
-                                    ShowFilter.NowSettingRole = parentrole;
-                                    GameSettingMenuChangeTabPatch.meg = GetString("ShowFilters");
-                                }, 0.2f, "Set", true);
+                                    notAssign = assignoptionitem.NotAssin?.Invoke() ?? [];
+                                    (imp, mad, crew, neu) = assignoptionitem.roles;
+
+                                    ShowFilter.NowOption = option;
+                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu));
+                                    return;
+                                }
+                                ShowFilter.NowOption = option;
+                                ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu));
                             }));
                         }
 
@@ -645,11 +655,6 @@ namespace TownOfHost
 
                             button.OnClick.AddListener((System.Action)(() =>
                             {
-                                if (ShowFilter.NowSettingRole is not CustomRoles.NotAssigned)
-                                {
-                                    ShowFilter.SetRoleAndReset(option.CustomRole);
-                                    return;
-                                }
                                 if (NowRoleTab is not CustomRoles.NotAssigned)
                                 {
                                     var atabtitle = ModSettingsTab.transform.FindChild("Scroller/SliderInner/ChancesTab/CategoryHeaderMasked").GetComponent<CategoryHeaderMasked>();

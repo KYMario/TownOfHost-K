@@ -3,6 +3,7 @@ using BepInEx.Configuration;
 using UnityEngine;
 
 namespace TownOfHost.Modules.ClientOptions;
+
 public sealed class ClientOptionItem : ClientActionItem
 {
     public ConfigEntry<bool> Config { get; private set; }

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
+using HarmonyLib;
+using TownOfHost.Roles.Core;
 
 namespace TownOfHost.Modules;
 
@@ -27,6 +30,7 @@ public static class OptionSaver
     {
         Dictionary<int, int> singleOptions = new();
         Dictionary<int, int[]> presetOptions = new();
+        Dictionary<int, Dictionary<int, int[]>> assignOptions = new();
         foreach (var option in OptionItem.AllOptions)
         {
             if (option.IsSingleValue)
@@ -34,6 +38,31 @@ public static class OptionSaver
                 if (!singleOptions.TryAdd(option.Id, option.SingleValue))
                 {
                     logger.Warn($"SingleOptionのID {option.Id} が重複");
+                }
+            }
+            else if (option is AssignOptionItem assignOptionitem)
+            {
+                Dictionary<int, int[]> assign = new();
+
+                var i = 0;
+                foreach (var _ in option.AllValues)
+                {
+                    List<int> ids = new();
+                    if (assignOptionitem.RoleValues.Count <= 0)
+                    {
+                        assign.Add(i, []);
+
+                        i++;
+                        continue;
+                    }
+                    assignOptionitem.RoleValues[i].Do(role =>
+                    ids.Add(role.GetRoleInfo()?.ConfigId ?? 0));
+                    assign.Add(i, ids.ToArray());
+                    i++;
+                }
+                if (!assignOptions.TryAdd(option.Id, assign))
+                {
+                    logger.Warn($"アサインオプションの{option.Id}が重複");
                 }
             }
             else if (!presetOptions.TryAdd(option.Id, option.AllValues))
@@ -46,6 +75,7 @@ public static class OptionSaver
             Version = Version,
             SingleOptions = singleOptions,
             PresetOptions = presetOptions,
+            AssignOptions = assignOptions,
         };
     }
     /// <summary>デシリアライズされたオブジェクトを読み込み，オプション値を設定</summary>
@@ -67,6 +97,7 @@ public static class OptionSaver
         }
         Dictionary<int, int> singleOptions = serializableOptionsData.SingleOptions;
         Dictionary<int, int[]> presetOptions = serializableOptionsData.PresetOptions;
+        Dictionary<int, Dictionary<int, int[]>> assignOptions = serializableOptionsData.AssignOptions;
         foreach (var singleOption in singleOptions)
         {
             var id = singleOption.Key;
@@ -83,6 +114,37 @@ public static class OptionSaver
             if (OptionItem.FastOptions.TryGetValue(id, out var optionItem))
             {
                 optionItem.SetAllValues(values);
+            }
+        }
+        foreach (var assignoption in assignOptions)
+        {
+            var id = assignoption.Key;
+            var values = assignoption.Value;
+            if (OptionItem.FastOptions.TryGetValue(id, out var optionItem))
+            {
+                if (optionItem is AssignOptionItem assignOptionItem)
+                {
+                    Dictionary<int, List<CustomRoles>> role = new();
+                    foreach (var item in values)
+                    {
+                        List<CustomRoles> rolelist = new();
+                        if (item.Value.Count() <= 0)
+                        {
+                            role.Add(item.Key, rolelist);
+                            continue;
+                        }
+                        foreach (var roleid in item.Value)
+                        {
+                            var roleopt = OptionItem.AllOptions.Where(opt => opt.Id == roleid).FirstOrDefault();
+                            if (roleopt is not null)
+                            {
+                                rolelist.Add(optionItem.CustomRole);
+                            }
+                        }
+                        role.Add(item.Key, rolelist);
+                    }
+                    assignOptionItem.RoleValues = role;
+                }
             }
         }
     }
@@ -119,8 +181,10 @@ public static class OptionSaver
         public Dictionary<int, int> SingleOptions { get; init; }
         /// <summary>プリセット内のオプション</summary>
         public Dictionary<int, int[]> PresetOptions { get; init; }
+        /// <summary>アサインオプション</summary>
+        public Dictionary<int, Dictionary<int, int[]>> AssignOptions { get; init; }
     }
 
     /// <summary>オプションの形式に互換性のない変更(プリセット数変更など)を加えるときはここの数字を上げる</summary>
-    public static readonly int Version = 3;
+    public static readonly int Version = 4;
 }

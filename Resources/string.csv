@@ -1179,7 +1179,7 @@
 "RoleTypeMax","Maximum %roleType% Roles","%roleType%役職の最大人数","%roleType%职业的最大人数","","Максимум ролей для %roleType%","Máximo de Classes %roleType%",""
 "%roleTypes%Maximum","Max Players In %roleTypes%","%roleTypes%の最大アサイン数","%roleTypes%最大玩家数","","Максимум для %roleTypes%","Máximo de Jogadores em %roleTypes%",""
 "In%team%","(Team %team%)","(%team%陣営)","(%team%阵营)","(%team%陣營)","(Команда %team%)","(Time %team%)",""
-"FixedRole","Fixed Role","役職を固定","固定职业","","Фиксированная Роль","Classe Fixa",""
+"FixedRole","Fixed Role","アサインフィルターの設定","固定职业","","Фиксированная Роль","Classe Fixa",""
 "Role","Role","役職","职业","","Роль","Classe",""
 "AssingroleType","Assing %roletype%","%roletype%にアサインする"
 
@@ -2542,6 +2542,7 @@
 "Ambience","Ambience","環境"
 "LobbyBgm","LobbyBGM","ロビー\nBGM"
 "Unsettled","Unsetteled","未設定"
+"Setteled","Setteled","設定済み"
 "DownloadMod","Download Host Version","ホストのバージョンをダウンロード"
 "RestorCode","RestorCode","前回のコードを復元"
 "ClicktoCancel","Click to Cancel","クリックしてキャンセル"

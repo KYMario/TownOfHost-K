@@ -75,7 +75,29 @@ namespace TownOfHost
             }
             catch { }
 
-            if (__instance.transform.name == "GAME SETTINGS TAB") return;
+            if (__instance?.transform?.name == "GAME SETTINGS TAB") return;
+
+            if (ShowFilter.IsShowFilter)
+            {
+                foreach (var buttongameobject in ShowFilter.buttons.Values)
+                {
+                    if (buttongameobject is null) continue;
+                    bool IsActive = true;
+                    if (buttongameobject.transform.position.y > 4 || buttongameobject.transform.position.y < -0.3)
+                    {
+                        IsActive = false;
+                    }
+                    if (!buttongameobject.active && IsActive)
+                    {
+                        buttongameobject.SetActive(true);
+                    }
+                    else
+                    if (buttongameobject.active && !IsActive)
+                    {
+                        buttongameobject.SetActive(false);
+                    }
+                }
+            }
 
             if (NowRoleTab is not CustomRoles.NotAssigned)
             {
@@ -259,7 +281,7 @@ namespace TownOfHost
                     //起動時以外で表示/非表示を切り替える際に使う
                     if (enabled)
                     {
-                        if (ActiveOnlyMode || (ShowFilter.NowSettingRole is not CustomRoles.NotAssigned && option.CustomRole.IsSubRole()))
+                        if (ActiveOnlyMode)
                         {
                             if (isroleoption)
                             {
@@ -305,18 +327,6 @@ namespace TownOfHost
                     if (isroleoption)
                     {
                         color = option.NameColor.ShadeColor(-5);
-                    }
-                    if (!isroleoption && ShowFilter.NowSettingRole is not CustomRoles.NotAssigned)
-                    {
-                        enabled = false;
-                    }
-                    if (isroleoption && ShowFilter.NosetOptin is FilterOptionItem filterOption)
-                    {
-                        var notassings = filterOption?.NotAssin?.Invoke() ?? [];
-                        if (notassings.Contains(option.CustomRole))
-                        {
-                            enabled = false;
-                        }
                     }
 
                     Transform titleText = option.OptionBehaviour.transform.Find("Title Text");

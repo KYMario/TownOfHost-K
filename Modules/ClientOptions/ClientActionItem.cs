@@ -3,6 +3,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 namespace TownOfHost.Modules.ClientOptions;
+
 public class ClientActionItem
 {
     public ToggleButtonBehaviour ToggleButton { get; private set; }

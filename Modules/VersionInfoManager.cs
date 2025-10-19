@@ -28,15 +28,20 @@ class VersionInfoManager
     private static int totalSeconds = 0;
     private static TextMeshPro ModInfoText;
     private static ulong CustomFlags = 0;
+    private static bool downloaded = false;
 
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix, HarmonyPriority(Priority.Last)]
     public static void StartPostfix(MainMenuManager __instance)
     {
         if (__instance == null) return;
-        var result = CheckVersionsJson().GetAwaiter().GetResult();
-        if (result) isChecked = true;
+        try
+        {
+            __instance.StartCoroutine(CheckVersionsJson().WrapToIl2Cpp());
+        }
+        catch { }
+        if (downloaded) isChecked = true;
 
-        if (version == null) return;
+        if (version == null || downloaded is false) return;
 
         string infoText = "";
 
@@ -257,37 +262,34 @@ class VersionInfoManager
         Utils.SendMessage(bugInfo.Description, sendTo, bugInfo.Title);
     }
 
-    public static async Task<bool> CheckVersionsJson(bool force = false)
+    public static IEnumerator CheckVersionsJson(bool force = false)//Task使うと起動クラッシュあるのかな?
     {
-        if (Versions != null && !force) return true;
+        if (Versions != null && !force) yield break;
+
+        UnityWebRequest request = UnityWebRequest.Get(URL);
+        request.SetRequestHeader("User-Agent", "TownOfHost-K VersionChecker");
+
+        yield return request.SendWebRequest();
 
         try
         {
-            UnityWebRequest request = UnityWebRequest.Get(URL);
-            request.SetRequestHeader("User-Agent", "TownOfHost-K VersionChecker");
-
-            var operation = request.SendWebRequest();
-
-            while (!operation.isDone)
-                await Task.Yield();
-
             if (request.isNetworkError || request.isHttpError)
             {
                 Logger.Error($"ステータスコード: {request.responseCode.ToString()}", "CheckVersionJson");
-                return false;
+                yield break;
             }
 
             var result = request.downloadHandler.text;
             var versions = JsonSerializer.Deserialize<Dictionary<string, VersionInfo>>(result);
-            if (versions == null) return false;
+            if (versions == null) yield break;
             Versions = versions;
             if (Versions.ContainsKey(Main.PluginVersion)) version = Versions[Main.PluginVersion];
-            return true;
+            yield break;
         }
         catch (Exception ex)
         {
             Logger.Error($"バージョン情報の取得に失敗！\n{ex}", "CheckVersionJson", false);
-            return false;
+            yield break;
         }
     }
 

@@ -1358,7 +1358,7 @@ namespace TownOfHost
                 .SetCustomRole(role)
                 .SetValueFormat(OptionFormat.Percent)
                 .SetHeader(true)
-                .SetEnabled(() => role is not CustomRoles.Crewmate and not CustomRoles.Impostor || ShowFilter.NowSettingRole is not CustomRoles.NotAssigned)
+                .SetEnabled(() => role is not CustomRoles.Crewmate and not CustomRoles.Impostor)
                 .SetHidden(role == CustomRoles.NotAssigned)
                 .SetGameMode(customGameMode) as IntegerOptionItem;
             var hidevalue = role.IsCombinationRole() || role.IsLovers() || (assignCountRule.MaxValue == assignCountRule.MinValue);

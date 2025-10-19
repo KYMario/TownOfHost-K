@@ -212,7 +212,7 @@ namespace TownOfHost
         public virtual bool GetBool() => CurrentValue != 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent))
                                         && (GameMode == CustomGameMode.All || GameMode == Options.CurrentGameMode);
         public bool InfoGetBool() => CurrentValue != 0 && (Parent == null || Parent.InfoGetBool());
-        bool CheckRoleOption(OptionItem option) => option.CustomRole is not CustomRoles.NotAssigned;
+        public bool CheckRoleOption(OptionItem option) => option.CustomRole is not CustomRoles.NotAssigned;
 
         /* オプションのgetboolの表示のやつ */
         public virtual bool OptionMeGetBool() => CurrentValue != 0;

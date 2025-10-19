@@ -21,8 +21,7 @@ class ColorLovers
     public OptionItem LoverCanAddWin;
     public OptionItem Win3player;
     public OptionItem LoverSetRole;
-    public FilterOptionItem LoversRole1;
-    public FilterOptionItem LoversRole2;
+    public AssignOptionItem LoversRole1;
     public OptionItem AssingImpostor;
     public OptionItem AssingMadmate;
     public OptionItem AssingCrewmate;
@@ -47,12 +46,11 @@ class ColorLovers
         SoloWinOption.Create(id + 7, TabGroup.Combinations, role, () => !LoverCanAddWin.GetBool(), defo: 6);
         Win3player = BooleanOptionItem.Create(id + 8, "LoverSoloWin3players", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
         LoverSetRole = BooleanOptionItem.Create(id + 9, "FixedRole", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
-        LoversRole1 = (FilterOptionItem)FilterOptionItem.Create(id + 10, "Role", 0, TabGroup.Combinations, false, true, true, true, true, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
-        LoversRole2 = (FilterOptionItem)FilterOptionItem.Create(id + 11, "Role", 0, TabGroup.Combinations, false, true, true, true, true, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
-        AssingImpostor = BooleanOptionItem.Create(id + 12, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool() || !LoversRole2.GetBool());
-        AssingMadmate = BooleanOptionItem.Create(id + 13, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool() || !LoversRole2.GetBool());
-        AssingCrewmate = BooleanOptionItem.Create(id + 14, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool() || !LoversRole2.GetBool());
-        AssingNeutral = BooleanOptionItem.Create(id + 15, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool() || !LoversRole2.GetBool());
+        LoversRole1 = (AssignOptionItem)AssignOptionItem.Create(id + 10, "FixedRole", 0, TabGroup.Combinations, false, true, true, true, true, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
+        AssingImpostor = BooleanOptionItem.Create(id + 11, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingMadmate = BooleanOptionItem.Create(id + 12, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingCrewmate = BooleanOptionItem.Create(id + 13, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingNeutral = BooleanOptionItem.Create(id + 14, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
         AssingImpostor.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.ImpostorRed, Translator.GetString("TeamImpostor")) } };
         AssingMadmate.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.ImpostorRed, Translator.GetString("Madmate")) } };
         AssingCrewmate.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.CrewmateBlue, Translator.GetString("TeamCrewmate")) } };
@@ -85,8 +83,11 @@ class ColorLovers
             if (pc.IsLovers()) continue;
             if (Loverremove.Contains(role)) continue;
 
-            if (role == LoversRole1.GetRole()) Assingplayer1.Add(pc);
-            if (role == LoversRole2.GetRole()) Assingplayer2.Add(pc);
+            if (LoversRole1.RoleValues[AssignOptionItem.Getpresetid()].Contains(role))
+            {
+                Assingplayer1.Add(pc);
+                Assingplayer2.Add(pc);
+            }
         }
         if (Assingplayer1.Count is not 0)
         {
