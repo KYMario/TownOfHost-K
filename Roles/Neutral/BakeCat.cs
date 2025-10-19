@@ -235,6 +235,13 @@ namespace TownOfHost.Roles.Neutral
             }
             roleColor = DisplayRoleColor;
         }
+        public override void OverrideDisplayRoleNameAsSeen(PlayerControl seer, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
+        {
+            if (seer.IsAlive() is false && Team == TeamType.None)
+            {
+                roleText += $"{UtilsRoleText.GetRoleColorAndtext(CustomRoles.BakeCat)}";
+            }
+        }
         public bool CheckWin(ref CustomRoles winnerRole)
         {
             bool? won = Team switch
