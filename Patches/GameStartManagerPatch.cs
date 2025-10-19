@@ -88,8 +88,6 @@ namespace TownOfHost
                     codePassive.OnClick.AddListener((Action)(() => LobbyInfoPane.Instance.CopyGameCode()));
                 }
 
-                LobbyInfoPanePatch.Postfix();
-
                 if (!AmongUsClient.Instance.AmHost) return;
 
                 // Make Public Button
