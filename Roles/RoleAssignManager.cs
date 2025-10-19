@@ -178,9 +178,18 @@ namespace TownOfHost.Roles
             //マッド、クルー、ニュートラル合計の限界値
             int numOthersLeft = GameData.Instance.PlayerCount - numImpostorsLeft;
 
-            foreach (var role in GetCandidateRoleList(10).OrderBy(x => Guid.NewGuid()))
+            foreach (var _role in GetCandidateRoleList(10).OrderBy(x => Guid.NewGuid()))
             {
                 if (numImpostorsLeft <= 0 && numOthersLeft <= 0) break;
+
+                var role = _role;
+                var result = false;
+                SlotRoleAssign.SlotRoles.Do(info =>
+                {
+                    var id = info.CheckAssignRole(ref role);
+                    result = (result || id is 1) && id is not 2;
+                });
+                if (result) continue;
 
                 var targetRoles = role.GetAssignUnitRolesArray();
                 var numImpostorAssign = targetRoles.Count(role => role.GetAssignRoleType() == CustomRoleTypes.Impostor);
@@ -273,8 +282,16 @@ namespace TownOfHost.Roles
                     targetRoles.Count(role => role.GetAssignRoleType() == type) > count
                 )) continue;
 
-                foreach (var targetRole in targetRoles)
+                foreach (var _targetRole in targetRoles)
                 {
+                    var targetRole = _targetRole;
+                    var result = false;
+                    SlotRoleAssign.SlotRoles.Do(info =>
+                    {
+                        var id = info.CheckAssignRole(ref targetRole);
+                        result = (result || id is 1) && id is not 2;
+                    });
+                    if (result) continue;
                     AssignRoleList.Add(targetRole);
                     var targetRoleType = targetRole.GetAssignRoleType();
                     if (assignCount.ContainsKey(targetRoleType))
@@ -306,8 +323,16 @@ namespace TownOfHost.Roles
                 //アサイン枠が足りていれば追加
                 if (CustomRolesHelper.AllRoleTypes.All(type => targetRoles.Count(role => role.GetAssignRoleType() == type) <= assignCount[type]))
                 {
-                    foreach (var targetRole in targetRoles)
+                    foreach (var _targetRole in targetRoles)
                     {
+                        var targetRole = _targetRole;
+                        var result = false;
+                        SlotRoleAssign.SlotRoles.Do(info =>
+                        {
+                            var id = info.CheckAssignRole(ref targetRole);
+                            result = (result || id is 1) && id is not 2;//割り当て済みならtrue。別アサインされるならfalseにもどす
+                        });
+                        if (result) continue;
                         AssignRoleList.Add(targetRole);
                         assignCount[targetRole.GetAssignRoleType()]--;
                     }

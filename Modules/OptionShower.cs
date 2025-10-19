@@ -70,6 +70,7 @@ namespace TownOfHost
                         if (kvp.Value.GameMode is CustomGameMode.Standard or CustomGameMode.All && kvp.Value.GetBool()) //スタンダードか全てのゲームモードで表示する役職
                         {
                             var role = kvp.Key;
+                            if (role.IsCombinationRole() || SlotRoleAssign.IsSeted(role)) continue;
                             if (farst && role.IsImpostor())
                             {
                                 var maxtext = $"({imp})";
@@ -135,6 +136,48 @@ namespace TownOfHost
                                 sb.Append("<size=90%>" + lasttab);
                             }
                         }
+                    count = -1;
+                    foreach (var role in CustomRolesHelper.AllStandardRoles.Where(role => role.IsCombinationRole() && role.IsEnable()))
+                    {
+                        if (count is -1)
+                            sb.Append($"<#f7c114>\n<u>☆Combinations</u>\n</color>");
+                        var mark = "<#f7c114>Ⓞ</color>";
+                        if (count == 0) sb.Append($"\n{mark}{UtilsRoleText.GetCombinationName(role)}");
+                        else if (count == -1) sb.Append($"{mark}{UtilsRoleText.GetCombinationName(role)}");
+                        else sb.Append($"<pos=39%>{mark}{UtilsRoleText.GetCombinationName(role)}</pos>");
+
+                        if (count == 0) lines++;
+                        count = count is 0 or -1 ? 1 : 0;
+                        if (lines >= 27)
+                        {
+                            lines = 0;
+                            count = -1;
+                            pages.Add(sb.ToString() + "\n\n");
+                            sb.Clear();
+                            sb.Append("<size=90%>" + lasttab);
+                        }
+                    }
+                    count = -1;
+                    foreach (var info in SlotRoleAssign.SlotRoles.Where(info => info.AssignOption.GetBool()))
+                    {
+                        if (count is -1)
+                            sb.Append($"<#efd87f>\n<u>☆SlotRoles</u>\n</color>");
+                        var mark = "<#efd87f>Ⓢ</color>";
+                        if (count == 0) sb.Append($"\n{mark}{info.AssignChanceRolestring()}");
+                        else if (count == -1) sb.Append($"{mark}{info.AssignChanceRolestring()}");
+                        else sb.Append($"<pos=39%>{mark}{info.AssignChanceRolestring()}</pos>");
+
+                        if (count == 0) lines++;
+                        count = count is 0 or -1 ? 1 : 0;
+                        if (lines >= 27)
+                        {
+                            lines = 0;
+                            count = -1;
+                            pages.Add(sb.ToString() + "\n\n");
+                            sb.Clear();
+                            sb.Append("<size=90%>" + lasttab);
+                        }
+                    }
                     pages.Add(sb.ToString() + "\n\n</size>");
                     sb.Clear();
                 }
@@ -164,6 +207,7 @@ namespace TownOfHost
                 sb.Append("</size><size=90%>");
                 foreach (var opt in OptionItem.AllOptions.Where(x => x.Id >= 90000 && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null))
                 {
+                    if (opt is AssignOptionItem && opt.GetBool() is false) continue;
                     if (opt.IsHeader) sb.Append('\n');
                     sb.Append($"{opt.GetName()}: {opt.GetString().RemoveSN()}\n");
                     if (opt.GetBool())

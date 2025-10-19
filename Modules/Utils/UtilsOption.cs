@@ -314,6 +314,7 @@ namespace TownOfHost
                     //Roles
                     if (role.IsEnable())
                     {
+                        if (role.IsCombinationRole() || SlotRoleAssign.IsSeted(role)) continue;
                         if (farst && role.IsImpostor())
                         {
                             var maxtext = $"({imp})";
@@ -353,6 +354,29 @@ namespace TownOfHost
                         sb.AppendFormat($"{(nowcount is 1 ? "　" : (nowcount is 2 ? "\n" : ""))}" + co + "{0}</color>:{1}", role.GetCombinationName(false), role.GetChance() is 100 ? role.GetCount() : $"{role.GetChance()}%x{role.GetCount()}");
                         if (nowcount > 1) nowcount = 0;
                     }
+                }
+                //コンビ
+                nowcount = 3;
+                foreach (CustomRoles role in roles.Where(role => role.IsCombinationRole() && role.IsEnable()))
+                {
+                    if (nowcount is 3)
+                    {
+                        sb.Append($"<#f7c114>\n<b>☆Combinations</b>\n</color>");
+                    }
+                    nowcount++;
+                    sb.AppendFormat($"{(nowcount is 1 ? "　" : (nowcount is 2 ? "\n" : ""))}" + "Ⓞ" + "{0}</color>:{1}", role.GetCombinationName(false), role.GetChance() is 100 ? role.GetCount() : $"{role.GetChance()}%x{role.GetCount()}");
+                    if (nowcount > 1) nowcount = 0;
+                }
+                nowcount = 3;
+                foreach (var info in SlotRoleAssign.SlotRoles.Where(info => info.AssignOption.GetBool()))
+                {
+                    if (nowcount is 3)
+                    {
+                        sb.Append($"<#efd87f>\n<b>☆SlotRoles</b>\n</color>");
+                    }
+                    nowcount++;
+                    sb.AppendFormat($"{(nowcount is 1 ? "　" : (nowcount is 2 ? "\n" : ""))}" + "Ⓢ" + "{0}</color>", info.AssignChanceRolestring());
+                    if (nowcount > 1) nowcount = 0;
                 }
             }
             if (addons != null && addons?.Length != 0)

@@ -14,6 +14,7 @@ namespace TownOfHost
         public static Dictionary<CustomRoles, int> Selection;
         public Func<CustomRoles[]> NotAssin;
         public Dictionary<int, List<CustomRoles>> RoleValues = new(7);
+        public List<CustomRoles> GetNowRoleValue() => RoleValues[Getpresetid()];
         public static int Getpresetid() => PresetOptionItem.Preset.GetInt();
         public (bool impostor, bool madmate, bool crewmate, bool neutral) roles;
 

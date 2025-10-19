@@ -638,6 +638,40 @@ namespace TownOfHost
                             stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
                             stringOption.MinusBtn.transform.localPosition = new Vector3(100, 100, 100);
                         }
+                        // フィルターオプション、属性設定なら
+                        if (option is FilterOptionItem or AssignOptionItem)
+                        {
+                            stringOption.MinusBtn.OnClick = new();
+                            stringOption.MinusBtn.OnClick.AddListener((System.Action)(() =>
+                            {
+                                if (option is FilterOptionItem filterOptionItem) filterOptionItem.SetRoleValue(parentrole);
+                                if (option is AssignOptionItem assignoptionitem) assignoptionitem.SetRoleValue(new());
+                            }));
+                            stringOption.MinusBtn.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "<size=80%>←";
+                            stringOption.PlusBtn.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "<rotate=-20>ρ";
+                            stringOption.PlusBtn.OnClick = new();
+                            stringOption.PlusBtn.OnClick.AddListener((System.Action)(() =>
+                            {
+                                CustomRoles[] notAssign = [];
+                                var (imp, mad, crew, neu) = (true, true, true, true);
+                                if (option is FilterOptionItem filterOptionItem)
+                                {
+                                    notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
+                                    (imp, mad, crew, neu) = filterOptionItem.roles;
+                                }
+                                if (option is AssignOptionItem assignoptionitem)
+                                {
+                                    notAssign = assignoptionitem.NotAssin?.Invoke() ?? [];
+                                    (imp, mad, crew, neu) = assignoptionitem.roles;
+
+                                    ShowFilter.NowOption = option;
+                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu));
+                                    return;
+                                }
+                                ShowFilter.NowOption = option;
+                                ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu));
+                            }));
+                        }
                         if (option.CustomRole is not CustomRoles.NotAssigned and not CustomRoles.GM)
                         {
                             var button = Object.Instantiate(GameSettingMenu.Instance.GameSettingsButton, stringOption.transform);

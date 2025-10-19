@@ -150,7 +150,7 @@ namespace TownOfHost
                     Color color = new Color32(200, 200, 200, 255);
                     Vector2 size = new(5.0f, 0.68f);
 
-                    if (option.Tab is TabGroup.MainSettings && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
+                    if (option.Tab is TabGroup.MainSettings or TabGroup.Combinations && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
                     {
                         color = option.NameColor == Color.white ? StringHelper.CodeColor(option.NameColorCode) : option.NameColor;
 
@@ -318,7 +318,7 @@ namespace TownOfHost
                     Color color = new Color32(200, 200, 200, 255);
                     Vector2 size = new(5.0f, 0.68f);
 
-                    if (option.Tab is TabGroup.MainSettings && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
+                    if (option.Tab is TabGroup.MainSettings or TabGroup.Combinations && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
                     {
                         color = option.NameColor == Color.white ? StringHelper.CodeColor(option.NameColorCode) : option.NameColor;
 

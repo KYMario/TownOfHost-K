@@ -56,7 +56,10 @@ public static class OptionSaver
                         continue;
                     }
                     assignOptionitem.RoleValues[i].Do(role =>
-                    ids.Add(role.GetRoleInfo()?.ConfigId ?? 0));
+                    {
+                        ids.Add(role.GetRoleInfo()?.ConfigId ?? -300);
+                    });
+
                     assign.Add(i, ids.ToArray());
                     i++;
                 }
@@ -136,10 +139,13 @@ public static class OptionSaver
                         foreach (var roleid in item.Value)
                         {
                             var roleopt = OptionItem.AllOptions.Where(opt => opt.Id == roleid).FirstOrDefault();
+
                             if (roleopt is not null)
                             {
-                                rolelist.Add(optionItem.CustomRole);
+                                rolelist.Add(roleopt.CustomRole);
                             }
+                            else if (roleid is -1) rolelist.Add(CustomRoles.Crewmate);
+                            else if (roleid is -3) rolelist.Add(CustomRoles.Impostor);
                         }
                         role.Add(item.Key, rolelist);
                     }

@@ -190,6 +190,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
         else
         {
             var tage = new List<PlayerControl>(PlayerCatch.AllPlayerControls);
+            tage.Remove(target);
             var rand = IRandom.Instance;
             var P = tage[rand.Next(0, tage.Count)];
             var role = target.GetTellResults(null); //結果を変更するかチェック

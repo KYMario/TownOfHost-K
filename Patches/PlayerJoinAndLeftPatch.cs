@@ -37,6 +37,7 @@ namespace TownOfHost
             MainMenuManagerPatch.DestroyButton();
             //AntiBlackout.Reset();
             StreamerInfo.JoinGame();
+            SlotRoleAssign.Reset();
             ErrorText.Instance.Clear();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {

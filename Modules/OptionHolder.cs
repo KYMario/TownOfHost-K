@@ -698,6 +698,7 @@ namespace TownOfHost
             Lovers.SetLoversOptions();
             GhostRoleCore.SetupCustomOptionAddonAndIsGhostRole();
 
+            SlotRoleAssign.SetupOptionItem();
             //幽霊役職の設定
             GhostRoleOption = BooleanOptionItem.Create(106000, "GhostRoleOptions", false, TabGroup.GhostRoles, false)
                 .SetHeader(true)
@@ -1368,6 +1369,7 @@ namespace TownOfHost
             var countOption = IntegerOptionItem.Create(id + 1, "Maximum", assignCountRule, defo is -1 ? assignCountRule.Step : defo, tab, false, HideValue: hidevalue)
                 .SetParent(spawnOption)
                 .SetValueFormat(assignCountRule.MaxValue is 7 ? OptionFormat.Set : OptionFormat.Players)
+                .SetEnabled(() => !SlotRoleAssign.IsSeted(role))
                 .SetGameMode(customGameMode)
                 .SetHidden(hidevalue)
                 .SetParentRole(role);
