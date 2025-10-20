@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using Hazel;
 using TownOfHost.Roles.Core;
 
 namespace TownOfHost
@@ -79,7 +80,100 @@ namespace TownOfHost
                 RoleValues[Getpresetid()] = roles.Distinct().ToList();
             }
             Refresh();
+
             Modules.OptionSaver.Save();
+            SendRpc(true);
+        }
+
+        void Clear(int presetid)
+        {
+            RoleValues[presetid] = new();
+        }
+        void Add(int presetid, CustomRoles role)
+        {
+            if (RoleValues.TryGetValue(presetid, out var list) is false)
+            {
+                list = new();
+            }
+            list.Add(role);
+            if (RoleValues.TryAdd(presetid, list) is false)
+            {
+                RoleValues[presetid] = list.Distinct().ToList();
+            }
+        }
+        public void SendRpc(bool Isoverride)
+        {
+            if (PlayerCatch.AnyModClient() is false) return;
+            if (Name.Contains("SlotRole") is false) return;
+
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncAssignOption, SendOption.None, -1);
+            writer.Write(Id);//オプションid
+            writer.Write(Getpresetid());//現在のプリセットid
+            writer.Write(Isoverride);//上書きするか
+            writer.WritePacked(GetNowRoleValue().Count > 8 ? 8 : GetNowRoleValue().Count);
+            int i = 0;
+            int index = 0;
+            bool Sended = false;
+            foreach (var role in GetNowRoleValue())
+            {
+                if (Sended)
+                {
+                    writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncAssignOption, SendOption.None, -1);
+                    writer.Write(Id);
+                    writer.Write(Getpresetid());//現在のプリセットid
+                    writer.Write(false);//上書きするか
+                    writer.WritePacked((GetNowRoleValue().Count - i) > 8 ? 8 : GetNowRoleValue().Count);
+                    Sended = false;
+                }
+
+                writer.Write((int)role);
+                i++;
+                index++;
+
+                if (index > 8)
+                {
+                    index = 0;
+                    Sended = true;
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                }
+            }
+            if (Sended is false)
+            {
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
+            }
+        }
+        public static void ReadRpc(MessageReader reader)
+        {
+            int optionid = reader.ReadInt32();
+            int presetid = reader.ReadInt32();
+            bool Isoverride = reader.ReadBoolean();
+            AssignOptionItem optionItem = AllOptions.Where(x => x.Id == optionid).FirstOrDefault() is AssignOptionItem assignOption ? assignOption : null;
+
+            if (optionItem is null)
+            {
+                Logger.Error($"{optionid} is null", "AssignOptionItemRead");
+                return;
+            }
+
+            if (Isoverride)
+            {
+                optionItem.Clear(presetid);
+            }
+            var forcount = reader.ReadPackedUInt32();
+            OptionShower.Update = true;
+            if (forcount <= 0) return;
+            try
+            {
+                for (var i = 0; i < forcount; i++)
+                {
+                    CustomRoles role = (CustomRoles)reader.ReadInt32();
+                    optionItem.Add(presetid, role);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"{ex}", "AssignOptionRead");
+            }
         }
         public override int GetValue()
             => RoleValues.Count;

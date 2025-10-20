@@ -18,6 +18,7 @@ namespace TownOfHost
         VersionCheck = 80,
         RequestRetryVersionCheck = 81,
         SyncCustomSettings = 100,
+        SyncAssignOption,
         SetDeathReason,
         EndGame,
         PlaySound,
@@ -26,7 +27,6 @@ namespace TownOfHost
         SetRealKiller,
         SetLoversPlayers,
         SetMadonnaLovers,
-        SyncRoomTimer,
         SyncYomiage,
         ModUnload = 111,
         MeetingInfo,
@@ -160,6 +160,9 @@ namespace TownOfHost
                     for (var i = indexId; i < maxId; i++)
                         OptionItem.AllOptions[i].SetValue(reader.ReadPackedInt32());
                     break;
+                case CustomRPC.SyncAssignOption:
+                    AssignOptionItem.ReadRpc(reader);
+                    break;
                 case CustomRPC.SetDeathReason:
                     RPC.GetDeathReason(reader);
                     break;
@@ -192,12 +195,6 @@ namespace TownOfHost
                     byte targetId = reader.ReadByte();
                     byte killerId = reader.ReadByte();
                     RPC.SetRealKiller(targetId, killerId);
-                    break;
-                case CustomRPC.SyncRoomTimer:
-                    float lag = AmongUsClient.Instance.Ping / 1000f;
-                    float timer = reader.ReadSingle() - lag;
-                    GameStartManagerPatch.SetTimer(timer);
-                    Logger.Info($"Set: {timer}", "RPC SetTimer");
                     break;
                 case CustomRPC.SyncYomiage:
                     Yomiage.YomiageS.Clear();
@@ -257,6 +254,10 @@ namespace TownOfHost
 
             foreach (OptionItem co in OptionItem.AllOptions)
             {
+                if (co is AssignOptionItem assignOptionItem)
+                {
+                    assignOptionItem.SendRpc(true);
+                }
                 if (count == 0 || count % 500 == 0)
                 {
                     if (writer != null) AmongUsClient.Instance.FinishRpcImmediately(writer);
@@ -274,6 +275,11 @@ namespace TownOfHost
         public static void SyncCustomSettingsRPC(OptionItem item)
         {
             if (!AmongUsClient.Instance.AmHost || !PlayerCatch.AnyModClient()) return;
+
+            if (item is AssignOptionItem assignOptionItem)
+            {
+                return;
+            }
 
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable, -1);
             writer.WritePacked(item.Id);
@@ -317,7 +323,8 @@ namespace TownOfHost
         }
         public static void RpcSyncRoomTimer()
         {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncRoomTimer, SendOption.None, -1);
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None, -1);
+            writer.Write((int)ModSystem.SyncRoomTimer);
             writer.Write(GameStartManagerPatch.GetTimer());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
@@ -517,7 +524,8 @@ namespace TownOfHost
         }
         public enum ModSystem
         {
-            SyncDeviceTimer
+            SyncDeviceTimer,
+            SyncRoomTimer
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -528,7 +536,12 @@ namespace TownOfHost
                 case ModSystem.SyncDeviceTimer:
                     DisableDevice.ReadMessage(reader);
                     break;
-
+                case ModSystem.SyncRoomTimer:
+                    float lag = AmongUsClient.Instance.Ping / 1000f;
+                    float timer = reader.ReadSingle() - lag;
+                    GameStartManagerPatch.SetTimer(timer);
+                    Logger.Info($"Set: {timer}", "RPC SetTimer");
+                    break;
             }
         }
     }

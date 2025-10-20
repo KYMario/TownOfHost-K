@@ -119,7 +119,7 @@ namespace TownOfHost
                 {
                     HudManager.Instance.TaskPanel.ToggleOpen();
                 }
-                else
+                else if (HudManager.Instance?.TaskPanel?.open is null)
                 {
                     Logger.Error("HudManagerがnull!", "OptionMenu");
                 }

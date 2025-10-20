@@ -96,6 +96,7 @@ class ShowFilter
                     foreach (var customrole in rolelist)
                     {
                         if (customrole.IsMainRole() is false) continue;
+                        if (customrole is CustomRoles.SKMadmate or CustomRoles.Emptiness or CustomRoles.HASFox or CustomRoles.HASTroll) continue;
                         if (customrole.IsEnable() is false && !(customrole is CustomRoles.Crewmate or CustomRoles.Impostor) && !activeroles.Contains(customrole)) continue;
                         if (NotAssign.Contains(customrole)) continue;
                         var roletype = customrole.GetCustomRoleTypes();

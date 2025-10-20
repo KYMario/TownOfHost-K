@@ -1216,8 +1216,8 @@ namespace TownOfHost
                 }
                 return;
             }
-            if ((Isclient && !player.IsModClient()) ||
-            (!Isclient && player.IsModClient())) return;
+            if (Options.ExHideChatCommand.GetBool() && ((Isclient && !player.IsModClient()) ||
+            (!Isclient && player.IsModClient()))) return;
 
             string[] args = text.Split(' ');
             string subArgs = "";
