@@ -87,7 +87,7 @@ namespace TownOfHost
         // Setter
         public override void SetValue(int value, bool doSync = true)
         {
-            this.CurrentValue = RoleValues.Count;
+            base.SetValue(RoleValues.Count, doSync);
         }
         public override bool GetBool() => RoleValues[Getpresetid()].Count > 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent)) && (GameMode == CustomGameMode.All || GameMode == Options.CurrentGameMode);
     }
