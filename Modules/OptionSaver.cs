@@ -10,7 +10,7 @@ namespace TownOfHost.Modules;
 public static class OptionSaver
 {
     private static readonly DirectoryInfo SaveDataDirectoryInfo = new(Main.BaseDirectory + "/SaveData/");
-    private static readonly FileInfo OptionSaverFileInfo = new($"{SaveDataDirectoryInfo.FullName}/Options_TOHk.json");
+    private static readonly FileInfo OptionSaverFileInfo = new($"{SaveDataDirectoryInfo.FullName}/Options_TOHkv{Version}.json");
     private static readonly LogHandler logger = Logger.Handler(nameof(OptionSaver));
 
     public static void Initialize()
@@ -24,6 +24,12 @@ public static class OptionSaver
         {
             OptionSaverFileInfo.Create().Dispose();
         }
+        /*バグり散らかしてv30に戻したいってのがなくなるまで削除処理を入れないでおく。
+        FileInfo oldinfo = new($"{SaveDataDirectoryInfo.FullName}/Options_TOHk.json");
+        if (oldinfo.Exists)
+        {
+            oldinfo.Delete();
+        }*/
     }
     /// <summary>現在のオプションからjsonシリアライズ用のオブジェクトを生成</summary>
     private static SerializableOptionsData GenerateOptionsData()
@@ -192,5 +198,5 @@ public static class OptionSaver
     }
 
     /// <summary>オプションの形式に互換性のない変更(プリセット数変更など)を加えるときはここの数字を上げる</summary>
-    public static readonly int Version = 4;
+    public const int Version = 4;
 }
