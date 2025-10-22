@@ -625,6 +625,15 @@ namespace TownOfHost
                         if (option.IsHeader)
                         {
                             var marksprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.{option.Name}.png");
+                            if (UtilsRoleInfo.GetRoleByInputName(GetString(option.Name), out var role, true) && role.IsVanilla())
+                            {
+                                var roleb = RoleManager.Instance.AllRoles.ToArray().Where(x => x.Role == role.GetRoleTypes()).FirstOrDefault();
+
+                                if (roleb is not null)
+                                {
+                                    marksprite = roleb.RoleIconSolid;
+                                }
+                            }
                             if (marksprite is not null)
                             {
                                 var mark = Object.Instantiate(stringOption.LabelBackground, stringOption.transform);

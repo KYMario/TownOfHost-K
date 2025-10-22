@@ -8,7 +8,7 @@ namespace TownOfHost
         public static List<SlotBaseOptionInfo> SlotRoles = new();
         public static void SetupOptionItem()
         {
-            for (var i = 0; i < 14; i++)
+            for (var i = 0; i < 15; i++)
             {
                 var slotrole = (AssignOptionItem)AssignOptionItem.Create(114000 + i * 100, $"SlotRole{i + 1}", 0, TabGroup.Combinations, false, true, true, true, true)
                     .SetHeader(i is 0).SetColorcode("#efd87f");

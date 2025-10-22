@@ -278,7 +278,7 @@ namespace TownOfHost
         /// </summary>
         /// <param name="text"></param>
         /// <returns></returns>
-        public static string FixRoleNameInput(string text)
+        private static string FixRoleNameInput(string text)
         {
             return text.RemoveHtmlTags() switch
             {

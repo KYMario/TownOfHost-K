@@ -3,7 +3,6 @@ using System.Linq;
 using HarmonyLib;
 using TownOfHost.Roles.Core;
 using UnityEngine;
-using UnityEngine.UI;
 using static TownOfHost.Translator;
 
 namespace TownOfHost;

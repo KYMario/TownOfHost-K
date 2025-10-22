@@ -122,6 +122,20 @@ namespace TownOfHost
     {
         public static void Prefix(IntroCutscene __instance, ref Il2CppSystem.Collections.IEnumerator __result)
         {
+            if (AmongUsClient.Instance.AmHost is false)
+            {
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    var colorId = pc.Data.DefaultOutfit.ColorId;
+
+                    Main.AllPlayerNames[pc.PlayerId] = pc?.Data?.PlayerName;
+                    Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
+                    pc.cosmetics.nameText.text = pc.name;
+
+                    var outfit = pc.Data.DefaultOutfit;
+                    Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
+                }
+            }
             var logger = Logger.Handler("Info");
             logger.Info("------------名前表示------------");
             foreach (var pc in PlayerCatch.AllPlayerControls)
