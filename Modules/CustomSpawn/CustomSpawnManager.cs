@@ -16,6 +16,7 @@ public class CustomSpawnManager
     private static readonly LogHandler logger = Logger.Handler(nameof(CustomSpawnManager));
 
     public static CustomSpawnData Data = new();
+    public const int Version = 1;
 
     public static void CreateIfNotExists()
     {
@@ -30,7 +31,7 @@ public class CustomSpawnManager
         }
     }
 
-    [PluginModuleInitializer]
+    [PluginModuleInitializer(InitializePriority.VeryLow)]
     public static void Load()
     {
         try
@@ -45,11 +46,8 @@ public class CustomSpawnManager
                 return;
             }
 
-            var options = new JsonSerializerOptions();
-            options.Converters.Add(new JsonHelper.Vector2Converter());
-            options.Converters.Add(new JsonHelper.ColorConverter());
-
-            Data = JsonSerializer.Deserialize<CustomSpawnData>(jsonString, options);
+            Data = CustomSpawnDeserializer.Deserialize(jsonString, out bool updated);
+            if (updated) Save();
         }
         catch (Exception ex)
         {
@@ -122,6 +120,7 @@ public class CustomSpawnManager
     {
         public int CurrentPresetId { get; set; } = 0;
         public List<CustomSpawnPreset> Presets { get; set; } = new() { new("プリセット1") };
+        public int Version { get; set; } = CustomSpawnManager.Version;
 
         public CustomSpawnPreset CurrentPreset => Presets[CurrentPresetId];
     }
