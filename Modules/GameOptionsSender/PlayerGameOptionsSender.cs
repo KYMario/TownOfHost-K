@@ -354,7 +354,6 @@ namespace TownOfHost.Modules
             if ((CurrentGameMode == CustomGameMode.HideAndSeek || IsStandardHAS) && HideAndSeekKillDelayTimer > 0)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
-                Logger.Warn($"{player.PlayerId}: {PlayerState.GetByPlayerId(player.PlayerId).CountType}", "!HnS");
                 if (player.Is(CountTypes.Impostor))
                 {
                     AURoleOptions.PlayerSpeedMod = Main.MinSpeed;
