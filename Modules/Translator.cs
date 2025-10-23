@@ -7,6 +7,7 @@ using Csv;
 using HarmonyLib;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfHost.Attributes;
+using TownOfHost.Roles.Core;
 
 namespace TownOfHost
 {
@@ -83,8 +84,9 @@ namespace TownOfHost
         {
             var res = $"<INVALID:{str}>";
             var ch = res;
-            if ((Event.OptionLoad.Contains(str) || str is "CakeshopInfoLong" or "CakeshopInfo" or "Cakeshop") && !Event.Special && !Event.NowRoleEvent) return res;
-            if ((str is "VegaInfoLong" or "VegaInfo" or "Vega" or "AltairInfoLong" or "AltairInfo" or "Altair") && !Event.Tanabata) return res;
+            if ((Event.OptionLoad.Contains(str) || str is "CakeshopInfoLong" or "CakeshopInfo" or "Cakeshop") && !Event.Special && !Event.CheckRole(CustomRoles.Cakeshop)) return res;
+            if (str is "VegaInfoLong" or "VegaInfo" or "Vega" && !Event.CheckRole(CustomRoles.Vega)) return res;
+            if (str is "AltairInfoLong" or "AltairInfo" or "Altair" && !Event.CheckRole(CustomRoles.Altair)) return res;
             if (str is "Assassin" or "Merlin" && !DebugModeManager.AmDebugger) return res;
             if (translateMaps.TryGetValue(str, out var dic) && (!dic.TryGetValue((int)langId, out res) || res == "")) //strに該当する&無効なlangIdかresが空
             {

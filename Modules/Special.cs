@@ -26,7 +26,7 @@ static class Event
     public static bool IsE(this CustomRoles role) => role is CustomRoles.SpeedStar or CustomRoles.Chameleon;
 
     /// <summary>
-    /// 期間限定ロールかをチェックします
+    /// 期間限定ロールが使用可能かをチェックします<br/>
     /// 通常ロールはtrueを返します
     /// </summary>
     /// <returns>ロールが使用可能ならtrueを返します</returns>
