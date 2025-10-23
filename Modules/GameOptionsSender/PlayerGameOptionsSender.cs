@@ -163,6 +163,7 @@ namespace TownOfHost.Modules
                 AURoleOptions.EngineerInVentMaxTime = 0;
                 return opt;
             }
+
             CustomRoles role = player.GetCustomRole();
             var HasRoleAddon = RoleAddAddons.GetRoleAddon(role, out var data, player, subrole: [CustomRoles.Lighting, CustomRoles.Moon, CustomRoles.Watching, CustomRoles.Speeding]);
 
@@ -296,18 +297,6 @@ namespace TownOfHost.Modules
                     opt.SetInt(Int32OptionNames.EmergencyCooldown, 3600);
                     opt.SetInt(Int32OptionNames.NumEmergencyMeetings, 0);
                 }
-                if ((CurrentGameMode == CustomGameMode.HideAndSeek || IsStandardHAS) && HideAndSeekKillDelayTimer > 0)
-                {
-                    if (!Main.HnSFlag)
-                    {
-                        opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
-                        if (player.Is(CountTypes.Impostor))
-                        {
-                            AURoleOptions.PlayerSpeedMod = Main.MinSpeed;
-                        }
-                        return opt;
-                    }
-                }
             }
             else
             {
@@ -359,6 +348,17 @@ namespace TownOfHost.Modules
                     speed += addspeed;
                 }
                 AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, 10f);
+            }
+
+            //あっ、鬼さんは開始前見ちゃだめですよ?
+            if ((CurrentGameMode == CustomGameMode.HideAndSeek || IsStandardHAS) && HideAndSeekKillDelayTimer > 0)
+            {
+                opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
+                Logger.Warn($"{player.PlayerId}: {PlayerState.GetByPlayerId(player.PlayerId).CountType}", "!HnS");
+                if (player.Is(CountTypes.Impostor))
+                {
+                    AURoleOptions.PlayerSpeedMod = Main.MinSpeed;
+                }
             }
 
             MeetingTimeManager.ApplyGameOptions(opt);
