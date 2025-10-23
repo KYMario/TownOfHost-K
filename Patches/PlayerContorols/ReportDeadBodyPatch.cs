@@ -450,9 +450,12 @@ namespace TownOfHost
                     check = true;
                 }
             }
-            RpcCancelMeeting(repoter, null);
 
-            if (check) return false;
+            if (check)
+            {
+                RpcCancelMeeting(repoter, null);
+                return false;
+            }
 
             if (Options.SyncButtonMode.GetBool() && target == null)
             {
