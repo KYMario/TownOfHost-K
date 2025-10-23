@@ -41,6 +41,7 @@ public sealed class Cakeshop : RoleBase, INekomata
 
     public override void AfterMeetingTasks()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
         if (Event.CheckRole(CustomRoles.Cakeshop) is false)
         {
             Logger.Info($"真っ黒こげのケーキ", "CakeShop");
@@ -56,7 +57,7 @@ public sealed class Cakeshop : RoleBase, INekomata
         }
         PlayerState.AllPlayerStates.DoIf(
             x => Addedaddons.ContainsKey(x.Key),
-            state => state.Value.RemoveSubRole(Addedaddons[state.Key]));
+            state => PlayerCatch.GetPlayerById(state.Key).RpcReplaceSubRole(Addedaddons[state.Key], true));
 
         if (!Player.IsAlive())
         {

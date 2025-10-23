@@ -197,6 +197,33 @@ namespace TownOfHost
             }
         }
 
+        /// <summary>
+        /// 属性変える奴。(一時用)
+        /// </summary>
+        /// <param name="player">対象者</param>
+        /// <param name="role">変更する役職</param>
+        public static void RpcReplaceSubRole(this PlayerControl player, CustomRoles role, bool remove = false)
+        {
+            if (!AmongUsClient.Instance.AmHost || role < CustomRoles.NotAssigned) return;
+
+            var state = PlayerState.GetByPlayerId(player.PlayerId);
+            if (remove)
+            {
+                if (!state.SubRoles.Contains(role)) return;//不要なRPCは飛ばさない
+                state.RemoveSubRole(role);
+            }
+            else
+            {
+                state.SetSubRole(role, true);
+            }
+
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReplaceSubRole, SendOption.Reliable, -1);
+            writer.Write(player.PlayerId);
+            writer.WritePacked((int)role);
+            writer.Write(remove);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+
         public static void RpcExile(this PlayerControl player)
         {
             RPC.ExileAsync(player);

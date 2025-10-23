@@ -86,7 +86,7 @@ namespace TownOfHost
 
                 if (__instance.Is(CustomRoles.Amnesia))//アムネシア削除
                 {
-                    Amnesia.RemoveAmnesia(__instance.PlayerId);
+                    Amnesia.RemoveAmnesia(__instance.PlayerId, true);
                 }
 
                 if (CustomWinnerHolder.WinnerTeam == CustomWinner.Default)

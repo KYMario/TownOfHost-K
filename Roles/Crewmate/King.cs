@@ -238,7 +238,7 @@ public sealed class King : RoleBase
                     if (remove == null && remove?.Count != 0)
                     {
                         foreach (var addon in remove)
-                            ps.RemoveSubRole(addon);
+                            pc.RpcReplaceSubRole(addon, true);
                     }
                 }
             }

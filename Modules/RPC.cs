@@ -23,12 +23,13 @@ namespace TownOfHost
         EndGame,
         PlaySound,
         SetCustomRole,
+        ReplaceSubRole,
         SetNameColorData,
         SetRealKiller,
         SetLoversPlayers,
         SetMadonnaLovers,
-        SyncYomiage,
         ModUnload = 111,
+        SyncYomiage,
         MeetingInfo,
         CustomRoleSync,
         CustomSubRoleSync,
@@ -124,7 +125,7 @@ namespace TownOfHost
                         string forkId = 3 <= version.Major ? reader.ReadString() : Main.OriginalForkId;
 
                         Main.playerVersion[__instance.PlayerId] = new PlayerVersion(version, tag, forkId);
-                        //バージョンが一致した場合送信(SyncAllOptionsでホスト以外は弾かれるためホスト以外は送信しません)
+                        //バージョンが一致した場合送信
                         if (GameStartManagerPatch.GameStartManagerUpdatePatch.MatchVersions(__instance.PlayerId))
                         {
                             if (!AmongUsClient.Instance.AmHost) break;
@@ -178,6 +179,14 @@ namespace TownOfHost
                     byte CustomRoleTargetId = reader.ReadByte();
                     CustomRoles role = (CustomRoles)reader.ReadPackedInt32();
                     RPC.SetCustomRole(CustomRoleTargetId, role);
+                    break;
+                case CustomRPC.ReplaceSubRole:
+                    byte SubRoleTargetId = reader.ReadByte();
+                    CustomRoles subRole = (CustomRoles)reader.ReadPackedInt32();
+                    bool removeSubRole = reader.ReadBoolean();
+                    var subRoleState = PlayerState.GetByPlayerId(SubRoleTargetId);
+                    if (removeSubRole) subRoleState.RemoveSubRole(subRole);
+                    else subRoleState.SetSubRole(subRole, true);
                     break;
                 case CustomRPC.SetNameColorData:
                     NameColorManager.ReceiveRPC(reader);

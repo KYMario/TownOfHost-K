@@ -39,17 +39,21 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             playerIdList = new();
             dontcanUseability = OptionDontCanUseAbility.GetBool();
+            SubRoleRPCSender.AddHandler(CustomRoles.Amnesia, ReceiveRPC);
         }
         public static void Add(byte playerId)
         {
             playerIdList.Add(playerId);
         }
-        public static void RemoveAmnesia(byte playerId)
+        public static void RemoveAmnesia(byte playerId, bool sync = false)
         {
             playerIdList.Remove(playerId);
             PlayerState.GetByPlayerId(playerId).RemoveSubRole(CustomRoles.Amnesia);
             UtilsGameLog.AddGameLog("Amnesia", string.Format(Translator.GetString("Am.log"), UtilsName.GetPlayerColor(playerId)));
+            if (sync) { using var sender = new SubRoleRPCSender(CustomRoles.Amnesia, playerId); }
         }
+        public static void ReceiveRPC(Hazel.MessageReader reader, byte playerId)
+            => RemoveAmnesia(playerId);
         /// <summary>
         /// アムネシアの能力削除が適応されている状態か
         /// </summary>

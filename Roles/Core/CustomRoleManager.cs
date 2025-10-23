@@ -359,7 +359,7 @@ public static class CustomRoleManager
                 if (Amnesia.OptionRealizeKillcount.GetInt() <= Main.KillCount[appearanceKiller.PlayerId])
                 {
                     if (!Utils.RoleSendList.Contains(appearanceKiller.PlayerId)) Utils.RoleSendList.Add(appearanceKiller.PlayerId);
-                    Amnesia.RemoveAmnesia(appearanceKiller.PlayerId);
+                    Amnesia.RemoveAmnesia(appearanceKiller.PlayerId, true);
 
 
                     if (AmongUsClient.Instance.AmHost)
