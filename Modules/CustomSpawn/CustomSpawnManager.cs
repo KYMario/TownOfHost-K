@@ -11,8 +11,8 @@ namespace TownOfHost;
 
 public class CustomSpawnManager
 {
-    private static readonly DirectoryInfo SaveDataDirectoryInfo = new("./TOHK_DATA");
-    private static readonly FileInfo SaveDataFileInfo = new($"{SaveDataDirectoryInfo.FullName}/CustomSpawns2.txt");
+    private static readonly DirectoryInfo SaveDataDirectoryInfo = new(Main.BaseDirectory);
+    private static readonly FileInfo SaveDataFileInfo = new($"{SaveDataDirectoryInfo.FullName}/CustomSpawns.txt");
     private static readonly LogHandler logger = Logger.Handler(nameof(CustomSpawnManager));
 
     public static CustomSpawnData Data = new();
