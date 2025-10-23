@@ -51,6 +51,7 @@ namespace TownOfHost.Roles.Ghost
         ///</summary>
         public static void AssignAddOnsFromList(bool IsDead = false)
         {
+            if (Options.CurrentGameMode != CustomGameMode.Standard) return;
             foreach (var kvp in AllData)
             {
                 var (role, data) = kvp;
