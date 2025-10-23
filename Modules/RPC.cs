@@ -341,6 +341,15 @@ namespace TownOfHost
             writer.Write((int)deathReason);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+        public static void GetDeathReason(MessageReader reader)
+        {
+            byte playerId = reader.ReadByte();
+            CustomDeathReason deathReason = (CustomDeathReason)reader.ReadInt32();
+            PlayerState state = PlayerState.GetByPlayerId(playerId);
+            state.DeathReason = deathReason;
+            state.IsDead = true;
+        }
+
         public static void SyncYomiage()
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncYomiage, SendOption.None, -1);
@@ -351,14 +360,6 @@ namespace TownOfHost
                 writer.Write(data.Value);
             }
             AmongUsClient.Instance.FinishRpcImmediately(writer);
-        }
-        public static void GetDeathReason(MessageReader reader)
-        {
-            byte playerId = reader.ReadByte();
-            CustomDeathReason deathReason = (CustomDeathReason)reader.ReadInt32();
-            PlayerState state = PlayerState.GetByPlayerId(playerId);
-            state.DeathReason = deathReason;
-            state.IsDead = true;
         }
 
         public static void EndGame(MessageReader reader)
@@ -525,7 +526,8 @@ namespace TownOfHost
         public enum ModSystem
         {
             SyncDeviceTimer,
-            SyncRoomTimer
+            SyncRoomTimer,
+            SyncSkinShuffle
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -541,6 +543,16 @@ namespace TownOfHost
                     float timer = reader.ReadSingle() - lag;
                     GameStartManagerPatch.SetTimer(timer);
                     Logger.Info($"Set: {timer}", "RPC SetTimer");
+                    break;
+                case ModSystem.SyncSkinShuffle:
+                    var count = PlayerControl.AllPlayerControls.Count;
+                    for (; count > 0; --count)
+                    {
+                        byte targetId = reader.ReadByte();
+                        var data = PlayerCatch.GetPlayerInfoById(reader.ReadByte());
+                        Main.AllPlayerNames[targetId] = reader.ReadString(); //data.PlayerNameから取得しようとしたら名前がシステムメセになったのでどうしようか悩む
+                        Main.PlayerColors[targetId] = Palette.PlayerColors[data.DefaultOutfit.ColorId];
+                    }
                     break;
             }
         }
