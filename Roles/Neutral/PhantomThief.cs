@@ -226,8 +226,23 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         if (CustomWinnerHolder.WinnerIds.Contains(targetId))
         {
             var Targetrole = target.GetCustomRole();
+            var winner = (CustomWinner)Targetrole;
+            if (Targetrole.IsImpostor())
+            {
+                winner = CustomWinner.Impostor;//マッドメイトは追加勝利的な判定?
+            }
+            else
+            if (Targetrole.IsCrewmate())
+            {
+                winner = CustomWinner.Crewmate;
+            }
+            if (Targetrole is CustomRoles.JackalAlien or CustomRoles.Jackaldoll or CustomRoles.JackalMafia)
+            {
+                winner = CustomWinner.Jackal;
+            }
+
             if (Targetrole != targetrole && Targetrole != CustomRoles.NotAssigned) targetrole = Targetrole;
-            if (OptionSoloWin.GetBool())
+            if (OptionSoloWin.GetBool() && CustomWinnerHolder.WinnerTeam == winner)//単独勝利かつ、相手が単独勝利
             {
                 //ラバーズ等、自身も勝利していたら除外
                 if (CustomWinnerHolder.WinnerIds.Contains(Player.PlayerId)) return false;

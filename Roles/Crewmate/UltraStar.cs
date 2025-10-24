@@ -98,7 +98,7 @@ public sealed class UltraStar : RoleBase, IKiller
             Vector2 GSpos = player.transform.position;
 
             PlayerControl target = null;
-            var KillRange = 0.5;
+            var KillRange = 0.4;
 
             foreach (var pc in PlayerCatch.AllAlivePlayerControls)
             {
