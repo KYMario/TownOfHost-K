@@ -74,7 +74,7 @@ namespace TownOfHost
                     GameSettings.transform.SetParent(__instance.roomTracker.transform.parent);
                     GameSettings.rectTransform.pivot = new(-0.67f, 1.13f);
                     GameSettingsAspectPos = GameSettings.gameObject.AddComponent<AspectPosition>();
-                    GameSettingsAspectPos.OnEnable();
+                    // GameSettingsAspectPos.OnEnable(); 特に理由がないならエラーがでるので... / もし必要なら代わりにAdjustPosition()叩くと解決すると思う
                     GameSettingsAspectPos.Alignment = AspectPosition.EdgeAlignments.LeftTop;
                     GameSettingsAspectPos.DistanceFromEdge = new(-2.5f, 0, 0);
                 }
