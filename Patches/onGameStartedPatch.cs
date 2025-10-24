@@ -50,6 +50,7 @@ namespace TownOfHost
             UtilsGameLog.LastLogRole = new Dictionary<byte, string>();
             UtilsGameLog.LastLogPro = new Dictionary<byte, string>();
             UtilsGameLog.LastLogSubRole = new Dictionary<byte, string>();
+            UtilsGameLog.LastLogLoveRole = new Dictionary<byte, string>();
             Main.KillCount = new Dictionary<byte, int>();
             Main.AllPlayerTask = new Dictionary<byte, List<uint>>();
             GhostRoleAssingData.GhostAssingCount = new Dictionary<CustomRoles, int>();
