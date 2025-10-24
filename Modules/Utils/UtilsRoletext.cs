@@ -600,7 +600,7 @@ namespace TownOfHost
             {
                 if (lover != CustomRoles.OneLove)
                 {
-                    sb.Append($" + ");
+                    sb.Append($"+");
                     sb.Append(ColorString(GetRoleColor((CustomRoles)lover), "♥"));
                 }
             }
