@@ -29,11 +29,22 @@ class StreamerInfo
         {
             if (StreamURL.StartsWith("https://youtu.be"))
             {
-                streamkey = StreamURL.RemoveDeltext("https://youtu.be/").Split("?")[0];
+                var nonq = StreamURL.RemoveDeltext("https://youtu.be/");
+                if (nonq.Contains("?"))
+                {
+                    streamkey = nonq.Split("?")[0];
+                }
+                else streamkey = nonq;
             }
             else if (StreamURL.StartsWith("https://youtube.com/live/"))
             {
-                streamkey = StreamURL.RemoveDeltext("https://youtube.com/live/").Split("?")[0];
+
+                var nonq = StreamURL.RemoveDeltext("https://youtube.com/live/").Split("?")[0];
+                if (nonq.Contains("?"))
+                {
+                    streamkey = nonq.Split("?")[0];
+                }
+                else streamkey = nonq;
             }
             else
             {
