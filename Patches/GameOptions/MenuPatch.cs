@@ -589,6 +589,9 @@ namespace TownOfHost
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
                                     (imp, mad, crew, neu) = filterOptionItem.roles;
+                                    ShowFilter.NowOption = option;
+                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu));
+                                    return;
                                 }
                                 if (option is AssignOptionItem assignoptionitem)
                                 {
@@ -599,8 +602,6 @@ namespace TownOfHost
                                     ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu));
                                     return;
                                 }
-                                ShowFilter.NowOption = option;
-                                ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu));
                             }));
                         }
 
