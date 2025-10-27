@@ -43,6 +43,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
         IsTpToVent = OptionTpToVent.GetBool();
         reprisaldistance = OptionReprisalDistance.GetFloat();
         StopTime = OptionStopTime.GetFloat();
+        IsNonSnap = OptionNonSnaptarget.GetBool();
 
         Target = null;
         killedcount = 0;
@@ -56,6 +57,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
     static OptionItem OptionShapeCoolDown; static float ShapeCooldown;
     static OptionItem OptionCanUseVent; static bool CanUseVent;
     static OptionItem OptionTpToVent; static bool IsTpToVent;
+    static OptionItem OptionNonSnaptarget; static bool IsNonSnap;
     static OptionItem OptionReprisalDistance; static float reprisaldistance;
     static OptionItem OptionStopTime; static float StopTime;
 
@@ -70,6 +72,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
         StrawdollShapeCooldown,
         StrawdollWinKilledCount,
         StrawdollTpToVent,
+        StrawdollSuicidetarget,
         StrawdollReprisaldistance,
         StrawdollStoptime
     }
@@ -84,6 +87,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             .SetValueFormat(OptionFormat.Seconds);
         OptionCanUseVent = BooleanOptionItem.Create(RoleInfo, 11, GeneralOption.CanVent, false, false);
         OptionTpToVent = BooleanOptionItem.Create(RoleInfo, 12, OptionName.StrawdollTpToVent, false, false, OptionCanUseVent);
+        OptionNonSnaptarget = BooleanOptionItem.Create(RoleInfo, 16, OptionName.StrawdollSuicidetarget, false, false);
         OptionReprisalDistance = FloatOptionItem.Create(RoleInfo, 13, OptionName.StrawdollReprisaldistance, new(0, 3, 0.5f), 1f, false)
             .SetValueFormat(OptionFormat.Multiplier).SetZeroNotation(OptionZeroNotation.Off);
         OptionStopTime = FloatOptionItem.Create(RoleInfo, 14, OptionName.StrawdollStoptime, new(0, 10, 0.5f), 3, false)
@@ -183,47 +187,55 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
         var (killer, target) = info.AppearanceTuple;
         if (Target.IsAlive() && IsShapeShift && info.CheckHasGuard() is false)
         {
-            if (CustomRoleManager.OnCheckMurder(killer, Target, Target, Target, true, true, 10))
+            if (IsNonSnap is false)
             {
-                Target.GetPlayerState().DeathReason = CustomDeathReason.Spell;
-                Target = null;
-                killedcount++;
-                UtilsGameLog.AddGameLog("Strawdoll", string.Format(GetString("StrawdollKilledLog"), killedcount));
-                if (WinKilledCount <= killedcount)
-                {
-                    if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Strawdoll, Player.PlayerId))
-                    {
-                        SendRPC();
-                        return false;
-                    }
-                }
                 IsShapeShift = false;
-                SendRPC();
-                if (StopTime > 0)
-                {
-                    var tmpSpeed = Main.AllPlayerSpeed[Player.PlayerId];
-                    Main.AllPlayerSpeed[Player.PlayerId] = Main.MinSpeed;
-                    Player.MarkDirtySettings();
-                    _ = new LateTask(() =>
-                    {
-                        Main.AllPlayerSpeed[Player.PlayerId] = tmpSpeed;
-                        Player.MarkDirtySettings();
-                        RPC.PlaySoundRPC(Player.PlayerId, Sounds.TaskComplete);
-                    }, StopTime, "Strawdoll Stopmove", null);
-                }
-                Player.RpcShapeshift(Player, false);
-                Player.RpcSnapToForced(ShapePosition);
-                if (IsTpToVent && Ventid > -1)
-                {
-                    Player.MyPhysics.RpcEnterVent(Ventid);
-                    return false;
-                }
-
-                return false;
+                Target.RpcSnapToForced(Player.GetTruePosition());
             }
-            Target = null;
-            SendRPC();
-            UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
+            _ = new LateTask(() =>
+            {
+                if (CustomRoleManager.OnCheckMurder(killer, Target, Target, Target, true, true, 10))
+                {
+                    Target.GetPlayerState().DeathReason = CustomDeathReason.Spell;
+                    Target = null;
+                    killedcount++;
+                    UtilsGameLog.AddGameLog("Strawdoll", string.Format(GetString("StrawdollKilledLog"), killedcount));
+                    if (WinKilledCount <= killedcount)
+                    {
+                        if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Strawdoll, Player.PlayerId))
+                        {
+                            SendRPC();
+                            return;
+                        }
+                    }
+                    IsShapeShift = false;
+                    SendRPC();
+                    if (StopTime > 0)
+                    {
+                        var tmpSpeed = Main.AllPlayerSpeed[Player.PlayerId];
+                        Main.AllPlayerSpeed[Player.PlayerId] = Main.MinSpeed;
+                        Player.MarkDirtySettings();
+                        _ = new LateTask(() =>
+                        {
+                            Main.AllPlayerSpeed[Player.PlayerId] = tmpSpeed;
+                            Player.MarkDirtySettings();
+                            RPC.PlaySoundRPC(Player.PlayerId, Sounds.TaskComplete);
+                        }, StopTime, "Strawdoll Stopmove", null);
+                    }
+                    Player.RpcShapeshift(Player, false);
+                    Player.RpcSnapToForced(ShapePosition);
+                    if (IsTpToVent && Ventid > -1)
+                    {
+                        Player.MyPhysics.RpcEnterVent(Ventid);
+                        return;
+                    }
+                    return;
+                }
+                Target = null;
+                SendRPC();
+                UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
+            }, IsNonSnap ? 0f : Main.LagTime, "SnapCheck", true);
+            return false;
         }
         return true;
     }

@@ -1647,6 +1647,7 @@
 "StrawdollShapeCooldown","ShapeShift Cooldown","変身のクールダウン"
 "StrawdollWinKilledCount","Win KilledCount","勝利に必要なキルされる回数"
 "StrawdollTpToVent","Teleport to near vent","テレポート先をベント内にする"
+"StrawdollSuicidetarget","Suicide target","身代わりがその場で死ぬ"
 "StrawdollReprisaldistance","Reprisal Distance","自身が呪殺される距離"
 "StrawdollStoptime","Stop Time","噛まれた時に動けない時間"
 "MissioneerWinAssignmntPoint","Win Point","単独勝利に必要なポイント"
