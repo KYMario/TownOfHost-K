@@ -111,6 +111,7 @@ namespace TownOfHost
             }
             catch
             {
+                reader.Position = 0;
                 Logger.Error($"エラーが発生したため、RPCをキャンセルしました {__instance.PlayerId}", "cancel");
                 return;
             }
