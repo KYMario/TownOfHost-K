@@ -4,6 +4,7 @@ using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.Roles.Core.Interfaces.ISchrodingerCatOwner;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -174,7 +175,11 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
 
         if (UseingShape is false) return;
 
-        if (OptionAddWinCount.GetFloat() <= Seconds) SecondsWin = true;
+        if (OptionAddWinCount.GetFloat() <= Seconds && !SecondsWin)
+        {
+            SecondsWin = true;
+            SendRPC();
+        }
         if (OptionSoloWinCount.GetFloat() <= Seconds)
         {
             win = true;
@@ -190,9 +195,23 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         if (Count != (int)Seconds)
         {
             Count = (int)Seconds;
+            SendRPC();
             UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
         }
     }
 
     public bool CheckWin(ref CustomRoles winnerRole) => Player.IsAlive() && SecondsWin && !win;
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(Count);
+        sender.Writer.Write(SecondsWin);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Count = reader.ReadInt32();
+        SecondsWin = reader.ReadBoolean();
+    }
 }

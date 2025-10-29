@@ -5,6 +5,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -38,7 +39,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
         MagicCooldown = DefaultCooldown;
         MagicCount = 0;
         HaveKillCount = 0;
-        MagicTarget.Clear();
+        MagicTarget = new();
     }
 
     static OptionItem OptionMagicCooldown;
@@ -49,18 +50,19 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
     static OptionItem OptionResetKillCount;
     static OptionItem OptionResetMagicTarget;
 
+    static float DefaultCooldown;
+    static float Maximum;
+    static float Radius;
+    static bool ShowDeadbody; //会議で死亡してるかを表示するか
+    static int MagicUseKillCount; //必要なキル数
+    static bool ResetKillCount; //←↓会議後リセットするかの設定 | キル数
+
     float MagicCooldown;
-    float DefaultCooldown;
-    float Maximum;
-    float Radius;
-    bool ShowDeadbody; //会議で死亡してるかを表示するか
-    int MagicUseKillCount; //必要なキル数
-    bool ResetKillCount; //←↓会議後リセットするかの設定 | キル数
     bool ResetMagicTarget;// マジックで消す予定の人
 
-    float MagicCount;
+    int MagicCount;
     int HaveKillCount;
-    List<byte> MagicTarget = new();
+    List<byte> MagicTarget;
 
     enum Option
     {
@@ -125,6 +127,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             var target = min.Key;
 
             MagicCount++;
+            SendRPC();
             check = (Maximum <= MagicCount && Maximum > 0) || MagicCooldown != DefaultCooldown;
             MagicTarget.Add(target.PlayerId);
             Player.RpcProtectedMurderPlayer(target);
@@ -169,6 +172,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
         }
         MagicTarget.Clear();
         HaveKillCount -= MagicUseKillCount;
+        SendRPC();
         Player.SetKillCooldown();
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 0.1f);
     }
@@ -200,5 +204,18 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonLowertext");
         return $"<size=50%>{GetString("PhantomButtonLowertext")}</size>";
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(MagicCount);
+        sender.Writer.Write(HaveKillCount);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        MagicCount = reader.ReadInt32();
+        HaveKillCount = reader.ReadInt32();
     }
 }

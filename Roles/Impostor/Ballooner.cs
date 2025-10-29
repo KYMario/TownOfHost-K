@@ -1,6 +1,6 @@
 
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using UnityEngine;
@@ -75,7 +75,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
-        if (AmongUsClient.Instance.AmHost is false || player.IsAlive() is false) return;
+        if (player.IsAlive() is false) return;
 
         if (OldPosition == new Vector2(50f, 50f) || MaxBoomDis <= NowBoomDis
         || Player.inVent || Player.MyPhysics.Animations.IsPlayingEnterVentAnimation()
@@ -106,7 +106,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
     public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
 
     public override string GetProgressText(bool comms = false, bool GameLog = false)
-    => Utils.ColorString(NowBoomDis <= 0 ? ModColors.Gray : (MaxBoomDis <= NowBoomDis ? ModColors.Red : ModColors.Orange), $" ({NowBoomDis})");
+        => Utils.ColorString(NowBoomDis <= 0 ? ModColors.Gray : (MaxBoomDis <= NowBoomDis ? ModColors.Red : ModColors.Orange), $" ({NowBoomDis})");
 
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
@@ -159,6 +159,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
         if (OptionSuicide.GetBool() is false)
         {
             ResetBalloon();
+            SendRPC();
             UtilsNotifyRoles.NotifyRoles();
         }
         Player.SetKillCooldown(delay: true);
@@ -176,5 +177,15 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
     {
         text = "Ballooner_Ability";
         return true;
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        ResetBalloon();
     }
 }

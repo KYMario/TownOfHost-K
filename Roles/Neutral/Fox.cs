@@ -9,6 +9,7 @@ using TownOfHost.Modules.ChatManager;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Patches;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -124,6 +125,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
 
             killer.SetKillCooldown(target: target, force: true);
             Guard--;
+            SendRPC();
             Logger.Info($"ガード残り:{Guard}", "Fox");
             info.GuardPower = 2;
             if (canseeguardcount) UtilsNotifyRoles.NotifyRoles(SpecifySeer: target);
@@ -171,12 +173,15 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
     }
     public override void AfterMeetingTasks()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
+
         timer = 0;
         List<SystemTypes> rooms = new();
         ShipStatus.Instance.AllRooms.Where(room => room?.RoomId is not null and not SystemTypes.Hallway).Do(r => rooms.Add(r.RoomId));
 
         var rand = IRandom.Instance;
         FoxRoom = rooms[rand.Next(0, rooms.Count)];
+        SendRPC();
         Logger.Info($"NextTask : {FoxRoom}", "Fox");
     }
     float timer = 0;
@@ -195,6 +200,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
                 player.RpcProtectedMurderPlayer();
                 Logger.Info($"{FoxRoom}に{player.name}が来たよ", "Fox");
                 FoxRoom = null;
+                SendRPC();
                 _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.3f, "FoxChengeRoom", null);
                 return;
             }
@@ -204,6 +210,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
 
             var rand = IRandom.Instance;
             FoxRoom = rooms[rand.Next(0, rooms.Count)];
+            SendRPC();
             Logger.Info($"NextTask : {FoxRoom}", "Fox");
             _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.3f, "FoxChengeRoom", null);
         }
@@ -270,4 +277,18 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
     bool ISystemTypeUpdateHook.UpdateHqHudSystem(HqHudSystemType hqHudSystemType, byte amount) => false;
     bool ISystemTypeUpdateHook.UpdateSwitchSystem(SwitchSystem switchSystem, byte amount) => false;
     bool ISystemTypeUpdateHook.UpdateHudOverrideSystem(HudOverrideSystemType hudOverrideSystem, byte amount) => false;
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(Guard);
+        sender.Writer.Write(FoxRoom.HasValue ? (byte)FoxRoom : byte.MaxValue);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Guard = reader.ReadInt32();
+        var roomId = reader.ReadByte();
+        FoxRoom = roomId == byte.MaxValue ? null : (SystemTypes)roomId;
+    }
 }

@@ -1,3 +1,4 @@
+using Epic.OnlineServices.Stats;
 using UnityEngine;
 
 namespace TownOfHost
@@ -18,6 +19,7 @@ namespace TownOfHost
         public static OptionItem EnableDebugMode;
         public static OptionItem EnableTOHkDebugMode;
         public static OptionItem Spawndummy;
+        public static OptionItem DummyAssignRole;
 
         public static void Auth(HashAuth auth, string input)
         {
@@ -47,6 +49,9 @@ namespace TownOfHost
                 .SetColor(Color.green)
                 .SetZeroNotation(OptionZeroNotation.Off)
                 .SetHidden(!AmDebugger);
+            DummyAssignRole = BooleanOptionItem.Create(6, "DummyAssignRole", false, TabGroup.MainSettings, true)
+                .SetHidden(!AmDebugger)
+                .SetParent(Spawndummy);
         }
     }
 }

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 
@@ -91,6 +91,8 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
             OverKillMode = OptionOverKillCanCount.GetBool() is false;
             OverKillList.Add(target.PlayerId);
 
+            SendRPC();
+
             _ = new LateTask(() =>
             {
                 UtilsNotifyRoles.NotifyRoles(Player);
@@ -123,6 +125,7 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
             return;
         }
         OverKillMode = !OverKillMode;
+        SendRPC();
         _ = new LateTask(() =>
         {
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
@@ -149,5 +152,18 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
             return true;
         }
         return false;
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(count);
+        sender.Writer.Write(OverKillMode);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        count = reader.ReadInt32();
+        OverKillMode = reader.ReadBoolean();
     }
 }

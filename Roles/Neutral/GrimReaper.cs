@@ -1,4 +1,5 @@
 using AmongUs.GameOptions;
+using Hazel;
 using System.Collections.Generic;
 using System.Linq;
 using TownOfHost.Roles.Core;
@@ -97,6 +98,7 @@ namespace TownOfHost.Roles.Neutral
                 {
                     killer.SetKillCooldown(delay: true);
                     GrimPlayers.Add(target.PlayerId, OptionGrimActiveTime.GetFloat());
+                    RpcAddList(target.PlayerId);
                     cankill = false;
                 }
                 UtilsNotifyRoles.NotifyRoles(SpecifySeer: [Player]);
@@ -112,16 +114,20 @@ namespace TownOfHost.Roles.Neutral
             }
             GrimPlayers.Clear();
         }
+
+        public override void OnStartMeeting() => GrimPlayers.Clear();//ホスト以外はこっちでリセット
+
         public override void AfterMeetingTasks()
         {
             cankill = true;
             if (Player.Is(CustomRoles.Amnesia) && AddOns.Common.Amnesia.OptionDefaultKillCool.GetBool()) return;
             Main.AllPlayerKillCooldown[Player.PlayerId] = KillCooldown;
+            if (!AmongUsClient.Instance.AmHost) return;
             Player.SyncSettings();
         }
         public override void OnFixedUpdate(PlayerControl player)
         {
-            if (!AmongUsClient.Instance.AmHost || !GameStates.IsInTask || GameStates.CalledMeeting) return;
+            if (!GameStates.IsInTask || GameStates.CalledMeeting) return;
 
             List<byte> del = new();
             foreach (var (targetId, timer) in GrimPlayers)
@@ -188,6 +194,22 @@ namespace TownOfHost.Roles.Neutral
             }
 
             return GrimPlayers.ContainsKey(seen.PlayerId) ? $"<{RoleInfo.RoleColorCode}>◆</color>" : "";
+        }
+
+        public void RpcAddList(byte targetId)
+        {
+            using var sender = CreateSender();
+            sender.Writer.Write(targetId);
+        }
+
+        public override void ReceiveRPC(MessageReader reader)
+        {
+            var targetId = reader.ReadByte();
+            var result = GrimPlayers.TryAdd(targetId, OptionGrimActiveTime.GetFloat());
+            if (!result)
+            {
+                Logger.Warn($"既に{targetId}はGrimPlayersに含まれていたため、追加に失敗しました", "GrimReaper");
+            }
         }
     }
 }

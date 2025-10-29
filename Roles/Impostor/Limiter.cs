@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Impostor
 {
@@ -53,9 +54,9 @@ namespace TownOfHost.Roles.Impostor
             blastrange,
         }
         static bool LimitTimer;
-        float LimiterTurnLimit;
-        float blastrange;
-        float KillCooldown;
+        static float LimiterTurnLimit;
+        static float blastrange;
+        static float KillCooldown;
         bool Limit;
         float Timer;
         int killcount;
@@ -78,8 +79,6 @@ namespace TownOfHost.Roles.Impostor
         public float CalculateKillCooldown() => KillCooldown;
         public override void OnFixedUpdate(PlayerControl player)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
-
             if (GameStates.Intro || GameStates.CalledMeeting) return;
             if (Limit) return;
             if (!player.IsAlive()) return;
@@ -91,6 +90,8 @@ namespace TownOfHost.Roles.Impostor
             if (Timer > OptionLimitTimer.GetFloat())
             {
                 Limit = true;
+
+                if (!AmongUsClient.Instance.AmHost) return;
 
                 _ = new LateTask(() =>
                 {
@@ -144,6 +145,7 @@ namespace TownOfHost.Roles.Impostor
                         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
                     }, 0.3f, "Limiter Kill Limit");
                 }
+                SendRPC();
             }
         }
         public bool OverrideKillButtonText(out string text)
@@ -217,6 +219,19 @@ namespace TownOfHost.Roles.Impostor
                 Player.RpcMurderPlayer(Player, true);
                 RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
             }
+        }
+
+        public void SendRPC()
+        {
+            using var sender = CreateSender();
+            sender.Writer.Write(Limit);
+            sender.Writer.Write(killcount);
+        }
+
+        public override void ReceiveRPC(MessageReader reader)
+        {
+            Limit = reader.ReadBoolean();
+            killcount = reader.ReadInt32();
         }
     }
 }

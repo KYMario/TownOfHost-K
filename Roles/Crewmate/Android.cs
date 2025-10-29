@@ -86,7 +86,9 @@ public sealed class Android : RoleBase
             Player.RpcResetAbilityCooldown(Sync: true);
 
         BatteryText = GetNowBattery();
-        Player.MarkDirtySettings();
+
+        if (AmongUsClient.Instance.AmHost)
+            Player.MarkDirtySettings();
         return true;
     }
 
@@ -104,8 +106,6 @@ public sealed class Android : RoleBase
 
     public override void OnFixedUpdate(PlayerControl player)
     {
-        //ホストじゃないなら
-        if (!AmongUsClient.Instance.AmHost) return;
         //もう充電がパンパンなら
         if (Battery > 1)
         {
@@ -128,7 +128,7 @@ public sealed class Android : RoleBase
             removetimer = 0;
             if (Battery < 0) Battery = 0;
 
-            if (Battery <= 0)//追い出す
+            if (Battery <= 0 && AmongUsClient.Instance.AmHost)//追い出す
             {
                 if (Player.inVent && NowVent != 999)
                     Player.MyPhysics.RpcExitVent(NowVent);
@@ -137,7 +137,10 @@ public sealed class Android : RoleBase
             {
                 UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
                 BatteryText = GetNowBattery();
-                Player.MarkDirtySettings();
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    Player.MarkDirtySettings();
+                }
             }
         }
     }

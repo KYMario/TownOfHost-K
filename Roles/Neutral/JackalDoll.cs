@@ -5,6 +5,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.AddOns.Neutral;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -118,6 +119,8 @@ public sealed class JackalDoll : RoleBase
             {
                 Main.AllPlayerKillCooldown[doll.PlayerId] = Jackal.OptionKillCooldown.GetFloat();
                 BossAndSidekicks.Add(doll.PlayerId, (owner.PlayerId, CustomRoles.Jackal));
+
+                (doll.GetRoleClass() as JackalDoll).SetSidekick(owner.PlayerId, CustomRoles.Jackal);
             }
             if (Jackal.OptionSidekickCanSeeOldImpostorTeammates.GetBool())
             {
@@ -143,6 +146,7 @@ public sealed class JackalDoll : RoleBase
             {
                 Main.AllPlayerKillCooldown[doll.PlayerId] = JackalMafia.OptionKillCooldown.GetFloat();
                 BossAndSidekicks.Add(doll.PlayerId, (owner.PlayerId, CustomRoles.JackalMafia));
+                (doll.GetRoleClass() as JackalDoll).SetSidekick(owner.PlayerId, CustomRoles.JackalMafia);
             }
             if (JackalMafia.OptionSidekickCanSeeOldImpostorTeammates.GetBool())
             {
@@ -168,6 +172,7 @@ public sealed class JackalDoll : RoleBase
             {
                 Main.AllPlayerKillCooldown[doll.PlayerId] = JackalAlien.OptionKillCooldown.GetFloat();
                 BossAndSidekicks.Add(doll.PlayerId, (owner.PlayerId, CustomRoles.JackalAlien));
+                (doll.GetRoleClass() as JackalDoll).SetSidekick(owner.PlayerId, CustomRoles.JackalAlien);
             }
             if (JackalAlien.OptionSidekickCanSeeOldImpostorTeammates.GetBool())
             {
@@ -227,6 +232,7 @@ public sealed class JackalDoll : RoleBase
     }
     public override void AfterMeetingTasks()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
         if (BossAndSidekicks.ContainsKey(Player.PlayerId)) return;
 
         var id = ExiledPlayerInfo?.PlayerId ?? byte.MaxValue;
@@ -308,5 +314,21 @@ public sealed class JackalDoll : RoleBase
         addon = false;
         if (seen.Is(CountTypes.Jackal))
             enabled = true;
+    }
+
+    public void SetSidekick(byte ownerId, CustomRoles ownerRole)
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(NowSideKickCount);
+        sender.Writer.Write(ownerId);
+        sender.Writer.Write((int)ownerRole);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        NowSideKickCount = reader.ReadInt32();
+        var ownerId = reader.ReadByte();
+        var ownerRole = (CustomRoles)reader.ReadInt32();
+        BossAndSidekicks[Player.PlayerId] = (ownerId, ownerRole);
     }
 }

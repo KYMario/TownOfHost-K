@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hazel;
 using TownOfHost.Roles;
 using TownOfHost.Roles.Core;
 using static TownOfHost.Options;
@@ -11,6 +12,12 @@ class Twins
 {
     public static Dictionary<byte, byte> TwinsList = new();
     public static List<byte> DieTwinsList = new();
+
+    public static void Init()
+    {
+        SubRoleRPCSender.AddHandler(CustomRoles.Twins, ReceiveRPC);
+    }
+
     public static void AssingAndReset()
     {
         TwinsList = new();
@@ -52,6 +59,8 @@ class Twins
             TwinsList.Add(pc2.PlayerId, pc.PlayerId);
             PlayerState.GetByPlayerId(pc.PlayerId).SetSubRole(CustomRoles.Twins);
             PlayerState.GetByPlayerId(pc2.PlayerId).SetSubRole(CustomRoles.Twins);
+
+            RpcSetTwins(pc.PlayerId, pc2.PlayerId);
 
             Logger.Info($"{pc.GetRealName()} & {pc2.GetRealName()}", "Twins");
         }
@@ -138,5 +147,21 @@ class Twins
                 DieTwinsList.Add(twins.Value);
             }
         }
+    }
+
+    public static void RpcSetTwins(byte playerId, byte playerId2)
+    {
+        using var sender = new SubRoleRPCSender(CustomRoles.Twins, playerId);
+        sender.Writer.Write(playerId2);
+    }
+
+    public static void ReceiveRPC(MessageReader reader, byte playerId)
+    {
+        var playerId2 = reader.ReadByte();
+
+        TwinsList.Add(playerId, playerId2);
+        TwinsList.Add(playerId2, playerId);
+        PlayerState.GetByPlayerId(playerId).SetSubRole(CustomRoles.Twins);
+        PlayerState.GetByPlayerId(playerId2).SetSubRole(CustomRoles.Twins);
     }
 }

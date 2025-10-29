@@ -282,10 +282,45 @@ namespace TownOfHost
                         dummy.RpcSetName(GetString(StringNames.Dummy) + (i + 1));
                         dummy.GetComponent<DummyBehaviour>().enabled = true;
                         dummy.isDummy = true;
-                        dummy.SetHat("", colorid);
-                        dummy.SetVisor("", colorid);
-                        dummy.SetSkin("", colorid);
-                        dummy.SetPet("");
+                        switch (colorid)
+                        {
+                            case 11:
+                                dummy.SetHat("hat_paws_panda", colorid);
+                                dummy.SetVisor("visor_EyepatchL", colorid);
+                                dummy.SetSkin("skin_Sanskin", colorid);
+                                dummy.SetPet("pet_EnmptyPet");
+                                break;
+                            case 4:
+                                dummy.SetHat("hat_cat_snow", colorid);
+                                dummy.SetVisor("visor_Blush", colorid);
+                                dummy.SetSkin("skin_Science", colorid);
+                                dummy.SetPet("pet_Enmptypet");
+                                break;
+                            case 13:
+                                dummy.SetHat("hat_cat_snow", colorid);
+                                dummy.SetVisor("visor_Blush", colorid);
+                                dummy.SetSkin("skin_ChefBlue", colorid);
+                                dummy.SetPet("pet_EnmptyPet");
+                                break;
+                            case 5:
+                                dummy.SetHat("hat_NewYear2024", colorid);
+                                dummy.SetVisor("visor_hattyHattington", colorid);
+                                dummy.SetSkin("skin_D2Osiris", colorid);
+                                dummy.SetPet("pet_EmptyPet");
+                                break;
+                            case 14:
+                                dummy.SetHat("hat_paws_panda", colorid);
+                                dummy.SetVisor("visor_bsb2_noteSad", colorid);
+                                dummy.SetSkin("skin_Capt", colorid);
+                                dummy.SetPet("pet_EmptyPet");
+                                break;
+                            default:
+                                dummy.SetHat("", colorid);
+                                dummy.SetVisor("", colorid);
+                                dummy.SetSkin("", colorid);
+                                dummy.SetPet("");
+                                break;
+                        }
                         id++;
                         AmongUsClient.Instance.Spawn(dummy);
                         playerinfo.RpcSetTasks(Array.Empty<byte>());

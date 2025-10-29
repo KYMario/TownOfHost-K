@@ -5,6 +5,7 @@ using UnityEngine;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
+using Hazel;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -78,6 +79,7 @@ public sealed class Walker : RoleBase
                     timer = 0;
                     MyTaskState.Update(player);
                     RPC.PlaySoundRPC(Player.PlayerId, Sounds.TaskComplete);
+                    SendRPC_CompleteRoom();
                     CheckFin();
                 }
                 else
@@ -99,12 +101,43 @@ public sealed class Walker : RoleBase
         var rand = IRandom.Instance;
         TaskPSR = rooms[rand.Next(0, rooms.Count)];
         if (RoomArrow != Vector2.zero) GetArrow.Remove(Player.PlayerId, RoomArrow);
+
         RoomArrow = TaskPSR.transform.position;
         GetArrow.Add(Player.PlayerId, RoomArrow);
         TaskRoom = TaskPSR.RoomId;
+
+        SendRPC_ChengeRoom();
+
         Logger.Info($"NextTask : {TaskRoom}", "Walker");
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.3f, "WalkerChengeRoom", null);
     }
+    void ReceiveRoom(MessageReader reader)
+    {
+        var roomId = (SystemTypes)reader.ReadByte();
+        TaskPSR = ShipStatus.Instance.AllRooms.FirstOrDefault(x => x.RoomId == roomId);
+
+        if (TaskPSR == null)
+        {
+            Logger.Error($"{roomId}の部屋を見つけることができませんでした ShipStatus:{ShipStatus.Instance.name}", "Walker ReceiveRoom");
+            return;
+        }
+
+        if (RoomArrow != Vector2.zero) GetArrow.Remove(Player.PlayerId, RoomArrow);
+
+        RoomArrow = TaskPSR.transform.position;
+        GetArrow.Add(Player.PlayerId, RoomArrow);
+        TaskRoom = TaskPSR.RoomId;
+
+        Logger.Info($"NextTask : {TaskRoom}", "Walker");
+    }
+
+    void ReceiveCompleteRoom(MessageReader reader)
+    {
+        TaskRoom = null;
+        TaskPSR = null;
+        completeroom = reader.ReadInt32();
+    }
+
     public override void OnStartMeeting()
     {
         timer = 0;
@@ -118,5 +151,38 @@ public sealed class Walker : RoleBase
         seen ??= seer;
         if (isForMeeting || seer != seen || completeroom == WalkTaskCount.GetInt() || TaskRoom == null) return "";
         return $"<color=#057a2c>{GetArrow.GetArrows(seer, [RoomArrow])} {string.Format(GetString("FoxRoomMission"), $"<color=#cccccc><b>{GetString($"{TaskRoom}")}<b></color>")}</color>";
+    }
+
+    public void SendRPC_CompleteRoom()
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.CompleteRoom);
+        sender.Writer.Write(completeroom);
+    }
+
+    public void SendRPC_ChengeRoom()
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.ChengeRoom);
+        sender.Writer.Write((byte)TaskPSR.RoomId);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        switch ((RPC_Types)reader.ReadPackedInt32())
+        {
+            case RPC_Types.ChengeRoom:
+                ReceiveRoom(reader);
+                break;
+            case RPC_Types.CompleteRoom:
+                ReceiveCompleteRoom(reader);
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        ChengeRoom,
+        CompleteRoom
     }
 }

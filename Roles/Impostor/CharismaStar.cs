@@ -6,6 +6,7 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -89,7 +90,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
         Player.AddDoubleTrigger();
 
         gatherLimitCount = gatherMaxCount;
-        gatherChoosePlayers = new();
+        gatherChoosePlayers = new(GameData.Instance.PlayerCount);
     }
 
     public bool CheckAction => gatherLimitCount > 0;
@@ -98,6 +99,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     {
         // 集めるターゲット登録
         gatherChoosePlayers.Add(target.PlayerId);
+        RpcAddPlayers(target.PlayerId);
         Logger.Info($"{killer.GetNameWithRole()} → {target.GetNameWithRole()}：ターゲット選択", "CharismaStar");
         // 表示更新
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: killer);
@@ -202,6 +204,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
         // 能力使用後のリセット
         gatherChoosePlayers.Clear();
         gatherLimitCount--;
+        RpcAbility();
         Logger.Info($"{Player.GetNameWithRole()} : 残り{gatherLimitCount}回", "CharismaStar");
         // 表示更新
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
@@ -228,4 +231,31 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     public override string GetProgressText(bool comms = false, bool GameLog = false)
         => Utils.ColorString(gatherLimitCount > 0 ? RoleInfo.RoleColor : Color.gray, $"[{gatherLimitCount}]");
     public override string GetAbilityButtonText() => Translator.GetString("CharismaStarGatherButtonText");
+
+    public void RpcAbility()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(false);
+        sender.Writer.Write(gatherLimitCount);
+    }
+
+    public void RpcAddPlayers(byte targetId)
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(true);
+        sender.Writer.Write(targetId);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        if (reader.ReadBoolean())
+        {
+            gatherChoosePlayers.Add(reader.ReadByte());
+        }
+        else
+        {
+            gatherLimitCount = reader.ReadInt32();
+            gatherChoosePlayers.Clear();
+        }
+    }
 }

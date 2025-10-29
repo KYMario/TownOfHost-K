@@ -108,7 +108,11 @@ public sealed class Lighter : RoleBase
             Logger.Info("viewBetween :" + viewBetween.ToString() + "*" + " progressRate:" + progressRate.ToString() + "%", "Lighter");
             Logger.Info("タスク進捗率で視野変更 タスク:" + MyTaskState.CompletedTasksCount + "/" + MyTaskState.AllTasksCount + " セットする視野:" + CurrentVision.ToString(), "Lighter");
         }
+
+        if (!AmongUsClient.Instance.AmHost) return true;
+
         Player.MarkDirtySettings();
+
         return true;
     }
 

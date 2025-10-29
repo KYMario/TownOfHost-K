@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Hazel;
 using TownOfHost.Roles.Core;
 using static TownOfHost.Options;
 
@@ -25,6 +26,7 @@ namespace TownOfHost.Roles.Ghost
             playerIdList = new();
             DemUseAbility = false;
             CustomRoleManager.MarkOthers.Add(AbilityMark);
+            SubRoleRPCSender.AddHandler(CustomRoles.DemonicCrusher, ReceiveRPC);
         }
         public static void Add(byte playerId)
         {
@@ -37,11 +39,13 @@ namespace TownOfHost.Roles.Ghost
                 pc.RpcResetAbilityCooldown();
                 if (DemUseAbility) return;//能力使用中に能力使えない。
                 DemUseAbility = true;
+                SendRPC(pc.PlayerId);
                 RemoveDisableDevicesPatch.UpdateDisableDevices();
                 UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 _ = new LateTask(() =>
                 {
                     DemUseAbility = false;
+                    SendRPC(pc.PlayerId);
                     RemoveDisableDevicesPatch.UpdateDisableDevices(true);
                     UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                     pc.RpcResetAbilityCooldown();
@@ -56,6 +60,21 @@ namespace TownOfHost.Roles.Ghost
                 if (DemUseAbility) return Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.DemonicCrusher), "？");
 
             return "";
+        }
+
+        public static void SendRPC(byte playerId)
+        {
+            using var sender = new SubRoleRPCSender(CustomRoles.DemonicCrusher, playerId);
+            sender.Writer.Write(DemUseAbility);
+        }
+
+        public static void ReceiveRPC(MessageReader reader, byte playerId)
+        {
+            var useAbility = reader.ReadBoolean();
+            if (useAbility == DemUseAbility) return;
+
+            DemUseAbility = useAbility;
+            RemoveDisableDevicesPatch.UpdateDisableDevices(!useAbility);
         }
     }
 }

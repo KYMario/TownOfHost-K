@@ -66,26 +66,6 @@ namespace TownOfHost
 
             switch (args[0])
             {
-                case "/a":
-                    CredentialsPatch.a = true;
-                    _ = new LateTask(() =>
-                    {
-                        CredentialsPatch.a = false;
-                        float goukei = 0;
-                        int count = 0;
-                        float min = 100;
-                        float max = 0;
-                        foreach (var fps in CredentialsPatch.fpss)
-                        {
-                            count++;
-                            goukei += fps;
-                            if (min > fps) min = fps;
-                            if (max < fps) max = fps;
-                        }
-                        SendMessage($"ave->{goukei / count}　({count})\nmin->{min}　max->{max}");
-                        CredentialsPatch.fpss.Clear();
-                    }, 5, "a", true);
-                    break;
                 case "/dump":
                     canceled = true;
                     UtilsOutputLog.DumpLog();
@@ -972,6 +952,41 @@ namespace TownOfHost
                                     Main.HostRole = CustomRoles.NotAssigned;
                                     SendMessage("役職固定をリセットしたよっ!", PlayerControl.LocalPlayer.PlayerId);
                                 }
+                            }
+                        }
+                        break;
+                    case "/fps":
+                        if (DebugModeManager.EnableTOHkDebugMode.GetBool() && DebugModeManager.AmDebugger)
+                        {
+                            CredentialsPatch.a = true;
+                            _ = new LateTask(() =>
+                            {
+                                CredentialsPatch.a = false;
+                                float goukei = 0;
+                                int count = 0;
+                                float min = 100;
+                                float max = 0;
+                                foreach (var fps in CredentialsPatch.fpss)
+                                {
+                                    count++;
+                                    goukei += fps;
+                                    if (min > fps) min = fps;
+                                    if (max < fps) max = fps;
+                                }
+                                SendMessage($"ave->{goukei / count}　({count})\nmin->{min}　max->{max}");
+                                CredentialsPatch.fpss.Clear();
+                            }, 5, "a", true);
+                        }
+                        break;
+                    case "/tp":
+                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        {
+                            canceled = true;
+                            subArgs = args.Length < 2 ? "" : args[1];
+                            if (int.TryParse(subArgs, out var targetid))
+                            {
+                                var target = GetPlayerById(targetid);
+                                target.RpcSnapToForced(PlayerControl.LocalPlayer.GetTruePosition());
                             }
                         }
                         break;

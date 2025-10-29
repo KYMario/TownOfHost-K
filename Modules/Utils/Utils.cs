@@ -22,7 +22,6 @@ using static TownOfHost.Translator;
 using static TownOfHost.UtilsRoleText;
 using TownOfHost.Patches;
 using TownOfHost.Attributes;
-using Il2CppSystem.Xml.Schema;
 
 namespace TownOfHost
 {
@@ -668,7 +667,10 @@ namespace TownOfHost
                 if (!Options.firstturnmeeting || !MeetingStates.First)
                 {
                     if (AsistingAngel.CanSetAsistTarget())
+                    {
                         AsistingAngel.Limit++;
+                        AsistingAngel.SendRPC(AsistingAngel.AsistingAngelId);
+                    }
 
                     UtilsGameLog.day++;
                     UtilsGameLog.AddGameLogsub("\n" + string.Format(GetString("Message.Day").RemoveDeltext("【").RemoveDeltext("】"), UtilsGameLog.day).Color(Palette.Orange));

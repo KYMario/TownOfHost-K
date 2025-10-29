@@ -116,6 +116,7 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
             EatCount++;
             staticEatedPlayers.Add(target.PlayerId);
             DiePlayerPos.Where(poss => poss.Key == target.PlayerId).Do(poss => GetArrow.Remove(Player.PlayerId, poss.Value));
+            RpcEatPlayer(target.PlayerId);
 
             //勝利の確認
             if (OptWinEatcount <= EatCount)
@@ -163,6 +164,8 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
         DiePlayerPos.Do(oniku => GetArrow.Remove(Player.PlayerId, oniku.Value));
         //保存データの削除
         DiePlayerPos.Clear();
+
+        RpcClearDiePlayerPos();
     }
 
     public bool? CheckKillFlash(MurderInfo info)

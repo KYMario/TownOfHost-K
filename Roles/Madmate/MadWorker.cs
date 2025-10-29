@@ -29,7 +29,6 @@ public sealed class MadWorker : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         canSeeKillFlash = Options.MadmateCanSeeKillFlash.GetBool();
         canSeeDeathReason = Options.MadmateCanSeeDeathReason.GetBool();
 
-        canVent = OptionCanVent.GetBool();
         ventCooldown = OptionVentCooldown.GetFloat();
         CannotWinAtDeath = true;
     }
@@ -41,7 +40,6 @@ public sealed class MadWorker : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
     }
     private static bool canSeeKillFlash;
     private static bool canSeeDeathReason;
-    private static bool canVent;
     private static bool CannotWinAtDeath;
     private static float ventCooldown;
     private static void SetupOptionItem()

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 
@@ -140,6 +140,7 @@ public sealed class EvilSatellite : RoleBase, IImpostor
                 //設定回数と同じor多いともう使えない
                 if (usecount <= 0) return;
                 usecount--;
+                SendRPC();
                 List<SystemTypes> spk = new(!OptionRandom.GetBool() ? Routelist.ToArray() : Routelist.OrderBy(x => Guid.NewGuid()).ToArray());
                 if (!SentPlayerId.TryAdd(playerid, spk)) SentPlayerId[playerid] = spk;
                 sentlist = spk;
@@ -161,4 +162,15 @@ public sealed class EvilSatellite : RoleBase, IImpostor
         }
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false) => $"<color=#ff1919>({usecount})</color>";
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(usecount);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        usecount = reader.ReadInt32();
+    }
 }

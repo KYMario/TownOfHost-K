@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using TownOfHost.Roles.Core;
 using static TownOfHost.Options;
+using Hazel;
 
 namespace TownOfHost.Roles.Ghost
 {
@@ -28,6 +29,7 @@ namespace TownOfHost.Roles.Ghost
             playerIdList = new();
             Mark = new Dictionary<PlayerControl, byte>();
             CustomRoleManager.MarkOthers.Add(ImpostorMark);
+            SubRoleRPCSender.AddHandler(CustomRoles.DemonicTracker, ReceiveRPC);
         }
         public static void Add(byte playerId)
         {
@@ -58,6 +60,8 @@ namespace TownOfHost.Roles.Ghost
                         TargetArrow.Add(imp.PlayerId, target.PlayerId);
                     }
                 }
+
+                RpcUseAbility(pc.PlayerId, target.PlayerId);
             }
         }
         public static string ImpostorMark(PlayerControl seer, PlayerControl seen, bool isForMeeting = false)
@@ -70,6 +74,19 @@ namespace TownOfHost.Roles.Ghost
                 if (seer.GetCustomRole().IsImpostor()) return "<color=#824880>" + TargetArrow.GetArrows(seer, Mark.Values.ToArray()) + "</color>";
 
             return "";
+        }
+
+        public static void RpcUseAbility(byte playerId, byte targetId)
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+            using var sender = new SubRoleRPCSender(CustomRoles.DemonicTracker, playerId);
+            sender.Writer.Write(targetId);
+        }
+
+        public static void ReceiveRPC(MessageReader reader, byte playerId)
+        {
+            var targetId = reader.ReadByte();
+            UseAbility(PlayerCatch.GetPlayerById(playerId), PlayerCatch.GetPlayerById(targetId));
         }
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -83,12 +84,14 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
-        if (!AmongUsClient.Instance.AmHost) return;
         if (targetId == byte.MaxValue) return;
 
         if ((PlayerCatch.GetPlayerById(targetId)?.IsAlive() ?? false) && player != target) return;
 
         targetId = byte.MaxValue;
+
+        if (!AmongUsClient.Instance.AmHost) return;
+
         Player.KillFlash();
         MeetingNotice = false;
         Player.SetKillCooldown();
@@ -100,6 +103,7 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         targetId = byte.MaxValue;
         targetrole = CustomRoles.NotAssigned;
         MeetingNotice = false;
+        SendRPC();
     }
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
@@ -115,6 +119,7 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         this.target = target;
         targetrole = target.GetCustomRole();
         MeetingNotice = true;
+        SendRPC();
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.2f, "PhantomThief Target");
         killer.SetKillCooldown(target: target, delay: true);
         return;
@@ -247,5 +252,16 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
             return true;
         }
         return false;
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(targetId);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        targetId = reader.ReadByte();
     }
 }

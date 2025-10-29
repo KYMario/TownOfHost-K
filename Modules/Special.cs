@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 using TownOfHost.Attributes;
+using TownOfHost.Modules;
 using TownOfHost.Roles;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -29,7 +30,36 @@ static class Event
     /// 通常ロールはtrueを返します
     /// </summary>
     /// <returns>ロールが使用可能ならtrueを返します</returns>
-    public static bool CheckRole(CustomRoles role) => !EventRoles.TryGetValue(role, out var check) || check.Invoke();
+    public static bool CheckRole(CustomRoles role, bool useApiData = true)
+    {
+        //イベント役職以外はtrueを返す!!
+        if (!EventRoles.TryGetValue(role, out var check)) return true;
+
+        //キャッシュ済みならそっちを使う
+        if (cachedEventFlags.TryGetValue((role, useApiData), out bool cachedData))
+            return cachedData;
+
+        bool result = check.Invoke();
+        if (!useApiData || VersionInfoManager.version?.Events == null)
+        {
+            //apiが使えない状態orフラグがfalseの場合はローカルの状態を使用
+            cachedEventFlags[(role, false)] = result;
+            return result;
+        }
+
+        var roleId = (int)role;
+        var events = VersionInfoManager.version.Events;
+
+        //全イベント情報をチェック
+        foreach (var data in events)
+        {
+            if (result) continue;
+            result |= data.RoleId == roleId && data.Period.IsActive;
+        }
+
+        cachedEventFlags[(role, true)] = result;
+        return result;
+    }
     public static Dictionary<CustomRoles, Func<bool>> EventRoles = new()
     {
         {CustomRoles.Altair,() => Tanabata},
@@ -38,6 +68,8 @@ static class Event
         {CustomRoles.Chameleon , () => Special},
         {CustomRoles.Cakeshop , () => NowRoleEvent}
     };
+
+    public static Dictionary<(CustomRoles role, bool isApiData), bool> cachedEventFlags = new(EventRoles.Count);
 }
 
 

@@ -21,6 +21,8 @@ namespace TownOfHost.Roles.Ghost
         {
             playerIdList.Add(playerId);
 
+            if (!AmongUsClient.Instance.AmHost) return;
+
             var pc = playerId.GetPlayerControl();
             pc.RpcSetRole(AmongUs.GameOptions.RoleTypes.ImpostorGhost);
         }

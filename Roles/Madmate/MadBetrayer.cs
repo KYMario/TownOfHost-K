@@ -1,5 +1,5 @@
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using UnityEngine;
@@ -133,6 +133,7 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
         if (IsTaskFinished)
         {
             HasAbility = false;
+            if (!AmongUsClient.Instance.AmHost) return true;
             Player.RpcSetRoleDesync(RoleTypes.Impostor, Player.GetClientId());
             _ = new LateTask(() => Player.SetKillCooldown(force: true), 0.2f, "SetImpostorKillCool", true);
         }
@@ -151,7 +152,19 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
         {
             info.KillPower = 3;
             IsBetray = true;
+            SendRPC();
             UtilsGameLog.AddGameLog("MadBetrayer", GetString("MadBetrayerLog"));
         }
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(IsBetray);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        IsBetray = reader.ReadBoolean();
     }
 }

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -101,10 +101,12 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
         EraseMarkTargets.Add(target.PlayerId);//マークつける用
         EraseTargets.Add(target.PlayerId);//消す予定の人
 
+        RpcUseAbility(target.PlayerId);
+
         _ = new LateTask(() =>
             Player.SetKillCooldown(target: target), Main.LagTime, "EraserNoyatu", true);
 
-        if (!DeltimingAfterMeeting) ErasePlayer();
+        if (!DeltimingAfterMeeting) RpcErasePlayer();
 
         UtilsNotifyRoles.NotifyRoles(Player);
     }
@@ -136,10 +138,15 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             UtilsGameLog.AddGameLog("Eraser", string.Format(GetString("EraserMeg"), UtilsName.GetPlayerColor(Player), UtilsName.GetPlayerColor(player)));
             Logger.Info($"{Player?.Data?.GetLogPlayerName()} => {player?.Data?.GetLogPlayerName()}をのロールをクルーに", "Eraser");
 
-            player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
+            //ホストのみ実行
+            if (AmongUsClient.Instance.AmHost)
+            {
+                player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
+            }
         }
         EraseTargets.Clear();
     }
+
     public override void AfterMeetingTasks()
     {
         if (DeltimingAfterMeeting) ErasePlayer();
@@ -167,5 +174,43 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonKilltargetLowertext");
         return $"<size=50%>{GetString("PhantomButtonKilltargetLowertext")}</size>";
+    }
+
+    void RpcErasePlayer()
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.ErasePlayer);
+        ErasePlayer();
+    }
+
+    void RpcUseAbility(byte targetId)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.UseAbility);
+        sender.Writer.Write(UseCount);
+        sender.Writer.Write(targetId);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        switch ((RPC_Types)reader.ReadPackedInt32())
+        {
+            case RPC_Types.ErasePlayer:
+                ErasePlayer(); break;
+            case RPC_Types.UseAbility:
+                var targetId = reader.ReadByte();
+                UseCount = reader.ReadInt32();
+                EraseMarkTargets.Add(targetId);//マークつける用
+                EraseTargets.Add(targetId);//消す予定の人
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        ErasePlayer,
+        UseAbility,
     }
 }

@@ -251,7 +251,7 @@ namespace TownOfHost
                     List<PlayerControl> AllPlayers = new();
                     foreach (var pc in PlayerCatch.AllPlayerControls)
                     {
-                        if (pc.isDummy)
+                        if (pc.isDummy && DebugModeManager.DummyAssignRole.GetBool() is false)
                         {
                             pc.RpcSetCustomRole(CustomRoles.Crewmate);
                             pc.RpcSetRole(RoleTypes.Crewmate);

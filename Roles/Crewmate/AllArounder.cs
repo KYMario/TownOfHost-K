@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Modules.ChatManager;
 using TownOfHost.Patches;
@@ -474,7 +474,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
     }
     void SetRole()
     {
-        if (!Player.IsAlive()) return;
+        if (!AmongUsClient.Instance.AmHost || !Player.IsAlive()) return;
 
         var Max = RBait + RInsender + RBakery + RDicator + RLighter + RMeetingSheriff
         + RSabotageMaster + RSeer + RTimeManager + RTarapper + ROpportunist + RMadmate + RNone;
@@ -552,6 +552,8 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
             Logger.Info($"{Player.Data.GetLogPlayerName()}はむーしょく！", "AllArounder");
             NowRole = NowMode.None;
         }
+
+        SetNowRoleRPC();
 
         hasTasks = () => (NowRole is NowMode.Madmate or NowMode.Opportunist) ? HasTask.ForRecompute : HasTask.True;
     }
@@ -674,5 +676,21 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         RandomMadmate = IntegerOptionItem.Create(RoleInfo, 33, OptionName.AllArounderRandomMadmate, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         RandomNone = IntegerOptionItem.Create(RoleInfo, 34, OptionName.AllArounderRandomNone, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
     }
+    #endregion
+
+    #region CustomRPC
+
+    public void SetNowRoleRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write((int)NowRole);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        NowRole = (NowMode)reader.ReadInt32();
+        hasTasks = () => (NowRole is NowMode.Madmate or NowMode.Opportunist) ? HasTask.ForRecompute : HasTask.True;
+    }
+
     #endregion
 }

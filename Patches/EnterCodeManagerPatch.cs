@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEngine;
 using HarmonyLib;
 using TMPro;
-using UnityEngine;
+using InnerNet;
 
 using TownOfHost.Templates;
-using System.Linq;
 using TownOfHost.Modules.ClientOptions;
 
 namespace TownOfHost
@@ -18,21 +19,25 @@ namespace TownOfHost
         private static PassiveButton DownloadButton;
         private static PassiveButton UnloadAndJoinButton;
         private static TextMeshPro VersionText;
-        private static GameObject ServerList;
-        private static GameObject ServerListDrop;
-        public static string GameId = "";
+        private static PassiveButton ServerList;
+        private static ServerDropdown ServerListDrop;
+        public static Checkbox vServerOnlyCheckBox;
+        public static (IRegionInfo region, string code)? lastGameInfo = null;
 
         [HarmonyPatch(nameof(EnterCodeManager.ClickJoin)), HarmonyPrefix]
         public static void ClickJoinPrefix(EnterCodeManager __instance)
         {
             if (__instance.enterCodeField == null) return;
-            SetGameId(__instance.enterCodeField.text);
+            var region = DestroyableSingleton<ServerManager>.Instance.CurrentRegion;
+            SetLastGameInfo(__instance.enterCodeField.text, region);
         }
 
         [HarmonyPatch(nameof(EnterCodeManager.OnEnable)), HarmonyPrefix]
         public static void OnEnablePrefix(EnterCodeManager __instance)
         {
             if (__instance == null || __instance.joinGamePassiveButton == null) return;
+
+            TextMeshPro[] serverTexts = [];
 
             if (ModScreen.IsDestroyedOrNull())
             {
@@ -49,8 +54,8 @@ namespace TownOfHost
                 var text = button.buttonText;
 
                 button.name = "Restore";
-                button.transform.localPosition += new Vector3(-2.2f, 0f);
-                button.transform.localScale = new Vector3(0.6f, 0.6f, 1f);
+                button.transform.localPosition += new Vector3(2.5f, 0f);
+                button.transform.localScale = new Vector3(0.4f, 0.4f, 1f);
 
                 text.DestroyTranslator();
                 text.text = Translator.GetString("RestorCode");
@@ -58,11 +63,13 @@ namespace TownOfHost
                 button.OnClick = new();
                 button.OnClick.AddListener((Action)(() =>
                 {
-                    if (GameId != "")
-                    {
-                        __instance.enterCodeField.SetText(GameId);
-                        __instance.enterCodeField.placeholderText.gameObject.SetActive(false);
-                    }
+                    if (!lastGameInfo.HasValue) return;
+
+                    var (region, code) = lastGameInfo.Value;
+                    __instance.enterCodeField.SetText(code);
+                    __instance.enterCodeField.placeholderText.gameObject.SetActive(false);
+                    DestroyableSingleton<ServerManager>.Instance.SetRegion(region);
+                    SetCurrentServer();
                 }));
                 RestoreButton = button;
             }
@@ -83,7 +90,7 @@ namespace TownOfHost
                 button.OnClick = new();
 
                 DownloadButton = button;
-                ModUpdater.CheckRelease(all: true, snap: true).GetAwaiter().GetResult();
+                ModUpdater.CheckRelease(all: true).GetAwaiter().GetResult();
             }
 
             if (UnloadAndJoinButton.IsDestroyedOrNull())
@@ -93,7 +100,7 @@ namespace TownOfHost
                 var text = button.buttonText;
 
                 button.name = "UnloadAndJoin";
-                button.transform.localPosition += new Vector3(2.5f, 0f);
+                button.transform.localPosition += new Vector3(2.5f, 0.5f);
                 button.transform.localScale = new Vector3(0.4f, 0.4f, 1f);
 
                 text.DestroyTranslator();
@@ -103,8 +110,7 @@ namespace TownOfHost
                 button.OnClick.AddListener((Action)(() =>
                 {
                     ModUnloaderScreen.Unload();
-                    ModScreen.SetActive(false);
-                    __instance.ClickJoin();
+                    joinGameButton.SetButtonEnableState(true);
                 }));
                 UnloadAndJoinButton = button;
             }
@@ -118,51 +124,73 @@ namespace TownOfHost
                     parent: __instance.joinGamePassiveButton.transform.parent
                 );
 
-                VersionText.transform.localPosition += new Vector3(0, -1.62f);
+                VersionText.transform.localPosition += new Vector3(0, -1.62f, -5);
             }
 
             if (ServerList.IsDestroyedOrNull())
             {
-                var moto = GameObject.Find("MainMenuManager/MainUI/AspectScaler/CreateGameScreen/ParentContent/Content/GeneralTab/ServerOption");
-                ServerList = UnityEngine.Object.Instantiate(moto, __instance.joinGamePassiveButton.transform.parent);
-                ServerList.name = "serverlist";
-                var pb = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/EnterCodeButtons/AspectSize/Scaler/serverlist/ServerBox");
-                var button = pb.GetComponent<PassiveButton>();
-                button.OnClick = new();
-                button.OnClick.AddListener(new Action(() =>
+                var moto = GameObject.Find("MainMenuManager/MainUI/AspectScaler/CreateGameScreen/ParentContent/Content/GeneralTab/ServerOption/ServerBox");
+                ServerList = UnityEngine.Object.Instantiate(moto, __instance.joinGamePassiveButton.transform.parent).GetComponent<PassiveButton>();
+                ServerList.name = "serverList";
+                ServerList.OnClick = new();
+                ServerList.OnClick.AddListener(new Action(() =>
                 {
-                    ServerListDrop?.SetActive(true);
+                    ServerListDrop?.gameObject?.SetActive(true);
                 }));
-                ServerList.transform.localPosition = new(-2.6755f, -1.0297f, -5.3436f);
+                ServerList.transform.localPosition = new(-3f, -1.4f, -6f);
                 ServerList.transform.localScale = new(0.5f, 0.5f, 1);
-
-                var del = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/EnterCodeButtons/AspectSize/Scaler/serverlist/BlackSquare");
-                del.transform.position = new(100f, 100);
-                var a = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/EnterCodeButtons/AspectSize/Scaler/serverlist/ServerBox/Inactive/ClassicText");
-                var b = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/EnterCodeButtons/AspectSize/Scaler/serverlist/ServerBox/Highlight/ClassicText");
-                a.GetComponent<TMPro.TextMeshPro>().text = b.GetComponent<TMPro.TextMeshPro>().text = "Server";
             }
 
             if (ServerListDrop.IsDestroyedOrNull())
             {
-                var moto = GameObject.Find("MainMenuManager/MainUI/AspectScaler/CreateGameScreen/ParentContent/Content/GeneralTab/ServerDropdown");
+                var moto = ObjectHelper.FindObjectsOfTypeAll<ServerDropdown>();
                 ServerListDrop = UnityEngine.Object.Instantiate(moto, __instance.joinGamePassiveButton.transform.parent);
-                ServerListDrop?.SetActive(false);
+                ServerListDrop?.gameObject.SetActive(false);
                 ServerListDrop.transform.localPosition = new(-2.0927f, 0.0991f, -15);
                 ServerListDrop.transform.localScale = new(0.4f, 0.4f, 1);
             }
 
+            if (vServerOnlyCheckBox.IsDestroyedOrNull())
+            {
+                vServerOnlyCheckBox = UnityEngine.Object.Instantiate(ObjectHelper.FindObjectsOfTypeAll<Checkbox>(), __instance.joinGamePassiveButton.transform.parent);
+                vServerOnlyCheckBox.transform.localPosition = new(-3.17f, -1.05f, -6f);
+                vServerOnlyCheckBox.transform.localScale = new(0.75f, 0.75f, 1);
+                var boxText = new GameObject("Text_TMP").AddComponent<TextMeshPro>();
+                boxText.transform.SetParent(vServerOnlyCheckBox.transform, false);
+                boxText.transform.localPosition = new(10.25f, 0f, 0f);
+
+                boxText.alignment = TextAlignmentOptions.Left;
+                boxText.fontSize = 1.5f;
+            }
+            vServerOnlyCheckBox.transform.GetComponentInChildren<TextMeshPro>().text = "選択中のサーバーのみ検索する";
+
             VersionText.text = "";
-            DownloadButton.gameObject.SetActive(false);
-            UnloadAndJoinButton.gameObject.SetActive(false);
+            DownloadButton.SetButtonEnableState(false);
+            UnloadAndJoinButton.SetButtonEnableState(false);
             CheckRestoreButton();
+
+            serverTexts = [
+                ServerList.transform.FindChild("Inactive/ClassicText")?.GetComponent<TextMeshPro>(),
+                ServerList.transform.FindChild("Highlight/ClassicText")?.GetComponent<TextMeshPro>(),
+            ];
+
+            SetCurrentServer();
+            ServerListDrop.Initialize((Il2CppSystem.Action<string>)UpdateServerText, (Action)(() => { }));
+
+            void UpdateServerText(string text) => serverTexts.Do(x => x.text = text);
+
+            void SetCurrentServer()
+            {
+                IRegionInfo currentRegion = DestroyableSingleton<ServerManager>.Instance.CurrentRegion;
+                UpdateServerText(DestroyableSingleton<TranslationController>.Instance.GetStringWithDefault(currentRegion.TranslateName, currentRegion.Name));
+            }
         }
 
         [HarmonyPatch(nameof(EnterCodeManager.FindGameResult)), HarmonyPostfix]
         public static void FindGameResultPostfix(EnterCodeManager __instance)
         {
             if (__instance.enterCodeField != null)
-                SetGameId(__instance.enterCodeField.text);
+                SetLastGameInfo(__instance.enterCodeField.text, DestroyableSingleton<ServerManager>.Instance.CurrentRegion);
             CheckRestoreButton();
 
             if (VersionText == null) return;
@@ -171,10 +199,10 @@ namespace TownOfHost
             VersionText.fontSize =
             VersionText.fontSizeMin = 1.8f;
             VersionText.color = Color.red;
-            DownloadButton?.gameObject.SetActive(false);
-            UnloadAndJoinButton?.gameObject.SetActive(true);
+            DownloadButton?.SetButtonEnableState(false);
+            UnloadAndJoinButton?.SetButtonEnableState(true);
 
-            var hostVersion = CheckHostVersion(__instance);
+            var hostVersion = CheckHostVersion(__instance?.gameFound);
 
             if (hostVersion != null)
             {
@@ -182,9 +210,9 @@ namespace TownOfHost
                 {
                     VersionText.fontSize =
                     VersionText.fontSizeMin = 1f;
-                    VersionText.text = $"{Translator.GetString("Warning.MismatchedVersion")}\nHost→<color=green>{hostVersion.forkId}v{hostVersion.version}</color>";
-                    var version = ModUpdater.snapshots.FirstOrDefault(x => hostVersion.version.ToString() == x.TagName.TrimStart('v')?.Trim('S')?.Trim('s'));
-                    if (version != null)
+                    VersionText.text = $"{string.Format(Translator.GetString("Warning.MismatchedHostVersion"), $"<color={Main.ModColor}>{hostVersion.forkId}v{hostVersion.version}</color>")}";
+                    var version = ModUpdater.releases.FirstOrDefault(x => hostVersion.version.ToString() == x.TagName.TrimStart('v')?.Trim('S')?.Trim('s'));
+                    if (hostVersion.forkId == Main.ForkId && version != null)
                     {
                         DownloadButton.OnClick = new();
                         DownloadButton.OnClick.AddListener((Action)(() =>
@@ -192,39 +220,56 @@ namespace TownOfHost
                             ModScreen?.gameObject.SetActive(false);
                             ModUpdater.StartUpdate(version.DownloadUrl);
                         }));
-                        DownloadButton?.gameObject.SetActive(true);
+                        DownloadButton?.SetButtonEnableState(true);
                     }
                 }
             }
             else
             {
                 VersionText.text = Translator.GetString("Warning.NoModHost");
+                __instance.joinGamePassiveButton.SetButtonEnableState(false);
             }
         }
 
         private static void CheckRestoreButton()
-            => RestoreButton?.SetButtonEnableState(GameId != "");
-        private static void SetGameId(string id)
-            => GameId = id.IsNullOrWhiteSpace() ? GameId : id;
-        private static bool MatchVersions(PlayerVersion version)
+            => RestoreButton?.SetButtonEnableState(lastGameInfo.HasValue);
+        private static void SetLastGameInfo(string id, IRegionInfo info)
+            => lastGameInfo = id.IsNullOrWhiteSpace() || info == null ? lastGameInfo : (info, id);
+        public static bool MatchVersions(PlayerVersion version)
             => Main.ForkId == version.forkId
             && Main.version.CompareTo(version.version) == 0;
-        private static PlayerVersion CheckHostVersion(EnterCodeManager manager)
+        public static PlayerVersion CheckHostVersion(GameListing gameFound)
         {
-            if (manager == null || manager.hostText == null) return null;
-            var text = manager.hostText.text;
+            if (gameFound == null || gameFound.HostPlatformName == null) return null;
+            var text = gameFound.HostPlatformName;
             string pattern = @"<size=0>([^:]+):(\d+\.\d+\.\d+\.\d+)</size>";
 
-            // 正規表現で一致する部分を検索
             MatchCollection matches = Regex.Matches(text, pattern);
 
-            // 最後の<size=0>タグの中身を取得
             if (!matches.Any()) return null;
 
             var groups = matches[^1].Groups;
-            string id = groups[1].Value;        // ID部分
-            string ver = groups[2].Value;   // バージョン部分
+            string id = groups[1].Value;
+            string ver = groups[2].Value;
             return new PlayerVersion(ver, "", id);
+        }
+        public static string VersionTag => $"<size=0>{Main.ForkId}:{Main.version}</size>";
+    }
+
+    [HarmonyPatch(typeof(PlatformSpecificData), nameof(PlatformSpecificData.Serialize))]
+    class PlatformSpecificDataSerializePatch
+    {
+        public static string backupPlatformName = "";
+        private static void Prefix(PlatformSpecificData __instance)
+        {
+            // if (!AmongUsClient.Instance.AmHost) return;
+            backupPlatformName = __instance.PlatformName;
+            //__instance.PlatformName += EnterCodeManagerPatch.VersionTag;
+        }
+        private static void Postfix(PlatformSpecificData __instance)
+        {
+            //if (!AmongUsClient.Instance.AmHost) return;
+            // __instance.PlatformName = backupPlatformName;
         }
     }
 }

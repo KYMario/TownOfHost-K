@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -128,6 +129,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
         if (Target == null)
         {
             Target = target;
+            SendRPC();
             Player.SetKillCooldown(target: target, force: true, delay: true);
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
         }
@@ -145,6 +147,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             return;
         }
         IsShapeShift = true;
+        SendRPC();
         Player.RpcShapeshift(Target, true);
         ShapePosition = Player.GetTruePosition();
         UtilsNotifyRoles.NotifyRoles(true, SpecifySeer: [Player]);
@@ -170,6 +173,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             IsShapeShift = false;
             MyState.DeathReason = CustomDeathReason.Spell;
             Player.RpcMurderPlayer(Player);
+            SendRPC();
         }
     }
     public override bool OnCheckMurderAsTarget(MurderInfo info)
@@ -186,9 +190,13 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
                 if (WinKilledCount <= killedcount)
                 {
                     if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Strawdoll, Player.PlayerId))
+                    {
+                        SendRPC();
                         return false;
+                    }
                 }
                 IsShapeShift = false;
+                SendRPC();
                 if (StopTime > 0)
                 {
                     var tmpSpeed = Main.AllPlayerSpeed[Player.PlayerId];
@@ -212,6 +220,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
                 return false;
             }
             Target = null;
+            SendRPC();
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
         }
         return true;
@@ -227,12 +236,15 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
 
     public override void OnLeftPlayer(PlayerControl player)
     {
+        if (Target == null) return; //null対策
         if (player.PlayerId == Target.PlayerId && player?.PlayerId.GetPlayerState().IsDead == false)
         {
             Target = null;
             ShapePosition = Vector2.zero;
             Ventid = -1;
             IsShapeShift = false;
+
+            if (!AmongUsClient.Instance.AmHost) return;
 
             //ターゲット切断時の仕様どうしましょう。
             Player.RpcShapeshift(Player, false);
@@ -243,5 +255,21 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             }
             Player.SetKillCooldown(1);
         }
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(killedcount);
+        sender.Writer.Write(IsShapeShift);
+        sender.Writer.Write(Target?.PlayerId ?? byte.MaxValue);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        killedcount = reader.ReadInt32();
+        IsShapeShift = reader.ReadBoolean();
+        var targetId = reader.ReadByte();
+        Target = targetId == byte.MaxValue ? null : PlayerCatch.GetPlayerById(targetId);
     }
 }

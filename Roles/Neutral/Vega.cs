@@ -195,8 +195,11 @@ public sealed class Vega : RoleBase, IKiller, IAdditionalWinner
             }
         }
 
-        Player.RpcProtectedMurderPlayer();
-        Altair.RpcProtectedMurderPlayer();
+        if (AmongUsClient.Instance.AmHost)
+        {
+            Player.RpcProtectedMurderPlayer();
+            Altair.RpcProtectedMurderPlayer();
+        }
     }
 
     private PlayerControl SetAltair()

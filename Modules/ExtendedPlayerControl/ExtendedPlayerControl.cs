@@ -141,6 +141,7 @@ namespace TownOfHost
             if (player.isDummy) return;
             PlayerGameOptionsSender.SetDirty(player.PlayerId);
         }
+        /// <summary>たぶんホスト以外が送信したらあぶないやつ</summary>
         public static void SyncSettings(this PlayerControl player)
         {
             if (player.isDummy) return;
@@ -268,6 +269,7 @@ namespace TownOfHost
         public static bool CanUseSabotageButton(this PlayerControl pc)
         {
             if (SuddenDeathMode.NowSuddenDeathMode) return false;
+            if (pc.GetPlayerState() is null) return false;
             if (pc.Is(CustomRoles.DemonicSupporter)) return true;
             if (pc.Is(CustomRoles.Amnesia) && !pc.Is(CustomRoleTypes.Impostor)) return false;
 

@@ -72,10 +72,16 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
     {
         using var sender = CreateSender();
         sender.Writer.Write(usedcount);
+        sender.Writer.Write(target1);
+        sender.Writer.Write(target2);
+        sender.Writer.Write(IsUseing);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
         usedcount = reader.ReadInt32();
+        target1 = reader.ReadByte();
+        target2 = reader.ReadByte();
+        IsUseing = reader.ReadBoolean();
     }
 
     public float CalculateKillCooldown() => IsUseing ? OptionTageKillCoolDown.GetFloat() : OptionKillCoolDown.GetFloat();
@@ -83,6 +89,8 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
     {
         if (IsUseing) Main.AllPlayerKillCooldown[Player.PlayerId] = OptionTageKillCoolDown.GetFloat();
         else Main.AllPlayerKillCooldown[Player.PlayerId] = OptionKillCoolDown.GetFloat();
+
+        if (!AmongUsClient.Instance.AmHost) return;
 
         Player.SyncSettings();
     }
@@ -157,8 +165,8 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
             {
                 Utils.SendMessage(GetString("Skill.ConnectSaver"), Player.PlayerId);
                 usedcount++;//成功or失敗にかかわらず発動はした記録。
-                SendRPC();
                 IsUseing = true;
+                SendRPC();
             }
         }
     }
@@ -184,6 +192,7 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
             target1 = byte.MaxValue;
             target2 = byte.MaxValue;
             IsUseing = false;
+            SendRPC();
             CheckMurderPatch.TimeSinceLastKill[killer.PlayerId] = 0f;//無視してもキル連打はさせない。
             return;
         }
@@ -208,5 +217,6 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
         target1 = byte.MaxValue;
         target2 = byte.MaxValue;
         IsUseing = false;
+        SendRPC();
     }
 }

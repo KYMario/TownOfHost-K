@@ -1,5 +1,5 @@
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -79,6 +79,7 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
         if (target == null || target.GetCustomRole() is CustomRoles.King or CustomRoles.Merlin || (target.Is(CustomRoleTypes.Impostor) && !SuddenDeathMode.NowSuddenDeathTemeMode)) return;
 
         SKMad = false;
+        SendRPC();
         if (SuddenDeathMode.NowSuddenDeathTemeMode)
         {
             target.SideKickChangeTeam(Player);
@@ -109,5 +110,16 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonSideKick");
         return $"<size=50%>{GetString("PhantomButtonSideKick")}</size>";
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(SKMad);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        SKMad = reader.ReadBoolean();
     }
 }

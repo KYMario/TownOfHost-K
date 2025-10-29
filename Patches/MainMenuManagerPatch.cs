@@ -246,7 +246,7 @@ namespace TownOfHost
                         betaVersionMenu.transform.parent = __instance.gameModeButtons.transform.parent;
                         betaVersionMenu.transform.localPosition = new(-0.0964f, 0.1378f, 1f);
                         betaVersionMenu.SetActive(true);
-                        ModUpdater.CheckRelease(all: true, snap: true).GetAwaiter().GetResult();
+                        ModUpdater.CheckRelease(all: true).GetAwaiter().GetResult();
                         int i = 0;
                         if (ModUpdater.snapshots.Count == 0) return;
 

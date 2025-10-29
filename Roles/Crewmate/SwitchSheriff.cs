@@ -146,12 +146,15 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
     }
     private void SendRPC()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
         using var sender = CreateSender();
         sender.Writer.Write(ShotLimit);
+        sender.Writer.Write(Taskmode);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
         ShotLimit = reader.ReadInt32();
+        Taskmode = reader.ReadBoolean();
     }
     public bool CanUseKillButton()
         => Player.IsAlive()
@@ -191,7 +194,6 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
                 return;
             }
             ShotLimit--;
-            SendRPC();
             var AlienTairo = false;
             var targetroleclass = target.GetRoleClass();
             if ((targetroleclass as Alien)?.CheckSheriffKill(target) == true) AlienTairo = true;
@@ -217,6 +219,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
             }
             nowcool = CurrentKillCooldown;
             ModeSwitching(true);
+            SendRPC();
             //Player.SetKillCooldown(nowcool);
             killer.RpcResetAbilityCooldown(/*Sync: true*/);
         }
@@ -226,7 +229,10 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
     {
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
         if (Player.IsAlive())
+        {
             ModeSwitching(true);
+            SendRPC();
+        }
         Player.RpcResetAbilityCooldown(Sync: true);
     }
     public override RoleTypes? AfterMeetingRole => RoleTypes.Engineer;
@@ -297,6 +303,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
         if (Taskmode && Utils.IsActive(SystemTypes.Comms)) return false;//Hostはタスクモード(エンジ)での切り替えできるからさせないようにする
 
         ModeSwitching();
+        SendRPC();
         //_ = new LateTask(() => Player.SetKillCooldown(kill), 0.2f, "",true);
         return false;
     }
@@ -333,6 +340,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
             {
                 var task = CommsMode.GetValue() == 2;
                 ModeSwitching(task);
+                SendRPC();
             }
         return true;
     }

@@ -105,6 +105,7 @@ namespace TownOfHost
             }
         }
     }
+
     [HarmonyPatch(typeof(SplashManager), nameof(SplashManager.Update))]
     class SplashLogoAnimatorPatch
     {

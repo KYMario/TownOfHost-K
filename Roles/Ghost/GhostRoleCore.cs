@@ -55,6 +55,7 @@ class GhostRoleCore
         Transparent.Init();
         Clumsy.Init();
         OneWolf.Init();
+        Twins.Init();
     }
     public static void SetupCustomOptionAddonAndIsGhostRole()
     {

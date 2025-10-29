@@ -131,137 +131,140 @@ public sealed class King : RoleBase
     void CrewMateAbooooon()
     {
         if (IsDead && !IsExiled) return;
-        var rand = IRandom.Instance;
-        int Count = OptExiledInvolvementCrewmates.GetInt();
-
-        List<PlayerControl> crews = new();
-
-        //対象者
-        foreach (var pc in PlayerCatch.AllAlivePlayerControls)
+        if (AmongUsClient.Instance.AmHost)
         {
-            if (!pc) continue;
-            if (pc == Player) continue;
-            if (!pc.IsAlive() || !pc.Is(CustomRoleTypes.Crewmate)) continue;
-            if (!crews.Contains(pc)) crews.Add(pc);
-        }
+            var rand = IRandom.Instance;
+            int Count = OptExiledInvolvementCrewmates.GetInt();
 
-        if (!GameStates.CalledMeeting)
-        {
-            for (var i = 0; i < Count; i++)
+            List<PlayerControl> crews = new();
+
+            //対象者
+            foreach (var pc in PlayerCatch.AllAlivePlayerControls)
             {
-                if (crews.Count == 0) break;
-                var pc = crews[rand.Next(0, crews.Count)];
-
-                if (pc == null)
-                {
-                    i--;
-                    continue;
-                }
-                if (!pc.IsAlive())
-                {
-                    i--;
-                    continue;
-                }
-
-                PlayerState state = PlayerState.GetByPlayerId(pc.PlayerId);
-                state.DeathReason = deathReasons[OptDeathReason.GetValue()];
-                CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 999);
-                Logger.Info($"{pc.name}が巻き込まれちゃった！", "Kingaboooooon");
-                crews.Remove(pc);
+                if (!pc) continue;
+                if (pc == Player) continue;
+                if (!pc.IsAlive() || !pc.Is(CustomRoleTypes.Crewmate)) continue;
+                if (!crews.Contains(pc)) crews.Add(pc);
             }
-        }
-        else
-        {
-            for (var i = 0; i < Count; i++)
+
+            if (!GameStates.CalledMeeting)
             {
-                if (crews.Count == 0) break;
-                var pc = crews[rand.Next(0, crews.Count)];
-
-                if (pc == null)
+                for (var i = 0; i < Count; i++)
                 {
-                    i--;
-                    continue;
-                }
-                if (!pc.IsAlive())
-                {
-                    i--;
-                    continue;
-                }
+                    if (crews.Count == 0) break;
+                    var pc = crews[rand.Next(0, crews.Count)];
 
-                PlayerState state = PlayerState.GetByPlayerId(pc.PlayerId);
-                state.DeathReason = deathReasons[OptDeathReason.GetValue()];
-                Player.RpcExileV2();
-                state.SetDead();
-                ReportDeadBodyPatch.IgnoreBodyids[Player.PlayerId] = false;
+                    if (pc == null)
+                    {
+                        i--;
+                        continue;
+                    }
+                    if (!pc.IsAlive())
+                    {
+                        i--;
+                        continue;
+                    }
 
-                Logger.Info($"{pc.name}が後追いしちゃった！", "KingEx");
-                crews.Remove(pc);
-            }
-        }
-
-        //役職 & 属性ぼっしゅー
-
-        var addoncount = OptExiledRemoveAddonPlayercount.GetInt();
-        if (addoncount != 0)
-        {
-            for (var i = 0; i < addoncount; i++)
-            {
-                if (crews.Count == 0) break;
-                var pc = crews[rand.Next(0, crews.Count)];
-
-                if (pc == null)
-                {
-                    i--;
-                    continue;
-                }
-                if (!pc.IsAlive())
-                {
-                    i--;
-                    continue;
-                }
-
-                var ps = PlayerState.GetByPlayerId(pc.PlayerId);
-                List<CustomRoles> remove = new();
-                if (pc.GetCustomSubRoles() != null)
-                    foreach (var addon in pc.GetCustomSubRoles())
-                        if (addon.IsBuffAddon())
-                        {
-                            if (!remove.Contains(addon)) remove.Add(addon);
-                            Logger.Info($"{pc.name}の{addon}ぼっしゅー", "KingAddon");
-                        }
-
-                if (remove == null && remove?.Count != 0)
-                {
-                    foreach (var addon in remove)
-                        ps.RemoveSubRole(addon);
+                    PlayerState state = PlayerState.GetByPlayerId(pc.PlayerId);
+                    state.DeathReason = deathReasons[OptDeathReason.GetValue()];
+                    CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 999);
+                    Logger.Info($"{pc.name}が巻き込まれちゃった！", "Kingaboooooon");
+                    crews.Remove(pc);
                 }
             }
-        }
-
-        var rolecount = OptExiledRemoveRolePlayercount.GetInt();
-        if (rolecount != 0)
-        {
-            for (var i = 0; i < rolecount; i++)
+            else
             {
-                if (crews.Count == 0) break;
-                var pc = crews[rand.Next(0, crews.Count)];
-
-                if (pc == null)
+                for (var i = 0; i < Count; i++)
                 {
-                    i--;
-                    continue;
-                }
-                if (!pc.IsAlive())
-                {
-                    i--;
-                    continue;
-                }
+                    if (crews.Count == 0) break;
+                    var pc = crews[rand.Next(0, crews.Count)];
 
-                pc.RpcSetCustomRole(CustomRoles.Crewmate, true, null);
-                Logger.Info($"{pc.name}の役職クルーな！！ハハハ!!", "KingRoles");
+                    if (pc == null)
+                    {
+                        i--;
+                        continue;
+                    }
+                    if (!pc.IsAlive())
+                    {
+                        i--;
+                        continue;
+                    }
+
+                    PlayerState state = PlayerState.GetByPlayerId(pc.PlayerId);
+                    state.DeathReason = deathReasons[OptDeathReason.GetValue()];
+                    Player.RpcExileV2();
+                    state.SetDead();
+                    ReportDeadBodyPatch.IgnoreBodyids[Player.PlayerId] = false;
+
+                    Logger.Info($"{pc.name}が後追いしちゃった！", "KingEx");
+                    crews.Remove(pc);
+                }
             }
+
+            //役職 & 属性ぼっしゅー
+
+            var addoncount = OptExiledRemoveAddonPlayercount.GetInt();
+            if (addoncount != 0)
+            {
+                for (var i = 0; i < addoncount; i++)
+                {
+                    if (crews.Count == 0) break;
+                    var pc = crews[rand.Next(0, crews.Count)];
+
+                    if (pc == null)
+                    {
+                        i--;
+                        continue;
+                    }
+                    if (!pc.IsAlive())
+                    {
+                        i--;
+                        continue;
+                    }
+
+                    var ps = PlayerState.GetByPlayerId(pc.PlayerId);
+                    List<CustomRoles> remove = new();
+                    if (pc.GetCustomSubRoles() != null)
+                        foreach (var addon in pc.GetCustomSubRoles())
+                            if (addon.IsBuffAddon())
+                            {
+                                if (!remove.Contains(addon)) remove.Add(addon);
+                                Logger.Info($"{pc.name}の{addon}ぼっしゅー", "KingAddon");
+                            }
+
+                    if (remove == null && remove?.Count != 0)
+                    {
+                        foreach (var addon in remove)
+                            ps.RemoveSubRole(addon);
+                    }
+                }
+            }
+
+            var rolecount = OptExiledRemoveRolePlayercount.GetInt();
+            if (rolecount != 0)
+            {
+                for (var i = 0; i < rolecount; i++)
+                {
+                    if (crews.Count == 0) break;
+                    var pc = crews[rand.Next(0, crews.Count)];
+
+                    if (pc == null)
+                    {
+                        i--;
+                        continue;
+                    }
+                    if (!pc.IsAlive())
+                    {
+                        i--;
+                        continue;
+                    }
+
+                    pc.RpcSetCustomRole(CustomRoles.Crewmate, true, null);
+                    Logger.Info($"{pc.name}の役職クルーな！！ハハハ!!", "KingRoles");
+                }
+            }
+            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 0.4f, "KingResetNotify");
         }
-        _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 0.4f, "KingResetNotify");
         IsDead = true;
         IsExiled = false;
     }

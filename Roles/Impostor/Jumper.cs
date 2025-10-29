@@ -113,6 +113,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
                 ShowMark = false;
                 JumpToPosition = new Vector2(999f, 999f);
                 UsePosition = new Vector2(999f, 999f);
+                SendRPC();
                 Main.AllPlayerSpeed[Player.PlayerId] = MySpeed;
                 _ = new LateTask(() => player.RpcResetAbilityCooldown(Sync: true), 0.2f, "JumperEndResetCool", null);
                 player.SetKillCooldown();
@@ -167,6 +168,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
             AdjustKillCooldown = true;
             Player.RpcSpecificRejectShapeshift(Player, false);
             Player.RpcResetAbilityCooldown(Sync: true);
+            SendRPC();
             Logger.Info($"Set:{JumpToPosition.x}-{JumpToPosition.y} (${Player.PlayerId})", "Jumper");
             _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, "JumperSet", true);
             return;
@@ -177,6 +179,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         Jumping = true;
         ShowMark = true;
         UsePosition = Player.transform.position;
+        SendRPC();
         var X = JumpToPosition.x - UsePosition.x;
         var Y = JumpToPosition.y - UsePosition.y;
         JumpX = X / OptionJumpcount.GetInt();
@@ -226,5 +229,20 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
     public override string GetAbilityButtonText()
     {
         return GetString("Jumpertext");
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(Jumping);
+        sender.Writer.Write(ShowMark);
+        NetHelpers.WriteVector2(JumpToPosition, sender.Writer);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Jumping = reader.ReadBoolean();
+        ShowMark = reader.ReadBoolean();
+        JumpToPosition = NetHelpers.ReadVector2(reader);
     }
 }

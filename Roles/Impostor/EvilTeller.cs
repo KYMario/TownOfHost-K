@@ -4,6 +4,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -100,6 +101,8 @@ public sealed class EvilTeller : RoleBase, IImpostor, IUsePhantomButton
         TargetInfo = new(target.PlayerId, 0f);
         nowuse = true;
         ResetCooldown = false;
+
+        RpcSetTargetInfo(target.PlayerId);
         _ = new LateTask(() =>
         {
             Player.RpcResetAbilityCooldown(Sync: true);
@@ -174,6 +177,7 @@ public sealed class EvilTeller : RoleBase, IImpostor, IUsePhantomButton
                 Player.RpcResetAbilityCooldown(Sync: true);
                 if (usekillcool && !fall) Player.SetKillCooldown();
                 seentarget.TryAdd(et_target.PlayerId, et_target.GetCustomRole());
+                RpcAddTarget(et_target.PlayerId);
 
                 UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player, ForceLoop: true);
             }
@@ -210,5 +214,39 @@ public sealed class EvilTeller : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonKilltargetLowertext");
         return $"<size=50%>{GetString("PhantomButtonKilltargetLowertext")}</size>";
+    }
+
+    public void RpcSetTargetInfo(byte targetId)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.SetTargetInfo);
+        sender.Writer.Write(targetId);
+    }
+
+    public void RpcAddTarget(byte targetId)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.AddTarget);
+        sender.Writer.Write(targetId);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        switch ((RPC_Types)reader.ReadInt32())
+        {
+            case RPC_Types.SetTargetInfo:
+                TargetInfo = new(reader.ReadByte(), 0f);
+                break;
+            case RPC_Types.AddTarget:
+                var targetId = reader.ReadByte();
+                seentarget.TryAdd(targetId, PlayerCatch.GetPlayerById(targetId).GetCustomRole());
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        SetTargetInfo,
+        AddTarget
     }
 }

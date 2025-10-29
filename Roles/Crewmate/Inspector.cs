@@ -136,7 +136,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(Max <= count ? Color.gray : Color.cyan, $"({Max - count})");
     public override void OnStartMeeting()
     {
-        if (Isdie)
+        if (AmongUsClient.Instance.AmHost && Isdie)
         {
             PlayerState targetstate = TargetPlayerId.GetPlayerState();
             StringBuilder sb = new();
@@ -258,7 +258,19 @@ public sealed class Inspector : RoleBase, ISelfVoter
         if (!target.IsAlive()) return;//死んでるならここで処理を止める。
         count++;//全体のカウント
         TargetPlayerId = votedForId;
+        SendRPC();
         Utils.SendMessage(string.Format(GetString("Skill.Inspector"), UtilsName.GetPlayerColor(votedForId)), Player.PlayerId);
         Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}", "Inspector");
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(count);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        count = reader.ReadInt32();
     }
 }

@@ -107,14 +107,17 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
         MeisFT = BooleanOptionItem.Create(RoleInfo, 18, Option.PonkotuTellerMyisFT, false, false);
         OptionDontChengeGame = BooleanOptionItem.Create(RoleInfo, 20, Option.PonkotuDontChengeGame, false, false);
     }
-    private void SendRPC()
+    private void SendRPC(byte targetId, CustomRoles role)
     {
         using var sender = CreateSender();
         sender.Writer.Write(count);
+        sender.Writer.Write(targetId);
+        sender.Writer.WritePacked((int)role);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
         count = reader.ReadInt32();
+        Divination[reader.ReadByte()] = (CustomRoles)reader.ReadPackedInt32();
     }
     public override void OnStartMeeting() => MeetingUsedcount = 0;
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(!MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) ? Color.gray : Max <= count ? Color.gray : Color.cyan, $"({Max - count})");
@@ -178,7 +181,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}(成功)", "PonkotuTeller");
             var FtR = target.GetTellResults(Player); //結果を変更するかチェック
             var role = target.GetTellResults(null); //結果を変更するかチェック
-            SendRPC();
+            SendRPC(votedForId, role);
             GameTell.TryAdd(votedForId, role);
             var lasttext = GetString("Skill.Tellerfin") + (role.IsCrewmate() ? "!" : "...");
             if (MeisFT.GetBool()) Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
@@ -194,7 +197,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             GameTell.TryAdd(votedForId, role);
             Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}(失敗)", "PonkotuTeller");
             var lasttext = GetString("Skill.Tellerfin") + (role.IsCrewmate() ? "!" : "...");
-            SendRPC();
+            SendRPC(votedForId, role);
             if (MeisFT.GetBool()) Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
             else Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + $"..?" + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
         }
@@ -214,11 +217,10 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
     public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (Divination.ContainsKey(seen.PlayerId) && rolename)
+        if (Divination.TryGetValue(seen.PlayerId, out var role) && rolename)
         {
-            if (TellRole)
-                return $"<color={UtilsRoleText.GetRoleColorCode(Divination[seen.PlayerId])}>" + GetString(Divination[seen.PlayerId].ToString());
-            else return GetString(Divination[seen.PlayerId].GetCustomRoleTypes().ToString());
+            if (TellRole) return $"<color={UtilsRoleText.GetRoleColorCode(role)}>" + GetString(role.ToString());
+            else return GetString(role.GetCustomRoleTypes().ToString());
         }
         return "";
     }

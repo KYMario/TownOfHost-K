@@ -51,6 +51,7 @@ public interface IUsePhantomButton
     /// ↑ 役職で使用後キルクールダウンをリセットする時はfalse<br/><br/>
     /// ResetCooldownがtrueでファントムボタンのクールリセットを入れる<br/>
     /// ↑ falseでクール無し<br/><br/>
+    /// [ホストのみ]
     ///  </summary>
     /// <param name="AdjustKillCooldown">trueで使用後キルクールの調整処理を行う</param>
     /// <param name="ResetCooldown">trueでアビリティリセット処理を入れる<br/> nullでファントム戻し処理もいれない</param>

@@ -3,6 +3,7 @@ using System.Linq;
 
 using TownOfHost.Roles.Core;
 using static TownOfHost.Options;
+using Hazel;
 
 namespace TownOfHost.Roles.Ghost
 {
@@ -43,6 +44,7 @@ namespace TownOfHost.Roles.Ghost
             Guard = false;
             pos = new Vector3(999f, 999f);
             CustomRoleManager.MarkOthers.Add(OtherMark);
+            SubRoleRPCSender.AddHandler(CustomRoles.AsistingAngel, ReceiveRPC);
         }
         public static void Add(byte playerId)
         {
@@ -70,6 +72,7 @@ namespace TownOfHost.Roles.Ghost
                 if (Asist == null)
                 {
                     Asist = target;
+                    SendRPC(AsistingAngelId);
                     pc.RpcResetAbilityCooldown();
                     UtilsNotifyRoles.NotifyRoles(SpecifySeer: [target, pc]);
                     Logger.Info($"Set:{pc.Data.GetLogPlayerName()} => {Asist.Data.GetLogPlayerName()}", "AsistingAngel");
@@ -98,6 +101,7 @@ namespace TownOfHost.Roles.Ghost
                         Track = target.PlayerId;
                         pos = target.transform.position;
                         GetArrow.Add(Asist.PlayerId, target.transform.position);
+                        SendRPC(AsistingAngelId);
                         UtilsNotifyRoles.NotifyRoles(SpecifySeer: [target, pc]);
                         pc.RpcResetAbilityCooldown(Sync: true);
                     }
@@ -167,6 +171,32 @@ namespace TownOfHost.Roles.Ghost
             if (Asist == null) return CoolDown.GetFloat();
 
             return CoolDown.GetFloat() + (AddClowDown.GetFloat() * Count);
+        }
+
+        public static void SendRPC(byte playerId)
+        {
+            using var sender = new SubRoleRPCSender(CustomRoles.AsistingAngel, playerId);
+            sender.Writer.Write(Limit);
+            sender.Writer.Write(Track);
+            sender.Writer.Write(Asist?.PlayerId ?? byte.MaxValue);
+            NetHelpers.WriteVector2(pos, sender.Writer);
+        }
+
+        public static void ReceiveRPC(MessageReader reader, byte playerId)
+        {
+            Limit = reader.ReadInt32();
+            Track = reader.ReadByte();
+            var AsistId = reader.ReadByte();
+            Asist = AsistId == byte.MaxValue ? null : PlayerCatch.GetPlayerById(AsistId);
+
+            var newPos = NetHelpers.ReadVector2(reader);
+
+            if (newPos != (Vector2)pos)
+            {
+                GetArrow.Remove(playerId, pos);
+                pos = newPos;
+                GetArrow.Add(playerId, pos);
+            }
         }
     }
 }

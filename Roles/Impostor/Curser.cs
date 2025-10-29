@@ -1,4 +1,5 @@
 using AmongUs.GameOptions;
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -56,25 +57,32 @@ public sealed class Curser : RoleBase, IImpostor
             .SetValueFormat(OptionFormat.Seconds);
         OptionCurseCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.CurserCurseCount, new(1, 15, 1), 2, false);
     }
-    private void SetTarget(byte targetId)
+    private void SendRPC()
     {
-        TargetId = targetId;
-        if (AmongUsClient.Instance.AmHost)
-        {
-            using var sender = CreateSender();
-            sender.Writer.Write(targetId);
-        }
+        if (!AmongUsClient.Instance.AmHost) return;
+
+        using var sender = CreateSender();
+        sender.Writer.Write(TargetId);
+        sender.Writer.Write(CurseCount);
     }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        TargetId = reader.ReadByte();
+        CurseCount = reader.ReadInt32();
+    }
+
     public override bool CheckShapeshift(PlayerControl target, ref bool animate)
     {
         if ((target.Is(CustomRoleTypes.Impostor) && !SuddenDeathMode.NowSuddenDeathMode) || CurseCount == 0 || target.PlayerId == TargetId) return false;
 
-        SetTarget(target.PlayerId);
+        TargetId = target.PlayerId;
         Logger.Info($"{Player.GetNameWithRole()}のターゲットを{target.GetNameWithRole()}に設定", "CurserTarget");
         Player.MarkDirtySettings();
         Player.RpcResetAbilityCooldown();
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
         CurseCount--;
+        SendRPC();
         return false;
     }
     public void OnCheckMurderAsKiller(MurderInfo info)

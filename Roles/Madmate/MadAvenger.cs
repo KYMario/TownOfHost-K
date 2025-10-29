@@ -73,6 +73,7 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
 
     public override bool OnCompleteTask(uint taskid)
     {
+        if (!AmongUsClient.Instance.AmHost) return true;
         if (IsTaskFinished)
         {
             fin = true;

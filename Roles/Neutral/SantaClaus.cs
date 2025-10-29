@@ -7,6 +7,7 @@ using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using HarmonyLib;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -85,7 +86,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
     }
     public override bool OnCompleteTask(uint taskid)
     {
-        if (AmongUsClient.Instance.AmHost && MyTaskState.IsTaskFinished && Player.IsAlive())
+        if (MyTaskState.IsTaskFinished && Player.IsAlive())
         {
             havepresent++;
             UtilsNotifyRoles.NotifyRoles();
@@ -173,7 +174,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
                 IWinflag = true;
             }
         }
-        SetPresentVent();
+        SetPresentVent(); //ここでSendRPCされます
         UtilsNotifyRoles.NotifyRoles();
 
         return false;
@@ -221,6 +222,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         EntotuVentId = ev.Id;
         EntotuVentPos = new Vector3(ev.transform.position.x, ev.transform.position.y);
         GetArrow.Add(Player.PlayerId, (Vector3)EntotuVentPos);
+        SendRPC();
     }
     CustomRoles[] giveaddons =
     {
@@ -260,16 +262,49 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
             return;
         }
         var roles = giveaddons.Where(role => !target.Is(role)).ToList();
-        if (roles.Count() < 1)
+        if (roles.Count < 1)
         {
             Logger.Info($"{target.Data.GetLogPlayerName()}には付与できないって伝えなきゃ！", "SantaClaus");
             GiftedPlayers.Add(target.PlayerId);
             return;
         }
 
-        var giftrole = roles[IRandom.Instance.Next(roles.Count())];
+        var giftrole = roles[IRandom.Instance.Next(roles.Count)];
         target.RpcSetCustomRole(giftrole);
         Logger.Info($"{Player.Data.GetLogPlayerName()}:gift=>{target.Data.GetLogPlayerName()}({giftrole})", "SantaClaus");
         _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("SantaGiftAddonMessage"), UtilsRoleText.GetRoleColorAndtext(giftrole)), target.PlayerId), 5f, "SantaGiftMeg", true);
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(havepresent);
+        sender.Writer.Write(giftpresent);
+        sender.Writer.Write(EntotuVentId.HasValue);
+        if (EntotuVentId.HasValue)
+            sender.Writer.Write(EntotuVentId.Value);
+
+        NetHelpers.WriteVector2(EntotuVentPos ?? new Vector2(999f, 999f), sender.Writer);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        havepresent = reader.ReadInt32();
+        giftpresent = reader.ReadInt32();
+        EntotuVentId = reader.ReadBoolean() ? reader.ReadInt32() : null;
+
+        var newVentPos = NetHelpers.ReadVector2(reader);
+
+        //posが更新されたときのみ処理
+        if (newVentPos != (Vector2)EntotuVentPos)
+        {
+            if (EntotuVentPos.HasValue)
+                GetArrow.Remove(Player.PlayerId, EntotuVentPos.Value);
+
+            if (newVentPos != new Vector2(999f, 999f))
+                GetArrow.Add(Player.PlayerId, newVentPos);
+
+            EntotuVentPos = newVentPos;
+        }
     }
 }

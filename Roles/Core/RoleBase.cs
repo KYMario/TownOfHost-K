@@ -101,6 +101,11 @@ public abstract class RoleBase : IDisposable
         }
         public void Dispose()
         {
+            if (!PlayerCatch.AnyModClient())
+            {
+                Writer.Recycle();
+                return;
+            }
             AmongUsClient.Instance.FinishRpcImmediately(Writer);
         }
     }
@@ -138,6 +143,7 @@ public abstract class RoleBase : IDisposable
     /// キラーより先に判定
     /// キル出来ない状態(無敵など)はinfo.CanKill=falseとしてtrueを返す
     /// キル行為自体をなかったことにする場合はfalseを返す。
+    /// [ホストのみ]
     /// </summary>
     /// <param name="info">キル関係者情報</param>
     /// <returns>false:キル行為を起こさせない</returns>
@@ -145,6 +151,7 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// ターゲットとしてのMurderPlayer処理
+    /// [ホストのみ]
     /// </summary>
     /// <param name="info">キル関係者情報</param>
     public virtual void OnMurderPlayerAsTarget(MurderInfo info)
@@ -153,7 +160,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// シェイプシフト時に呼ばれる関数
     /// 自分自身について呼ばれるため本人確認不要
-    /// Host以外も呼ばれるので注意
+    /// [全クライアント]
     /// </summary>
     /// <param name="target">変身先</param>
     public virtual void OnShapeshift(PlayerControl target)
@@ -169,7 +176,7 @@ public abstract class RoleBase : IDisposable
     /// シェイプシフトされる前に呼ばれる関数
     /// falseを返すとシェイプシフトをなかったことにできる
     /// 自分自身について呼ばれるため本人確認不要
-    /// Host以外も呼ばれるので注意
+    /// [ホストのみ]
     /// </summary>
     /// <param name="target">変身先</param>
     /// <param name="shouldAnimate">アニメーションを再生するか</param>
@@ -190,6 +197,7 @@ public abstract class RoleBase : IDisposable
     /// Host以外も呼ばれるので注意
     /// playerが自分以外であるときに処理したい場合は同じ引数でstaticとして実装し
     /// CustomRoleManager.OnFixedUpdateOthersに登録する
+    /// [全クライアント]
     /// </summary>
     /// <param name="player">対象プレイヤー</param>
     public virtual void OnFixedUpdate(PlayerControl player)
@@ -198,6 +206,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// 通報時，会議が呼ばれることが確定してから呼ばれる関数<br/>
     /// 通報に関係ないプレイヤーも呼ばれる
+    /// [ホストのみ]
     /// </summary>
     /// <param name="reporter">通報したプレイヤー</param>
     /// <param name="target">通報されたプレイヤー</param>
@@ -220,6 +229,7 @@ public abstract class RoleBase : IDisposable
     /// ベント移動を封じるかの関数。<br/>
     /// OnEnterVentの方が速く呼ばれる。<br/>
     /// 基本的に移動を封じる時のみ使う。
+    /// [ホストのみ]
     /// </summary>
     /// <param name="physics"></param>
     /// <param name="Id"></param>
@@ -227,6 +237,7 @@ public abstract class RoleBase : IDisposable
     public virtual bool CanVentMoving(PlayerPhysics physics, int ventId) => true;
     /// <summary>
     /// ミーティングが始まった時に呼ばれる関数
+    /// [全クライアント]
     /// </summary>
     public virtual void OnStartMeeting()
     { }
@@ -240,6 +251,7 @@ public abstract class RoleBase : IDisposable
     /// 自分が投票した瞬間，票がカウントされる前に呼ばれる<br/>
     /// falseを返すと投票行動自体をなかったことにし，再度投票できるようになる<br/>
     /// 投票行動自体は取り消さず，票だけカウントさせない場合は<see cref="ModifyVote"/>を使用し，doVoteをfalseにする
+    /// [ホストのみ]
     /// </summary>
     /// <param name="votedForId">投票先</param>
     /// <param name="voter">投票した人</param>
@@ -290,6 +302,7 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// タスクが一個完了するごとに呼ばれる関数
+    /// [全クライアント]
     /// </summary>
     /// <returns>falseを返すとバニラ処理をキャンセルする</returns>
     public virtual bool OnCompleteTask(uint taskid) => true;

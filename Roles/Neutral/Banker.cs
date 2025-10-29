@@ -1,5 +1,5 @@
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 
@@ -115,18 +115,16 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         if (Is(killer))
         {
             HaveCoin += KillAddCoin.GetInt();
+            SendRPC();
         }
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
-        if (!IsDead)
+        if (!IsDead && !player.IsAlive())
         {
-            if (!player.IsAlive())
-            {
-                IsDead = true;
-                HaveCoin -= DieRemoveCoin.GetInt();
-                _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), Main.LagTime, "Bankerdie");
-            }
+            IsDead = true;
+            HaveCoin -= DieRemoveCoin.GetInt();
+            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), Main.LagTime, "Bankerdie");
         }
     }
     public override RoleTypes? AfterMeetingRole => TaskMode ? RoleTypes.Engineer : RoleTypes.Impostor;
@@ -155,6 +153,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
                 TaskMode = !TaskMode;
             }
             HaveCoin -= ChengeCoin.GetInt();
+            SendRPC();
             _ = new LateTask(() =>
             {
                 Player.SetKillCooldown();
@@ -171,4 +170,17 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
 
     public bool CheckWin(ref CustomRoles winnerRole)
         => AddWinCoin.GetInt() <= HaveCoin && (Player.IsAlive() || DieCanWin.GetBool());
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(TaskMode);
+        sender.Writer.Write(HaveCoin);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        TaskMode = reader.ReadBoolean();
+        HaveCoin = reader.ReadInt32();
+    }
 }

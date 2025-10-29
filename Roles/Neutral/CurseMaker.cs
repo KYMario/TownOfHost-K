@@ -4,6 +4,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -99,6 +100,7 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
         if (CursedPlayers.ContainsKey(target.PlayerId) || TargetInfo != null) return;
 
         TargetInfo = new(target.PlayerId, 0f);
+        RpcSetTarget(target.PlayerId);
         Player.SetKillCooldown(target: target, delay: true);
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.4f, "CueseMaker");
     }
@@ -116,6 +118,7 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
                 fall = true;
                 Player.SetKillCooldown();
                 TargetInfo = null;
+                RpcSetTarget(byte.MaxValue);
             }
             else if (noroitime <= cu_time)
             {
@@ -123,6 +126,8 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
                 Player.SetKillCooldown();
                 TargetInfo = null;
                 CursedPlayers.Add(cu_target.PlayerId, 0);
+                RpcSetTarget(byte.MaxValue);
+                RpcCursePlayer(cu_target.PlayerId);
                 UtilsNotifyRoles.NotifyRoles();
             }
             else
@@ -140,6 +145,7 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
                     Player.SetKillCooldown();
                     UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
 
+                    RpcSetTarget(byte.MaxValue);
                     Logger.Info($"Canceled: {Player.GetNameWithRole().RemoveHtmlTags()}", "CurseMaker");
                 }
             }
@@ -161,6 +167,7 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
             CursedPlayers[nr.Key] = nr.Value + 1;
         }
         DelList.ForEach(task => { CursedPlayers.Remove(task); });
+        RpcCheck();
     }
     public override string MeetingAddMessage()
     {
@@ -188,6 +195,7 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
         ResetCooldown = true;
 
         CursedPlayers.Add(Player.PlayerId, 0);
+        RpcCursePlayer(Player.PlayerId);
         foreach (var Cursedid in CursedPlayers)
         {
             var target = PlayerCatch.GetPlayerById(Cursedid.Key);
@@ -251,4 +259,49 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
             }
         }
     }
+
+    public void RpcSetTarget(byte targetId)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.SetTarget);
+        sender.Writer.Write(targetId);
+    }
+
+    public void RpcCursePlayer(byte targetId)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.CursePlayer);
+        sender.Writer.Write(targetId);
+    }
+
+    public void RpcCheck()
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.Check);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        switch ((RPC_Types)reader.ReadPackedInt32())
+        {
+            case RPC_Types.SetTarget:
+                var targetId = reader.ReadByte();
+                TargetInfo = targetId == byte.MaxValue ? null : new(targetId, 0f);
+                break;
+            case RPC_Types.CursePlayer:
+                CursedPlayers.Add(reader.ReadByte(), 0);
+                break;
+            case RPC_Types.Check:
+                OnReportDeadBody(null, null);
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        SetTarget,
+        CursePlayer,
+        Check
+    }
+
 }

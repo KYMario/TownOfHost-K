@@ -95,7 +95,7 @@ namespace TownOfHost
                     {
                         CustomSpawnEditor.Setup();
                     }
-                    finally
+                    catch
                     {
                         Logger.Error("0.2f後でErrorが発生したた2秒後に再度実行", "SetCustomSporn");
                         _ = new LateTask(() => CustomSpawnEditor.Setup(), 2f, "SetCustomSporn");

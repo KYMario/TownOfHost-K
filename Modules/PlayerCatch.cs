@@ -111,6 +111,7 @@ namespace TownOfHost
         public static List<PlayerControl> OldAlivePlayerControles = new();
         public static Dictionary<byte, uint> AllPlayerNetId = new();
 
-        public static bool AnyModClient() => AllPlayerControls.Any(pc => pc.PlayerId is not 0 && pc.IsModClient());
+        public static bool CachedAnyModClient { get; private set; }
+        public static bool AnyModClient() => GameStates.IsInGame ? CachedAnyModClient : CachedAnyModClient = AllPlayerControls.Any(pc => pc.PlayerId is not 0 && pc.IsModClient());
     }
 }

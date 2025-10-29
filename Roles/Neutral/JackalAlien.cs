@@ -85,7 +85,8 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
     {
         SyncPuppet,
         StealthDarken,
-        Penguin
+        Penguin,
+        SideKick
     }
     #endregion
 
@@ -756,6 +757,13 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         sender.Writer.Write(typeId);
         sender.Writer.Write(targetId);
     }
+    private void SendSideKickState()
+    {
+        using var sender = CreateSender();
+
+        sender.Writer.Write((byte)RPC_type.SideKick);
+        sender.Writer.Write(CanSideKick);
+    }
     public override void ReceiveRPC(MessageReader reader)
     {
         switch ((RPC_type)reader.ReadByte())
@@ -797,6 +805,9 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
                     AbductTimer = AbductTimerLimit;
                 }
                 break;
+            case RPC_type.SideKick:
+                CanSideKick = reader.ReadBoolean();
+                break;
         }
     }
     void RpcDarken(SystemTypes? roomType)
@@ -832,6 +843,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         if (JackalDoll.GetSideKickCount() <= JackalDoll.NowSideKickCount)
         {
             CanSideKick = false;
+            SendSideKickState();
             return;
         }
         var target = Player.GetKillTarget(true);
@@ -852,6 +864,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
             target.SideKickChangeTeam(Player);
         }
         CanSideKick = false;
+        SendSideKickState();
         Player.RpcProtectedMurderPlayer(target);
         target.RpcProtectedMurderPlayer(Player);
         target.RpcProtectedMurderPlayer(target);

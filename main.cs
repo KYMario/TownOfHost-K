@@ -395,6 +395,8 @@ namespace TownOfHost
         {
             if (!VersionChecker.IsSupported)
                 return false;
+            if (ModUpdater.BlockPublicRoom != null && ModUpdater.BlockPublicRoom.Value == true)
+                return false;
             if (IsCs())
                 return AllowCS;
 

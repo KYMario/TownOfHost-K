@@ -48,7 +48,7 @@ namespace TownOfHost
                 categoryHeaderMasked.transform.localPosition = new Vector3(-9.77f, y1, -2f);
                 window.settingsInfo.Add(categoryHeaderMasked.gameObject);
 
-                float y2 = y1 - 0.85f;
+                float y2 = y1 - 1f;
                 int index = 0;
                 foreach (OptionItem option in OptionItem.AllOptions)
                 {
@@ -98,6 +98,9 @@ namespace TownOfHost
             info.disabledBackground.gameObject.SetActive(false);
             info.background.gameObject.SetActive(true);
             info.SetMaskLayer(61);
+
+            info.titleText.enableWordWrapping = false;
+            info.titleText.fontSizeMin = 0;
         }
         [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.DrawRolesTab))]
         class LobbyViewSettingsPaneDrawRolesTabPatch
@@ -115,8 +118,8 @@ namespace TownOfHost
                 List<CustomRoles> roleRulesCategoryList = new();
                 for (int index1 = 0; index1 < 5; index1++)
                 {
-                    CategoryHeaderRoleVariant headerRoleVariant = Object.Instantiate<CategoryHeaderRoleVariant>(__instance.categoryHeaderRoleOrigin);
-                    SetHeader(headerRoleVariant, GetString($"{(TabGroup)index1 + 1}"));
+                    CategoryHeaderRoleVariant headerRoleVariant = Object.Instantiate(__instance.categoryHeaderRoleOrigin);
+                    SetHeader(headerRoleVariant, GetString($"TabGroup.{(TabGroup)index1 + 1}"));
                     headerRoleVariant.transform.SetParent(__instance.settingsContainer);
                     headerRoleVariant.transform.localScale = Vector3.one;
                     headerRoleVariant.transform.localPosition = new Vector3(0.09f, y, -2f);
@@ -127,19 +130,22 @@ namespace TownOfHost
                         CustomRoles role = Options.CustomRoleSpawnChances.Keys.ToList()[index2];
                         if (!Event.CheckRole(role)) continue;
                         var info = role.GetRoleInfo();
-                        if ((info?.Tab != null) && (TabGroup)index1 + 1 == info.Tab)
+                        var tab = (TabGroup)index1 + 1;
+                        if ((info?.Tab != null) && tab == info.Tab)
                         {
                             int chancePerGame = Options.GetRoleChance(role);
                             int numPerGame = Options.GetRoleCount(role);
                             bool showDisabledBackground = numPerGame == 0;
-                            ViewSettingsInfoPanelRoleVariant panelRoleVariant = Object.Instantiate<ViewSettingsInfoPanelRoleVariant>(__instance.infoPanelRoleOrigin);
+                            ViewSettingsInfoPanelRoleVariant panelRoleVariant = Object.Instantiate(__instance.infoPanelRoleOrigin);
                             panelRoleVariant.transform.SetParent(__instance.settingsContainer);
                             panelRoleVariant.transform.localScale = Vector3.one;
                             panelRoleVariant.transform.localPosition = new Vector3(x1, y, -2f);
                             if (!showDisabledBackground)
                                 roleRulesCategoryList.Add(role);
                             _ = ColorUtility.TryParseHtmlString("#696969", out Color ncolor);
-                            SetInfo(panelRoleVariant, GetString($"{role}"), numPerGame, chancePerGame, 61, (Color32)((TabGroup)index1 + 1 == TabGroup.CrewmateRoles ? Palette.CrewmateRoleBlue : (TabGroup)index1 + 1 == TabGroup.NeutralRoles ? ncolor : Palette.ImpostorRoleRed), null, index1 == 0, showDisabledBackground);
+                            var infoColor = (Color32)(tab == TabGroup.CrewmateRoles ? Palette.CrewmateRoleBlue : tab == TabGroup.NeutralRoles ? ncolor : Palette.ImpostorRoleRed);
+                            var infoSprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.{role}.png", 30);
+                            SetInfo(panelRoleVariant, GetString($"{role}"), numPerGame, chancePerGame, 61, infoColor, infoSprite, tab >= TabGroup.CrewmateRoles, showDisabledBackground);
                             __instance.settingsInfo.Add(panelRoleVariant.gameObject);
                             y -= 0.664f;
                         }
@@ -170,7 +176,7 @@ namespace TownOfHost
                         }
                         else
                             x2 = 0.149999619f;
-                        AdvancedRoleViewPanel advancedRoleViewPanel = Object.Instantiate<AdvancedRoleViewPanel>(__instance.advancedRolePanelOrigin);
+                        AdvancedRoleViewPanel advancedRoleViewPanel = Object.Instantiate(__instance.advancedRolePanelOrigin);
                         advancedRoleViewPanel.transform.SetParent(__instance.settingsContainer);
                         advancedRoleViewPanel.transform.localScale = Vector3.one;
                         advancedRoleViewPanel.transform.localPosition = new Vector3(x2, y, -2f);
@@ -203,9 +209,12 @@ namespace TownOfHost
           bool showDisabledBackground = false)
         {
             infoPanelRole.titleText.text = name;
+            infoPanelRole.titleText.enableWordWrapping = false;
+            infoPanelRole.titleText.fontSizeMin = 0;
             infoPanelRole.settingText.text = count.ToString();
             infoPanelRole.chanceText.text = chance.ToString();
             infoPanelRole.iconSprite.sprite = roleIcon;
+            infoPanelRole.iconSprite.transform.localPosition += new Vector3(-0.15f, 0f, 0f);
             if (showDisabledBackground)
             {
                 infoPanelRole.titleText.color = Palette.White_75Alpha;

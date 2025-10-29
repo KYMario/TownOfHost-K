@@ -114,9 +114,12 @@ namespace TownOfHost.Roles.AddOns.Impostor
                 {
                     pc.RpcSetCustomRole(CustomRoles.LastImpostor);
                     Add(pc.PlayerId);
-                    SetKillCooldown(pc);
-                    pc.SyncSettings();
-                    UtilsNotifyRoles.NotifyRoles();
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        SetKillCooldown(pc);
+                        pc.SyncSettings();
+                        UtilsNotifyRoles.NotifyRoles();
+                    }
                     UtilsGameLog.LastLogRole[pc.PlayerId] = "<b>" + Utils.ColorString(UtilsRoleText.GetRoleColor(pc.GetCustomRole()), Translator.GetString("Last-")) + UtilsGameLog.LastLogRole[pc.PlayerId] + "</b>";
                     break;
                 }

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Impostor;
 using static TownOfHost.Options;
@@ -34,6 +34,7 @@ namespace TownOfHost.Roles.Ghost
             Counts.Clear();
 
             CustomRoleManager.MarkOthers.Add(OtherMark);
+            SubRoleRPCSender.AddHandler(CustomRoles.GhostReseter, ReceiveRPC);
             Data.SubRoleType = AssingMadmate.GetBool() ? CustomRoleTypes.Madmate : CustomRoleTypes.Crewmate;
         }
         public static void Add(byte playerId)
@@ -50,6 +51,7 @@ namespace TownOfHost.Roles.Ghost
                 if (Counts[pc.PlayerId] <= 0) return;
 
                 Counts[pc.PlayerId]--;
+                SendRPC(pc.PlayerId);
 
                 target.SetKillCooldown(force: true);
                 if (ResetAbilityCool.GetBool())
@@ -75,6 +77,17 @@ namespace TownOfHost.Roles.Ghost
                 return Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.GhostReseter).ShadeColor(-0.25f), $" ({count}/{Count.GetInt()})");
             }
             return "";
+        }
+
+        public static void SendRPC(byte playerId)
+        {
+            using var sender = new SubRoleRPCSender(CustomRoles.GhostReseter, playerId);
+            sender.Writer.Write(Counts[playerId]);
+        }
+
+        public static void ReceiveRPC(MessageReader reader, byte playerId)
+        {
+            Counts[playerId] = reader.ReadInt32();
         }
     }
 }

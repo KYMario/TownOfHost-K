@@ -69,6 +69,9 @@ public sealed class Turncoat : RoleBase, IKiller
     {
         Target = byte.MaxValue;
         IsTargetDied = false;
+
+        if (!AmongUsClient.Instance.AmHost) return;
+
         //設定に準じた奴。
         var list = PlayerCatch.AllPlayerControls.Where(pc =>
         {
@@ -89,11 +92,11 @@ public sealed class Turncoat : RoleBase, IKiller
         });
 
         //もし仮にターゲットリストが空の場合、自身以外全員いれる。
-        if (list.Count() <= 0)
+        if (!list.Any())
             list = PlayerCatch.AllPlayerControls.Where(pc => pc.PlayerId != Player.PlayerId && !pc.Is(CustomRoles.GM));
 
         //それでも0の場合、ターゲット無しにする
-        if (list.Count() <= 0)
+        if (!list.Any())
         {
             Logger.Error($"{Player?.Data?.GetLogPlayerName() ?? "???"}のターゲットが存在しません", "Turncoat");
             return;
@@ -107,6 +110,7 @@ public sealed class Turncoat : RoleBase, IKiller
         Target = RandomPlayer.PlayerId;
         TargetColorcode = Palette.PlayerColors[RandomPlayer.cosmetics.ColorId].ColorCode();
         Logger.Info($"{Player?.Data?.GetLogPlayerName() ?? "???"} => {RandomPlayer?.Data?.GetLogPlayerName() ?? "???"}", "Turncoat");
+        SendRPC();
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
@@ -124,6 +128,7 @@ public sealed class Turncoat : RoleBase, IKiller
         if (!target.IsAlive())
         {
             IsTargetDied = true;
+            SendRPC();
             UtilsNotifyRoles.NotifyRoles(Player);
         }
     }

@@ -232,7 +232,7 @@ public static class CustomRoleManager
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
                     if (pc.IsModClient()) continue;
-                    if (pc.PlayerId == info.AppearanceKiller.PlayerId || (pc.GetCustomRole().IsImpostor()) || pc.GetCustomRole() is CustomRoles.Egoist) continue;
+                    if (pc.PlayerId == info.AppearanceKiller.PlayerId || (pc.GetCustomRole().IsImpostor() && !pc.Is(CustomRoles.OneWolf)) || pc.GetCustomRole() is CustomRoles.Egoist) continue;
                     _ = new LateTask(() => info.AppearanceKiller.RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId()), 0.5f, "SetCrew", true); ;
                 }
             }
@@ -433,6 +433,7 @@ public static class CustomRoleManager
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();
         OnCompleteTaskOthers.Clear();
+        SubRoleRPCSender.RoleHandlers.Clear();
     }
     public static void CreateInstance()
     {
@@ -616,6 +617,7 @@ public static class CustomRoleManager
         OnMurderPlayerOthers.Clear();
         OnFixedUpdateOthers.Clear();
         OnCompleteTaskOthers.Clear();
+        SubRoleRPCSender.RoleHandlers.Clear();
 
         AllActiveRoles.Values.ToArray().Do(roleClass => roleClass.Dispose());
     }
@@ -686,6 +688,45 @@ public class MurderInfo
         GuardPower = guardpower;
     }
     public bool CheckHasGuard() => KillPower <= GuardPower;
+}
+
+/// <summary>
+/// RoleBaseがない役職専用のRPC送信クラス
+/// </summary>
+public class SubRoleRPCSender : IDisposable
+{
+    public MessageWriter Writer;
+    public SubRoleRPCSender(CustomRoles role, byte playerId)
+    {
+        Writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.CustomSubRoleSync, SendOption.None, -1);
+        Writer.Write(playerId);
+        Writer.Write((int)role);
+    }
+    public void Dispose()
+    {
+        if (!PlayerCatch.AnyModClient())
+        {
+            Writer.Recycle();
+            return;
+        }
+        AmongUsClient.Instance.FinishRpcImmediately(Writer);
+    }
+
+    public static void DispatchRpc(MessageReader reader)
+    {
+        var playerId = reader.ReadByte();
+        var roleId = (CustomRoles)reader.ReadInt32();
+        if (!RoleHandlers.TryGetValue(roleId, out var actions)) return;
+        foreach (var action in actions) action.Invoke(reader, playerId);
+    }
+
+    public static void AddHandler(CustomRoles role, Action<MessageReader, byte> action)
+    {
+        if (!RoleHandlers.TryGetValue(role, out var set))
+            RoleHandlers[role] = set = new();
+        set.Add(action);
+    }
+    public static Dictionary<CustomRoles, HashSet<Action<MessageReader, byte>>> RoleHandlers = new();
 }
 
 public enum CustomRoles

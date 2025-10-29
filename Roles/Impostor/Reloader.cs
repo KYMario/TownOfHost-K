@@ -1,5 +1,5 @@
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 
@@ -67,6 +67,7 @@ public sealed class Reloader : RoleBase, IImpostor, IUsePhantomButton
 
         AdjustKillCooldown = false;
         Count--;
+        SendRPC();
         Player.SetKillCooldown(ReloadKillCooldown, delay: true);
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
     }
@@ -88,5 +89,16 @@ public sealed class Reloader : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonLowertext");
         return $"<size=50%>{GetString("PhantomButtonLowertext")}</size>";
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(Count);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Count = reader.ReadInt32();
     }
 }

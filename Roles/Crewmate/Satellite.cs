@@ -53,12 +53,14 @@ public sealed class Satellite : RoleBase, ISelfVoter
         maximum = OptionMaximum.GetInt();
         skillusetaskcount = OptiontaskCount.GetInt();
         meetingmaximum = Option1MeetingMaximum.GetInt();
-        MeetingUsedSkillCount = 0;
-        UsedSkillCount = 0;
-
         IsAwaken = OptionAwakening.GetBool() && OptiontaskCount.GetInt() > 0;
-        AllPlayerLocationData = new();
+
+        UsedSkillCount = 0;
+        MeetingUsedSkillCount = 0;
+
         SentPlayers = new();
+        AllPlayerLocationData = new(GameData.Instance.PlayerCount);
+
         foreach (var pc in PlayerCatch.AllPlayerControls)
         {
             AllPlayerLocationData.TryAdd(pc.PlayerId, new LocationData(pc.PlayerId));
@@ -143,34 +145,7 @@ public sealed class Satellite : RoleBase, ISelfVoter
                         Utils.SendMessage(GetString("VoteSkillFin"), Player.PlayerId);
                         break;
                     case VoteStatus.Vote:
-                        {
-                            if (Utils.IsActive(SystemTypes.Comms))
-                            {
-                                Utils.SendMessage(string.Format(GetString("SatelliteModeInfoFall") + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}"));
-                                break;
-                            }
-
-                            var systemtypes = SentPlayers.TryGetValue(votedForId, out var sentdata) ? sentdata : null;
-
-                            if (systemtypes is null)
-                            {
-                                if (AllPlayerLocationData.TryGetValue(votedForId, out var locationdata))
-                                {
-                                    systemtypes = locationdata.visitedLocations.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
-                                    SentPlayers.Add(votedForId, systemtypes);
-                                    UsedSkillCount++;
-                                    MeetingUsedSkillCount++;
-                                }
-                            }
-                            else
-                            {
-                                Utils.SendMessage(string.Format(GetString("SatelliteModeInfoAgain"), UtilsName.GetPlayerColor(votedForId), GetString($"{systemtypes}")) + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}");
-                                break;
-                            }
-
-                            Logger.Info($"{Player.Data.GetLogPlayerName()} => {PlayerCatch.GetPlayerInfoById(votedForId).GetLogPlayerName()} $({systemtypes}) , {maximum - UsedSkillCount} / {meetingmaximum - MeetingUsedSkillCount}", "Satellite");
-                            Utils.SendMessage(string.Format(GetString("SatelliteModeInfo"), UtilsName.GetPlayerColor(votedForId), GetString($"{systemtypes}")) + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}");
-                        }
+                        UseAbility(votedForId);
                         break;
                 }
                 SetMode(Player, status is VoteStatus.Self);
@@ -179,10 +154,40 @@ public sealed class Satellite : RoleBase, ISelfVoter
         }
         return true;
     }
+
+    public void UseAbility(byte votedForId)
+    {
+        if (Utils.IsActive(SystemTypes.Comms))
+        {
+            Utils.SendMessage(string.Format(GetString("SatelliteModeInfoFall") + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}"));
+            return;
+        }
+
+        var systemTypes = SentPlayers.TryGetValue(votedForId, out var sentdata) ? sentdata : null;
+
+        if (systemTypes != null)
+        {
+            Utils.SendMessage(string.Format(GetString("SatelliteModeInfoAgain"), UtilsName.GetPlayerColor(votedForId), GetString($"{systemTypes}")) + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}");
+            return;
+        }
+
+        if (AllPlayerLocationData.TryGetValue(votedForId, out var locationData))
+        {
+            systemTypes = locationData.visitedLocations.OrderBy(x => Guid.NewGuid()).FirstOrDefault();
+            SentPlayers.Add(votedForId, systemTypes);
+            UsedSkillCount++;
+            MeetingUsedSkillCount++;
+            SendRPC();
+        }
+
+        Logger.Info($"{Player.Data.GetLogPlayerName()} => {PlayerCatch.GetPlayerInfoById(votedForId).GetLogPlayerName()} $({systemTypes}) , {maximum - UsedSkillCount} / {meetingmaximum - MeetingUsedSkillCount}", "Satellite");
+        Utils.SendMessage(string.Format(GetString("SatelliteModeInfo"), UtilsName.GetPlayerColor(votedForId), GetString($"{systemTypes}")) + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}");
+    }
+
     public override string GetProgressText(bool comms = false, bool GameLog = false) => $" <{RoleInfo.RoleColorCode}>({maximum - UsedSkillCount})</color>";
     public override void AfterMeetingTasks()
     {
-        SentPlayers = new();
+        SentPlayers.Clear();
         MeetingUsedSkillCount = 0;
         foreach (var locationData in AllPlayerLocationData.Values)
         {
@@ -202,5 +207,16 @@ public sealed class Satellite : RoleBase, ISelfVoter
             IsAwaken = true;
         }
         return true;
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(UsedSkillCount);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        UsedSkillCount = reader.ReadInt32();
     }
 }

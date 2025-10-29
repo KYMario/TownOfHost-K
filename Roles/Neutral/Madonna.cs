@@ -48,7 +48,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
     public static CustomRoles LoverChenge;
     public static OptionItem MadonnaLoverAddwin;
     public static OptionItem MaLoversSolowin3players;
-    public float limit;
+    public static float limit;
     bool IsNonLover;
     bool Vindictive;
     bool Breakup;
@@ -117,6 +117,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         {
             IsNonLover = false;
             Vindictive = true;
+            SendRPC();
             Logger.Info($"Player: {Player.name},Target: {target.name}　相手が片思いで断わられた{LoverChenge}に役職変更。", "Madonna");
             Utils.SendMessage(string.Format(GetString("Skill.MadonnaOneLover"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
             Utils.SendMessage(string.Format(GetString("Skill.MadonnaOneLoverNo"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
@@ -129,6 +130,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         {
             IsNonLover = false;
             Vindictive = true;
+            SendRPC();
             Logger.Info($"Player: {Player.name},Target: {target.name}　視線が凄いからやめといた{LoverChenge}に役職変更。", "Madonna");
             Utils.SendMessage(string.Format(GetString("Skill.MadonnnaOneLovertarget"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
 
@@ -138,6 +140,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         if (!target.IsLovers() && !target.Is(CustomRoles.Vega) && !target.Is(CustomRoles.Altair))
         {
             IsNonLover = false;
+            SendRPC();
             Logger.Info($"Player: {Player.name},Target: {target.name}", "Madonna");
             Utils.SendMessage(string.Format(GetString("Skill.MadoonnaMyCollect"), UtilsName.GetPlayerColor(target, true)) + GetString("VoteSkillFin"), Player.PlayerId);
             Utils.SendMessage(string.Format(GetString("Skill.MadoonnaCollect"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
@@ -156,6 +159,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         {
             IsNonLover = false;
             Vindictive = true;
+            SendRPC();
             Logger.Info($"Player: {Player.name},Target: {target.name}　相手がラバーズなので断わられた{LoverChenge}に役職変更。", "Madonna");
             Utils.SendMessage(string.Format(GetString("Skill.MadoonnaMynotcollect"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
             Utils.SendMessage(string.Format(GetString("Skill.MadonnaOneLoverNo"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
@@ -200,5 +204,16 @@ public sealed class Madonna : RoleBase, ISelfVoter
         if (!Player.IsAlive() || !IsNonLover || Player.Is(CustomRoles.MadonnaLovers)) return "";
 
         return $" <color={(UtilsGameLog.day == limit ? "#ff1919" : $"{RoleInfo.RoleColorCode}")}>({UtilsGameLog.day}/{limit})</color>";
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(IsNonLover);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        IsNonLover = reader.ReadBoolean();
     }
 }

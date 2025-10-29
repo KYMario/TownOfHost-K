@@ -913,6 +913,7 @@ namespace TownOfHost
         {
             PlayerGameOptionsSender.SetDirtyToAll();
         }
+        /// <summary>たぶんホスト以外が送信したらあぶないやつ</summary>
         public static void SyncAllSettings()
         {
             PlayerGameOptionsSender.SetDirtyToAll();

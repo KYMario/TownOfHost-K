@@ -4,6 +4,7 @@ using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Crewmate;
+using Hazel;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -141,6 +142,7 @@ public sealed class Amnesiac : RoleBase, IImpostor
     private void Realize()
     {
         Realized = true;
+        SendRPC();
 
         var clientId = Player.GetClientId();
         foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -193,5 +195,17 @@ public sealed class Amnesiac : RoleBase, IImpostor
     }
 
     public override string GetProgressText(bool comms = false, bool gamelog = false) => MatchSettingstoSheriff && !Realized ? Utils.ColorString(ShShotLimit - KillCount > 0 ? Color.yellow : Color.gray, $"({ShShotLimit - KillCount})") : "";
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(Realized);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Realized = reader.ReadBoolean();
+    }
+
 }
 

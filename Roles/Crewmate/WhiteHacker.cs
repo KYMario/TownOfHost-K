@@ -83,10 +83,12 @@ public sealed class WhiteHacker : RoleBase
     {
         using var sender = CreateSender();
         sender.Writer.Write(count);
+        sender.Writer.Write(targetId);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
         count = reader.ReadInt32();
+        targetId = reader.ReadInt32();
     }
     private bool IsTrackTarget(PlayerControl target)
     => (Player.IsAlive() && target.IsAlive() && !Is(target)) || targetId == target.PlayerId;
@@ -121,8 +123,9 @@ public sealed class WhiteHacker : RoleBase
     }
     public override void AfterMeetingTasks()
     {
-        if (!Useing)
-            targetId = 255;
+        if (!AmongUsClient.Instance.AmHost || Useing) return;
+        targetId = 255;
+        SendRPC();
     }
     public override void OnReportDeadBody(PlayerControl _, NetworkedPlayerInfo __) => Useing = false;
     // 表示系の関数群
@@ -166,7 +169,8 @@ public sealed class WhiteHacker : RoleBase
         }
         if (!NowTracker && Awakened && CanUseTrackAbility.GetBool() && Player.IsAlive())
         {
-            Player.RpcSetRole(RoleTypes.Tracker, true);
+            if (AmongUsClient.Instance.AmHost)
+                Player.RpcSetRole(RoleTypes.Tracker, true);
             NowTracker = true;
         }
         return true;

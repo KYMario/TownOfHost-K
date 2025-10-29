@@ -3,6 +3,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 /// <Memo>
 /// 転がる設定ONの時、転がりながらひき殺しも考えた。
@@ -82,6 +83,7 @@ public sealed class ProBowler : RoleBase, IImpostor
         Bowl = Player.transform.position;
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
         shouldAnimate = true;
+        SendRPC();
         return true;
     }
     public override void ApplyGameOptions(IGameOptions opt)
@@ -184,5 +186,16 @@ public sealed class ProBowler : RoleBase, IImpostor
     {
         text = "ProBowler_Ability";
         return true;
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(NowUseCount);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        NowUseCount = reader.ReadInt32();
     }
 }

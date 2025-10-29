@@ -7,6 +7,7 @@ using UnityEngine;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -92,7 +93,6 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
-        if (!AmongUsClient.Instance.AmHost) return;
         if (!player.IsAlive()) return;
 
         var target = PlayerCatch.GetPlayerById(Targetid);
@@ -152,6 +152,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
                 return;
             }
             Targetid = target.PlayerId;
+            SendRPC();
             info.DoKill = false;
             Main.AllPlayerKillCooldown[killer.PlayerId] = 999;
             killer.SyncSettings();
@@ -168,6 +169,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
             GetArrow.Add(Player.PlayerId, target.transform.position);
             TargetPosition = target.transform.position;
             Guees = killer.PlayerId;
+            if (AmongUsClient.Instance.AmHost) SendRPC();
         }
     }
     public override void OnReportDeadBody(PlayerControl repo, NetworkedPlayerInfo tg)
@@ -175,11 +177,11 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
         if (Is(repo) && Player.Is(CustomRoles.MassMedia))//自分が通報したならチャンスだよ!!
         {
-            if (tg != null)//死体通報なら～
-                if (tg.PlayerId == Targetid)
-                {
-                    GuessMode = true;
-                }
+            //死体通報なら～
+            if (tg != null && tg.PlayerId == Targetid)
+            {
+                GuessMode = true;
+            }
         }
         //リセット
         if (MeetingTargetReset || !PlayerCatch.GetPlayerById(Targetid).IsAlive())
@@ -189,6 +191,8 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
             TargetPosition = new Vector3(999f, 999f);
             Targetid = byte.MaxValue;
         }
+
+        SendRPC();
     }
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
@@ -230,6 +234,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
             if (votedForId == 253)
             {
                 GuessMode = false;
+                SendRPC();
                 return true;
             }
             if (votedForId == Guees)
@@ -254,7 +259,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     public override void AfterMeetingTasks()
     {
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
-        if (Win)
+        if (Win && AmongUsClient.Instance.AmHost)
         {
             if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.MassMedia, Player.PlayerId, true))
             {
@@ -272,7 +277,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
         Main.AllPlayerKillCooldown[Player.PlayerId] = KillCooldown;
         IsBlackOut = false;
         Suspects = new();
-        Player.SyncSettings();
+        if (AmongUsClient.Instance.AmHost) Player.SyncSettings();
         _ = new LateTask(() => SuspectsSearch = true, 10, "MassMediaSearch");
     }
     public bool CanUseKillButton() => true;
@@ -295,5 +300,43 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     {
         text = "MassMedia_Kill";
         return true;
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(GuessMode);
+        sender.Writer.Write(Targetid);
+        NetHelpers.WriteVector2(TargetPosition, sender.Writer);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        GuessMode = reader.ReadBoolean();
+        var newTargetId = reader.ReadByte();
+        Vector2 newTargetPosition = NetHelpers.ReadVector2(reader);
+
+        //idが更新されたときのみ処理
+        if (newTargetId != Targetid)
+        {
+            if (Targetid != byte.MaxValue)
+                TargetArrow.Remove(Player.PlayerId, Targetid);
+
+            if (newTargetId != byte.MaxValue)
+                TargetArrow.Add(Player.PlayerId, newTargetId);
+        }
+
+        //posが更新されたときのみ処理
+        if (newTargetPosition != (Vector2)TargetPosition)
+        {
+            if (TargetPosition != new Vector3(999f, 999f))
+                GetArrow.Remove(Player.PlayerId, TargetPosition);
+
+            if (newTargetPosition != new Vector2(999f, 999f))
+                GetArrow.Add(Player.PlayerId, newTargetPosition);
+        }
+
+        Targetid = newTargetId;
+        TargetPosition = newTargetPosition;
     }
 }

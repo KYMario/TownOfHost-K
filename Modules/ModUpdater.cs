@@ -28,14 +28,10 @@ namespace TownOfHost
         public static string latestTitle = null;
         public static string downloadUrl = null;
         public static GenericPopup InfoPopup;
-        public static bool? AllowPublicRoom = null;
-        public static bool matchmaking = false;
-        public static bool nothostbug = false;
+        public static bool? BlockPublicRoom = null;
         public static string body = "詳細のチェックに失敗しました";
         public static List<Release> releases = new();
         public static List<Release> snapshots = new();
-        private static List<SimpleButton> buttons = new();
-        public static Versions version;
 
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix, HarmonyPriority(Priority.LowerThanNormal)]
         public static void StartPostfix()
@@ -52,15 +48,17 @@ namespace TownOfHost
             MainMenuManagerPatch.UpdateButton.Button.transform.Find("FontPlacer/Text_TMP").GetComponent<TMPro.TMP_Text>().SetText($"{GetString("updateButton")}\n{latestTitle}");
             MainMenuManagerPatch.UpdateButton2.Button.gameObject.SetActive(hasUpdate);
         }
-        public static async Task<bool> CheckRelease(bool beta = false, bool all = false, bool snap = false)
+        /// <param name="all">1ページ分のリリースをすべて取得し、releasesとsnapshotsを更新します</param>
+        /// <param name="forced">allパラメータと同時に使用します / キャッシュを使用せずもう一度取得します</param>
+        /// <returns></returns>
+        public static async Task<bool> CheckRelease(bool beta = false, bool all = false, bool forced = false)
         {
-            bool updateCheck = version != null && version.Update.Version != null;
-            //string url = beta ? Main.BetaBuildURL.Value : URL + "/releases" + (updateCheck ? "/tags/" + version.Update.Version : (all ? "" : "/latest"));
+            //bool updateCheck = version != null && version.Update.Version != null;
             string url = beta ? Main.BetaBuildURL.Value : URL + "/releases" + (all ? "" : "/latest");
             if (all) url = url + "?page=1";
 
             //強制オプションが使用されていない & allオプションが使用されている & 既に取得済み
-            if (all && releases.Any()) return true;
+            if (!forced && all && releases.Any()) return true;
             if (Main.IsAndroid()) return true;
 
             try
@@ -84,52 +82,9 @@ namespace TownOfHost
                     downloadUrl = data["url"].ToString();
                     hasUpdate = latestTitle != ThisAssembly.Git.Commit;
                 }
-                else if (snap)
-                {
-                    snapshots = JsonSerializer.Deserialize<List<Release>>(result);
-                    List<Release> del = new();
-                    foreach (var release in snapshots)
-                    {
-                        var assets = release.Assets;
-                        var tag = release.TagName;
-                        if (tag == null)
-                        {
-                            del.Add(release);
-                            continue;
-                        }
-                        if (!tag.Contains($"{Main.ModVersion}"))
-                        {
-                            del.Add(release);
-                            continue;//そのバージョンの奴じゃないなら除外
-                        }
-                        if (tag.StartsWith("5.") || tag.StartsWith("S5.") || tag.StartsWith("s5.") || tag.Contains("519.") || tag.Contains("S519."))//今の表記は519とかなので5.1.x表示ならもう表示しない
-                        {
-                            del.Add(release);
-                            continue;
-                        }
-                        //動かないバージョンに切り替えれないようにするための応急手当。.31になる頃には消す。
-                        if (tag.Contains(".30.1") || tag.Contains(".30.21") || tag.Contains(".30.22") || tag is "51.13.30") continue;//そのバージョンの奴じゃないなら除外
-                        foreach (var asset in assets)
-                        {
-                            if (asset.Name == "TownOfHost-K_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
-                            {
-                                release.DownloadUrl = asset.DownloadUrl;
-                                break;
-                            }
-                            if (asset.Name == "TownOfHost-K_Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
-                            {
-                                release.DownloadUrl = asset.DownloadUrl;
-                                break;
-                            }
-                            if (asset.Name == "TownOfHost-K.dll")
-                                release.DownloadUrl = asset.DownloadUrl;
-                        }
-                        release.OpenURL = $"https://github.com/KYMario/TownOfHost-K/releases/tag/{tag}";
-                    }
-                    del.ForEach(task => snapshots.Remove(task));
-                }
                 else if (all)
                 {
+                    snapshots = new();
                     releases = JsonSerializer.Deserialize<List<Release>>(result);
                     foreach (var release in releases)
                     {
@@ -153,8 +108,8 @@ namespace TownOfHost
                         release.OpenURL = $"https://github.com/KYMario/TownOfHost-K/releases/tag/{tag}";
 
                         if (tag == null) continue;
-
-                        if (!tag.Contains($"{Main.ModVersion}")) continue;//そのバージョンの奴じゃないなら除外
+                        //動かないバージョンに切り替えれないようにするための応急手当。.31になる頃には消す。
+                        if (!tag.Contains($"{Main.ModVersion}") || tag.Contains(".30.1") || tag.Contains(".30.21") || tag.Contains(".30.22") || tag is "51.13.30") continue;//そのバージョンの奴じゃないなら除外
                         if (tag.StartsWith("5.") || tag.StartsWith("S5.") || tag.StartsWith("s5.") || tag.Contains("519.") || tag.Contains("S519.")) continue;//今の表記は519とかなので5.1.x表示ならもう表示しない
 
                         snapshots.Add(release);
@@ -215,12 +170,6 @@ namespace TownOfHost
                         body += ages2[i2] + "\n";
                     }
                 }
-                /*body = data["body"].ToString();
-                
-                else isSubUpdata = false;
-                *///if (body.Contains("📢公開ルーム○")) publicok = true;
-                //else if (body.Contains("📢公開ルーム×")) publicok = false;
-                //nothostbug = body.Contains("非ホストmodクライアントにバグあり");
             }
             catch (Exception ex)
             {
@@ -332,22 +281,6 @@ namespace TownOfHost
                 public string Name { get; set; }
                 [JsonPropertyName("browser_download_url")]
                 public string DownloadUrl { get; set; }
-            }
-        }
-        public class Versions
-        {
-            public Version Version { get; set; }
-            public bool? AllowPublicRoom { get; set; }
-            public bool Unavailable { get; set; }
-            public bool NotAvailableOnline { get; set; }
-            public string Info { get; set; }
-
-            public Updates Update { get; set; }
-            public class Updates
-            {
-                public Version Version { get; set; }
-                public bool Forced { get; set; }
-                public bool ShowUpdateButton { get; set; }
             }
         }
     }

@@ -5,6 +5,7 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Crewmate
 {
@@ -95,6 +96,7 @@ namespace TownOfHost.Roles.Crewmate
                         Player.RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId());
                 }
                 Taskmode = true;
+                SendRPC();
             }
             _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, $"NiceLogger Set : {SetRoom} ");
         }
@@ -114,6 +116,7 @@ namespace TownOfHost.Roles.Crewmate
         }
         public override void OnStartMeeting()
         {
+            if (!AmongUsClient.Instance.AmHost) return;
             if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
             if (Player.IsAlive() && LogPos != new Vector2(999f, 999f))
             {
@@ -142,12 +145,12 @@ namespace TownOfHost.Roles.Crewmate
         public override bool CanTask() => Taskmode;
         public override void OnFixedUpdate(PlayerControl player)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
             if (!player.IsAlive())
             {
                 if (Taskmode is false) Taskmode = true;
                 return;
             }
+            if (!AmongUsClient.Instance.AmHost) return;
             Cooltime += Time.fixedDeltaTime;
         }
         public static void OnFixedUpdateOthers(PlayerControl player)
@@ -178,5 +181,16 @@ namespace TownOfHost.Roles.Crewmate
             return true;
         }
         public override string GetAbilityButtonText() => GetString("NiceLogger_Ability");
+
+        public void SendRPC()
+        {
+            using var sender = CreateSender();
+            sender.Writer.Write(Taskmode);
+        }
+
+        public override void ReceiveRPC(MessageReader reader)
+        {
+            Taskmode = reader.ReadBoolean();
+        }
     }
 }

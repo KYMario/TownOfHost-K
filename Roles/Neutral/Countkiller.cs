@@ -67,7 +67,8 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
         RoleAddAddons.Create(RoleInfo, 15);
     }
     public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.CountKiller;
-    public float CalculateKillCooldown() => KillCooldown; public override void Add()
+    public float CalculateKillCooldown() => KillCooldown;
+    public override void Add()
     {
         var playerId = Player.PlayerId;
         KillCooldown = OptionKillCooldown.GetFloat();
@@ -78,11 +79,13 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
     private void SendRPC()
     {
         using var sender = CreateSender();
-        sender.Writer.Write(VictoryCount);
+        sender.Writer.Write(KillCount);
+        sender.Writer.Write(WinFlag);
     }
     public override void ReceiveRPC(MessageReader reader)
     {
-        VictoryCount = reader.ReadInt32();
+        KillCount = reader.ReadInt32();
+        WinFlag = reader.ReadBoolean();
     }
     public bool CanUseKillButton() => Player.IsAlive() && VictoryCount > 0;
     public bool CanUseSabotageButton() => false;

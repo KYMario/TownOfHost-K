@@ -59,6 +59,7 @@ public sealed class Efficient : RoleBase
     }
     public override bool OnCompleteTask(uint taskid)
     {
+        if (!AmongUsClient.Instance.AmHost) return true;
         if (Task.Contains(taskid)) Task.Remove(taskid);
         if (Cooldown > 0f) return true;
 

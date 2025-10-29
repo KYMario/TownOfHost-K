@@ -84,16 +84,17 @@ public sealed class Psychic : RoleBase
     }
     public static void CanAbility(PlayerControl target)
     {
+        if (!AmongUsClient.Instance.AmHost) return;
+
         foreach (var ps in Psychics)
         {
             var random = IRandom.Instance.Next(100);
             if (ps.Player.IsAlive() && ps.Awakened && ps.GetChance() > random)
             {
-                if (AmongUsClient.Instance.AmHost)
-                    if (ps.Player == PlayerControl.LocalPlayer)
-                        target.StartCoroutine(target.CoSetRole(RoleTypes.Noisemaker, true));
-                    else
-                        target.RpcSetRoleDesync(RoleTypes.Noisemaker, ps.Player.GetClientId());
+                if (ps.Player == PlayerControl.LocalPlayer)
+                    target.StartCoroutine(target.CoSetRole(RoleTypes.Noisemaker, true));
+                else
+                    target.RpcSetRoleDesync(RoleTypes.Noisemaker, ps.Player.GetClientId());
                 target.SyncSettings();
             }
         }

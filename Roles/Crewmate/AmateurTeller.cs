@@ -106,6 +106,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
         TargetArrow.Remove(UseTarget, Player.PlayerId);
         Targets.Add(UseTarget);
         UseTarget = byte.MaxValue;
+        SendRPC();
     }
     public override bool CancelReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target, ref DontReportreson reportreson)
     {
@@ -154,6 +155,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
         Use = true;
         UseTarget = target.PlayerId;
         TargetArrow.Add(target.PlayerId, Player.PlayerId);
+        SendRPC();
         Utils.SendMessage(UtilsName.GetPlayerColor(target.PlayerId) + GetString("AmatruertellerTellMeg"), Player.PlayerId);
     }
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
@@ -232,5 +234,32 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
                 enabled = true;
             }
         }
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(count);
+        sender.Writer.Write(UseTarget);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        count = reader.ReadInt32();
+        var target = reader.ReadByte();
+
+        //new Target
+        if (UseTarget == byte.MaxValue && target != byte.MaxValue)
+        {
+            TargetArrow.Add(UseTarget, Player.PlayerId);
+        }
+        //reset Target
+        if (UseTarget != byte.MaxValue && target == byte.MaxValue)
+        {
+            TargetArrow.Remove(UseTarget, Player.PlayerId);
+            Targets.Add(UseTarget);
+        }
+
+        UseTarget = target;
     }
 }

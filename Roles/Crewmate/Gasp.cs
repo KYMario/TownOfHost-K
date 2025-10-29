@@ -45,8 +45,8 @@ public sealed class Gasp : RoleBase
 
     public override void OnFixedUpdate(PlayerControl player)
     {
-        //ホストじゃない、まだ生きている、もう表示をしたならreturn
-        if (!AmongUsClient.Instance.AmHost || player.IsAlive() || AfterAbility || CanSeeMark) return;
+        //まだ生きている、もう表示をしたならreturn
+        if (player.IsAlive() || AfterAbility || CanSeeMark) return;
 
         if (!player.IsAlive())
         {

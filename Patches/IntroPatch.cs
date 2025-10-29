@@ -160,6 +160,10 @@ namespace TownOfHost
                     logger.Info($"{(o.Parent == null ? o.Name.PadRightV2(40) : $"┗ {o.Name}".PadRightV2(41))}:{o.GetTextString().RemoveSN().RemoveHtmlTags()}");
             logger.Info("-------------その他-------------");
             logger.Info($"プレイヤー数: {PlayerCatch.AllPlayerControls.Count()}人");
+
+            //キャッシュ更新
+            PlayerCatch.AnyModClient();
+
             GameStates.InGame = true;
 
             if (Options.CurrentGameMode is not CustomGameMode.Standard)

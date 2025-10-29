@@ -78,17 +78,21 @@ public sealed class Balancer : RoleBase, ISelfVoter
 
     public override void OnDestroy()
     {
-        Id = 255;
-        if (Target1 != 255 && Target2 != 255)
+        Id = byte.MaxValue;
+        target1 = byte.MaxValue;
+        target2 = byte.MaxValue;
+
+        if (AmongUsClient.Instance.AmHost)
         {
-            PlayerCatch.GetPlayerById(Target1).RpcSetName(Main.AllPlayerNames[Target1]);
-            PlayerCatch.GetPlayerById(Target2).RpcSetName(Main.AllPlayerNames[Target2]);
+            if (Target1 != byte.MaxValue && Target2 != byte.MaxValue)
+            {
+                PlayerCatch.GetPlayerById(Target1).RpcSetName(Main.AllPlayerNames[Target1]);
+                PlayerCatch.GetPlayerById(Target2).RpcSetName(Main.AllPlayerNames[Target2]);
+            }
+            if (nickname != null)
+                Main.nickName = nickname;
+            nickname = null;
         }
-        target1 = 255;
-        target2 = 255;
-        if (nickname != null)
-            Main.nickName = nickname;
-        nickname = null;
     }
     bool ISelfVoter.CanUseVoted() => Canuseability() && !used && Id is not 255 && (CanUseAllAlive || GameStates.AlreadyDied);
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
@@ -184,6 +188,10 @@ public sealed class Balancer : RoleBase, ISelfVoter
                 used = true;
                 target1 = Target1;
                 target2 = Target2;
+
+                using var sender = CreateSender();
+                sender.Writer.Write(target1);
+                sender.Writer.Write(target2);
 
                 ExileControllerWrapUpPatch.AntiBlackout_LastExiled = null;
                 Modules.MeetingVoteManager.Instance.ClearAndEndMeeting();
@@ -304,6 +312,7 @@ public sealed class Balancer : RoleBase, ISelfVoter
 
     public void BalancerAfterMeetingTasks()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
         //天秤会議になってない状態なら
         if (Id == 255 && Target1 != 255 && Target2 != 255)
         {
@@ -348,20 +357,24 @@ public sealed class Balancer : RoleBase, ISelfVoter
     }
     public override void AfterMeetingTasks()
     {
-        //自分の天秤会議じゃないなら実行しない
-        if (Id != Player.PlayerId)
-            return;
+        //ホストのみ実行
+        if (AmongUsClient.Instance.AmHost)
+        {
+            //自分の天秤会議じゃないなら実行しない
+            if (Id != Player.PlayerId)
+                return;
 
-        //名前を戻す
-        PlayerCatch.GetPlayerById(Target1)?.RpcSetName(Main.AllPlayerNames[Target1]);
-        PlayerCatch.GetPlayerById(Target2)?.RpcSetName(Main.AllPlayerNames[Target2]);
+            //名前を戻す
+            PlayerCatch.GetPlayerById(Target1)?.RpcSetName(Main.AllPlayerNames[Target1]);
+            PlayerCatch.GetPlayerById(Target2)?.RpcSetName(Main.AllPlayerNames[Target2]);
 
-        if (nickname != null)
-            Main.nickName = nickname;
-        nickname = null;
+            if (nickname != null)
+                Main.nickName = nickname;
+            nickname = null;
 
-        //名前にロールとかのを適用
-        _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(ForceLoop: true, NoCache: true), Main.LagTime);
+            //名前にロールとかのを適用
+            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(ForceLoop: true, NoCache: true), Main.LagTime);
+        }
 
         //リセット
         Id = 255;
@@ -380,5 +393,13 @@ public sealed class Balancer : RoleBase, ISelfVoter
             return isForHud ? mes : $"<size=40%>{mes}</size>";
         }
         return "";
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        used = true;
+        Id = Player.PlayerId;
+        target1 = reader.ReadByte();
+        target2 = reader.ReadByte();
     }
 }

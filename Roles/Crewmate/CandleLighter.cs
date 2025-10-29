@@ -125,7 +125,10 @@ public sealed class CandleLighter : RoleBase
             if (currentSecond != lastProcessedSecond)
             {
                 lastProcessedSecond = currentSecond;
-                player.SyncSettings();
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    player.SyncSettings();
+                }
             }
         }
     }

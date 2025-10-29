@@ -98,11 +98,10 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
     public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (Divination.ContainsKey(seen.PlayerId) && rolename)
+        if (Divination.TryGetValue(seen.PlayerId, out var role) && rolename)
         {
-            if (srole)
-                return $"<color={UtilsRoleText.GetRoleColorCode(Divination[seen.PlayerId])}>" + GetString(Divination[seen.PlayerId].ToString());
-            else return GetString(Divination[seen.PlayerId].GetCustomRoleTypes().ToString());
+            if (srole) return $"<color={UtilsRoleText.GetRoleColorCode(role)}>" + GetString(role.ToString());
+            else return GetString(role.GetCustomRoleTypes().ToString());
         }
         return "";
     }

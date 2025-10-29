@@ -1,4 +1,5 @@
 using AmongUs.GameOptions;
+using Hazel;
 using TownOfHost.Roles.Core;
 
 namespace TownOfHost.Roles.Crewmate;
@@ -67,6 +68,7 @@ public sealed class GuardMaster : RoleBase
         if (CanSeeProtect && Awakened) target.RpcProtectedMurderPlayer(target);
         info.GuardPower = 1;
         Guard--;
+        SendRPC();
         UtilsGameLog.AddGameLog($"GuardMaster", UtilsName.GetPlayerColor(Player) + ":  " + string.Format(GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(killer, true)));
         Logger.Info($"{target.GetNameWithRole().RemoveHtmlTags()} : ガード残り{Guard}回", "GuardMaster");
         UtilsNotifyRoles.NotifyRoles();
@@ -87,4 +89,15 @@ public sealed class GuardMaster : RoleBase
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false) => CanSeeProtect ? Utils.ColorString(Guard == 0 ? UnityEngine.Color.gray : RoleInfo.RoleColor, $"({Guard})") : "";
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(Guard);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        Guard = reader.ReadInt32();
+    }
 }

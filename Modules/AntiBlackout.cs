@@ -252,10 +252,6 @@ namespace TownOfHost
                     {
                         role = Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate;
                     }
-                    if (Player.GetCustomRole().IsImpostor() && pc.GetCustomRole().IsImpostor() && Player.PlayerId != pc.PlayerId)
-                    {
-                        if (pc.Is(CustomRoles.OneWolf) || Player.Is(CustomRoles.OneWolf)) role = RoleTypes.Crewmate;
-                    }
                     if (!isalive)
                     {
                         role = customrole.IsImpostor() || ((pc.GetRoleClass() as IKiller)?.CanUseSabotageButton() ?? false) ?
@@ -291,7 +287,7 @@ namespace TownOfHost
 
                     if (!isalive && pc.IsGhostRole())
                     {
-                        setrole = pc.GetPlayerState().GhostRole is CustomRoles.DemonicSupporter ? RoleTypes.ImpostorGhost : RoleTypes.GuardianAngel;
+                        setrole = RoleTypes.GuardianAngel;
                     }
 
                     sender.StartRpc(pc.NetId, RpcCalls.SetRole)
@@ -322,7 +318,7 @@ namespace TownOfHost
                     else
                     {
                         Player.RpcExileV2();
-                        if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.GetPlayerState().GhostRole is not CustomRoles.NotAssigned and not CustomRoles.DemonicSupporter)
+                        if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.IsGhostRole())
                         {
                             Player.RpcSetRole(RoleTypes.GuardianAngel, true);
                             Player.RpcResetAbilityCooldown();

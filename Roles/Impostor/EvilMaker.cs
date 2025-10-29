@@ -1,5 +1,5 @@
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -76,6 +76,7 @@ public sealed class EvilMaker : RoleBase, IImpostor, IUsePhantomButton
         UtilsNotifyRoles.NotifyRoles();
         UtilsGameLog.LastLogRole[target.PlayerId] += "<b>⇒" + Utils.ColorString(UtilsRoleText.GetRoleColor(target.GetCustomRole()), GetString($"{target.GetCustomRole()}")) + "</b>" + UtilsRoleText.GetSubRolesText(target.PlayerId);
         AdjustKillCooldown = true;
+        SendRPC();
     }
     public override string GetAbilityButtonText() => GetString("Sidekick");
     public override bool OverrideAbilityButton(out string text)
@@ -91,5 +92,18 @@ public sealed class EvilMaker : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonSideKick");
         return $"<size=50%>{GetString("PhantomButtonSideKick")}</size>";
+    }
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(PlayerCatch.SKMadmateNowCount);
+        sender.Writer.Write(Used);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        PlayerCatch.SKMadmateNowCount = reader.ReadInt32();
+        Used = reader.ReadBoolean();
     }
 }

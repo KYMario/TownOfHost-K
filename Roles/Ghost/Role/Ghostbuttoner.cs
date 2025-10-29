@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using static TownOfHost.Options;
 
@@ -30,6 +30,7 @@ namespace TownOfHost.Roles.Ghost
             playerIdList = new();
             count = new Dictionary<byte, int>();
             CustomRoleManager.MarkOthers.Add(OtherMark);
+            SubRoleRPCSender.AddHandler(CustomRoles.Ghostbuttoner, ReceiveRPC);
             Data.SubRoleType = AssingMadmate.GetBool() ? CustomRoleTypes.Madmate : CustomRoleTypes.Crewmate;
         }
         public static void Add(byte playerId)
@@ -60,6 +61,7 @@ namespace TownOfHost.Roles.Ghost
                     count[pc.PlayerId]--;
                     ReportDeadBodyPatch.ExReportDeadBody(pc, null, false);
                 }
+                SendRPC(pc.PlayerId);
             }
         }
         public static string OtherMark(PlayerControl seer, PlayerControl seen, bool isForMeeting = false)
@@ -74,6 +76,17 @@ namespace TownOfHost.Roles.Ghost
                 return Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Ghostbuttoner).ShadeColor(-0.25f), $" ({LimitCount}/{Count.GetInt()})");
             }
             return "";
+        }
+
+        public static void SendRPC(byte playerId)
+        {
+            using var sender = new SubRoleRPCSender(CustomRoles.Ghostbuttoner, playerId);
+            sender.Writer.Write(count[playerId]);
+        }
+
+        public static void ReceiveRPC(MessageReader reader, byte playerId)
+        {
+            count[playerId] = reader.ReadInt32();
         }
     }
 }

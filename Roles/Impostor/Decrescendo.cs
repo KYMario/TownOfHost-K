@@ -1,5 +1,5 @@
 using AmongUs.GameOptions;
-
+using Hazel;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using UnityEngine;
@@ -109,6 +109,7 @@ public sealed class Decrescendo : RoleBase, IImpostor
                 killer.SetKillCooldown(delay: true);
             }, 0.2f, "Decrecend SyncSetting");
         }
+        SendRPC();
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
@@ -124,4 +125,17 @@ public sealed class Decrescendo : RoleBase, IImpostor
         else return true;
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Decrescending ? Utils.ColorString(ModColors.NeutralGray, "(´・ω・｀)") : Utils.ColorString(Palette.ImpostorRed, $"({KillCount}/{OptionDecKillcount.GetInt()})");
+
+    public void SendRPC()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(KillCount);
+        sender.Writer.Write(Decrescending);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        KillCount = reader.ReadInt32();
+        Decrescending = reader.ReadBoolean();
+    }
 }

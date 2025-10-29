@@ -4,6 +4,7 @@ using UnityEngine;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using Hazel;
 
 namespace TownOfHost.Roles.Neutral
 {
@@ -121,6 +122,7 @@ namespace TownOfHost.Roles.Neutral
             if (JackalDoll.GetSideKickCount() <= JackalDoll.NowSideKickCount)
             {
                 CanSideKick = false;
+                SendRPC();
                 return;
             }
             var target = Player.GetKillTarget(true);
@@ -140,6 +142,7 @@ namespace TownOfHost.Roles.Neutral
                 target.SideKickChangeTeam(Player);
             }
             CanSideKick = false;
+            SendRPC();
             Player.RpcProtectedMurderPlayer(target);
             target.RpcProtectedMurderPlayer(Player);
             target.RpcProtectedMurderPlayer(target);
@@ -199,6 +202,17 @@ namespace TownOfHost.Roles.Neutral
 
             if (isForHud) return GetString("PhantomButtonSideKick");
             return $"<size=50%>{GetString("PhantomButtonSideKick")}</size>";
+        }
+
+        public void SendRPC()
+        {
+            using var sender = CreateSender();
+            sender.Writer.Write(CanSideKick);
+        }
+
+        public override void ReceiveRPC(MessageReader reader)
+        {
+            CanSideKick = reader.ReadBoolean();
         }
     }
 }
