@@ -305,6 +305,7 @@ namespace TownOfHost
                         __instance.completeString = Translator.GetString(StringNames.NoExileSkip);
                     }
                 }
+                else
                 if (result.Value.Exiled.Object?.GetRoleClass() is Assassin && Assassin.NowUse)
                 {
                     __instance.completeString = MeetingVoteManager.Voteresult + "<size=0>";
