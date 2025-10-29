@@ -790,10 +790,10 @@ public enum CustomRoles
     Eraser,
     QuickKiller,
     CharismaStar,
-    //DEBUG only Impostor
     Ballooner,
     BorderKiller,
     ShapeKiller,
+    //DEBUG only Impostor
     //DEBUG only Impostor
     Assassin,
     //Madmate
@@ -811,9 +811,9 @@ public enum CustomRoles
     MadTracker,
     MadChanger,
     MadSuicide,
-    //DEBUG only Madmate
     MadBetrayer,
     Nue,
+    //DEBUG only Madmate
     //Crewmate(Vanilla)
     Engineer,
     Scientist,
@@ -871,9 +871,9 @@ public enum CustomRoles
     Inspector,
     AllArounder,
     Observer,
-    //DEBUG only Crewmate
     Satellite,
     Merlin,
+    //DEBUG only Crewmate
     //Neutral
     Arsonist,
     Egoist,
@@ -907,11 +907,11 @@ public enum CustomRoles
     Turncoat,
     Vulture,
     SantaClaus,
-    TaskPlayerB,
-    //DEBUG only Neutral.
     Missioneer,
     Strawdoll,
     Fool,
+    TaskPlayerB,
+    //DEBUG only Neutral.
     //HideAndSeek
     HASFox,
     HASTroll,
