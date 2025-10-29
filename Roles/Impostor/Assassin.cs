@@ -147,6 +147,14 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         {
             NowState = AssassinMeeting.CallMetting;
             Logger.Info("死んじゃった。", "Assassin");
+
+            //この先ホストのみ実行
+            if (!AmongUsClient.Instance.AmHost)
+            {
+                NowState = AssassinMeeting.Guessing;
+                return;
+            }
+
             foreach (var info in GameData.Instance.AllPlayers)
             {
                 isDeadCache[info.PlayerId] = (info.PlayerId.GetPlayerState().IsDead, info.Disconnected);
@@ -154,8 +162,10 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 info.IsDead = false;
                 info.Disconnected = false;
             }
+
             NowUse = true;
             NowState = AssassinMeeting.Guessing;
+
             AntiBlackout.SendGameData();
             _ = new LateTask(() =>
             {
@@ -172,6 +182,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         if (NowState is AssassinMeeting.DieWait)
         {
             NowState = AssassinMeeting.EndMeeting;
+            SendStateRPC();
             Player.RpcExile();
             MyState.SetDead();
             return;
@@ -198,6 +209,8 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                     }
                     NowUse = true;
                     NowState = AssassinMeeting.Guessing;
+                    SendStateRPC();
+
                     AntiBlackout.SendGameData();
                     GameDataSerializePatch.SerializeMessageCount--;
                     _ = new LateTask(() =>
@@ -210,6 +223,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     {
         if (NowState is AssassinMeeting.Guessing)
         {
+            if (!AmongUsClient.Instance.AmHost) return;
             _ = new LateTask(() =>
             {
                 foreach (var info in GameData.Instance.AllPlayers)
@@ -299,6 +313,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 Player.RpcSetName(string.Format(GetString("AssassinGuessNonCollect"), tage) + "<size=0>");
                 MeetingVoteManager.Voteresult = string.Format(GetString("AssassinGuessNonCollect"), tage);
             }
+            SendStateRPC();
             Exiled = Player.Data;
             _ = new LateTask(() => Player.RpcSetName(name), 6f, "AssassinSetName", true);
             return true;
@@ -309,6 +324,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
             if (Exiled?.PlayerId == Player.PlayerId)
             {
                 NowState = AssassinMeeting.CallMetting;
+                SendStateRPC();
                 Logger.Info("追放されちゃった！", "Assassin");
                 Exiled = null;
                 IsTie = false;
@@ -316,6 +332,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 return true;
             }
         }
+
 
         return AddRole?.VotingResults(ref Exiled, ref IsTie, vote, mostVotedPlayers, ClearAndExile) ?? false;
     }
@@ -339,7 +356,6 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
 
         roleText += GetString($"{haverole}");
     }
-
 
     public override bool OnEnterVent(PlayerPhysics physics, int ventId) => AddRole?.OnEnterVent(physics, ventId) ?? true;
     public override bool CanVentMoving(PlayerPhysics physics, int ventId) => AddRole?.CanVentMoving(physics, ventId) ?? true;
@@ -452,6 +468,20 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
             Logger.Error($"{ex}", "Assassin");
         }
     }
+
+    public void ReceiveStateRPC(MessageReader reader)
+    {
+        NowState = (AssassinMeeting)reader.ReadInt32();
+    }
+
+    public void SendStateRPC() //一時用、いつか別の方法で実装する //いい案なんかないかな、
+    {
+        if (!PlayerCatch.AnyModClient()) return;
+        var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncAssassinState, SendOption.Reliable);
+        writer.Write(Player.PlayerId);
+        writer.Write((int)NowState);
+    }
+
     bool IUsePhantomButton.IsPhantomRole => AddRole is IUsePhantomButton iusephantom && iusephantom?.IsPhantomRole is true;
     bool IUsePhantomButton.UseOneclickButton => AddRole is IUsePhantomButton iusephantom && iusephantom?.UseOneclickButton is true;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)

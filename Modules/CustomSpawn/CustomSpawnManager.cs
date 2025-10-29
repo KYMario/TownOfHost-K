@@ -36,6 +36,7 @@ public class CustomSpawnManager
     {
         try
         {
+            if (Main.IsAndroid()) return;
             CreateIfNotExists();
             var jsonString = File.ReadAllText(SaveDataFileInfo.FullName);
 

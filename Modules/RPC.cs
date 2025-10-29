@@ -35,7 +35,8 @@ namespace TownOfHost
         CustomSubRoleSync,
         ShowMeetingKill,
         ClientSendHideMessage,
-        SyncModSystem
+        SyncModSystem,
+        SyncAssassinState,
     }
     public enum Sounds
     {
@@ -235,6 +236,11 @@ namespace TownOfHost
                     break;
                 case CustomRPC.SyncModSystem:
                     RPC.RpcModSetting(reader);
+                    break;
+                case CustomRPC.SyncAssassinState:
+                    byte assassinId = reader.ReadByte();
+                    if (CustomRoleManager.GetByPlayerId(assassinId) is not Roles.Impostor.Assassin assassinRole) break;
+                    assassinRole.ReceiveStateRPC(reader);
                     break;
             }
         }

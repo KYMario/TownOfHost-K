@@ -477,7 +477,7 @@ namespace TownOfHost
         public static void Postfix()
         {
             if (GameStates.IsFreePlay && Main.EditMode)
-                GameObject.FindObjectsOfType<SystemConsole>(true).DoIf(x => x.name == "TaskAddConsole", x => x.gameObject.SetActive(false));
+                GameObject.FindObjectsOfType<SystemConsole>(true).DoIf(x => x.FreeplayOnly, x => x.gameObject.SetActive(false));
 
             UpdateDisableDevices();
         }

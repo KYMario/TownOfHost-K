@@ -470,7 +470,7 @@ public class CustomSpawnEditor
                 Room = psr;
             }
         }
-        RoomName = Room is null ? "" : GetString($"{Room.RoomId}");
+        RoomName = Room is null ? "" : DestroyableSingleton<TranslationController>.Instance.GetString(Room.RoomId);//GetString($"{Room.RoomId}");
         if (Room?.RoomId is SystemTypes.Hallway or null)
         {
             var AllRooms = ShipStatus.Instance.AllRooms;
@@ -496,7 +496,7 @@ public class CustomSpawnEditor
                 if (Room?.RoomId is SystemTypes.Hallway && 200 > Nearestroomid && (SystemTypes)Nearestroomid is SystemTypes.VaultRoom)
                     Nearestroomid = (byte)SystemTypes.Comms;
             }
-            var Nearestroom = 200 <= Nearestroomid ? GetString($"ModMapName.{Nearestroomid}") : GetString($"{(SystemTypes)Nearestroomid}");
+            var Nearestroom = 200 <= Nearestroomid ? GetString($"ModMapName.{Nearestroomid}") : DestroyableSingleton<TranslationController>.Instance.GetString((SystemTypes)Nearestroomid);//GetString($"{(SystemTypes)Nearestroomid}");
             RoomName = Room is null ? string.Format(GetString("Nearroom"), Nearestroom)
             : Nearestroom + RoomName;
         }

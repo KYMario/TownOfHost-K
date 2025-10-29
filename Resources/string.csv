@@ -899,6 +899,7 @@
 "EnableDebugMode","Enable Debug Mode","デバッグモードを有効化する","开启调试模式","啟用偵錯模式","Включить режим отладки","Ativar Modo de Depuração",""
 "EnableTOHkDebugMode","Enable Debug Mode","TOH-Kのデバッグモードを有効化する","开启调试模式","啟用偵錯模式","Включить режим отладки","Ativar Modo de Depuração",""
 "Spawndummy","Spawndummy","ダミーを出現させる"
+"DummyAssignRole","DummyAssignRole","ダミーに役職をアサインする"
 "ExperimentalMode","Experimental Mode","試験的設定"
 "ExAftermeetingflash","After Meeting flash","会議後にフラッシュを入れる"
 "BlackOutwokesitobasu","Reset Camera Anti BlackOut","リセットカメラ式暗転対策"
@@ -2289,6 +2290,7 @@
 "Warning.TBTask","The game does not end because the total number of tasks is less than the number of tasks required for the team to win.","合計タスク数がチームの勝利条件のタスク数より少ないため、ゲームは終了しません。"
 "Warning.CannotUseAbility","This Meeting Can't Use Role And Add-Ons Ability","この会議中は、属性や役職の能力が使用できません"
 "Warning.OverRole","Role descriptions will be omitted due to the large number of role.","役職が30役職を超えているので役職の詳細設定は省略します"
+"Warning.MismatchedHostVersion","","バージョンがホストと合致しません。\n ホストが使用してるバージョン: {0}"
 
 "## エラー"
 "Error.MeetingException","Error: {0}\r\nPlease use SHIFT+M+ENTER to end the meeting","エラー: {0}\r\nSHIFT+M+ENTERで会議を強制終了してください","错误: {0}\r\n使用 SHIFT+M+ENTER 来中止会议","錯誤: {0}\r\n按下SHIFT+M+ENTER來結束會議","Ошибка: {0}\r\nПожалуйста используйте SHIFT+M+ENTER чтобы принудительно завершить собрание","Erro: {0}\r\nPor favor use SHIFT+M+ENTER para encerrar a reunião",""

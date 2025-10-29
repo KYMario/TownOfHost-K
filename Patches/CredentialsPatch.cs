@@ -40,6 +40,9 @@ namespace TownOfHost
                     pingTrackerCredentialAspectPos = pingTrackerCredential.GetComponent<AspectPosition>();
                     pingTrackerCredentialAspectPos.Alignment = AspectPosition.EdgeAlignments.RightTop;
                     pingTrackerCredential.gameObject.name = "CredentialText";
+
+                    if (GameStates.IsFreePlay && !uselessPingTracker.gameObject.active)
+                        uselessPingTracker.gameObject.SetActive(true);
                 }
                 if (pingTrackerCredentialAspectPos)
                 {

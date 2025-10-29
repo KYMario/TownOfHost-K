@@ -337,7 +337,7 @@ namespace TownOfHost
                                 if (targetsubrole.Contains(CustomRoles.Workhorse))
                                 {
                                     if (((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
-                                    || ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
+                                    || ((seerRole as JackalAlien)?.mode == Alien.AlienMode.ProgressKiller == true && JackalAlien.ProgressWorkhorseseen)
                                     || (role is CustomRoles.ProgressKiller && ProgressKiller.ProgressWorkhorseseen)
                                     || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                     {
@@ -693,7 +693,7 @@ namespace TownOfHost
                                 if (targetsubrole.Contains(CustomRoles.Workhorse))
                                 {
                                     if (((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller == true && Alien.ProgressWorkhorseseen)
-                                    || ((seerRole as JackalAlien)?.modeProgresskiller == true && JackalAlien.ProgressWorkhorseseen)
+                                    || ((seerRole as JackalAlien)?.mode == Alien.AlienMode.ProgressKiller == true && JackalAlien.ProgressWorkhorseseen)
                                     || (role is CustomRoles.ProgressKiller && ProgressKiller.ProgressWorkhorseseen)
                                     || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                     {
