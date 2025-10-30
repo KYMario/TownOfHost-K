@@ -509,6 +509,13 @@ namespace TownOfHost
 
                 _ = new LateTask(() =>
                 {
+                    var errornames = Camouflage.PlayerSkins.Where(skin => skin.Value.PlayerName.Contains("<"));
+                    foreach (var skindata in errornames)//PlayerSkinsではシステムメッセージで保存されてるけどdata上では戻ってる時用
+                    {
+                        var skin = skindata.Value;
+                        skin.PlayerName = PlayerCatch.GetPlayerById(skindata.Key)?.Data?.PlayerName ?? "?";
+                        Camouflage.PlayerSkins[skindata.Key] = skin;
+                    }
                     CustomRoleManager.AllActiveRoles.Values.Do(role => role.StartGameTasks());
                     foreach (var pl in PlayerCatch.AllPlayerControls)
                     {
@@ -569,7 +576,17 @@ namespace TownOfHost
                 Main.CanUseAbility = true;
 
                 Logger.Info("タスクフェイズ開始", "Phase");
-                _ = new LateTask(() => CustomButtonHud.BottonHud(true), 0.3f, "SetHudButton", true);
+                _ = new LateTask(() =>
+                {
+                    var errornames = Camouflage.PlayerSkins.Where(skin => skin.Value.PlayerName.Contains("<"));
+                    foreach (var skindata in errornames)//PlayerSkinsではシステムメッセージで保存されてるけどdata上では戻ってる時用
+                    {
+                        var skin = skindata.Value;
+                        skin.PlayerName = PlayerCatch.GetPlayerById(skindata.Key)?.Data?.PlayerName ?? "?";
+                        Camouflage.PlayerSkins[skindata.Key] = skin;
+                    }
+                    CustomButtonHud.BottonHud(true);
+                }, 0.3f, "SetHudButton", true);
 
             }
             _ = new LateTask(() => Main.showkillbutton = true, 0.5f, "", true);

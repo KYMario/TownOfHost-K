@@ -449,7 +449,7 @@ namespace TownOfHost.Modules.ChatManager
             if (Main.MessagesToSend.Count < 1)
                 _ = new LateTask(() =>
                 {
-                    if (senderplayer.Data.PlayerName != name)
+                    if (senderplayer.Data.PlayerName != name && !name.Contains("<"))
                     {
                         senderplayer.RpcSetName(name);
                     }
