@@ -193,7 +193,6 @@ public sealed class EvilHacker : RoleBase, IImpostor, IKillFlashSeeable
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (GameStates.Intro || GameStates.CalledMeeting) return;
-        if (AmongUsClient.Instance.AmHost)
         {
             if (CanseeTaskTurn && player.IsAlive())
             {
@@ -240,7 +239,7 @@ public sealed class EvilHacker : RoleBase, IImpostor, IKillFlashSeeable
                 {
                     text += $"{data.Key} : {data.Value}";
                 }
-                if (oldtext != text) UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
+                if (oldtext != text && AmongUsClient.Instance.AmHost) UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
             }
         }
         // 古い通知の削除処理 Mod入りは自分でやる
