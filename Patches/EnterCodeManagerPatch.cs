@@ -242,18 +242,22 @@ namespace TownOfHost
         {
             if (gameFound == null || gameFound.HostPlatformName == null) return null;
             var text = gameFound.HostPlatformName;
-            string pattern = @"<size=0>([^:]+):(\d+\.\d+\.\d+\.\d+)</size>";
 
-            MatchCollection matches = Regex.Matches(text, pattern);
+            try
+            {
+                var matches = text.Split("%$");
 
-            if (!matches.Any()) return null;
-
-            var groups = matches[^1].Groups;
-            string id = groups[1].Value;
-            string ver = groups[2].Value;
-            return new PlayerVersion(ver, "", id);
+                string id = matches[1];
+                string ver = matches[2];
+                return new PlayerVersion(ver, "", id); ;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"{ex}", "EnterCodeCheckHostver");
+                return null;
+            }
         }
-        public static string VersionTag => $"<size=0>{Main.ForkId}:{Main.version}</size>";
+        public static string VersionTag => $"<size=0>%${Main.ForkId}%${Main.version}%$</size>";
     }
 
     [HarmonyPatch(typeof(PlatformSpecificData), nameof(PlatformSpecificData.Serialize))]
