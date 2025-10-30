@@ -214,7 +214,6 @@ class SubmergedPatch
                 return true;
             }
         }
-        Logger.Warn($"current: {onUpper} new: {newUpper}", "SnapTo");
         return true;
     }
 
