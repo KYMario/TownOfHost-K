@@ -62,7 +62,8 @@ namespace TownOfHost
         {
             //ノーマルモードを選択させる
             __instance.SelectMode(0, false);
-            __instance.UpdateServerText(ServerManager.Instance.CurrentRegion.Name);
+            __instance.SetCurrentServer();
+            //__instance.UpdateServerText(ServerManager.Instance.CurrentRegion.Name);
         }
     }
 
