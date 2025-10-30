@@ -753,7 +753,7 @@ namespace TownOfHost.Modules
 
                 if (!player.IsAlive() || !state.taskState.hasTasks) continue;
 
-                if (state.taskState.IsTaskFinished)
+                if (state.taskState.IsTaskFinished && player.GetCustomRole().IsCrewmate())
                 {
                     CustomWinnerHolder.ResetAndSetWinner((CustomWinner)player.GetCustomRole());
                     CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
