@@ -12,6 +12,7 @@ using TMPro;
 using static TownOfHost.Translator;
 using static TownOfHost.CustomSpawnManager;
 using TownOfHost.Modules;
+using System.IO.Pipes;
 namespace TownOfHost;
 
 public class CustomSpawnEditor
@@ -196,6 +197,7 @@ public class CustomSpawnEditor
     {
         static ShapeshifterMinigame EditorMinigame;
         static int SelectedSpawnId;
+        static TextBoxTMP textBox = null;
         public enum PanelTypes
         {
             Home,
@@ -252,6 +254,28 @@ public class CustomSpawnEditor
                 selectableElements.Add(shapeshifterPanel.Button);
             }
             ControllerManager.Instance.OpenOverlayMenu(__instance.name, __instance.BackButton, __instance.DefaultButtonSelected, selectableElements);
+
+            var wifi = __instance.transform.Find("PhoneUI/UI_Icon_Wifi");
+
+            textBox = CreateTextBox(
+                 new(0f, 0, -1f),
+                 () =>
+                 {
+                     var points = EditorAPI.CurrentSpawnMap.Points;
+                     if (SelectedSpawnId < 0)
+                     {
+                         Data.CurrentPreset.Name = textBox?.text ?? Data.CurrentPreset.Name;
+                     }
+                     else
+                     {
+                         var spawnPoint = points[SelectedSpawnId];
+                         spawnPoint.Name = textBox?.text ?? spawnPoint.Name;
+                         EditorAPI.UpdateAllMarker();
+                     }
+                 },
+                  wifi
+            );
+            UpdateTextBox(textBox, SelectedSpawnId);
             return false;
         }
 
@@ -272,6 +296,8 @@ public class CustomSpawnEditor
             var panels = EditorMinigame.potentialVictims;
             for (int i = 0; i < panels.Count; ++i)
                 SetPanel(panels[i], i, type);
+
+            UpdateTextBox(textBox, SelectedSpawnId);
         }
 
         public static void SetPanel(ShapeshifterPanel panel, int index, PanelTypes type)
@@ -511,6 +537,81 @@ public class CustomSpawnEditor
             if (Main.nickName != "") name = Main.nickName;
             var nowCount = EditorAPI.CurrentSpawnMap.Points.Count;
             player.SetName($"<#ffffff>{name}<{(nowCount >= EditorAPI.MaxMarker ? "#ff1919" : "#8cffff")}> ({nowCount}/{EditorAPI.MaxMarker})");
+        }
+    }
+
+    //過去のバージョンからひっぱってきた。いつかちゃんとしたの作る。
+    private static TextBoxTMP CreateTextBox(Vector3 position, Action Event, Transform parent = null)
+    {
+        var collider = new GameObject("PresetText").AddComponent<BoxCollider2D>();
+        var textBox = collider.gameObject.AddComponent<TextBoxTMP>();
+        var button = textBox.gameObject.AddComponent<PassiveButton>();
+        var text = new GameObject("Text").AddComponent<TextMeshPro>();
+        string backupName = "";
+
+        textBox.AllowEmail = false;
+        textBox.AllowSymbols = true;
+        textBox.AllowPaste = true;
+        textBox.tempTxt = new();
+        textBox.outputText = text;
+        textBox.compoText = "";
+        textBox.text = "";
+        textBox.characterLimit = 15;
+        textBox.OnChange = new();
+        textBox.OnEnter = new();
+        textBox.OnFocusLost = new();
+        textBox.OnEnter.AddListener((Action)(() => CheckText()));
+        textBox.OnFocusLost.AddListener((Action)(() => CheckText()));
+
+        if (parent) textBox.transform.SetParent(parent);
+        textBox.transform.localPosition = position;
+
+        button.OnMouseOut = new();
+        button.OnMouseOver = new();
+        button.OnClick = new();
+        button.OnClick.AddListener((Action)(() => textBox.GiveFocus()));
+        button.OnClick.AddListener((Action)(() => backupName = textBox.text));
+
+        collider.offset = new Vector2(1.5f, 0);
+        collider.size = new Vector2(3f, 0.25f);
+
+        text.fontSize =
+        text.fontSizeMax =
+        text.fontSizeMin = 2;
+        text.alignment = TextAlignmentOptions.Left;
+        text.transform.SetParent(textBox.transform);
+        text.transform.localPosition = new(10.2f, 0.025f);
+
+        textBox.gameObject.layer = LayerMask.NameToLayer("UI");
+        text.gameObject.layer = LayerMask.NameToLayer("UI");
+
+        return textBox;
+
+        void CheckText()
+        {
+            if (textBox.text.IsNullOrWhiteSpace())
+            {
+                textBox.SetText(backupName);
+                return;
+            }
+            Event.Invoke();
+        }
+    }
+
+    private static void UpdateTextBox(TextBoxTMP textBox, int selectedSpawnId)
+    {
+        var points = EditorAPI.CurrentSpawnMap.Points;
+        if (textBox?.text == null) return;
+        if (selectedSpawnId < 0)
+        {
+            textBox.outputText.text =
+            textBox.text = Data.CurrentPreset.Name;
+        }
+        else
+        {
+            var spawnPoint = points[selectedSpawnId];
+            textBox.outputText.text =
+            textBox.text = spawnPoint.Name;
         }
     }
 }
