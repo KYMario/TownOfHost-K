@@ -231,6 +231,7 @@ namespace TownOfHost.Patches
 
             List<CustomRoles> activeRoles = new();
             var tabLength = EnumHelper.GetAllNames<TabGroup>().Length;
+
             for (int index1 = 1; index1 < tabLength; ++index1)
             {
                 var tab = (TabGroup)index1;
@@ -339,6 +340,8 @@ namespace TownOfHost.Patches
                 __instance.scrollBar.Inner.localPosition = __instance.scrollBar.Inner.localPosition + Vector3.up * -relativePosition.y;  // 強制スクロール
                 __instance.scrollBar.ScrollRelative(Vector2.zero);  // スクロール範囲内に収め，スクロールバーを更新する
             }));
+
+            button.ClickSound = __instance.rolesTabButton.ClickSound;
         }
     }
 
