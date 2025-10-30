@@ -249,7 +249,7 @@ namespace TownOfHost
 
                 string id = matches[1];
                 string ver = matches[2];
-                return new PlayerVersion(ver, "", id); ;
+                return new PlayerVersion(ver, "", id);
             }
             catch (Exception ex)
             {
