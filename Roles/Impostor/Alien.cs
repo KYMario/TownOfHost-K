@@ -57,6 +57,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
     }
     public override void Add()
     {
+        IsDead = false;
         Uetukecount = 0;
         AbductTimer = 255f;
         stopCount = false;
@@ -341,7 +342,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         if (mode == AlienMode.NekoKabocha)
         {
             // 普通のキルじゃない．もしくはキルを行わない時はreturn
-            if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill) return;
+            if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill || IsDead) return;
             // 殺してきた人を殺し返す
             if (!GameStates.CalledMeeting && MyState.DeathReason is CustomDeathReason.Revenge) return;
             Logger.Info("ネコカボチャの仕返し", "Alien");
@@ -351,6 +352,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
                 Logger.Info("キラーは仕返し対象ではないので仕返しされません", "Alien");
                 return;
             }
+            IsDead = true;
             if (CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false))
             {
                 PlayerState.GetByPlayerId(killer.PlayerId).DeathReason = CustomDeathReason.Revenge;
@@ -1133,6 +1135,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
     public static bool madmatesGetRevenged;
     public static bool NeutralsGetRevenged;
     public static bool revengeOnExile;
+    bool IsDead;
     //インサイダー
     static OptionItem OptionModeInsider;
     List<byte> InsiderCansee = new();

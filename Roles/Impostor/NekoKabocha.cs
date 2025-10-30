@@ -32,6 +32,8 @@ public sealed class NekoKabocha : RoleBase, IImpostor, INekomata
         madmatesGetRevenged = optionMadmatesGetRevenged.GetBool();
         NeutralsGetRevenged = optionNeutralsGetRevenged.GetBool();
         revengeOnExile = optionRevengeOnExile.GetBool();
+
+        IsDead = false;
     }
 
     #region カスタムオプション
@@ -57,11 +59,12 @@ public sealed class NekoKabocha : RoleBase, IImpostor, INekomata
     private static bool NeutralsGetRevenged;
     private static bool revengeOnExile;
     private static readonly LogHandler logger = Logger.Handler(nameof(NekoKabocha));
+    bool IsDead;
 
     public override void OnMurderPlayerAsTarget(MurderInfo info)
     {
         // 普通のキルじゃない．もしくはキルを行わない時はreturn
-        if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill)
+        if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill || IsDead)
         {
             return;
         }
@@ -69,6 +72,7 @@ public sealed class NekoKabocha : RoleBase, IImpostor, INekomata
         logger.Info("ネコカボチャの仕返し");
         var killer = info.AttemptKiller;
         if (!GameStates.CalledMeeting && MyState.DeathReason is CustomDeathReason.Revenge) return;
+        IsDead = true;
         if (!IsCandidate(killer))
         {
             logger.Info("キラーは仕返し対象ではないので仕返しされません");

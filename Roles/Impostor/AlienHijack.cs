@@ -51,6 +51,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     }
     public override void Add()
     {
+        IsDead = false;
         UetukeNokori = OptUetuketukeTrun.GetInt();
         AbductTimer = 255f;
         stopCount = false;
@@ -333,7 +334,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
         if (mode == AlienMode.NekoKabocha)
         {
             // 普通のキルじゃない．もしくはキルを行わない時はreturn
-            if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill) return;
+            if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill || IsDead) return;
             // 殺してきた人を殺し返す
             if (!GameStates.CalledMeeting && MyState.DeathReason is CustomDeathReason.Revenge) return;
             Logger.Info("ネコカボチャの仕返し", "Alien");
@@ -343,6 +344,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                 Logger.Info("キラーは仕返し対象ではないので仕返しされません", "Alien");
                 return;
             }
+            IsDead = true;
             if (CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false))
             {
                 PlayerState.GetByPlayerId(killer.PlayerId).DeathReason = CustomDeathReason.Revenge;
@@ -869,6 +871,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     bool stopCount;
     //カムバッカー
     private Vector2 Tp;
+    bool IsDead;
     // 戻るなら
     int UetukeNokori;
 

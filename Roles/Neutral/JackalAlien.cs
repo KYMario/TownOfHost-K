@@ -73,6 +73,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         InsiderCansee.Clear();
         NameAddmin.Clear();
         Aliens.Add(this);
+        IsDead = false;
         if (FirstAbility.GetBool()) AfterMeetingTasks();
     }
     public override void OnDestroy()
@@ -343,7 +344,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         if (mode == AlienMode.NekoKabocha)
         {
             // 普通のキルじゃない．もしくはキルを行わない時はreturn
-            if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill) return;
+            if (GameStates.IsMeeting || info.IsAccident || info.IsSuicide || !info.CanKill || !info.DoKill || IsDead) return;
             // 殺してきた人を殺し返す
             if (!GameStates.CalledMeeting && MyState.DeathReason is CustomDeathReason.Revenge) return;
             Logger.Info("ネコカボチャの仕返し", "JJAlien");
@@ -353,6 +354,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
                 Logger.Info("キラーは仕返し対象ではないので仕返しされません", "JAlien");
                 return;
             }
+            IsDead = true;
             if (CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false))
             {
                 PlayerState.GetByPlayerId(killer.PlayerId).DeathReason = CustomDeathReason.Revenge;
@@ -1187,6 +1189,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
     static bool madmatesGetRevenged;
     static bool NeutralsGetRevenged;
     static bool revengeOnExile;
+    bool IsDead;
     //インサイダー
     static OptionItem OptionModeInsider;
     List<byte> InsiderCansee = new();
