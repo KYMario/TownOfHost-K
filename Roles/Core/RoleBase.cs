@@ -129,6 +129,7 @@ public abstract class RoleBase : IDisposable
     { }
     /// <summary>
     /// 能力ボタンを使えるかどうか
+    /// [全クライアント]
     /// </summary>
     /// <returns>trueを返した場合、能力ボタンを使える</returns>
     public virtual bool CanUseAbilityButton() => true;
@@ -220,6 +221,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// <para>ベントに入ったときに呼ばれる関数</para>
     /// <para>キャンセル可</para>
+    /// [ホストのみ]
     /// </summary>
     /// <param name="physics"></param>
     /// <param name="id"></param>
@@ -243,6 +245,7 @@ public abstract class RoleBase : IDisposable
     { }
     /// <summary>
     /// ミーティングが始まった時同数などと一緒に表示されるメッセージ
+    /// [全クライアント] / [return: ホストのみ]
     /// </summary>
     /// <returns></returns>
     public virtual string MeetingAddMessage() => "";
@@ -261,6 +264,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// 誰かが投票した瞬間に呼ばれ，票を書き換えることができる<br/>
     /// 投票行動自体をなかったことにしたい場合は<see cref="CheckVoteAsVoter"/>を使用する
+    /// [ホストのみ]
     /// </summary>
     /// <param name="voterId">投票した人のID</param>
     /// <param name="sourceVotedForId">投票された人のID</param>
@@ -269,6 +273,7 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// 追放後に行われる処理
+    /// [ホストのみ]
     /// </summary>
     /// <param name="exiled">追放されるプレイヤー</param>
     /// <param name="DecidedWinner">勝者を確定させるか</param>
@@ -299,6 +304,7 @@ public abstract class RoleBase : IDisposable
     /// <summary>
     /// モノクラー等に使う。シェイプ後,イントロ後,タスクターン始めに呼ばれる。
     /// ※アムネシア制御効かないので個別で処理
+    /// [全クライアント]
     /// </summary>
     public virtual void ChangeColor()
     { }
@@ -457,18 +463,21 @@ public abstract class RoleBase : IDisposable
     /// 会議をキャンセルするために使う<br/>
     /// <see cref="OnReportDeadBody"/>より先に呼ばれる、キャンセルした場合は呼ばれない<br/>
     /// trueを返すとキャンセルされる
+    /// [ホストのみ]
     /// </summary>
     public virtual bool CancelReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target, ref DontReportreson reason) => false;
 
     /// <summary>
     /// 占い結果で表示される役職を変更することができる<br/>
     /// NotAssignedを返すと変更されない
+    /// [全クライアント]
     /// </summary>
     public virtual CustomRoles TellResults(PlayerControl player) => CustomRoles.NotAssigned;
 
     /// <summary>
     /// 投票結果を返す<br/>
     /// trueを返すと追放の「ランダム追放」「全員追放」などが実行されない
+    /// [ホストのみ]
     /// </summary>
     public virtual bool VotingResults(ref NetworkedPlayerInfo Exiled, ref bool IsTie, Dictionary<byte, int> vote, byte[] mostVotedPlayers, bool ClearAndExile) => false;
 
@@ -489,6 +498,7 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// 回線切断者が起こった時に呼ばれる関数
+    /// [ホストのみ]
     /// </summary>
     /// <param name="player"></param>
     public virtual void OnLeftPlayer(PlayerControl player) { }
@@ -497,6 +507,7 @@ public abstract class RoleBase : IDisposable
     /// 自身がゲッサーされそうになった時に呼ばれる関数
     /// falseを返すと返り討ち。
     /// nullなら流す 
+    /// [ホストのみ]
     /// </summary>
     /// <param name="killer"></param>
     /// <returns></returns>
@@ -506,6 +517,7 @@ public abstract class RoleBase : IDisposable
     /// Host用。
     /// タスクが出来るか。
     /// falseだとできない。
+    /// [全クライアント]
     /// </summary>
     /// <returns></returns>
     public virtual bool CanTask() => UtilsTask.HasTasks(PlayerControl.LocalPlayer.Data, false);
@@ -517,12 +529,14 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// 勝利処理がほぼ終わった後に処理される<br/>
+    /// [ホストのみ]
     /// </summary>
     public virtual void CheckWinner()
     { }
 
     /// <summary>
     /// 自身を別役職だと思い込む。
+    /// [全クライアント]
     /// </summary>
     public virtual CustomRoles Misidentify() => CustomRoles.NotAssigned;
     protected static AudioClip GetIntroSound(RoleTypes roleType) =>
