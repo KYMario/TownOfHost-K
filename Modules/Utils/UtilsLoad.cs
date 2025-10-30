@@ -13,6 +13,7 @@ namespace TownOfHost
             try
             {
                 var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(path);
+                if (stream == null) return null;
                 var texture = new Texture2D(1, 1, TextureFormat.ARGB32, false);
                 using MemoryStream ms = new();
                 stream.CopyTo(ms);
