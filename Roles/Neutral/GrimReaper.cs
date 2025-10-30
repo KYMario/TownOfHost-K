@@ -19,7 +19,7 @@ namespace TownOfHost.Roles.Neutral
                 CustomRoleTypes.Neutral,
                 13500,
                 SetupOptionItem,
-                "GhostRole",
+                "gr",
                 "#4b0082",
                 (2, 2),
                 true,
