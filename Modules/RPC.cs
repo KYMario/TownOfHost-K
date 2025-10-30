@@ -583,7 +583,7 @@ namespace TownOfHost
         public static void Postfix([HarmonyArgument(1)] byte callId, MessageWriter __result)
         {
             if (!Enum.IsDefined(typeof(CustomRPC), (int)callId)) return;
-            if ((CustomRPC)callId is CustomRPC.VersionCheck or CustomRPC.RequestRetryVersionCheck) return;
+            if ((CustomRPC)callId is CustomRPC.VersionCheck or CustomRPC.RequestRetryVersionCheck or CustomRPC.ClientSendHideMessage) return;
             __result.Write(Main.ForkId);
         }
     }
