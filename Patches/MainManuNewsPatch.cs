@@ -1853,7 +1853,7 @@ public class ModNewsHistory
                     Title = "祝☆2周年☆",
                     SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31</color>",
                     ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31</color>",
-                    Text = "<size=80%>少しも寒くないわ。前言撤回。寒い。\nアップデート内容は\n<nobr><link=\"https://youtu.be/FCoHIDgKhpA\">この動画で</nobr></link>広く浅く解説してます。"
+                    Text = "<size=80%>少しも寒くないわ。前言撤回。寒い。\nアップデート内容は\n<nobr><link=\"https://youtu.be/FCoHIDgKhpA\">この動画で</nobr></link>　、広く浅く解説してます。"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・イビトラが距離表示に関わらず()が見えていた問題の修正\n"
                     + "・一定条件下で名前がおかしくなる問題の対応\n"
