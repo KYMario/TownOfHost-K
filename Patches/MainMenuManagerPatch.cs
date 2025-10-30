@@ -10,6 +10,7 @@ using Assets.InnerNet;
 
 using TownOfHost.Templates;
 using Object = UnityEngine.Object;
+using TownOfHost.Modules;
 
 namespace TownOfHost
 {
@@ -335,11 +336,16 @@ namespace TownOfHost
         }
 
         [HarmonyPatch(nameof(MainMenuManager.OpenFindGame))]
-        [HarmonyPatch(nameof(MainMenuManager.OpenEnterCodeMenu))]
         [HarmonyPrefix]
         public static bool ClickFindGame()
         {
             return false;
+        }
+        [HarmonyPatch(nameof(MainMenuManager.OpenEnterCodeMenu))]
+        [HarmonyPrefix]
+        public static bool ClickOpenEnterCodeMenu()
+        {
+            return !(VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true);
         }
         [HarmonyPatch(nameof(MainMenuManager.ClickBackOnline))]
         [HarmonyPostfix]
@@ -370,7 +376,7 @@ namespace TownOfHost
             {
                 Findbuttongo.SetActive(false);
             }
-            if (Codebutton)
+            if (Codebutton && VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true)
             {
                 var buttonCollider = Codebutton.GetComponent<BoxCollider2D>();
                 buttonCollider.offset = new(100f, 100f);
@@ -395,8 +401,11 @@ namespace TownOfHost
                 var TMPobjct = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/CrossplayWarning/CrossPlayText/Text_TMP");
 
                 var TMP = TMPobjct.transform.GetComponent<TextMeshPro>();
-                TMP.SetText(Main.IsAndroid() ? Translator.GetString("CantAndroidCreateGame") : Translator.GetString("CantPublickAndJoin"));
-                _ = new LateTask(() => TMP.SetText(Main.IsAndroid() ? Translator.GetString("CantAndroidCreateGame") : Translator.GetString("CantPublickAndJoin")), 0.05f, "Set", true);
+                var cantJoin = VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true;
+                var text = Main.IsAndroid() ? Translator.GetString("CantAndroidCreateGame") : cantJoin ? Translator.GetString("CantPublickAndJoin") : "";
+                TMP.SetText(text);
+                _ = new LateTask(() => TMP.SetText(text), 0.05f, "Set", true);
+                if (text == "") warning.SetActive(false);
             }
         }
         [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]

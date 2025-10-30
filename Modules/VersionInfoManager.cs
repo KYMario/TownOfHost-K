@@ -300,6 +300,7 @@ class VersionInfoManager
         public bool? NotAvailableOnline { get; set; }
         public string AnnounceText { get; set; }
         public string HighestSupportedVersion { get; set; }
+        public bool DisableRoomJoin { get; set; }
 
         public UpdateInfo Update { get; set; }
         public List<BugInfo> BugInfos { get; set; }
