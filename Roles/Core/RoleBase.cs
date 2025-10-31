@@ -498,7 +498,7 @@ public abstract class RoleBase : IDisposable
 
     /// <summary>
     /// 回線切断者が起こった時に呼ばれる関数
-    /// [ホストのみ]
+    /// [全クライアント]
     /// </summary>
     /// <param name="player"></param>
     public virtual void OnLeftPlayer(PlayerControl player) { }
