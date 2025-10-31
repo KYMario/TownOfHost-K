@@ -123,7 +123,7 @@ namespace TownOfHost
             GiveElector = BooleanOptionItem.Create(idStart++, "GiveElector", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveInfoPoor = BooleanOptionItem.Create(idStart++, "GiveInfoPoor", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveNonReport = BooleanOptionItem.Create(idStart++, "GiveNonReport", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
-            OptionNonReportMode = StringOptionItem.Create(idStart++, "ConverMode", EnumHelper.GetAllNames<NonReportMode>(), 0, tab, false).SetParentRole(role).SetParent(GiveNonReport);
+            OptionNonReportMode = StringOptionItem.Create(idStart++, "ConverMode", EnumHelper.GetAllNames<NonReportMode>().Where(name => name is not "nullpo").ToArray(), 0, tab, false).SetParentRole(role).SetParent(GiveNonReport);
 
             GiveTransparent = BooleanOptionItem.Create(idStart++, "GiveTransparent", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveWater = BooleanOptionItem.Create(idStart++, "GiveWater", MadMate, tab, false).SetParentRole(role).SetParent(GiveAddons);
