@@ -50,13 +50,22 @@ namespace TownOfHost
         }
     }
 
-    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show))]
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show)), HarmonyPriority(Priority.VeryLow)]
     class CreateGameOptionsShowPatch
     {
         public static void Prefix(CreateGameOptions __instance)
         {
             //HaSボタンを非表示にする
             __instance.modeButtons[1]?.gameObject?.SetActive(false);
+
+            //マップIdが無効な時画面の操作ができなくなってしまうのを修正
+            var mapId = GameOptionsManager.Instance.CurrentGameOptions.MapId;
+
+            if (__instance.mapTooltips.Length <= mapId)
+            {
+                GameOptionsManager.Instance.CurrentGameOptions.SetByte(AmongUs.GameOptions.ByteOptionNames.MapId, 0);
+                GameOptionsManager.Instance.currentHostOptions.SetByte(AmongUs.GameOptions.ByteOptionNames.MapId, 0);
+            }
         }
         public static void Postfix(CreateGameOptions __instance)
         {
