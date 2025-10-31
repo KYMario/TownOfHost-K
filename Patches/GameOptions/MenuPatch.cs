@@ -104,6 +104,8 @@ namespace TownOfHost
         public static void Postfix(GameSettingMenu __instance)
         {
             var ErrorNumber = 0;
+            PassiveButton settingsButton = null;
+
             try
             {
                 var size = __instance.transform.localScale;
@@ -452,8 +454,10 @@ namespace TownOfHost
                 ErrorNumber = 12;
                 __instance.GameSettingsTab.gameObject.SetActive(false);
 
+                settingsButton = HudManager.Instance.SettingsButton.GetComponent<PassiveButton>();
+
                 // ボタン生成
-                CreateButton("OptionReset", Color.red, new Vector2(8.5f, 0f), new Action(() =>
+                CreateButton("OptionReset", Color.red, -4.55f, new Action(() =>
                 {
                     OptionItem.AllOptions.ToArray().Where(x => x.Id > 0 && x.Id is not 2 and not 3 && 1_000_000 > x.Id && x.CurrentValue != x.DefaultValue).Do(x => x.SetValue(x.DefaultValue, false, false));
                     var pr = OptionItem.AllOptions.Where(op => op.Id == 0).FirstOrDefault();
@@ -472,13 +476,13 @@ namespace TownOfHost
                     OptionItem.SyncAllOptions();
                     OptionSaver.Save();
                 }), UtilsSprite.LoadSprite("TownOfHost.Resources.RESET-STG.png", 150f));
-                CreateButton("OptionCopy", Color.green, new Vector2(7.89f, 0), new Action(() =>
+                CreateButton("OptionCopy", Color.green, -3.9f, new Action(() =>
                 {
                     OptionSerializer.SaveToClipboard();
                     GameSettingMenuChangeTabPatch.meg = GetString("OptionCopyMeg");
                     timer = 3;
-                }), UtilsSprite.LoadSprite("TownOfHost.Resources.COPY-STG.png", 180f), true);
-                CreateButton("OptionLoad", Color.green, new Vector2(7.28f, 0), new Action(() =>
+                }), UtilsSprite.LoadSprite("TownOfHost.Resources.COPY-STG.png", 180f));
+                CreateButton("OptionLoad", Color.green, -3.25f, new Action(() =>
                 {
                     OptionSerializer.LoadFromClipboard();
                     GameSettingMenuChangeTabPatch.meg = GetString("OptionLoadMeg");
@@ -496,10 +500,11 @@ namespace TownOfHost
                 Logger.Error($"Error:{ErrorNumber}\n{Error.ToString()}", "OptionMenu");
             }
 
-            void CreateButton(string text, Color color, Vector2 position, Action action, Sprite sprite = null, bool csize = false)
+            void CreateButton(string text, Color color, float xPos, Action action, Sprite sprite = null)
             {
-                var ToggleButton = Object.Instantiate(HudManager.Instance.SettingsButton.GetComponent<PassiveButton>(), GameObject.Find("Main Camera/PlayerOptionsMenu(Clone)").transform);
-                ToggleButton.GetComponent<AspectPosition>().DistanceFromEdge += new Vector3(position.x, 0, 200f);
+                settingsButton ??= HudManager.Instance.SettingsButton.GetComponent<PassiveButton>();
+                var ToggleButton = Object.Instantiate(settingsButton, __instance.transform);
+
                 ToggleButton.transform.localScale -= new Vector3(0.25f, 0.25f);
                 ToggleButton.name = text;
                 if (sprite != null)
@@ -508,6 +513,14 @@ namespace TownOfHost
                     ToggleButton.activeSprites.GetComponent<SpriteRenderer>().sprite = sprite;
                     ToggleButton.selectedSprites.GetComponent<SpriteRenderer>().sprite = sprite;
                 }
+
+                ToggleButton.OnClick = new();
+                ToggleButton.OnClick.AddListener(action);
+
+                var aspectPosition = ToggleButton.GetComponent<AspectPosition>();
+                aspectPosition.DistanceFromEdge = new Vector3(xPos, 2.49f, -200f);
+                aspectPosition.Alignment = AspectPosition.EdgeAlignments.Center;
+
                 var textTMP = new GameObject("Text_TMP").AddComponent<TMPro.TextMeshPro>();
                 textTMP.text = Utils.ColorString(color, GetString(text));
                 textTMP.transform.SetParent(ToggleButton.transform);
@@ -515,8 +528,6 @@ namespace TownOfHost
                 textTMP.transform.localScale = new Vector3(0, -0.5f);
                 textTMP.alignment = TMPro.TextAlignmentOptions.Top;
                 textTMP.fontSize = 10f;
-                ToggleButton.OnClick = new();
-                ToggleButton.OnClick.AddListener(action);
             }
 
             void CreateLobbyInfo()
