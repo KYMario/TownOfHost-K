@@ -136,7 +136,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
     public override CustomRoles TellResults(PlayerControl player)
     {
         //ぽんこつ占い師のぽんこつ占い師で死ぬのはかわいそう('ω')
-        if (TellDie && player.IsAlive() && player != null)
+        if (AmongUsClient.Instance.AmHost && TellDie && player.IsAlive() && player != null)
         {
             Player.RpcExileV2();
             MyState.DeathReason = CustomDeathReason.Spell;
