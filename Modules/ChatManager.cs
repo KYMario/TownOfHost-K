@@ -457,7 +457,7 @@ namespace TownOfHost.Modules.ChatManager
         }
         public static void OnDisconnectOrDeadPlayer(byte id)
         {
-            if (!Options.ExHideChatCommand.GetBool() || !GameStates.IsMeeting || AntiBlackout.IsSet || Roles.Impostor.Assassin.NowUse) return;
+            if (!AmongUsClient.Instance.AmHost || !Options.ExHideChatCommand.GetBool() || !GameStates.IsMeeting || AntiBlackout.IsSet || Roles.Impostor.Assassin.NowUse) return;
 
             if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;
 
