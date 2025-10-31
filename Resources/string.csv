@@ -1652,7 +1652,7 @@
 "StrawdollReprisaldistance","Reprisal Distance","自身が呪殺される距離"
 "StrawdollStoptime","Stop Time","噛まれた時に動けない時間"
 "MissioneerWinAssignmntPoint","Win Point","単独勝利に必要なポイント"
-"MissioneerAddWinAssignmntPoint","AddWin Point","単独勝利に必要なポイント"
+"MissioneerAddWinAssignmntPoint","AddWin Point","追加勝利に必要なポイント"
 "MissioneerMeetingAssignmentcount","Max Meeting Assignment","新たなミッションの候補数"
 "Missioneerlv1point","Lv1 point","Lv1のポイント"
 "Missioneerlv2point","Lv2 point","Lv2のポイント"
