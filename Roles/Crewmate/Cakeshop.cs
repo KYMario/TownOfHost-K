@@ -99,6 +99,7 @@ public sealed class Cakeshop : RoleBase, INekomata
     public string GetLowerTextOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
         seen ??= seer;
+        if (!Player.IsAlive()) return "";
         if (seen != seer) return "";
         if (isForMeeting) return "";
         return Addedaddons.TryGetValue(seen.PlayerId, out var role) ? $"<size=50%>{Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}Info"))}</size>" : "";
