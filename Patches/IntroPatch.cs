@@ -84,7 +84,7 @@ namespace TownOfHost
                     __instance.RoleText.color = UtilsRoleText.GetRoleColor(role);
                     __instance.RoleBlurbText.color = UtilsRoleText.GetRoleColor(role);
 
-                    __instance.RoleBlurbText.text = PlayerControl.LocalPlayer.GetRoleInfo();
+                    __instance.RoleBlurbText.text = PlayerControl.LocalPlayer.GetRoleDesc();
 
                     //Amnesiacだった場合シェリフと表示させる
                     if (role == CustomRoles.Amnesiac)

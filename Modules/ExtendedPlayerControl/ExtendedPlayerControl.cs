@@ -15,6 +15,7 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.AddOns.Common;
 
 using static TownOfHost.Translator;
+using TownOfHost.Roles.Madmate;
 
 namespace TownOfHost
 {
@@ -427,11 +428,14 @@ namespace TownOfHost
                 CustomRoles.JackalAlien or
                 CustomRoles.Remotekiller or
                 CustomRoles.CountKiller or
+                CustomRoles.Fool or
                 CustomRoles.Altair;
         }
         public static bool IsNeutralKiller(this PlayerControl player)
         {
             if (player.GetRoleClass() is BakeCat bakeCat) return bakeCat.Team is not ISchrodingerCatOwner.TeamType.None;
+            if (player.GetRoleClass() is MadBetrayer) return MadBetrayer.IsMadmate() is false;
+
 
             return player.GetCustomRole().IsNeutralKiller();
         }
