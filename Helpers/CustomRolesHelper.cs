@@ -143,6 +143,23 @@ namespace TownOfHost
         CustomRoles.Driver or CustomRoles.Braid or
         CustomRoles.Vega or CustomRoles.Altair or
         CustomRoles.Fool or CustomRoles.Nue;
+        public static CustomRoles GetCombination(this CustomRoles role)
+        {
+            if (role.IsCombinationRole() is false) return CustomRoles.NotAssigned;
+
+            switch (role)
+            {
+                case CustomRoles.Assassin: return CustomRoles.Merlin;
+                case CustomRoles.Merlin: return CustomRoles.Assassin;
+                case CustomRoles.Driver: return CustomRoles.Braid;
+                case CustomRoles.Braid: return CustomRoles.Driver;
+                case CustomRoles.Vega: return CustomRoles.Altair;
+                case CustomRoles.Altair: return CustomRoles.Vega;
+                case CustomRoles.Fool: return CustomRoles.Nue;
+                case CustomRoles.Nue: return CustomRoles.Fool;
+            }
+            return CustomRoles.NotAssigned;
+        }
         public static bool IsMainRole(this CustomRoles role) => role < CustomRoles.NotAssigned;
         public static bool IsCrewmate(this RoleTypes role) =>
             role is RoleTypes.Crewmate or RoleTypes.CrewmateGhost or

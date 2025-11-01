@@ -164,6 +164,19 @@ namespace TownOfHost.Roles
                     }
                 }
             }
+
+            foreach (var role in AssignRoleList)
+            {
+                if (role.IsCombinationRole())
+                {
+                    if (AssignRoleList.Contains(role.GetCombination()) is false)
+                    {
+                        AssignRoleList.Remove(role);
+                        AssignCount[role.GetCustomRoleTypes()]--;
+                        Logger.Error($"{role} - {role.GetCombination()}が無いため、片方もアサインされない", "AssignError");
+                    }
+                }
+            }
             Logger.Info($"{string.Join(", ", AssignCount)}", "AssignCount");
             Logger.Info($"{string.Join(", ", AssignRoleList)}", "AssignRoleList");
         }
