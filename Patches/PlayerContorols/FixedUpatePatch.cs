@@ -60,7 +60,7 @@ namespace TownOfHost
 
             if (AmongUsClient.Instance.AmHost)
             {//実行クライアントがホストの場合のみ実行
-                if (GameStates.IsInTask)
+                if (GameStates.IsInTask && !GameStates.IsLobby)
                 {
                     if (ReportDeadBodyPatch.CanReport[__instance.PlayerId] && ReportDeadBodyPatch.WaitReport[__instance.PlayerId].Count > 0)
                     {
@@ -144,7 +144,7 @@ namespace TownOfHost
                     }
                     if (DisableDevice.DoDisable)
                     {
-                        DisableDevice.FixedUpdate();
+                        if (timer % 2 is 0) DisableDevice.FixedUpdate();
                         //情報機器制限
                         if (DisableDevice.optTimeLimitDevices || DisableDevice.optTurnTimeLimitDevice)
                         {

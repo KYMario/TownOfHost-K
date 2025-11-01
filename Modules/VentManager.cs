@@ -80,6 +80,7 @@ class VentManager
     public static void CheckVentLimit()
     {
         if (!MaxInVentMode) return;
+        if (AmongUsClient.Instance.AmHost is false) return;
 
         _delList.Clear();
 
