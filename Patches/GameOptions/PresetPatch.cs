@@ -28,6 +28,13 @@ class PresetMenu
                 if (roleopt.Value.GetValue() is not 0)
                     roleopt.Value.SetValue(0, false, false);
             }
+            foreach (var slotopt in OptionItem.AllOptions.Where(opt => opt.Name.Contains("SlotRole")))
+            {
+                if (slotopt is AssignOptionItem assignOption)
+                {
+                    assignOption.SetRoleValue([]);
+                }
+            }
             OptionItem.SyncAllOptions();
             OptionSaver.Save();
         });

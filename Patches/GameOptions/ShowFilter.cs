@@ -91,6 +91,9 @@ class ShowFilter
                     List<CustomRoles> rolelist = new();
                     rolelist.Add(CustomRoles.Crewmate);
                     rolelist.Add(CustomRoles.Impostor);
+                    rolelist.Add(CustomRoles.Merlin);
+                    rolelist.Add(CustomRoles.Braid);
+                    rolelist.Add(CustomRoles.Fool);
                     Options.CustomRoleSpawnChances.Keys.Do(r => rolelist.Add(r));
                     foreach (var customrole in rolelist)
                     {
@@ -98,8 +101,16 @@ class ShowFilter
                         if (customrole is CustomRoles.SKMadmate or CustomRoles.Emptiness or CustomRoles.HASFox or CustomRoles.HASTroll) continue;
                         if (IsFilterOption is false)
                         {
-                            if (customrole.IsEnable() is false && !(customrole is CustomRoles.Crewmate or CustomRoles.Impostor) &&
-                               !activeroles.Contains(customrole)) continue;
+                            if ((customrole is CustomRoles.Merlin && CustomRoles.Assassin.IsEnable()) ||
+                                (customrole is CustomRoles.Braid && CustomRoles.Driver.IsEnable()) ||
+                                (customrole is CustomRoles.Fool && CustomRoles.Nue.IsEnable())
+                                )
+                            { }
+                            else
+                            {
+                                if (customrole.IsEnable() is false && !(customrole is CustomRoles.Crewmate or CustomRoles.Impostor) &&
+                                        !activeroles.Contains(customrole)) continue;
+                            }
                         }
                         if (NotAssign.Contains(customrole)) continue;
                         var roletype = customrole.GetCustomRoleTypes();

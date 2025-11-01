@@ -154,10 +154,10 @@ HostModなので部屋主のみModを導入すれば、<br>
 ※本家TownOfHost様の開発者はここでは省略させていただきます
 #### クレジット
 [Town Of Host](https://github.com/tukasa0001/TownOfHost)<br>
-　偉大なる本家様！<br>TownOfHost様にある機能はTownOfHost-Kでも大体実装されています<br>
+　Fork元の本家です。<br>TownOfHost様にある機能はTownOfHost-Kでも大体実装されています<br>
 
 [Town Of Host_Y](https://github.com/Yumenopai/TownOfHost_Y)<br>
-　会議時の役職表示、会議拡張、ワーカホリック,属性名を参考/移植させて頂きました！<br>
+　会議時の役職表示、会議拡張、ワーカホリック,属性名、一部役職を参考/移植させて頂きました！<br>
 
 [Town Of Host For E](https://github.com/AsumuAkaguma/TownOfHost_ForE) <br>
 　機能やコメント取得一部処理の参考にさせて頂きました！<br>
@@ -186,3 +186,6 @@ TOR_GM_Haoming_Edition<br>
 
 [au.libhalt.net](https://au.libhalt.net/)<br>
 　マッドジェスターの参考/移植させていただきました<br>
+
+[ExtremeRoles](https://github.com/yukieiji/ExtremeRoles)<br>
+　アサシンとマーリンの参考/移植をさせていただきました。<br>
