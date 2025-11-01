@@ -5,6 +5,7 @@ using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Modules;
+using Hazel;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -162,6 +163,7 @@ public sealed class FireWorks : RoleBase, IImpostor, IUsePhantomButton
                 break;
         }
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
+        SendRpc();
     }
 
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
@@ -202,5 +204,16 @@ public sealed class FireWorks : RoleBase, IImpostor, IUsePhantomButton
     {
         text = "FireWorks_Ability";
         return true;
+    }
+    void SendRpc()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write((int)State);
+        sender.Writer.Write(NowFireWorksCount);
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        State = (FireWorksState)reader.ReadInt32();
+        NowFireWorksCount = reader.ReadInt32();
     }
 }
