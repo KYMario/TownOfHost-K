@@ -205,8 +205,10 @@ namespace TownOfHost
         public static void RpcReplaceSubRole(this PlayerControl player, CustomRoles role, bool remove = false)
         {
             if (!AmongUsClient.Instance.AmHost || role < CustomRoles.NotAssigned) return;
+            if (player is null) return;
 
             var state = PlayerState.GetByPlayerId(player.PlayerId);
+            if (state is null) return;
             if (remove)
             {
                 if (!state.SubRoles.Contains(role)) return;//不要なRPCは飛ばさない
