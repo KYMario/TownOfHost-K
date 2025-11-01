@@ -226,10 +226,6 @@ namespace TownOfHost
 
                 if (string.Compare(role, roleName, true) == 0 || string.Compare(role, roleShort, true) == 0)
                 {
-                    if (roledata.Key is CustomRoles.Assassin or CustomRoles.Merlin)
-                    {
-                        goto infosend;
-                    }
                     if (!Event.CheckRole(roledata.Key)) goto infosend;
                     var roleInfo = roledata.Key.GetRoleInfo();
                     if (roleInfo != null && roleInfo.Description != null)
@@ -248,10 +244,6 @@ namespace TownOfHost
 
             if (GetRoleByInputName(role, out var hr, true))
             {
-                if (hr is CustomRoles.Assassin or CustomRoles.Merlin)
-                {
-                    goto infosend;
-                }
                 if (hr is CustomRoles.Crewmate or CustomRoles.Impostor) SendMessage(msg, player);
                 var roleInfo = hr.GetRoleInfo();
                 if (roleInfo != null && roleInfo.Description != null)
