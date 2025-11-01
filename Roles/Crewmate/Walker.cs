@@ -124,6 +124,7 @@ public sealed class Walker : RoleBase
 
         if (RoomArrow != Vector2.zero) GetArrow.Remove(Player.PlayerId, RoomArrow);
 
+        MyTaskState.Update(Player);
         RoomArrow = TaskPSR.transform.position;
         GetArrow.Add(Player.PlayerId, RoomArrow);
         TaskRoom = TaskPSR.RoomId;
