@@ -138,6 +138,7 @@ public sealed class Merlin : RoleBase
         TaskRoom = null;
         TaskPSR = null;
         completeroom = reader.ReadInt32();
+        MyTaskState.Update(Player);
     }
 
     public override void OnStartMeeting()
