@@ -436,10 +436,10 @@ namespace TownOfHost
                         }, 0.1f, "Vent- BootFromVent", true);
                         _ = new LateTask(() =>
                         {
-                            VentPlayers.TryAdd(__instance.myPlayer.PlayerId, 0);
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.EnterVent, SendOption.None, clientId);
                             writer2.Write(id);
                             AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                            user.RpcResetAbilityCooldown(false, false);//最低でも1sクールあればベントぱかりできない。
                         }, 0.25f, "Vent- EnterVent", true);
                         __instance.myPlayer.inVent = false;
                         _ = new LateTask(() =>
@@ -447,7 +447,6 @@ namespace TownOfHost
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
                             writer2.Write(id);
                             AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                            __instance.myPlayer.RpcSnapToForced(pos);
                             __instance.myPlayer.inVent = false;
                         }, 0.8f, "Fix DesyncImpostor Stuck", true);
                         return false;
