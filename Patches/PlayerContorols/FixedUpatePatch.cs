@@ -183,7 +183,7 @@ namespace TownOfHost
                 timer = (timer + 1) % 10;
                 if (GameStates.InGame)
                 {
-                    if (Main.IsActiveSabotage)
+                    if (__instance.myTasks.ToArray().Any(PlayerTask.TaskIsEmergency))
                     {
                         Main.SabotageActivetimer += Time.fixedDeltaTime;
                     }
