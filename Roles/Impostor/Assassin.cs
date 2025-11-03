@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using AmongUs.GameOptions;
+using HarmonyLib;
 using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Patches;
@@ -58,6 +59,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     static OverrideTasksData OptionMerlinNomalTask;
     public static OptionItem OptionMerlinWorkTask;
     RoleBase AddRole;
+    public static Assassin assassin;
     public enum AssassinMeeting
     {
         WaitMeeting,
@@ -116,6 +118,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
             haverole = CustomRoles.NotAssigned;
         }
         AddRole?.Add();
+        assassin = this;
     }
     public override void OnDestroy()
     {
@@ -130,6 +133,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         MarlinIds = new();
         isDeadCache = new();
         GuessId = byte.MaxValue;
+        assassin = null;
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
@@ -155,24 +159,44 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 return;
             }
 
-            foreach (var info in GameData.Instance.AllPlayers)
-            {
-                isDeadCache[info.PlayerId] = (info.PlayerId.GetPlayerState().IsDead, info.Disconnected);
-
-                info.IsDead = false;
-                info.Disconnected = false;
-            }
-
-            NowUse = true;
-            NowState = AssassinMeeting.Guessing;
-
-            AntiBlackout.SendGameData();
             _ = new LateTask(() =>
             {
                 MyState.IsDead = false;
-                ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "AssassinMeeting", "#ff1919");
-                Utils.AllPlayerKillFlash();
-            }, 3, "", true);
+                foreach (var info in GameData.Instance.AllPlayers)
+                {
+                    if (info.PlayerId == Player.PlayerId)
+                    {
+                        isDeadCache[info.PlayerId] = (false, false);
+
+                        info.IsDead = false;
+                        info.Disconnected = false;
+                        continue;
+                    }
+                    isDeadCache[info.PlayerId] = (info.PlayerId.GetPlayerState().IsDead, info.Disconnected);
+
+                    info.IsDead = false;
+                    info.Disconnected = false;
+                }
+                NowUse = true;
+                NowState = AssassinMeeting.Guessing;
+
+                GameDataSerializePatch.SerializeMessageCount++;
+                AntiBlackout.SendGameData();
+                GameDataSerializePatch.SerializeMessageCount--;
+                MyState.IsDead = false;
+                _ = new LateTask(() =>
+                {
+                    GameDataSerializePatch.DontTouch = true;
+                }, 1, "DontTuch", true);
+                _ = new LateTask(() =>
+                {
+                    MyState.IsDead = false;
+                    ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "AssassinMeeting", "#ff1919");
+                    Utils.AllPlayerKillFlash();
+
+                    GameDataSerializePatch.DontTouch = false;
+                }, 3, "", true);
+            }, 1, "", true);
         }
     }
     public override void OnSpawn(bool initialState = false)
@@ -199,9 +223,18 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 }
                 else if (NowState is AssassinMeeting.CallMetting)
                 {
+                    MyState.IsDead = false;
                     GameDataSerializePatch.SerializeMessageCount++;
                     foreach (var info in GameData.Instance.AllPlayers)
                     {
+                        if (info.PlayerId == Player.PlayerId)
+                        {
+                            isDeadCache[info.PlayerId] = (false, false);
+
+                            info.IsDead = false;
+                            info.Disconnected = false;
+                            continue;
+                        }
                         isDeadCache[info.PlayerId] = (info.PlayerId.GetPlayerState().IsDead, info.Disconnected);
 
                         info.IsDead = false;
@@ -214,7 +247,11 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                     AntiBlackout.SendGameData();
                     GameDataSerializePatch.SerializeMessageCount--;
                     _ = new LateTask(() =>
-                    ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "AssassinMeeting", "#ff1919"), 3, "", true);
+                    {//ホストだけSetRoleして復活させる。
+                        PlayerCatch.AllPlayerControls.DoIf(pc => !pc.IsModClient() && pc.PlayerId != Player.PlayerId,
+                        pc => PlayerCatch.GetPlayerById(0).RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId()));
+                        ReportDeadBodyPatch.ExReportDeadBody(Player, null, false, "AssassinMeeting", "#ff1919");
+                    }, 3, "", true);
                 }
             }//, 0.5f, "AssassinShori");
         }

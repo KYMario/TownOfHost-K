@@ -534,7 +534,7 @@ namespace TownOfHost
                     var line = "<line-height=85%>";
                     SelfName += SelfSuffix.ToString() == "" ? "" : (line + "\r\n " + SelfSuffix.ToString());
 
-                    if (isMeMinfo)
+                    if (isMeMinfo && !Assassin.NowUse)
                     {
                         var Name = SelfName;
                         SelfName = Minfo + $"<voffset=10>\n<line-height=85%>{Name.RemoveDeltext("</?line-height[^>]*?>", "")}{(SelfSuffix.ToString().RemoveHtmlTags() == "" ? "\r\n " : "")}</line-height></voffset>";
@@ -598,7 +598,7 @@ namespace TownOfHost
 
                             if (Assassin.NowUse) tageismeI = target.PlayerId == PlayerControl.LocalPlayer.PlayerId;
 
-                            if (list[0] != null)
+                            if (list[0] != null && !Assassin.NowUse)
                             {
                                 if (list[0] == target)
                                 {

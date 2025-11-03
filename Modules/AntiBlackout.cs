@@ -11,6 +11,7 @@ using TownOfHost.Patches;
 using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using TownOfHost.Roles.Impostor;
 using static TownOfHost.Modules.MeetingVoteManager;
 
 namespace TownOfHost
@@ -209,6 +210,10 @@ namespace TownOfHost
             if (Player.GetClient() is null)
             {
                 Logger.Error($"{Player?.Data?.PlayerName ?? "???"}のclientがnull", "ExiledSetRole");
+                return;
+            }
+            if (Assassin.assassin?.NowState is Assassin.AssassinMeeting.CallMetting or Assassin.AssassinMeeting.Guessing)
+            {
                 return;
             }
             if (Iswaitsend)

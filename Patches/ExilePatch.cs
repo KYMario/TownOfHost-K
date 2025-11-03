@@ -149,6 +149,7 @@ namespace TownOfHost
             //WrapUpPostfixで例外が発生しても、この部分だけは確実に実行されます。
             if (AmongUsClient.Instance.AmHost)
             {
+                bool Iscallassasin = Assassin.assassin?.NowState is Assassin.AssassinMeeting.CallMetting or Assassin.AssassinMeeting.Guessing;
                 _ = new LateTask(() =>
                 {
                     exiled = AntiBlackout_LastExiled;
@@ -158,7 +159,8 @@ namespace TownOfHost
                 {
                     if (AntiBlackout.OverrideExiledPlayer() && // 追放対象が上書きされる状態 (上書きされない状態なら実行不要)
                         exiled != null && //exiledがnullでない
-                        exiled.Object != null) //exiled.Objectがnullでない
+                        exiled.Object != null && //exiled.Objectがnullでない
+                    !Iscallassasin)
                     {
                         exiled.Object.RpcExileV2();
                     }
@@ -166,7 +168,7 @@ namespace TownOfHost
                     if (Options.ExAftermeetingflash.GetBool())
                         Utils.AllPlayerKillFlash();
 
-                    if (Main.NormalOptions.MapId is not 4 || AntiBlackout.OverrideExiledPlayer())
+                    if ((Main.NormalOptions.MapId is not 4 || AntiBlackout.OverrideExiledPlayer()) && !Iscallassasin)
                     {
                         PlayerCatch.AllPlayerControls.Do(pc =>
                         {
@@ -177,27 +179,28 @@ namespace TownOfHost
                     GameStates.task = true;
                     Logger.Info("タスクフェイズ開始", "Phase");
                 }, 0.52f, "AfterMeetingDeathPlayers Task");
-                _ = new LateTask(() =>
-                {
-                    Main.AfterMeetingDeathPlayers.Do(x =>
+                if (Iscallassasin is false)
+                    _ = new LateTask(() =>
                     {
-                        var player = PlayerCatch.GetPlayerById(x.Key);
-                        var roleClass = CustomRoleManager.GetByPlayerId(x.Key);
-                        var requireResetCam = player?.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor == true;
-                        var state = PlayerState.GetByPlayerId(x.Key);
-                        Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を{x.Value}で死亡させました", "AfterMeetingDeath");
-                        state.DeathReason = x.Value;
-                        state.SetDead();
-                        player?.RpcExileV2();
-                        if (x.Value == CustomDeathReason.Suicide)
-                            player?.SetRealKiller(player, true);
-                        if (requireResetCam)
-                            player?.ResetPlayerCam(1f);
-                        if (roleClass is Executioner executioner && executioner.TargetId == x.Key)
-                            Executioner.ChangeRoleByTarget(x.Key);
-                    });
-                    Main.AfterMeetingDeathPlayers.Clear();
-                }, 0.6f, "AfterMeetingDeathPlayer", null);
+                        Main.AfterMeetingDeathPlayers.Do(x =>
+                        {
+                            var player = PlayerCatch.GetPlayerById(x.Key);
+                            var roleClass = CustomRoleManager.GetByPlayerId(x.Key);
+                            var requireResetCam = player?.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor == true;
+                            var state = PlayerState.GetByPlayerId(x.Key);
+                            Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を{x.Value}で死亡させました", "AfterMeetingDeath");
+                            state.DeathReason = x.Value;
+                            state.SetDead();
+                            player?.RpcExileV2();
+                            if (x.Value == CustomDeathReason.Suicide)
+                                player?.SetRealKiller(player, true);
+                            if (requireResetCam)
+                                player?.ResetPlayerCam(1f);
+                            if (roleClass is Executioner executioner && executioner.TargetId == x.Key)
+                                Executioner.ChangeRoleByTarget(x.Key);
+                        });
+                        Main.AfterMeetingDeathPlayers.Clear();
+                    }, 0.6f, "AfterMeetingDeathPlayer", null);
             }
             else
             {
@@ -211,6 +214,7 @@ namespace TownOfHost
             {
                 _ = new LateTask(() =>
                 {
+                    if (GameStates.CalledMeeting) return;
                     if (CustomWinnerHolder.WinnerTeam is CustomWinner.Default)
                         AntiBlackout.isRoleCache.Do(id =>
                         {

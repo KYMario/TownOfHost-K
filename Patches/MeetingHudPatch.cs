@@ -146,6 +146,7 @@ public static class MeetingHudPatch
             var aliveplayer = PlayerCatch.AllAlivePlayerControls.OrderBy(x => x.PlayerId);
             var deadplayer = PlayerCatch.AllPlayerControls.Where(x => !x.IsAlive()).OrderBy(x => x.PlayerId);
             var list = aliveplayer.ToArray().AddRangeToArray(deadplayer.ToArray());
+            var meetinginfoplayer = list[0] is null || Assassin.NowUse ? PlayerCatch.GetPlayerById(0) : list[0];
 
             HudManagerPatch.LowerInfoText.text = myRole?.GetLowerText(PlayerControl.LocalPlayer, isForMeeting: true, isForHud: true) ?? "";
             if (PlayerControl.LocalPlayer.Is(CustomRoles.Amnesia)) HudManagerPatch.LowerInfoText.text = "";
@@ -210,17 +211,16 @@ public static class MeetingHudPatch
                     suffixTextMeeting.text = roleTextMeeting.text;
                     suffixTextMeeting.enabled = true;
                 }
-                if (list[0] != null)
-                    if (list[0].PlayerId == pc.PlayerId)
+                if (meetinginfoplayer.PlayerId == pc.PlayerId)
+                {
+                    MeetingInfo.enabled = true;
+                    MeetingInfo.text = $"<#ffffff><line-height=95%>" + $"Day.{UtilsGameLog.day}".Color(Palette.Orange) + Bakery.BakeryMark() + $"\n{UtilsNotifyRoles.ExtendedMeetingText}";
+                    if (CustomRolesHelper.CheckGuesser() || PlayerCatch.AllPlayerControls.Any(pc => pc.Is(CustomRoles.Guesser)))
                     {
-                        MeetingInfo.enabled = true;
-                        MeetingInfo.text = $"<#ffffff><line-height=95%>" + $"Day.{UtilsGameLog.day}".Color(Palette.Orange) + Bakery.BakeryMark() + $"\n{UtilsNotifyRoles.ExtendedMeetingText}";
-                        if (CustomRolesHelper.CheckGuesser() || PlayerCatch.AllPlayerControls.Any(pc => pc.Is(CustomRoles.Guesser)))
-                        {
-                            MeetingInfo.text = $"<size=50%>\n </size>{MeetingInfo.text}\n<size=50%><#999900>{GetString("GuessInfo")}</color></size>";
-                        }
-                        MeetingInfo.text += "<line-height=0%>\n</line-height></line-height><line-height=300%>\n</line-height></color> ";
+                        MeetingInfo.text = $"<size=50%>\n </size>{MeetingInfo.text}\n<size=50%><#999900>{GetString("GuessInfo")}</color></size>";
                     }
+                    MeetingInfo.text += "<line-height=0%>\n</line-height></line-height><line-height=300%>\n</line-height></color> ";
+                }
             }
             CustomRoleManager.AllActiveRoles.Values.Do(role => role.OnStartMeeting());
             SlowStarter.OnStartMeeting();
