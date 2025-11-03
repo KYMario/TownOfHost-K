@@ -88,6 +88,13 @@ namespace TownOfHost
                     break;
                 default:
                     if (AmongUsClient.Instance.AmHost) break;
+
+                    if (AntiBlackout.IsCached && GameStates.InGame)
+                    {
+                        __instance.freeChatField.textArea.Clear();
+                        __instance.freeChatField.textArea.SetText(cancelVal);
+                        return false;
+                    }
                     //Modクライアントは秘匿チャットでの死亡判定を弄りたくない。
                     if (args[0].StartsWith("/") && text.Length < 30 /* 30超えると送信しない*/ && Options.ExHideChatCommand.GetBool())
                     {
@@ -1198,7 +1205,7 @@ namespace TownOfHost
             }
             return !canceled;
         }
-
+        #region  OnReceiveChat
         public static void OnReceiveChat(PlayerControl player, string text, out bool canceled, bool Isclient = false)
         {
             if (player != null)
@@ -1653,6 +1660,7 @@ namespace TownOfHost
             }
         }
     }
+    #endregion
     [HarmonyPatch(typeof(ChatController), nameof(ChatController.Update))]
     class ChatUpdatePatch
     {
