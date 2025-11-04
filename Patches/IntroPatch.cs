@@ -532,6 +532,13 @@ namespace TownOfHost
                         {
                             new RandomSpawn.AirshipSpawnMap().RandomTeleport(pl);
                         }
+                        foreach (var task in pl.myTasks)
+                        {
+                            // インポスター置き換えはid0(タスクリストの一番上)のみ届かない。
+                            // タスクを持たないケースでのみ試してみる。
+                            if (UtilsTask.HasTasks(pl.Data, false) is false)
+                                pl.RpcCompleteTask(task.Id);
+                        }
                     }
                     ExtendedRpc.RpcResetAbilityCooldownAllPlayer();
                     CustomButtonHud.BottonHud(true);

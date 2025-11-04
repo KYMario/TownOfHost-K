@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
+using AmongUs.InnerNet.GameDataMessages;
 using HarmonyLib;
 using Hazel;
 using TownOfHost.Roles.Core;
@@ -28,7 +29,8 @@ public sealed class Merlin : RoleBase
     public Merlin(PlayerControl player)
     : base(
         RoleInfo,
-        player
+        player,
+        () => Assassin.OptionMerlinHasTask.GetBool() ? HasTask.True : HasTask.False
     )
     {
         completeroom = 0;
@@ -39,6 +41,8 @@ public sealed class Merlin : RoleBase
         worktask = Assassin.OptionMerlinWorkTask.GetInt();
         CanSeeNeutral = Assassin.OptionMerlinCanSeeNeutral?.GetBool() ?? false;
         OnlyNeutralKiller = Assassin.OptionMerlinOnlyNeutralKiller?.GetBool() ?? false;
+        IsGlayColor = Assassin.OptionMerlinCantSeeNeutralColor?.GetBool() ?? false;
+        CanSeeMadmate = Assassin.OptionMerlinCanSeeMadmate?.GetBool() ?? false;
     }
     public static int worktask;
     float timer;
@@ -48,6 +52,8 @@ public sealed class Merlin : RoleBase
     Vector2 RoomArrow;
 
     static bool CanSeeNeutral;
+    static bool IsGlayColor;
+    static bool CanSeeMadmate;
     static bool OnlyNeutralKiller;
 
     public override void Add()
@@ -56,12 +62,12 @@ public sealed class Merlin : RoleBase
         {
             NameColorManager.Add(Player.PlayerId, impostor.PlayerId, "#ff1919");
         }
-        Assassin.MarlinIds.Add(Player.PlayerId);
-        // 必要であれば初期表示更新（自身視点のみ適用）
-        if (CanSeeNeutral)
+        foreach (var neutral in PlayerCatch.AllPlayerControls.Where(player => player.Is(CustomRoleTypes.Neutral) || (player.Is(CustomRoleTypes.Madmate) && CanSeeMadmate)))
         {
-            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, "MerlinNotify", null);
+            if (!OnlyNeutralKiller || neutral.IsNeutralKiller() || neutral.Is(CustomRoles.GrimReaper))
+                NameColorManager.Add(Player.PlayerId, neutral.PlayerId, IsGlayColor ? "#555555" : neutral.GetRoleColorCode());
         }
+        Assassin.MarlinIds.Add(Player.PlayerId);
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
@@ -101,17 +107,6 @@ public sealed class Merlin : RoleBase
         }
     }
     public override bool NotifyRolesCheckOtherName => CanSeeNeutral;
-
-    public override void OverrideDisplayRoleNameAsSeer(PlayerControl seen, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
-    {
-        if (!CanSeeNeutral) return;
-        if (seen == null) return;
-        var role = seen.GetCustomRole();
-        if (!role.IsNeutral()) return;
-        if (OnlyNeutralKiller && !seen.IsNeutralKiller()) return;
-        // 第三（条件一致）なら役職名表示を許可
-        enabled = true;
-    }
     void CheckFin()
     {
         if (MyTaskState.CompletedTasksCount < MyTaskState.AllTasksCount) return;

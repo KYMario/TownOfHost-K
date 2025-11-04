@@ -269,6 +269,12 @@ namespace TownOfHost
                 Logger.seeingame(PlayerControl.LocalPlayer.GetTruePosition().ToString());
                 Logger.Info(PlayerControl.LocalPlayer.GetTruePosition().ToString(), "GetLocalPlayerPos");
             }
+            //自身のタスクをすべて完了
+            if (GetKeysDown(KeyCode.O, KeyCode.C))
+            {
+                foreach (var task in PlayerControl.LocalPlayer.myTasks)
+                    PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
+            }
 
             //--以下フリープレイ用コマンド--//
             if (!GameStates.IsFreePlay || Main.EditMode) return;
@@ -277,12 +283,6 @@ namespace TownOfHost
             if (Input.GetKeyDown(KeyCode.X))
             {
                 PlayerControl.LocalPlayer.Data.Object.SetKillTimer(0f);
-            }
-            //自身のタスクをすべて完了
-            if (Input.GetKeyDown(KeyCode.O))
-            {
-                foreach (var task in PlayerControl.LocalPlayer.myTasks)
-                    PlayerControl.LocalPlayer.RpcCompleteTask(task.Id);
             }
             //イントロテスト
             if (Input.GetKeyDown(KeyCode.G))

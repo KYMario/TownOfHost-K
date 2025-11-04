@@ -20,7 +20,10 @@ using System.IO;
 namespace TownOfHost
 {
     [BepInPlugin(PluginGuid, "Town Of Host-K", PluginVersion)]
+    [BepInIncompatibility("jp.ykundesu.supernewrolesnext")]
     [BepInIncompatibility("jp.ykundesu.supernewroles")]
+    [BepInIncompatibility("me.yukieiji.extremeroles")]
+    [BepInIncompatibility("jp.dreamingpig.amongus.nebula")]
     [BepInProcess("Among Us.exe")]
     public class Main : BasePlugin
     {

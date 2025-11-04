@@ -71,13 +71,13 @@ namespace TownOfHost
         /// <param name="tab">タブ</param>
         /// <param name="role">設定に出すロール</param>
         /// <param name="RoleName">設定名(ユニット用)</param>
-        public OverrideTasksData(int idStart, TabGroup tab, CustomRoles role, CustomRoles RoleName = CustomRoles.NotAssigned, (bool defo, int common, int Long, int Short)? tasks = null)
+        public OverrideTasksData(int idStart, TabGroup tab, CustomRoles role, CustomRoles RoleName = CustomRoles.NotAssigned, (bool defo, int common, int Long, int Short)? tasks = null, OptionItem parent = null)
         {
             this.IdStart = idStart;
             this.Role = role;
             var rolename = RoleName == CustomRoles.NotAssigned ? role : RoleName;
             Dictionary<string, string> replacementDic = new() { { "%role%", Utils.ColorString(UtilsRoleText.GetRoleColor(rolename), UtilsRoleText.GetRoleName(rolename)) } };
-            doOverride = BooleanOptionItem.Create(idStart++, "doOverride", tasks?.defo ?? false, tab, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role)
+            doOverride = BooleanOptionItem.Create(idStart++, "doOverride", tasks?.defo ?? false, tab, false).SetParent(parent is null ? CustomRoleSpawnChances[role] : parent).SetParentRole(role)
                 .SetValueFormat(OptionFormat.None);
             doOverride.ReplacementDictionary = replacementDic;
             numCommonTasks = IntegerOptionItem.Create(idStart++, "roleCommonTasksNum", new(0, 99, 1), tasks?.common ?? 3, tab, false).SetParent(doOverride).SetParentRole(role)
@@ -102,9 +102,9 @@ namespace TownOfHost
         /// <param name="tab">タブ</param>
         /// <param name="role">設定に出すロール</param>
         /// <param name="RoleName">設定名(ユニット用)</param>
-        public static OverrideTasksData Create(SimpleRoleInfo roleInfo, int idOffset, CustomRoles rolename = CustomRoles.NotAssigned, (bool defo, int common, int Long, int Short)? tasks = null)
+        public static OverrideTasksData Create(SimpleRoleInfo roleInfo, int idOffset, CustomRoles rolename = CustomRoles.NotAssigned, (bool defo, int common, int Long, int Short)? tasks = null, OptionItem parent = null)
         {
-            return new OverrideTasksData(roleInfo.ConfigId + idOffset, roleInfo.Tab, roleInfo.RoleName, rolename, tasks);
+            return new OverrideTasksData(roleInfo.ConfigId + idOffset, roleInfo.Tab, roleInfo.RoleName, rolename, tasks, parent);
         }
     }
     public class SoloWinOption
