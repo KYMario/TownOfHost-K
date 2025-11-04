@@ -264,6 +264,11 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                     AntiBlackout.SendGameData();
                     GameDataSerializePatch.SerializeMessageCount--;
                     _ = new LateTask(() =>
+                    {
+                        PlayerCatch.AllPlayerControls.DoIf(pc => !pc.IsModClient() && pc.PlayerId != Player.PlayerId,
+                        pc => PlayerCatch.GetPlayerById(0).RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId()));
+                    }, 2.5f, "", true);
+                    _ = new LateTask(() =>
                     {//ホストだけSetRoleして復活させる。
                         PlayerCatch.AllPlayerControls.DoIf(pc => !pc.IsModClient() && pc.PlayerId != Player.PlayerId,
                         pc => PlayerCatch.GetPlayerById(0).RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId()));
