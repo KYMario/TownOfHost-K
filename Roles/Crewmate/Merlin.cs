@@ -37,6 +37,8 @@ public sealed class Merlin : RoleBase
         TaskPSR = null;
         RoomArrow = Vector2.zero;
         worktask = Assassin.OptionMerlinWorkTask.GetInt();
+        CanSeeNeutral = Assassin.OptionMerlinCanSeeNeutral?.GetBool() ?? false;
+        OnlyNeutralKiller = Assassin.OptionMerlinOnlyNeutralKiller?.GetBool() ?? false;
     }
     public static int worktask;
     float timer;
@@ -45,6 +47,9 @@ public sealed class Merlin : RoleBase
     PlainShipRoom TaskPSR;
     Vector2 RoomArrow;
 
+    static bool CanSeeNeutral;
+    static bool OnlyNeutralKiller;
+
     public override void Add()
     {
         foreach (var impostor in PlayerCatch.AllPlayerControls.Where(player => player.Is(CustomRoleTypes.Impostor) || player.GetCustomRole() is CustomRoles.Egoist))
@@ -52,6 +57,11 @@ public sealed class Merlin : RoleBase
             NameColorManager.Add(Player.PlayerId, impostor.PlayerId, "#ff1919");
         }
         Assassin.MarlinIds.Add(Player.PlayerId);
+        // 必要であれば初期表示更新（自身視点のみ適用）
+        if (CanSeeNeutral)
+        {
+            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, "MerlinNotify", null);
+        }
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
@@ -89,6 +99,18 @@ public sealed class Merlin : RoleBase
                 ChengeRoom();
             }
         }
+    }
+    public override bool NotifyRolesCheckOtherName => CanSeeNeutral;
+
+    public override void OverrideDisplayRoleNameAsSeer(PlayerControl seen, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
+    {
+        if (!CanSeeNeutral) return;
+        if (seen == null) return;
+        var role = seen.GetCustomRole();
+        if (!role.IsNeutral()) return;
+        if (OnlyNeutralKiller && !seen.IsNeutralKiller()) return;
+        // 第三（条件一致）なら役職名表示を許可
+        enabled = true;
     }
     void CheckFin()
     {

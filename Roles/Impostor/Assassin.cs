@@ -58,6 +58,8 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
 
     static OverrideTasksData OptionMerlinNomalTask;
     public static OptionItem OptionMerlinWorkTask;
+    public static OptionItem OptionMerlinCanSeeNeutral;
+    public static OptionItem OptionMerlinOnlyNeutralKiller;
     RoleBase AddRole;
     public static Assassin assassin;
     public enum AssassinMeeting
@@ -89,7 +91,9 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         AssasinCanCallMeetingKill,
         AssasinHasOtherRole,
         AssassinHaveRole,
-        WalkerWalkTaskCount
+        WalkerWalkTaskCount,
+        MerlinCanSeeNeutral,
+        MerlinOnlyNeutralKiller
     }
     public static void SetupOptionItem()
     {
@@ -100,6 +104,8 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
 
         OptionMerlinNomalTask = OverrideTasksData.Create(RoleInfo, 16, rolename: CustomRoles.Merlin, tasks: (true, 2, 0, 0));
         OptionMerlinWorkTask = IntegerOptionItem.Create(RoleInfo, 15, OptionName.WalkerWalkTaskCount, (0, 99, 1), 6, false);
+        OptionMerlinCanSeeNeutral = BooleanOptionItem.Create(RoleInfo, 20, OptionName.MerlinCanSeeNeutral, false, false);
+        OptionMerlinOnlyNeutralKiller = BooleanOptionItem.Create(RoleInfo, 21, OptionName.MerlinOnlyNeutralKiller, false, false, OptionMerlinCanSeeNeutral);
     }
     public override void Add()
     {

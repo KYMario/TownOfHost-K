@@ -1543,6 +1543,8 @@
 "CandleLighterEndVision","End Vision(Narrowest Vision)","最後の視界(一番狭い視界)",
 "ExpressSpeed","Speed","スピード","速度",,
 "maxMonitoringCount","maxMonitoringCount","監視可能回数"
+"MerlinCanSeeNeutral","","マーリンが第三陣営も視認できるか"
+"MerlinOnlyNeutralKiller","","キル能力持つ第三陣営だけ視認できるか"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""
