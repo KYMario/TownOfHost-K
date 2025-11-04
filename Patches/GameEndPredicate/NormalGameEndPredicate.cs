@@ -24,6 +24,7 @@ namespace TownOfHost
         public bool CheckGameEndByLivingPlayers(out GameOverReason reason)
         {
             reason = GameOverReason.ImpostorsByKill;
+            if (Assassin.assassin?.NowState is Assassin.AssassinMeeting.Collected) return false;
 
             int Imp = 0;
             int Jackal = 0;

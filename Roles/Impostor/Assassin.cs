@@ -69,7 +69,8 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         Guessing,
         Collected,
         EndMeeting,
-        DieWait
+        DieWait,
+        Win
     }
     static CustomRoles[] InvalidRoles()
     {
@@ -226,6 +227,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                     MyState.IsDead = false;
                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Impostor, Player.PlayerId, hantrole: CustomRoles.Assassin);
                     Logger.Info("まーりんぱりーん", "Assassin");
+                    NowState = AssassinMeeting.Win;
                 }
                 else if (NowState is AssassinMeeting.CallMetting)
                 {
@@ -343,12 +345,14 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 NowState = AssassinMeeting.DieWait;
                 Player.RpcSetName(string.Format(GetString("AssassinGuessNonCollect"), tage) + "<size=0>");
                 MeetingVoteManager.Voteresult = string.Format(GetString("AssassinGuessNonCollect"), tage);
+                Logger.Info($"{GuessId}マーリンじゃない!", "Assassin");
             }
             if (GuessId.GetPlayerState()?.MainRole is CustomRoles.Merlin)
             {
                 NowState = AssassinMeeting.Collected;
                 Player.RpcSetName(string.Format(GetString("AssassinGuessCollect"), tage) + "<size=0>");
                 MeetingVoteManager.Voteresult = string.Format(GetString("AssassinGuessCollect"), tage);
+                Logger.Info($"{GuessId}マーリンだ!", "Assassin");
             }
             else
             {
