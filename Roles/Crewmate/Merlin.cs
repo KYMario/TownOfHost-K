@@ -38,7 +38,7 @@ public sealed class Merlin : RoleBase
         TaskRoom = null;
         TaskPSR = null;
         RoomArrow = Vector2.zero;
-        worktask = Assassin.OptionMerlinWorkTask.GetInt();
+        worktask = Assassin.OptionMerlinHasTask.GetBool() ? Assassin.OptionMerlinWorkTask.GetInt() : 0;
         CanSeeNeutral = Assassin.OptionMerlinCanSeeNeutral?.GetBool() ?? false;
         OnlyNeutralKiller = Assassin.OptionMerlinOnlyNeutralKiller?.GetBool() ?? false;
         IsGlayColor = Assassin.OptionMerlinCantSeeNeutralColor?.GetBool() ?? false;

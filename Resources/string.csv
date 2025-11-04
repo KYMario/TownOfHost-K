@@ -1547,7 +1547,7 @@
 "MerlinOnlyNeutralKiller","Only NuetralKiller","キル能力持つ第三陣営だけ視認できるか"
 "MerlinCantSeeNeutralColor","Neutral NameColor Gray","名前の色をグレーに統一する"
 "MerlinHasTask","Merlin Hastask","マーリンがタスクを持つか"
-"MerlinCantSeeMadmate","Can See Madmates","マッドメイトも見える"
+"MerlinCanSeeMadmate","Can See Madmates","マッドメイトも見える"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""
