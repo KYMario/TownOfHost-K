@@ -1,6 +1,7 @@
 # Town Of Host-K
 
-**DiscordServer**
+[English version here](https://github.com/KYMario/TownOfHost-K/blob/main/README-EN.md)<br>
+
 [![Discord](./Images/TownOfHostK_readme.png)](https://discord.gg/5DPqH8seFq)
 
 <p align="center"><a href="https://github.com/KYMario/TownOfHost-K/releases/"><img src="https://badgen.net/github/release/KYMario/TownOfHost-K"></a></p>
@@ -17,16 +18,15 @@ TOH-Kで起きたバグは本家や他MODには報告しないでまずはkに�
 
 機能面などを開発者にDMで聞くのは超大迷惑なので基本おやめください。<br>
 
-[本家TOHはこちら](https://github.com/tukasa0001/TownOfHost) TOH-K以外の説明を省いているので本家の役職などはこちらから
+[本家TOHはこちら](https://github.com/tukasa0001/TownOfHost)<br>
 
 ## [Wiki](https://github.com/KYMario/TownOfHost-K/wiki)もあるよ!
 
 ## リリース
-AmongUsバージョン : **17.0.0**<br>
+AmongUsバージョン : **17.0.0**~<br>
 
-**最新版は[こちら](https://github.com/KYMario/TownOfHost-K/releases/latest)**
-
-過去バージョンは[こちら](https://github.com/KYMario/TownOfHost-K/releases)
+**最新版は[こちら](https://github.com/KYMario/TownOfHost-K/releases/latest)**<br>
+過去バージョンは[こちら](https://github.com/KYMario/TownOfHost-K/releases)<br>
 
 ## 公開ルームについて
 > [!Note]
@@ -34,7 +34,7 @@ AmongUsバージョン : **17.0.0**<br>
 
 > [**Note**]
 > - 【理由】
-> - 以前からHostMod(Moed含む)部屋での仕様, 不具合がAmongUs公式に問い合わせが多数寄せられた事が主な原因と捉えています。
+> - 以前からHostMod(Mode含む)部屋での仕様, 不具合がAmongUs公式に問い合わせが多数寄せられた事が主な原因と捉えています。
 > - また、ユーザーが**意図しないMod体験**が行われないよう注意喚起をしています。
 <br>
 -これは永続的な変更では有りません。<br>
