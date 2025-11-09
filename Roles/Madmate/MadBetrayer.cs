@@ -125,6 +125,7 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
 
     public override bool OnCompleteTask(uint taskid)
     {
+        if (Player.IsAlive() is false) return true;
         if (IsImpostorReveal is false && MyTaskState.HasCompletedEnoughCountOfTasks(ImpostorRevealTaskCount) && ImpostorRevealTaskCount is not 0)
         {
             IsImpostorReveal = true;
