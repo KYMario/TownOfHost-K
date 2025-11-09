@@ -122,6 +122,7 @@ namespace TownOfHost
                     var subSenders = new List<CustomRpcSender>();
                     var sender = CustomRpcSender.Create("SetCustomRole", SendOption.Reliable);
                     sender.StartMessage(player.GetClientId());
+                    Main.NowTypes[player.PlayerId] = role.GetRoleTypes();
                     foreach (var pc in PlayerCatch.AllPlayerControls)
                     {
                         if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
@@ -166,6 +167,7 @@ namespace TownOfHost
                 else
                 {
                     player.RpcSetRole(role.GetRoleTypes(), Main.SetRoleOverride);
+                    Main.NowTypes[player.PlayerId] = role.GetRoleTypes();
                 }
                 if ((roleInfo?.IsCantSeeTeammates == true || player.Is(CustomRoles.OneWolf)) && role.IsImpostor() && !SuddenDeathMode.NowSuddenDeathMode)
                 {
@@ -283,6 +285,7 @@ namespace TownOfHost
             writer.Write((ushort)role);
             writer.Write(Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+            if (player?.PlayerId == pc?.Character?.PlayerId) Main.NowTypes[player.PlayerId] = role;
         }
         public static void RpcMeetingKill(this PlayerControl killer, PlayerControl target = null)
         {

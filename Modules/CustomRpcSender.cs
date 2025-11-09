@@ -189,6 +189,7 @@ namespace TownOfHost
             }
             if (currentRpcTarget != targetClientId)
             {
+                Logger.Warn($"{currentRpcTarget} - {targetClientId}前回とClientIdが異なります。", "AuteStartRpc");
                 //StartMessage処理
                 if (currentState == State.InRootMessage) this.EndMessage();
                 this.StartMessage(targetClientId);

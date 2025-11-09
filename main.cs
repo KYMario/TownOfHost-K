@@ -167,6 +167,7 @@ namespace TownOfHost
         public static Dictionary<byte, bool> CheckShapeshift = new();
         public static Dictionary<byte, byte> ShapeshiftTarget = new();
         public static Dictionary<byte, CustomDeathReason> HostKill = new();
+        public static Dictionary<byte, RoleTypes> NowTypes = new();
         public static bool VisibleTasksCount;
         public static string nickName = "";
         public static string lobbyname = "";

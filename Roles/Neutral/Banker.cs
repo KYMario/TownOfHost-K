@@ -145,10 +145,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
             {
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
-                    if (pc == PlayerControl.LocalPlayer)
-                        Player.StartCoroutine(Player.CoSetRole(RoleTypes.Engineer, true));
-                    else
-                        Player.RpcSetRoleDesync(pc == Player && TaskMode ? RoleTypes.Impostor : RoleTypes.Engineer, pc.GetClientId());
+                    Player.RpcSetRoleDesync(pc == Player && TaskMode ? RoleTypes.Impostor : RoleTypes.Engineer, pc.GetClientId());
                 }
                 TaskMode = !TaskMode;
             }

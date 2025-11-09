@@ -63,6 +63,7 @@ namespace TownOfHost
 
             Main.CheckShapeshift = new();
             Main.ShapeshiftTarget = new();
+            Main.NowTypes = new();
 
             ReportDeadBodyPatch.CanReport = new();
             ReportDeadBodyPatch.IgnoreBodyids = new();
@@ -587,6 +588,13 @@ namespace TownOfHost
                 }
                 if (!Main.AllPlayerKillCooldown.ContainsKey(pc.PlayerId))
                     Main.AllPlayerKillCooldown.Add(pc.PlayerId, Options.DefaultKillCooldown);
+
+                var rolebasetype = pc.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() ?? RoleTypes.GuardianAngel;
+                if (rolebasetype is RoleTypes.GuardianAngel)
+                {
+                    rolebasetype = pc.Data.Role.Role;
+                }
+                Main.NowTypes.TryAdd(pc.PlayerId, rolebasetype);
             }
 
             if (Lovers.OneLovePlayer.BelovedId != byte.MaxValue && Options.CurrentGameMode == CustomGameMode.Standard)

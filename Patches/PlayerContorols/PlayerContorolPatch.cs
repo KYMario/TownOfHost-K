@@ -70,6 +70,7 @@ namespace TownOfHost
                 return false;
             }
 
+            Main.NowTypes[__instance.PlayerId] = roleType;
             return true;
         }
         public static void Postfix(PlayerControl __instance) => __instance.Data.Role.NameColor = Palette.White;

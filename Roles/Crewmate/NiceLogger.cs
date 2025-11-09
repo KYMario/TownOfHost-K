@@ -90,10 +90,7 @@ namespace TownOfHost.Roles.Crewmate
             {
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
-                    if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                        Player.StartCoroutine(Player.CoSetRole(RoleTypes.Crewmate, true));
-                    if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)
-                        Player.RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId());
+                    Player.RpcSetRoleDesync(RoleTypes.Crewmate, pc.GetClientId());
                 }
                 Taskmode = true;
                 SendRPC();

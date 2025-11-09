@@ -277,7 +277,7 @@ namespace TownOfHost
             writer.SendMessage();
             __instance.ResetKillCooldown();
 
-            return false;
+            return __instance.GetCustomRole() is CustomRoles.Phantom;
         }
     }
     #endregion

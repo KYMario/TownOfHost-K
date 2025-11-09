@@ -299,6 +299,7 @@ namespace TownOfHost
                     .Write((ushort)setrole)
                     .Write(true)
                     .EndRpc();
+                    if (pc.PlayerId == Player.PlayerId) Main.NowTypes[pc.PlayerId] = setrole;
                 }
                 sender.EndMessage();
                 sender.SendMessage();
@@ -327,6 +328,7 @@ namespace TownOfHost
                         {
                             Player.RpcSetRole(RoleTypes.GuardianAngel, true);
                             Player.RpcResetAbilityCooldown();
+                            Main.NowTypes[Player.PlayerId] = RoleTypes.GuardianAngel;
                         }
                     }
                 }, Main.LagTime, "Re-SetRole", true);

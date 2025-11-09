@@ -138,7 +138,7 @@ namespace TownOfHost.Roles.Neutral
                     {
                         if (pc == PlayerControl.LocalPlayer)
                         {
-                            Player.StartCoroutine(Player.CoSetRole(Player.IsAlive() ? RoleTypes.Crewmate : RoleTypes.CrewmateGhost, Main.SetRoleOverride));
+                            Player.RpcSetRoleDesync(Player.IsAlive() ? RoleTypes.Crewmate : RoleTypes.CrewmateGhost, Player.GetClientId());
                             if (Player != pc) pc.RpcSetRoleDesync(pc.IsAlive() ? RoleTypes.Scientist : RoleTypes.CrewmateGhost, Player.GetClientId());
                         }
                         else
