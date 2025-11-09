@@ -53,20 +53,22 @@ class VersionInfoManager
         //オンライン無効化
         if (version.NotAvailableOnline == true)
         {
-            infoText = "現在MODを導入してオンラインでプレイすることができません";
+            infoText = Main.UseingJapanese ? "現在MODを導入してオンラインでプレイすることができません" : "Currently, you cannot Create Room with MODs installed.";
 
             __instance.PlayOnlineButton.gameObject.SetActive(false);
             __instance.playLocalButton.transform.SetLocalX(0);
         }
         if (version.Unavailable == true || !IsSupported || Options.LoadError)
         {
-            infoText = "現在MODを導入してプレイすることができません";
+            infoText = Main.UseingJapanese ? "現在MODを導入してプレイすることができません" : "Currently, you cannot play with MODs installed.";
 
             __instance.PlayOnlineButton.gameObject.SetActive(false);
             __instance.playLocalButton.gameObject.SetActive(false);
             __instance.freePlayButton.gameObject.SetActive(false);
             __instance.howToPlayButton.transform.localPosition += new Vector3(-1, 0, 0);
         }
+        if (!IsSupported) infoText += Main.UseingJapanese ? "\n・サポートされていません。" : "\n・UnSupport.";
+        if (Options.LoadError) infoText += Main.UseingJapanese ? "\n・エラーが発生しています。" : "\n・LoadError.";
         if (version.BlockPublicRoom.HasValue)
         {
             ModUpdater.BlockPublicRoom = version.BlockPublicRoom;
