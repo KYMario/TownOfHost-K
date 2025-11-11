@@ -33,7 +33,7 @@ public static class MovingPlatformBehaviourPatch
     [HarmonyPatch(nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl)), HarmonyPrefix]
     public static bool UsePrefix([HarmonyArgument(0)] PlayerControl player)
     {
-        if (AmongUsClient.Instance.AmHost is false) return true;
+        if (AmongUsClient.Instance.AmHost is false || GameStates.IsFreePlay) return true;
         // プレイヤーがぬーん使用不可状態のときに使用をブロック
         if (!PlayerState.GetByPlayerId(player.PlayerId).CanUseMovingPlatform)
         {
