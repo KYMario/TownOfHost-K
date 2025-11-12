@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Madmate;
 using static TownOfHost.Modules.MeetingVoteManager;
 
@@ -66,6 +67,8 @@ namespace TownOfHost.Modules
         {
             if (MadAvenger.Skill) return false;
             if (Options.firstturnmeeting && Options.FirstTurnMeetingCantability.GetBool() && MeetingStates.FirstMeeting) return false;
+            if (Assassin.NowUse) return false;
+
             return true;
         }
 
