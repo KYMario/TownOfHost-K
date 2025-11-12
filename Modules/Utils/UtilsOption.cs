@@ -938,6 +938,7 @@ namespace TownOfHost
             if (AmongUsClient.Instance.AmHost is false)
             {
                 Logger.Warn("NotHost Send All Setting", "SyncAllSetting");
+                return;
             }
             PlayerGameOptionsSender.SetDirtyToAll();
             GameOptionsSender.SendAllGameOptions();

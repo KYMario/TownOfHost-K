@@ -148,6 +148,7 @@ namespace TownOfHost
             if (AmongUsClient.Instance.AmHost is false)
             {
                 Logger.Warn($"NotHost Send Setting sendto:{player.PlayerId}", "SyncSettings");
+                return;
             }
             if (player.isDummy) return;
             PlayerGameOptionsSender.SetDirty(player.PlayerId);
