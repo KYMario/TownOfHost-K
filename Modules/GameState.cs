@@ -122,7 +122,11 @@ namespace TownOfHost
             if (SubRoles.Contains(role))
                 SubRoles.Remove(role);
         }
-        public void SetGhostRole(CustomRoles role) => GhostRole = role;
+        public void SetGhostRole(CustomRoles role)
+        {
+            GhostRole = role;
+            CustomRoleManager.OtherRolesAdd(PlayerCatch.GetPlayerById(PlayerId), role);
+        }
         public void SetDead()
         {
             IsDead = true;

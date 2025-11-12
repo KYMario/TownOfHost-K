@@ -82,6 +82,7 @@ namespace TownOfHost.Roles.Ghost
                     //どっちかは知らんが回数とリセットは入れるで～
                     Count++;
                     pc.RpcResetAbilityCooldown(Sync: true);
+                    Logger.Info($"{GetNowCoolDown()}", "aaa");
 
                     if (!Asist.IsAlive()) return;//アシスト対象が死んでるならでしゃばるな。
 
@@ -91,7 +92,6 @@ namespace TownOfHost.Roles.Ghost
                         _ = new LateTask(() =>
                         {
                             Guard = false;
-                            pc.RpcResetAbilityCooldown(Sync: true);//成功の有無にかかわらずリセットさせる。
                         }, Guardtime.GetFloat(), "AsistingAngelSetGuard", true);
                     }
                     else//違うなら対象の位置を矢印で教えないとねっ
@@ -103,7 +103,6 @@ namespace TownOfHost.Roles.Ghost
                         GetArrow.Add(Asist.PlayerId, target.transform.position);
                         SendRPC(AsistingAngelId);
                         UtilsNotifyRoles.NotifyRoles(SpecifySeer: [target, pc]);
-                        pc.RpcResetAbilityCooldown(Sync: true);
                     }
                 }
             }

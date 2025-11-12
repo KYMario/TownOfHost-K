@@ -88,10 +88,11 @@ namespace TownOfHost.Modules
                 var shapeskin = IsAlive ? opt.GetBool(BoolOptionNames.ShapeshifterLeaveSkin) : false;
                 var phantom = IsAlive ? opt.GetFloat(FloatOptionNames.PhantomCooldown) : 0;
                 var detective = IsAlive ? opt.GetFloat(FloatOptionNames.DetectiveSuspectLimit) : 0;
+                var guardancool = opt.GetFloat(FloatOptionNames.GuardianAngelCooldown);
                 var vip = opt.GetFloat(FloatOptionNames.ViperDissolveTime);
 
                 string NowOption = $"{killCooldown},{killDistance},{impostorLight},{crewLight},{playerSpeed},{numEmergency},{emergencyCooldown},{discussionTime},{votingTime},{anonymousVotes},{numCommonTasks},{numLongTasks},{numShortTasks},{visualTasks},{taskBarMode},{confirmImpostor}";
-                NowOption += $"{engcooldown},{engmaxtime},{scicooldown},{scibattery},{trackercool},{trackerdelay},{tarckduration},{noisealert},{noiseimp},{shapecool},{ShapeshifterDuration},{shapeskin},{phantom},{detective},{vip}";
+                NowOption += $"{engcooldown},{engmaxtime},{scicooldown},{scibattery},{trackercool},{trackerdelay},{tarckduration},{noisealert},{noiseimp},{shapecool},{ShapeshifterDuration},{shapeskin},{phantom},{detective},{vip},{guardancool}";
                 if (OldOptionstext == NowOption)//再度送信するならキャンセル
                 {
                     return;
@@ -334,7 +335,7 @@ namespace TownOfHost.Modules
                         case CustomRoles.DemonicTracker: AURoleOptions.GuardianAngelCooldown = CoolDown(DemonicTracker.CoolDown.GetFloat()); break;
                         case CustomRoles.DemonicCrusher: AURoleOptions.GuardianAngelCooldown = CoolDown(DemonicCrusher.CoolDown.GetFloat()); break;
                         case CustomRoles.DemonicVenter: AURoleOptions.GuardianAngelCooldown = CoolDown(DemonicVenter.CoolDown.GetFloat()); break;
-                        case CustomRoles.AsistingAngel: AURoleOptions.GuardianAngelCooldown = CoolDown(AsistingAngel.CoolDown.GetFloat()); break;
+                        case CustomRoles.AsistingAngel: AURoleOptions.GuardianAngelCooldown = CoolDown(AsistingAngel.GetNowCoolDown()); break;
                     }
                 }
             }

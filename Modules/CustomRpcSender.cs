@@ -86,10 +86,18 @@ namespace TownOfHost
             else
             {
                 // 特定のクライアントに対するRPC (Desync)
-                stream.StartMessage(6);
-                stream.Write(AmongUsClient.Instance.GameId);
-                stream.WritePacked(targetClientId);
-                tag = 6;
+                if (tag is 6 or -1)
+                {
+                    stream.StartMessage(6);
+                    stream.Write(AmongUsClient.Instance.GameId);
+                    stream.WritePacked(targetClientId);
+                    tag = 6;
+                }
+                else
+                {
+                    Logger.Error($"{name} {tag}/6tagが前回のと異なります。", "CustomRpcSender.Error");
+                    return this;
+                }
             }
 
             currentRpcTarget = targetClientId;
@@ -189,7 +197,7 @@ namespace TownOfHost
             }
             if (currentRpcTarget != targetClientId)
             {
-                Logger.Warn($"{currentRpcTarget} - {targetClientId}前回とClientIdが異なります。", "AuteStartRpc");
+                //Logger.Warn($"{currentRpcTarget} - {targetClientId}前回とClientIdが異なります。", "AuteStartRpc");
                 //StartMessage処理
                 if (currentState == State.InRootMessage) this.EndMessage();
                 this.StartMessage(targetClientId);
