@@ -126,6 +126,7 @@ namespace TownOfHost
         public static Dictionary<(byte, byte), string> LastNotifyNames;
         public static Dictionary<byte, Color32> PlayerColors = new();
         public static Dictionary<byte, CustomDeathReason> AfterMeetingDeathPlayers = new();
+        public static List<byte> meetingdeadlist = new();
         public static Dictionary<CustomRoles, string> roleColors;
         public static Dictionary<byte, List<uint>> AllPlayerTask = new();
         public static List<byte> winnerList;

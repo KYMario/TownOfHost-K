@@ -541,6 +541,7 @@ public class MeetingVoteManager
 
     public static void ResetVoteManager(byte killtargetid)
     {
+        Main.meetingdeadlist.Add(killtargetid);
         PlayerControl pc = PlayerCatch.GetPlayerById(killtargetid);
         bool amOwner = pc.AmOwner;
 

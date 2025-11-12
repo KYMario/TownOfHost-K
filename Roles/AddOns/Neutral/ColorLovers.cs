@@ -192,7 +192,7 @@ class ColorLovers
                 //生きていて死ぬ予定でなければスキップ
                 if (!loversPlayer.Data.IsDead && loversPlayer.PlayerId != deathId) continue;
 
-                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId) || GameStates.IsMeeting;
+                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId) || Main.meetingdeadlist.Contains(loversPlayer.PlayerId) || GameStates.IsMeeting;
                 IsLoversDead = true;
                 foreach (var partnerPlayer in LoverPlayer)
                 {
