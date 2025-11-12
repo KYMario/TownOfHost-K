@@ -91,7 +91,7 @@ namespace TownOfHost
             {
                 res = $"*{dic[0]}";
             }
-            if (str == "Chameleon") res = "カメレオン";
+            if (str == "Chameleon") res = Main.UseingJapanese ? "カメレオン" : "Chameleon";
             if (langId == SupportedLangs.Japanese && Main.CustomName.Value)
             {
                 //このソースコ―ドを見た人へ。口外しないでもらえると嬉しいです...
@@ -123,6 +123,19 @@ namespace TownOfHost
                         "JumperInfo" => "サンタは一瞬で過ぎ去るのさ",
                         "BomberInfo" => "僕からもプレゼントがあるよ",
                         "FireWorksInfo" => "聖夜に花火はいかが?",
+                        "MadBetrayerInfo" => "ご主人も、2人組も、全て裏切れ",
+                        "StolenerInfo" => "ぼくのケーキがぁ...",
+                        "AndroidInfo" => "'アイ'が辞書にありません",
+                        "TrapperInfo" => "君をずっと離さない...",
+                        "OneLoveInfo" => "今日を記念日に",
+                        "WorkaholicInfo" => "今日も仕事だよっ!!!",
+                        "GhostNoiseSenderInfo" => "ﾋﾞﾋﾞｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲｲ!!!!!!",
+                        "TwinsInfo" => "くりすますぷれぜんとまだ～？",
+                        "TerroristInfo" => "今日という日を台無しにしてやれ",
+                        "MonochromerInfo" => "綺麗だね...うん...",
+                        "BalloonerInfo" => "風船と一緒に破裂しちゃえ",
+                        "ProBowlerInfo" => "あなたの心に向かって",
+                        "SnowmanInfo" => "ゆ～きやこんこん",
                         _ => res
                     };
                 }

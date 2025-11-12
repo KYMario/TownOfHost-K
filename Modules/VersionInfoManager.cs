@@ -148,7 +148,7 @@ class VersionInfoManager
 
     private static IEnumerator UpdateText(TextMeshPro infoText)
     {
-        var baseText = "\n\n\nこのAmongUsのバージョンには対応してないよ!!\nアップデートしてね!!";
+        var baseText = $"\n\n\n{(Main.UseingJapanese ? "このAmongUsのバージョンには対応してないよ!!\nアップデートしてね!!" : "This version of Among Us isn't supported!!\nPlease update!!")}";
         baseText += "\n                                                                                    <size=4><color=white>";
         string[] omake =
         [
@@ -197,7 +197,7 @@ class VersionInfoManager
             int minutes = totalSeconds / 60;
             int seconds = totalSeconds % 60;
 
-            button.buttonText.text = $"再度チェック可能まで {minutes:D2}:{seconds:D2}";
+            button.buttonText.text = $"{(Main.UseingJapanese ? "再度チェック可能まで" : "Until it can be checked again")} {minutes:D2}:{seconds:D2}";
             yield return new WaitForSeconds(1f);
             totalSeconds--;
         }
@@ -216,9 +216,9 @@ class VersionInfoManager
     private static void UpdateText(PassiveButton button)
     {
         if (ModUpdater.hasUpdate)
-            button.buttonText.text = "アップデート";
+            button.buttonText.text = Main.UseingJapanese ? "アップデート" : "Update";
         else
-            button.buttonText.text = "最新の情報を取得";
+            button.buttonText.text = Main.UseingJapanese ? "最新の情報を取得" : "Get the latest information";
     }
 
     private static void SendBugList(byte sendTo = byte.MaxValue)

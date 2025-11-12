@@ -29,7 +29,7 @@ namespace TownOfHost
         public static string downloadUrl = null;
         public static GenericPopup InfoPopup;
         public static bool? BlockPublicRoom = null;
-        public static string body = "詳細のチェックに失敗しました";
+        public static string body = "詳細のチェックに失敗しました\nFailed to verify the details.";
         public static List<Release> releases = new();
         public static List<Release> snapshots = new();
 

@@ -51,7 +51,7 @@ class Yomiage
                 YomiageS[vopc.Data.DefaultOutfit.ColorId] = $"{subArgs} {subArgs2} {subArgs3} {subArgs4}";
                 if (AmongUsClient.Instance.AmHost) RPC.SyncYomiage();
                 if (vo0id != PlayerControl.LocalPlayer.PlayerId)
-                    Utils.SendMessage($"{vopc.name}の声設定を変更しました。", playerId);
+                    Utils.SendMessage(Main.UseingJapanese ? $"{vopc.name}の声設定を変更しました。" : $"Changed {vopc.name} voice settings.", playerId);
             }
             else
             {

@@ -186,8 +186,8 @@ namespace TownOfHost.Roles
         ///</summary>
         private static void SetFixedAssignRole()
         {
-            int numImpostorsLeft = Math.Min(GameData.Instance.PlayerCount, Main.RealOptionsData.GetInt(Int32OptionNames.NumImpostors));
             //インポスター以外の人数
+            int numImpostorsLeft = Math.Min(GameData.Instance.PlayerCount, Main.RealOptionsData.GetInt(Int32OptionNames.NumImpostors));
             //マッド、クルー、ニュートラル合計の限界値
             int numOthersLeft = GameData.Instance.PlayerCount - numImpostorsLeft;
 

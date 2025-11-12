@@ -76,8 +76,6 @@ Players engaging in the above will be added to the blacklist at the MOD develope
 
 -----------------------------------------------
 
-
-
 **【You Must Read This】**<br>
 By using Town Of Host-K, you pledge not to engage in any actions listed under “Punishable Usage Methods”.<br>
 Should you engage in punishable usage, you agree to accept punishment under any circumstances.<br>

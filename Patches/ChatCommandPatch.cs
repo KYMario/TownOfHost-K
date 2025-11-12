@@ -720,19 +720,19 @@ namespace TownOfHost
                             if (ch(cot))
                             {
                                 Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetInt(Int32OptionNames.NumCommonTasks, cot);
-                                chc += $"通常タスクを{cot}にしました!\n";
+                                chc += Main.UseingJapanese ? $"通常タスクを{cot}にしました!\n" : $"CommonTask:{cot}\n";
                             }
                         if (args.Length > 2 && int.TryParse(args[2], out var lot))
                             if (ch(lot))
                             {
                                 Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetInt(Int32OptionNames.NumLongTasks, lot);
-                                chc += $"ロングタスクを{lot}にしました!\n";
+                                chc += Main.UseingJapanese ? $"ロングタスクを{lot}にしました!\n" : $"LongTask:{lot}\n";
                             }
                         if (args.Length > 3 && int.TryParse(args[3], out var sht))
                             if (ch(sht))
                             {
                                 Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetInt(Int32OptionNames.NumShortTasks, sht);
-                                chc += $"ショートタスクを{sht}にしました!\n";
+                                chc += Main.UseingJapanese ? $"ショートタスクを{sht}にしました!\n" : $"ShortTask:{sht}\n";
                             }
                         if (chc == "")
                         {
@@ -862,7 +862,8 @@ namespace TownOfHost
                         canceled = true;
                         if (args.Length < 2)
                         {
-                            Logger.seeingame("ロビーにいる全てのプレイヤーをホワイトリストに登録するぞ！");
+                            Logger.seeingame(Main.UseingJapanese ? "ロビーにいる全てのプレイヤーをホワイトリストに登録するぞ！"
+                            : "I'm whitelisting every player in the lobby!");
                             //指定がない場合
                             foreach (var pc in AllPlayerControls)
                             {
@@ -881,7 +882,7 @@ namespace TownOfHost
                                 added = true;
                             }
                             if (!added)
-                                SendMessage($"{targetname}って名前のプレイヤーがいないよっ...", 0);
+                                SendMessage(Main.UseingJapanese ? $"{targetname}って名前のプレイヤーがいないよっ..." : "そんな名前のプレイヤーはいません！", 0);
                         }
                         break;
 
@@ -893,7 +894,7 @@ namespace TownOfHost
                         //モードがタスバトじゃない時はメッセージ表示
                         if (Options.CurrentGameMode != CustomGameMode.TaskBattle)
                         {
-                            __instance.AddChat(PlayerControl.LocalPlayer, "選択されているモードが<color=#9adfff>タスクバトル</color>のみ実行可能です。\nロビーにある設定から変えてみてね><");
+                            __instance.AddChat(PlayerControl.LocalPlayer, Main.UseingJapanese ? "選択されているモードが<color=#9adfff>タスクバトル</color>のみ実行可能です。\nロビーにある設定から変えてみてね" : "Only the <color=#9adfff>Task Battle</color> mode is currently available. Try changing it from the settings in the lobby.");
                             break;
                         }
 
