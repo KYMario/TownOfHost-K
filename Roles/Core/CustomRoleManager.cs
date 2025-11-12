@@ -252,6 +252,8 @@ public static class CustomRoleManager
     /// <param name="appearanceTarget">見た目上でキルされるプレイヤー 可変</param>
     public static void OnMurderPlayer(PlayerControl appearanceKiller, PlayerControl appearanceTarget)
     {
+        if (!AmongUsClient.Instance.AmHost) return;
+
         //MurderInfoの取得
         if (CheckMurderInfos.TryGetValue(appearanceKiller.PlayerId, out var info))
         {

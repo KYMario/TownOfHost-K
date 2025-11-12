@@ -541,13 +541,14 @@ public class MeetingVoteManager
 
     public static void ResetVoteManager(byte killtargetid)
     {
-        if (PlayerCatch.AnyModClient()) RPC.RpcShowMeetingKill(killtargetid);
         PlayerControl pc = PlayerCatch.GetPlayerById(killtargetid);
         bool amOwner = pc.AmOwner;
 
         /* 死亡の設定 */
         if (AmongUsClient.Instance.AmHost)
         {
+            if (PlayerCatch.AnyModClient()) RPC.RpcShowMeetingKill(killtargetid);
+
             pc.Data.IsDead = true;
             pc.RpcExileV2();
         }
