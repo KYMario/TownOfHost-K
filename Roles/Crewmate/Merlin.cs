@@ -62,10 +62,13 @@ public sealed class Merlin : RoleBase
         {
             NameColorManager.Add(Player.PlayerId, impostor.PlayerId, "#ff1919");
         }
-        foreach (var neutral in PlayerCatch.AllPlayerControls.Where(player => player.Is(CustomRoleTypes.Neutral) || (player.Is(CustomRoleTypes.Madmate) && CanSeeMadmate)))
+        if (CanSeeNeutral)
         {
-            if (!OnlyNeutralKiller || neutral.IsNeutralKiller() || neutral.Is(CustomRoles.GrimReaper))
-                NameColorManager.Add(Player.PlayerId, neutral.PlayerId, IsGlayColor ? "#555555" : neutral.GetRoleColorCode());
+            foreach (var neutral in PlayerCatch.AllPlayerControls.Where(player => player.Is(CustomRoleTypes.Neutral) || (player.Is(CustomRoleTypes.Madmate) && CanSeeMadmate)))
+            {
+                if (!OnlyNeutralKiller || neutral.IsNeutralKiller() || neutral.Is(CustomRoles.GrimReaper))
+                    NameColorManager.Add(Player.PlayerId, neutral.PlayerId, IsGlayColor ? "#555555" : neutral.GetRoleColorCode());
+            }
         }
         Assassin.MarlinIds.Add(Player.PlayerId);
     }
