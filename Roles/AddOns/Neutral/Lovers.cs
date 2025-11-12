@@ -138,7 +138,7 @@ class Lovers
                 foreach (var loversPlayer in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.OneLove)))
                 {
                     if (!loversPlayer.Data.IsDead && loversPlayer.PlayerId != deathId) continue;
-                    isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId);
+                    isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId) || GameStates.IsMeeting;
 
                     isOneLoveDead = true;
                     foreach (var partnerPlayer in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.OneLove)))
@@ -186,7 +186,7 @@ class Lovers
             foreach (var MadonnaLoversPlayer in MaMadonnaLoversPlayers)
             {
                 if (!MadonnaLoversPlayer.Data.IsDead && MadonnaLoversPlayer.PlayerId != deathId) continue;
-                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == MadonnaLoversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(MadonnaLoversPlayer.PlayerId);
+                isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == MadonnaLoversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(MadonnaLoversPlayer.PlayerId) || GameStates.IsMeeting;
 
                 isMadonnaLoversDead = true;
                 foreach (var partnerPlayer in MaMadonnaLoversPlayers)
