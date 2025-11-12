@@ -473,7 +473,7 @@ namespace TownOfHost
                     case "/impct":
                     case "/ic":
                         canceled = true;
-                        if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && PlayerControl.LocalPlayer.IsAlive() && (PlayerControl.LocalPlayer.GetCustomRole().IsImpostor() || PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Egoist))
+                        if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && PlayerControl.LocalPlayer.IsAlive() && (PlayerControl.LocalPlayer.GetCustomRole().IsImpostor() || PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Egoist) && !PlayerControl.LocalPlayer.Is(CustomRoles.OneWolf))
                         {
                             if ((PlayerControl.LocalPlayer.GetRoleClass() as Amnesiac)?.Realized == false) break;
                             var send = "";
@@ -487,7 +487,7 @@ namespace TownOfHost
                             foreach (var imp in PlayerCatch.AllPlayerControls)
                             {
                                 if ((imp.GetRoleClass() as Amnesiac)?.Realized == false) continue;
-                                if (imp && ((imp?.GetCustomRole().IsImpostor() ?? false) || imp?.GetCustomRole() is CustomRoles.Egoist) || !imp.IsAlive())
+                                if (imp && (((imp?.GetCustomRole().IsImpostor() ?? false) || imp?.GetCustomRole() is CustomRoles.Egoist) && !PlayerControl.LocalPlayer.Is(CustomRoles.OneWolf)) || !imp.IsAlive())
                                 {
                                     var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                                     writer.StartMessage(imp.GetClientId());
@@ -1400,7 +1400,7 @@ namespace TownOfHost
                 case "/impstorchat":
                 case "/impct":
                 case "/ic":
-                    if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && player.IsAlive() && (player.GetCustomRole().IsImpostor() || player.GetCustomRole() is CustomRoles.Egoist))
+                    if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && player.IsAlive() && (player.GetCustomRole().IsImpostor() || player.GetCustomRole() is CustomRoles.Egoist) && !player.Is(CustomRoles.OneWolf))
                     {
                         if ((player.GetRoleClass() as Amnesiac)?.Realized == false)
                         {
@@ -1414,7 +1414,7 @@ namespace TownOfHost
                         foreach (var imp in AllPlayerControls)
                         {
                             if ((imp.GetRoleClass() as Amnesiac)?.Realized == false && imp.IsAlive()) continue;
-                            if (imp && ((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist) || (!imp.IsAlive() && PlayerControl.LocalPlayer.PlayerId == imp?.PlayerId) || (Isclient && !imp.IsAlive())) && (imp.PlayerId != player.PlayerId && !Isclient))
+                            if (imp && (((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist) && !player.Is(CustomRoles.OneWolf)) || (!imp.IsAlive() && PlayerControl.LocalPlayer.PlayerId == imp?.PlayerId) || (Isclient && !imp.IsAlive())) && (imp.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {
