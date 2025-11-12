@@ -521,7 +521,7 @@ public static class MeetingHudPatch
             {
                 if (!PlayerCatch.GetPlayerById(Balancer.target1).IsAlive()
                     || !PlayerCatch.GetPlayerById(Balancer.target2).IsAlive())
-                    MeetingVoteManager.Instance.EndMeeting(false);
+                    MeetingVoteManager.Instance?.EndMeeting(false);
             }
             if (Assassin.NowUse)
             {
