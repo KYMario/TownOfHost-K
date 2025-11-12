@@ -204,7 +204,7 @@ public sealed class Satellite : RoleBase, ISelfVoter
                 if (!Utils.RoleSendList.Contains(Player.PlayerId))
                     Utils.RoleSendList.Add(Player.PlayerId);
             }
-            IsAwaken = true;
+            IsAwaken = false;
         }
         return true;
     }
