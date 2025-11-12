@@ -11,7 +11,7 @@ using static TownOfHost.Roles.Core.Interfaces.ISchrodingerCatOwner;
 
 namespace TownOfHost.Roles.Neutral
 {
-    public sealed class BakeCat : RoleBase, IAdditionalWinner, IKiller
+    public sealed class BakeCat : RoleBase, IAdditionalWinner, IKiller, ISchrodingerCatOwner
     {
         public static readonly SimpleRoleInfo RoleInfo =
             SimpleRoleInfo.Create(
@@ -53,6 +53,7 @@ namespace TownOfHost.Roles.Neutral
         /// </summary>
         private ISchrodingerCatOwner owner = null;
         private TeamType _team = TeamType.None;
+        public TeamType SchrodingerCatChangeTo => Team;
         /// <summary>
         /// 現在の所属陣営<br/>
         /// 変更する際は特段の事情がない限り<see cref="RpcSetTeam"/>を使ってください
@@ -104,6 +105,7 @@ namespace TownOfHost.Roles.Neutral
 
             //自殺ならスルー
             if (info.IsSuicide) return true;
+            if (killer.GetRoleClass() is not ISchrodingerCatOwner) return true;
 
             if (killer.Is(CustomRoles.GrimReaper) || killer.Is(CustomRoles.BakeCat))
                 return true;
@@ -171,6 +173,7 @@ namespace TownOfHost.Roles.Neutral
             else
             {
                 logger.Warn($"未知のキル役職からのキル: {killer.GetNameWithRole().RemoveHtmlTags()}");
+                return;
             }
 
             RevealNameColors(killer);
@@ -192,6 +195,7 @@ namespace TownOfHost.Roles.Neutral
             }
         }
         public override RoleTypes? AfterMeetingRole => CanKill ? RoleTypes.Impostor : RoleTypes.Crewmate;
+
         private void RevealNameColors(PlayerControl killer)
         {
             if (OptionCanSeeKillableTeammate.GetBool())

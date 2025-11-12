@@ -73,6 +73,6 @@ public interface ISchrodingerCatOwner
         /// <summary>
         /// ベトレイヤーに所属する状態
         /// </summary>
-        Betrayer
+        Betrayer,
     }
 }
