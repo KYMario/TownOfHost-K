@@ -218,7 +218,7 @@ namespace TownOfHost
             };
 
             StringBuilder sb = new();
-            if (Main.RTAMode && Options.CurrentGameMode == CustomGameMode.TaskBattle)
+            if (TaskBattle.IsRTAMode && Options.CurrentGameMode == CustomGameMode.TaskBattle)
             {
                 sb.Append(UtilsGameLog.GetRTAText());
                 EndGamePatch.KillLog += $"<#D4AF37>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</color>{"★".Color(Palette.DisabledGrey)}\n" + sb.ToString().Replace("\n", "\n　") + $"\n{"★".Color(Palette.DisabledGrey)}<#D4AF37>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</color>{"★".Color(Palette.DisabledGrey)}";

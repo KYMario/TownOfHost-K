@@ -288,7 +288,7 @@ namespace TownOfHost
                 textm.DestroyTranslator();
                 textm.text = Translator.GetString("EditCSp");
 
-                freeplayButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Main.EditMode = true));
+                freeplayButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => CustomSpawnEditor.ActiveEditMode = true));
             }
             // フリープレイが消えるのでHowToPlayをセンタリング | 消えないのでしません☆
             //howToPlayButton.transform.SetLocalX(0);
@@ -304,8 +304,8 @@ namespace TownOfHost
             var pb = csbutton.GetComponent<PassiveButton>();
             pb.inactiveSprites.GetComponent<SpriteRenderer>().color = new(88, 101, 242, byte.MaxValue);
             pb.activeSprites.GetComponent<SpriteRenderer>().color = new(148, 161, byte.MaxValue, byte.MaxValue);
-            pb.OnClick.AddListener((Action)(() => Main.EditMode = true));
-            freeplayButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => Main.EditMode = false));//ボタンを生成
+            pb.OnClick.AddListener((Action)(() => CustomSpawnEditor.ActiveEditMode = true));
+            freeplayButton.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() => CustomSpawnEditor.ActiveEditMode = false));//ボタンを生成
 #endif
         }
 

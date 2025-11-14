@@ -265,17 +265,9 @@ public static class CustomRoleManager
             //CheckMurderを経由していない場合はappearanceで処理
             info = new MurderInfo(appearanceKiller, appearanceTarget, appearanceKiller, appearanceTarget);
         }
-
-        if (!Main.AllPlayerLastkillpos.TryAdd(appearanceKiller.PlayerId, info.killerpos))
-            Main.AllPlayerLastkillpos[appearanceKiller.PlayerId] = info.killerpos;
-
-        /*
-        if (Camouflage.IsCamouflage || Camouflager.NowUse)
-        {
-            ReportDeadBodyPatch.ChengeMeetingInfo.TryAdd(appearanceTarget.PlayerId, Translator.GetString("CamouflagerMeetingInfo"));
-        }*/
-
-        Main.KillCount[appearanceKiller.PlayerId]++;
+        var killerstate = appearanceKiller.GetPlayerState();
+        killerstate.LastKillPosition = info.killerpos;
+        killerstate.Killcount++;
 
         (var attemptKiller, var attemptTarget) = info.AttemptTuple;
 
@@ -329,7 +321,7 @@ public static class CustomRoleManager
 
         targetState.SetDead();
         attemptTarget.SetRealKiller(attemptKiller, true);
-        appearanceKiller.GetPlayerState().Is10secKillButton = false;
+        killerstate.Is10secKillButton = false;
 
         GhostRoleAssingData.AssignAddOnsFromList(true);
 
@@ -355,38 +347,37 @@ public static class CustomRoleManager
             CustomWinnerHolder.WinnerIds.Add(appearanceTarget.PlayerId);
         }
 
-        if (Main.KillCount.ContainsKey(appearanceKiller.PlayerId))
-            if (appearanceKiller.Is(CustomRoles.Amnesia) && Amnesia.OptionCanRealizeKill.GetBool())
+        if (appearanceKiller.Is(CustomRoles.Amnesia) && Amnesia.OptionCanRealizeKill.GetBool())
+        {
+            if (Amnesia.OptionRealizeKillcount.GetInt() <= killerstate.Killcount)
             {
-                if (Amnesia.OptionRealizeKillcount.GetInt() <= Main.KillCount[appearanceKiller.PlayerId])
+                if (!Utils.RoleSendList.Contains(appearanceKiller.PlayerId)) Utils.RoleSendList.Add(appearanceKiller.PlayerId);
+                Amnesia.RemoveAmnesia(appearanceKiller.PlayerId, true);
+
+
+                if (AmongUsClient.Instance.AmHost)
                 {
-                    if (!Utils.RoleSendList.Contains(appearanceKiller.PlayerId)) Utils.RoleSendList.Add(appearanceKiller.PlayerId);
-                    Amnesia.RemoveAmnesia(appearanceKiller.PlayerId, true);
-
-
-                    if (AmongUsClient.Instance.AmHost)
+                    if (appearanceKiller.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+                        appearanceKiller.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), appearanceKiller.GetClientId());
+                    else if (appearanceKiller.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                     {
-                        if (appearanceKiller.PlayerId != PlayerControl.LocalPlayer.PlayerId)
-                            appearanceKiller.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), appearanceKiller.GetClientId());
-                        else if (appearanceKiller.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                        if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType?.Invoke() != RoleTypes.Impostor)
+                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
+                        else if (roleinfo?.BaseRoleType.Invoke() == RoleTypes.Shapeshifter)
                         {
-                            if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType?.Invoke() != RoleTypes.Impostor)
-                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
-                            else if (roleinfo?.BaseRoleType.Invoke() == RoleTypes.Shapeshifter)
-                            {
-                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.Shapeshifter);
-                            }
+                            RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, RoleTypes.Shapeshifter);
                         }
-                        appearanceKiller.ResetKillCooldown();
-                        _ = new LateTask(() =>
-                        {
-                            appearanceKiller.RpcResetAbilityCooldown(Sync: true);
-                            appearanceKiller.SetKillCooldown(delay: true);
-                            UtilsNotifyRoles.NotifyRoles();
-                        }, 0.2f, "SetKillCOolDown");
                     }
+                    appearanceKiller.ResetKillCooldown();
+                    _ = new LateTask(() =>
+                    {
+                        appearanceKiller.RpcResetAbilityCooldown(Sync: true);
+                        appearanceKiller.SetKillCooldown(delay: true);
+                        UtilsNotifyRoles.NotifyRoles();
+                    }, 0.2f, "SetKillCOolDown");
                 }
             }
+        }
     }
     /// <summary>
     /// その他視点からのMurderPlayer処理

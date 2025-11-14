@@ -91,7 +91,7 @@ namespace TownOfHost
                 {
                     return false;
                 }
-                if (Main.RTAMode && (RpcCalls)callId == RpcCalls.SnapTo)
+                if (TaskBattle.IsRTAMode && (RpcCalls)callId == RpcCalls.SnapTo)
                 {
                     HudManagerPatch.TaskBattleTimer = 0.0f;
                 }

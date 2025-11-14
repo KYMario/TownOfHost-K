@@ -29,7 +29,7 @@ namespace TownOfHost
         {
             var player = __instance;
 
-            if (Main.EditMode && GameStates.IsFreePlay)
+            if (CustomSpawnEditor.ActiveEditMode && GameStates.IsFreePlay)
             {
                 CustomSpawnEditor.FixedUpdate(__instance);
                 return;
@@ -38,9 +38,9 @@ namespace TownOfHost
             if (!GameStates.IsModHost) return;
             if (__instance == null) return;
 
-            if (Main.RTAMode && GameStates.IsInTask && GameStates.introDestroyed)
+            if (TaskBattle.IsRTAMode && GameStates.IsInTask && GameStates.introDestroyed)
             {
-                if (Main.RTAPlayer != byte.MaxValue && Main.RTAPlayer == player.PlayerId)
+                if (TaskBattle.RTAPlayerId != byte.MaxValue && TaskBattle.RTAPlayerId == player.PlayerId)
                 {
                     HudManagerPatch.LowerInfoText.enabled = true;
                     HudManagerPatch.LowerInfoText.text = HudManagerPatch.GetTaskBattleTimer();
@@ -57,6 +57,7 @@ namespace TownOfHost
             var roleclass = player.GetRoleClass();
             var isAlive = player.IsAlive();
             var roleinfo = __instance.GetCustomRole().GetRoleInfo();
+            var state = player.GetPlayerState();
 
             if (AmongUsClient.Instance.AmHost)
             {//実行クライアントがホストの場合のみ実行
@@ -92,7 +93,7 @@ namespace TownOfHost
                     if (isAlive && !((roleclass as Jumper)?.Jumping == true) && timer is 5)
                     {
                         var nowpos = __instance.GetTruePosition();
-                        if (Main.AllPlayerLastkillpos.TryGetValue(__instance.PlayerId, out var tppos))
+                        if (state.LastKillPosition != new Vector2(100, 100))
                         {
                             if (!__instance.MyPhysics.Animations.IsPlayingAnyLadderAnimation())
                             {
@@ -103,7 +104,7 @@ namespace TownOfHost
                                         || (10.2 <= nowpos.x && nowpos.x <= 11.7 && 6.9 <= nowpos.y && nowpos.y <= 7.2)
                                         || (12.4 <= nowpos.x && nowpos.x <= 13.4 && -5.4 <= nowpos.y && nowpos.y <= -4.6)
                                         )
-                                            __instance.RpcSnapToForced(tppos);
+                                            __instance.RpcSnapToForced(state.LastKillPosition);
                                         break;
                                     case MapNames.Fungle:
                                         if ((10.8 <= nowpos.x && nowpos.x <= 12.4 && -5.3 <= nowpos.y && nowpos.y <= -2.1)
@@ -111,14 +112,14 @@ namespace TownOfHost
                                         || (18.5 <= nowpos.x && nowpos.x <= 19.8 && 4.8 <= nowpos.y && nowpos.y <= 5.7)
                                         || (21.0 <= nowpos.x && nowpos.x <= 22.1 && 8.1 <= nowpos.y && nowpos.y <= 9.4)
                                         )
-                                            __instance.RpcSnapToForced(tppos);
+                                            __instance.RpcSnapToForced(state.LastKillPosition);
                                         break;
                                 }
                             }
                             if (!__instance.inMovingPlat && (MapNames)Main.NormalOptions.MapId == MapNames.Airship)
                             {
                                 if (6.3 <= nowpos.x && nowpos.x <= 9.3 && 7.8 <= nowpos.y && nowpos.y <= 9.1)
-                                    __instance.RpcSnapToForced(tppos);
+                                    __instance.RpcSnapToForced(state.LastKillPosition);
                             }
                         }
                     }

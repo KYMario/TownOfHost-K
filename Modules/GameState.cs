@@ -6,6 +6,7 @@ using HarmonyLib;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
+using UnityEngine;
 
 namespace TownOfHost
 {
@@ -23,6 +24,9 @@ namespace TownOfHost
         private bool _canUseMovingPlatform = true;
         public string KillRoom;
         public bool Is10secKillButton;
+        public int Killcount;
+        public Vector2 LastKillPosition;
+        public RoleTypes NowRoleType;
 
         /// <summary>
         /// 持っているガード。<br/>
@@ -69,6 +73,9 @@ namespace TownOfHost
                 { 1, 0 },
                 { 2, 0 }
             };
+            LastKillPosition = new(100, 100);
+            Killcount = 0;
+            NowRoleType = RoleTypes.GuardianAngel;
         }
         public CustomRoles GetCustomRole()
         {

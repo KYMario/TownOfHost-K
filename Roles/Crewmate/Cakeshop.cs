@@ -110,4 +110,11 @@ public sealed class Cakeshop : RoleBase, INekomata
 
     public bool IsCandidate(PlayerControl player)
         => true;
+
+    public override void OnDestroy()
+    {
+        if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
+
+        AfterMeetingTasks();
+    }
 }

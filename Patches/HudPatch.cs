@@ -37,7 +37,7 @@ namespace TownOfHost
             //壁抜け
             if (Input.GetKeyDown(KeyCode.LeftControl))
             {
-                if ((!AmongUsClient.Instance.IsGameStarted || !GameStates.IsOnlineGame || !Main.EditMode)
+                if ((!AmongUsClient.Instance.IsGameStarted || !GameStates.IsOnlineGame || !CustomSpawnEditor.ActiveEditMode)
                     && Options.CurrentGameMode != CustomGameMode.TaskBattle
                     && player.CanMove)
                 {
@@ -47,7 +47,7 @@ namespace TownOfHost
             //壁抜け解除
             if (player.Collider.offset.y == 127f)
             {
-                if (!Input.GetKey(KeyCode.LeftControl) || (AmongUsClient.Instance.IsGameStarted && GameStates.IsOnlineGame) || Main.EditMode)
+                if (!Input.GetKey(KeyCode.LeftControl) || (AmongUsClient.Instance.IsGameStarted && GameStates.IsOnlineGame) || CustomSpawnEditor.ActiveEditMode)
                 {
                     player.Collider.offset = new Vector2(0f, -0.3636f);
                 }
@@ -64,7 +64,7 @@ namespace TownOfHost
                 }
 #endif
 
-            if (GameStates.IsLobby && !GameStates.IsFreePlay && !Main.EditMode)
+            if (GameStates.IsLobby && !GameStates.IsFreePlay && !CustomSpawnEditor.ActiveEditMode)
             {
                 if (!GameSettings)
                 {
@@ -98,7 +98,7 @@ namespace TownOfHost
                 GameSettings.gameObject.SetActive(GameStates.IsLobby && Main.ShowGameSettingsTMP.Value);
 
             //カスタムスポーン位置設定中ならキルボタン等を非表示にする
-            if (GameStates.IsFreePlay && Main.EditMode)
+            if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode)
             {
                 GameObject.Find("Main Camera/ShadowQuad")?.SetActive(false);
                 __instance.ReportButton.Hide();
@@ -151,7 +151,7 @@ namespace TownOfHost
                     }
 
 
-                    if (Main.RTAMode && GameStates.IsInTask)
+                    if (TaskBattle.IsRTAMode && GameStates.IsInTask)
                     {
                         LowerInfoText.enabled = true;
                         LowerInfoText.text = GetTaskBattleTimer();
@@ -405,7 +405,7 @@ namespace TownOfHost
         private static StringBuilder Suffix = new(120);
         public static void Postfix(ShapeshifterPanel __instance, [HarmonyArgument(0)] int index, [HarmonyArgument(1)] NetworkedPlayerInfo pl)
         {
-            if (Main.EditMode && GameStates.IsFreePlay) return;
+            if (CustomSpawnEditor.ActiveEditMode && GameStates.IsFreePlay) return;
 
             var seer = PlayerControl.LocalPlayer;
             var seerRole = seer.GetRoleClass();
@@ -565,7 +565,7 @@ namespace TownOfHost
         public static bool Prefix(MapBehaviour __instance, ref MapOptions opts)
         {
             if (GameStates.IsMeeting) return true;
-            if (GameStates.IsFreePlay && Main.EditMode)
+            if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode)
             {
                 opts.Mode = MapOptions.Modes.Normal;
                 return true;
@@ -594,7 +594,7 @@ namespace TownOfHost
         // タスク表示の文章が更新・適用された後に実行される
         public static void Postfix(TaskPanelBehaviour __instance)
         {
-            if (Main.EditMode && GameStates.IsFreePlay)
+            if (CustomSpawnEditor.ActiveEditMode && GameStates.IsFreePlay)
             {
                 __instance.taskText.text = GetString("CustomSpawnEditInfo");
                 return;

@@ -277,7 +277,7 @@ namespace TownOfHost
             }
 
             //--以下フリープレイ用コマンド--//
-            if (!GameStates.IsFreePlay || Main.EditMode) return;
+            if (!GameStates.IsFreePlay || CustomSpawnEditor.ActiveEditMode) return;
 
             //キルクールを0秒に設定
             if (Input.GetKeyDown(KeyCode.X))

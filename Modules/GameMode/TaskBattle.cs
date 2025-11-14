@@ -17,6 +17,8 @@ class TaskBattle
     /// <summary>追加でタスクを付与した数</summary>
     public static Dictionary<byte, int> TaskAddCount = new();
     public static bool IsAdding;
+    public static byte RTAPlayerId;
+    public static bool IsRTAMode;
     [Attributes.GameModuleInitializer]
     public static void Init()
     {
@@ -281,15 +283,15 @@ class TaskBattle
         {
             reason = GameOverReason.ImpostorsByKill;
 
-            if (Main.RTAMode)
+            if (TaskBattle.IsRTAMode)
             {
-                var player = PlayerCatch.GetPlayerById(Main.RTAPlayer);
+                var player = PlayerCatch.GetPlayerById(RTAPlayerId);
                 if (player.GetPlayerTaskState().IsTaskFinished)
                 {
                     reason = GameOverReason.CrewmatesByTask;
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.TaskPlayerB);
                     CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
-                    Main.RTAPlayer = byte.MaxValue;
+                    RTAPlayerId = byte.MaxValue;
                 }
             }
             else

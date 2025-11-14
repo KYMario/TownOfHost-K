@@ -58,7 +58,7 @@ namespace TownOfHost
             canOverrideRole = true;
             Logger.Info($"{targetName} => {roleType}", "PlayerControl.RpcSetRole");
             if (AmongUsClient.Instance.AmHost is false) return true;
-            if (GameStates.IsFreePlay && Main.EditMode)
+            if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode)
             {
                 roleType = RoleTypes.Shapeshifter;
                 return true;
@@ -70,7 +70,7 @@ namespace TownOfHost
                 return false;
             }
 
-            Main.NowTypes[__instance.PlayerId] = roleType;
+            __instance.GetPlayerState().NowRoleType = roleType;
             return true;
         }
         public static void Postfix(PlayerControl __instance) => __instance.Data.Role.NameColor = Palette.White;

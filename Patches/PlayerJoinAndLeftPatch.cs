@@ -92,10 +92,10 @@ namespace TownOfHost
             StreamerInfo.DisconnectInternal();
             Logger.Info($"切断(理由:{reason}:{stringReason}, ping:{__instance.Ping},FriendCode:{__instance?.GetClient(__instance.ClientId)?.FriendCode},PUID:{__instance?.GetClient(__instance.ClientId)?.ProductUserId})", "Session");
 
-            if (GameStates.IsFreePlay && Main.EditMode)
+            if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode)
             {
                 CustomSpawnManager.Save();
-                Main.EditMode = false;
+                CustomSpawnEditor.ActiveEditMode = false;
             }
 
             if (AmongUsClient.Instance.AmHost && GameStates.InGame && reason is not DisconnectReasons.Destroy)

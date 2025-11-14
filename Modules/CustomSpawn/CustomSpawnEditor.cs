@@ -12,11 +12,11 @@ using TMPro;
 using static TownOfHost.Translator;
 using static TownOfHost.CustomSpawnManager;
 using TownOfHost.Modules;
-using System.IO.Pipes;
 namespace TownOfHost;
 
 public class CustomSpawnEditor
 {
+    public static bool ActiveEditMode;
     private static readonly LogHandler logger = Logger.Handler(nameof(CustomSpawnEditor));
 
     public class EditorAPI
@@ -232,7 +232,7 @@ public class CustomSpawnEditor
         [HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Begin)), HarmonyPrefix]
         public static bool MinigamePrefixPatch(ShapeshifterMinigame __instance)
         {
-            if (!Main.EditMode) return true;
+            if (!CustomSpawnEditor.ActiveEditMode) return true;
 
             EditorMinigame = __instance;
             SelectedSpawnId = -1;
@@ -454,7 +454,7 @@ public class CustomSpawnEditor
         [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show)), HarmonyPostfix]
         public static void ShowPostfix(MapBehaviour __instance)
         {
-            if (!GameStates.IsFreePlay || !Main.EditMode) return;
+            if (!GameStates.IsFreePlay || !CustomSpawnEditor.ActiveEditMode) return;
 
             var spawnPoints = EditorAPI.CurrentSpawnMap.Points;
             if (spawnPoints == null) return;

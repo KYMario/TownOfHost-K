@@ -476,7 +476,7 @@ namespace TownOfHost
     {
         public static void Postfix()
         {
-            if (GameStates.IsFreePlay && Main.EditMode)
+            if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode)
                 GameObject.FindObjectsOfType<SystemConsole>(true).DoIf(x => x.FreeplayOnly, x => x.gameObject.SetActive(false));
 
             UpdateDisableDevices();
@@ -632,7 +632,7 @@ namespace TownOfHost
     {
         public static void Prefix(MapCountOverlay __instance)
         {
-            if (GameStates.IsFreePlay && Main.EditMode) return;
+            if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode) return;
 
             if (PlayerControl.LocalPlayer.IsAlive() && DemonicCrusher.DemUseAbility)
             {

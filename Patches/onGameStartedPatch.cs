@@ -51,7 +51,6 @@ namespace TownOfHost
             UtilsGameLog.LastLogPro = new Dictionary<byte, string>();
             UtilsGameLog.LastLogSubRole = new Dictionary<byte, string>();
             UtilsGameLog.LastLogLoveRole = new Dictionary<byte, string>();
-            Main.KillCount = new Dictionary<byte, int>();
             Main.AllPlayerTask = new Dictionary<byte, List<uint>>();
             GhostRoleAssingData.GhostAssingCount = new Dictionary<CustomRoles, int>();
 
@@ -63,7 +62,6 @@ namespace TownOfHost
 
             Main.CheckShapeshift = new();
             Main.ShapeshiftTarget = new();
-            Main.NowTypes = new();
 
             ReportDeadBodyPatch.CanReport = new();
             ReportDeadBodyPatch.IgnoreBodyids = new();
@@ -81,7 +79,6 @@ namespace TownOfHost
             Main.LastNotifyNames = new();
 
             Main.PlayerColors = new();
-            Main.AllPlayerLastkillpos = new();
             //名前の記録
             Main.AllPlayerNames = new();
 
@@ -141,7 +138,6 @@ namespace TownOfHost
                 ReportDeadBodyPatch.IgnoreBodyids[pc.PlayerId] = true;
                 Main.clientIdList.Add(pc.GetClientId());
                 pc.RemoveProtection();
-                Main.KillCount.Add(pc.PlayerId, 0);
 
                 if (IsPlayerSkinShuffleMode)
                 {
@@ -594,7 +590,7 @@ namespace TownOfHost
                 {
                     rolebasetype = pc.Data.Role.Role;
                 }
-                Main.NowTypes.TryAdd(pc.PlayerId, rolebasetype);
+                state.NowRoleType = rolebasetype;
             }
 
             if (Lovers.OneLovePlayer.BelovedId != byte.MaxValue && Options.CurrentGameMode == CustomGameMode.Standard)

@@ -174,7 +174,7 @@ namespace TownOfHost
                 case CustomWinner.TaskPlayerB:
                     if (winnerList.Count is 0) break;
                     if (winnerList.Count == 1)
-                        if (Main.RTAMode)
+                        if (TaskBattle.IsRTAMode)
                         {
                             WinText = "Game Over";
                             CustomWinnerText = $"タイム: {HudManagerPatch.GetTaskBattleTimer().Replace(" : ", "：")}<size=0>";

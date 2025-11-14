@@ -1090,7 +1090,7 @@
 "FirstTurnMeeting","First Turn Call Meeting","開始後、緊急会議を発動させる"
 "FirstTurnMeetingCantability","Force Meeting Can't Ability","強制会議中に能力が使えない"
 "FixFirstKillCooldown","Normalize First Kill Cooldown","初期スポーン時のクールダウン修正","修正首刀冷却时间","修正開場時的殺人冷卻時間","Нормализовать откат убийства в начале Игры","Normalizar Tempo de Recarga do Primeiro Abate",""
-"CanseeVoteresult","Can See Voteresult","投票結果を表示する"
+"CanseeVoteresult","Can See Voteresult","投票結果を名前の下に表示する"
 "CommnTaskResetAssing","Common Task Reset Assing","通常タスクを共通にしない"
 "TeamHideChat","Team Hide Chat","秘匿チャット"
 "ImpostorHideChat","Impostor Hide Chat (/ic)","インポスター秘匿チャット(/ic)"

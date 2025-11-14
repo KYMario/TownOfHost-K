@@ -73,7 +73,6 @@ namespace TownOfHost
         public Harmony Harmony { get; } = new Harmony(PluginGuid);
         public static Version version = Version.Parse(PluginVersion);
         public static BepInEx.Logging.ManualLogSource Logger;
-        public static bool CanModClients => false;//参加者もMod導入していいか
         public static bool hasArgumentException = false;
         public static string ExceptionMessage;
         public static bool ExceptionMessageIsShown = false;
@@ -121,7 +120,6 @@ namespace TownOfHost
         public static ConfigEntry<bool> LastKickModClient { get; private set; }
         public static bool UseingJapanese => ForceJapanese.Value || TranslationController.Instance.currentLanguage.languageID is SupportedLangs.Japanese;
         public static OptionBackupData RealOptionsData;
-        public static Dictionary<byte, Vector2> AllPlayerLastkillpos = new();
         public static Dictionary<byte, string> AllPlayerNames = new();
         public static Dictionary<(byte, byte), string> LastNotifyNames;
         public static Dictionary<byte, Color32> PlayerColors = new();
@@ -137,12 +135,7 @@ namespace TownOfHost
         public static Dictionary<byte, float> AllPlayerKillCooldown = new();
         public static bool HnSFlag = false;
         public static bool showkillbutton = false;
-        public static bool RTAMode = false;
-        public static byte RTAPlayer = 0;
-        public static bool EditMode = false;
-        public static int page = 0;
         public static bool AssignSameRoles = false;
-        public static Dictionary<byte, int> KillCount = new();
         public static string Alltask;
         public static byte LastSab;
         public static SystemTypes SabotageType;
@@ -153,7 +146,6 @@ namespace TownOfHost
         public static bool SetRoleOverride = true;
         /// <summary>ラグを考慮した奴。アジア、カスタム、ローカルは200ms(0.2s),他は400ms(0.4s)</summary>
         public static float LagTime = 0.2f;
-        //public static bool TaskBattleOptionv = false;
         public static int ForcedGameEndColl;
         public static bool ShowRoleIntro;
         public static bool DontGameSet;
@@ -168,7 +160,6 @@ namespace TownOfHost
         public static Dictionary<byte, bool> CheckShapeshift = new();
         public static Dictionary<byte, byte> ShapeshiftTarget = new();
         public static Dictionary<byte, CustomDeathReason> HostKill = new();
-        public static Dictionary<byte, RoleTypes> NowTypes = new();
         public static bool VisibleTasksCount;
         public static string nickName = "";
         public static string lobbyname = "";

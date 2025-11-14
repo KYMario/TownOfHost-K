@@ -92,7 +92,7 @@ namespace TownOfHost
                             sb.Append("\r\n<size=50%>").Append(exSb).Append("</size>");
                         }
                     }
-                    else if (Main.EditMode)
+                    else if (CustomSpawnEditor.ActiveEditMode)
                     {
                         sb.Append($"\r\n").Append(Utils.ColorString(Color.cyan, GetString("ED.CSE")));
                     }
