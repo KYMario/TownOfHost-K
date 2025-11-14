@@ -65,7 +65,7 @@ namespace TownOfHost.Roles.AddOns.Common
                     .SetParent(CustomRoleSpawnChances[role]).SetParentRole(role)
                     .SetValueFormat(OptionFormat.Players);
                 MadmateMaximum.ReplacementDictionary = new Dictionary<string, string> { { "%roleTypes%", Utils.ColorString(Palette.ImpostorRed, GetString("Madmate")) } };
-                MadmateAssignTarget = (AssignOptionItem)AssignOptionItem.Create(idStart++, "FixedRole", 0, TabGroup.Addons, false, imp: true, notassing: InvalidRoles)
+                MadmateAssignTarget = (AssignOptionItem)AssignOptionItem.Create(idStart++, "FixedRole", 0, TabGroup.Addons, false, mad: true, notassing: InvalidRoles)
                     .SetParent(MadmateMaximum).SetParentRole(role);
             }
 
