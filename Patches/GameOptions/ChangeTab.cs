@@ -66,6 +66,7 @@ namespace TownOfHost
             {
                 if (tabNum == 3) ShowModSetting = true;
                 else ShowModSetting = false;
+                if (Last == 1) VanillaOptionHolder.SetOptinItem();
                 Last = tabNum;
             }
             if (100 > ClickCount)

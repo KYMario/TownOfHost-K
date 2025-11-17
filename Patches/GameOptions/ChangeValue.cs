@@ -219,4 +219,27 @@ namespace TownOfHost
             return false;
         }
     }
+    [HarmonyPatch(typeof(StringOption), nameof(StringOption.Initialize))]
+    class StringOptionStartPatch
+    {
+        public static List<StringOption> all = new();
+        public static void Postfix(StringOption __instance)
+        {
+            if (__instance.stringOptionName is Int32OptionNames.TaskBarMode ||
+            __instance.gameObject.name is not "GameOption_String(Clone)") return;
+            all.Add(__instance);
+        }
+    }
+    [HarmonyPatch(typeof(NumberOption), nameof(NumberOption.Initialize))]
+    class NumberOptionStartPatch
+    {
+        public static List<NumberOption> all = new();
+        public static void Postfix(NumberOption __instance) => all.Add(__instance);
+    }
+    [HarmonyPatch(typeof(ToggleOption), nameof(ToggleOption.Initialize))]
+    class ToggleOptionStartPatch
+    {
+        public static List<ToggleOption> all = new();
+        public static void Postfix(ToggleOption __instance) => all.Add(__instance);
+    }
 }

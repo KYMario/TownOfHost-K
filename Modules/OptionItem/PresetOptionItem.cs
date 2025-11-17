@@ -57,6 +57,7 @@ namespace TownOfHost
         {
             base.SetValue(Rule.RepeatIndex(afterValue), doSave, doSync);
             SwitchPreset(Rule.RepeatIndex(afterValue));
+            VanillaOptionHolder.SetVanillaValue();
         }
     }
 }

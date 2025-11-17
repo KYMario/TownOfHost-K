@@ -759,6 +759,21 @@ namespace TownOfHost
                             Main.NormalOptions.TryCast<NormalGameOptionsV10>().SetFloat(FloatOptionNames.KillCooldown, fl);
                         }
                         GameOptionsSender.RpcSendOptions();
+                        try
+                        {
+                            StringOptionStartPatch.all.Do(x =>
+                            {
+                                x.Value = Main.NormalOptions.GetInt(x.stringOptionName);
+                                x.ValueText.text = Translator.GetString(x.Values[x.Value]);
+                            });
+                            NumberOptionStartPatch.all.Do(x =>
+                            {
+                                var opt = x.intOptionName is Int32OptionNames.Invalid ? Main.NormalOptions.GetFloat(x.floatOptionName) : Main.NormalOptions.GetInt(x.intOptionName);
+                                x.Value = opt;
+                                x.ValueText.text = x.data.GetValueString(opt);
+                            });
+                        }
+                        catch { }
                         break;
                     case "/exile":
                         canceled = true;

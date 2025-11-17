@@ -21,11 +21,20 @@ class Lovers
     public static OptionItem OneLoveSolowin3players;
     public static OptionItem OneLoveRoleAddwin;
     public static OptionItem OneLoveLoversrect;
+    public static OptionItem LoverSetRole;
+    public static AssignOptionItem LoversRole1;
+    public static OptionItem AssingImpostor;
+    public static OptionItem AssingMadmate;
+    public static OptionItem AssingCrewmate;
+    public static OptionItem AssingNeutral;
     static CustomRoles[] remove =
     {
         CustomRoles.Limiter,
         CustomRoles.Madonna,
-        CustomRoles.King
+        CustomRoles.King,
+        CustomRoles.GM,
+        CustomRoles.Vega,
+        CustomRoles.Altair
     };
     public static void SetLoversOptions()
     {
@@ -34,6 +43,16 @@ class Lovers
         SoloWinOption.Create(20000, TabGroup.Combinations, CustomRoles.OneLove, () => !OneLoveRoleAddwin.GetBool(), defo: 5);
         OneLoveLoversrect = IntegerOptionItem.Create(20005, "OneLoverLovers", new(0, 100, 2), 20, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetValueFormat(OptionFormat.Percent).SetParentRole(CustomRoles.OneLove);
         OneLoveSolowin3players = BooleanOptionItem.Create(20006, "LoverSoloWin3players", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetParentRole(CustomRoles.OneLove);
+        LoverSetRole = BooleanOptionItem.Create(20007, "FixedRole", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetParentRole(CustomRoles.OneLove);
+        LoversRole1 = (AssignOptionItem)AssignOptionItem.Create(20008, "FixedRole", 0, TabGroup.Combinations, false, true, true, true, true, remove).SetParent(LoverSetRole).SetParentRole(CustomRoles.OneLove);
+        AssingImpostor = BooleanOptionItem.Create(20009, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetParentRole(CustomRoles.OneLove).SetEnabled(() => !LoversRole1.GetBool());
+        AssingMadmate = BooleanOptionItem.Create(20010, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetParentRole(CustomRoles.OneLove).SetEnabled(() => !LoversRole1.GetBool());
+        AssingCrewmate = BooleanOptionItem.Create(20011, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetParentRole(CustomRoles.OneLove).SetEnabled(() => !LoversRole1.GetBool());
+        AssingNeutral = BooleanOptionItem.Create(20012, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[CustomRoles.OneLove]).SetParentRole(CustomRoles.OneLove).SetEnabled(() => !LoversRole1.GetBool());
+        AssingImpostor.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.ImpostorRed, Translator.GetString("TeamImpostor")) } };
+        AssingMadmate.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.ImpostorRed, Translator.GetString("Madmate")) } };
+        AssingCrewmate.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.CrewmateBlue, Translator.GetString("TeamCrewmate")) } };
+        AssingNeutral.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.AcceptedGreen, Translator.GetString("Neutral")) } };
 
         new ColorLovers(CustomRoles.Lovers, 20100);
         new ColorLovers(CustomRoles.RedLovers, 20200);
@@ -92,24 +111,46 @@ class Lovers
         allPlayers = allPlayers.Where(x => !x.IsLovers()).ToList();
         if (CustomRoles.OneLove.IsPresent())
         {
-            var count = Math.Clamp(RawCount, 0, allPlayers.Count);
-            if (RawCount == -1) count = Math.Clamp(CustomRoles.OneLove.GetRealCount(), 0, allPlayers.Count);
+            List<PlayerControl> AssingTarget = new();
+            foreach (var pc in allPlayers)
+            {
+                if (pc.IsLovers()) continue;
+                if (remove.Contains(pc.GetCustomRole())) continue;
+
+                if (!AssingImpostor.GetBool() && !AssingMadmate.GetBool() && !AssingCrewmate.GetBool() && !AssingNeutral.GetBool())
+                { }
+                else
+                {
+                    var team = pc.GetCustomRole().GetCustomRoleTypes();
+                    switch (team)
+                    {
+                        case CustomRoleTypes.Crewmate: if (!AssingCrewmate.GetBool()) continue; break;
+                        case CustomRoleTypes.Impostor: if (!AssingImpostor.GetBool()) continue; break;
+                        case CustomRoleTypes.Neutral: if (!AssingNeutral.GetBool()) continue; break;
+                        case CustomRoleTypes.Madmate: if (!AssingMadmate.GetBool()) continue; break;
+                    }
+                }
+                AssingTarget.Add(pc);
+            }
+
+            var count = Math.Clamp(RawCount, 0, AssingTarget.Count);
+            if (RawCount == -1) count = Math.Clamp(CustomRoles.OneLove.GetRealCount(), 0, AssingTarget.Count);
             var assind = false;
-            if (allPlayers.Count < 2) return;//2人居ない時は返す。
+            if (AssingTarget.Count < 2) return;//2人居ない時は返す。
             if (count <= 0) return;
-            var player = allPlayers[rand.Next(0, allPlayers.Count)];//片思いしてる人
+            var player = AssingTarget[rand.Next(0, AssingTarget.Count)];//片思いしてる人
             for (var i = 0; i < 2; i++)
             {
                 if (assind)
                 {
                     var doubleOneLove = false;
                     var chance = rand.Next(0, 100);
-                    var target = allPlayers[rand.Next(0, allPlayers.Count)];//片思いされてる人
+                    var target = AssingTarget[rand.Next(0, AssingTarget.Count)];//片思いされてる人
                     if (chance <= OneLoveLoversrect.GetInt())
                     {
                         HaveLoverDontTaskPlayers.Add(target.PlayerId);
                         doubleOneLove = true;
-                        allPlayers.Remove(target);
+                        AssingTarget.Remove(target);
                         PlayerState.GetByPlayerId(target.PlayerId).SetSubRole(CustomRoles.OneLove);
                         Logger.Info("両想いだったって！" + target?.Data?.GetLogPlayerName() + " = " + target.GetCustomRole().ToString() + " + " + CustomRoles.OneLove.ToString(), "AssignLovers");
                     }
@@ -119,7 +160,7 @@ class Lovers
                     break;
                 }
                 assind = true;
-                allPlayers.Remove(player);
+                AssingTarget.Remove(player);
                 HaveLoverDontTaskPlayers.Add(player.PlayerId);
                 PlayerState.GetByPlayerId(player.PlayerId).SetSubRole(CustomRoles.OneLove);
                 Logger.Info("役職設定:" + player?.Data?.GetLogPlayerName() + " = " + player.GetCustomRole().ToString() + " + " + CustomRoles.OneLove.ToString(), "AssignLovers");

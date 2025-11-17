@@ -1298,6 +1298,7 @@ namespace TownOfHost
                 .SetInfo(Translator.GetString("KickBanOptionWhiteList"))
                 .SetColor(Color.red);
 
+            VanillaOptionHolder.Initialize();
             DebugModeManager.SetupCustomOption();
 
             OptionSaver.Load();

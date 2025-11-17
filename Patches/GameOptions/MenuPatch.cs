@@ -49,6 +49,10 @@ namespace TownOfHost
             timer = -100;
             tabGenerated = null;
             ShowFilter.CloseOptionMenu();
+            VanillaOptionHolder.SetOptinItem();
+            StringOptionStartPatch.all?.Clear();
+            NumberOptionStartPatch.all?.Clear();
+            ToggleOptionStartPatch.all?.Clear();
         }
     }
 
@@ -473,6 +477,7 @@ namespace TownOfHost
                     }
                     GameSettingMenuChangeTabPatch.meg = GetString("OptionResetMeg");
                     timer = 3;
+                    VanillaOptionHolder.ResetVanilla();
                     OptionItem.SyncAllOptions();
                     OptionSaver.Save();
                 }), UtilsSprite.LoadSprite("TownOfHost.Resources.RESET-STG.png", 150f));

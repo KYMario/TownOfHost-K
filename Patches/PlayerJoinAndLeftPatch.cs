@@ -39,6 +39,7 @@ namespace TownOfHost
             StreamerInfo.JoinGame();
             SlotRoleAssign.Reset();
             ErrorText.Instance.Clear();
+            VanillaOptionHolder.SetVanillaValue();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 if (pc == null) continue;
