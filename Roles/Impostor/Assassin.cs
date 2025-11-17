@@ -427,7 +427,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     public override void OnShapeshift(PlayerControl target) => AddRole?.OnShapeshift(target);
     public override bool CheckShapeshift(PlayerControl target, ref bool shouldAnimate) => AddRole?.CheckShapeshift(target, ref shouldAnimate) ?? true;
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target) => AddRole?.OnReportDeadBody(reporter, target);
-    public override bool CanClickUseVentButton => AddRole?.CanClickUseVentButton ?? false;
+    public override bool CanClickUseVentButton => AddRole?.CanClickUseVentButton ?? true;
     public override string MeetingAddMessage() => AddRole?.MeetingAddMessage() ?? "";
     public override (byte? votedForId, int? numVotes, bool doVote) ModifyVote(byte voterId, byte sourceVotedForId, bool isIntentional) => AddRole?.ModifyVote(voterId, sourceVotedForId, isIntentional) ?? (null, null, true);
     public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner) => AddRole?.OnExileWrapUp(exiled, ref DecidedWinner);
