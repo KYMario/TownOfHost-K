@@ -1385,6 +1385,7 @@
 "AssasinCanCallMeetingKill","Can Call Meeting Kill","追放以外でもアサシン会議を起こす"
 "AssasinHasOtherRole","Has Other Role","他の役職の能力も持つ"
 "AssassinHaveRole","Role","併せ持つ役職"
+"AssassinMeetingTime","AssassinMeetingTime","アサシン会議の会議時間"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"

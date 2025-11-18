@@ -55,6 +55,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     static OptionItem OptionCanCallMeetingKill; static bool cancallmeetingkill;
     static OptionItem OptionHasOtherRole;
     static FilterOptionItem OptionHaveRole; static CustomRoles haverole;
+    public static OptionItem OptionAssassinMeetingTime;
 
     public static OptionItem OptionMerlinHasTask;
     static OverrideTasksData OptionMerlinNomalTask;
@@ -95,6 +96,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         AssasinCanCallMeetingKill,
         AssasinHasOtherRole,
         AssassinHaveRole,
+        AssassinMeetingTime,
         WalkerWalkTaskCount,
         MerlinCanSeeNeutral,
         MerlinOnlyNeutralKiller,
@@ -108,6 +110,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         OptionCanCallMeetingKill = BooleanOptionItem.Create(RoleInfo, 10, OptionName.AssasinCanCallMeetingKill, false, false);
         OptionHasOtherRole = BooleanOptionItem.Create(RoleInfo, 13, OptionName.AssasinHasOtherRole, false, false);
         OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, () => InvalidRoles());
+        OptionAssassinMeetingTime = IntegerOptionItem.Create(RoleInfo, 25, OptionName.AssassinMeetingTime, new(10, 180, 1), 35, false).SetValueFormat(OptionFormat.Seconds);
 
         OptionMerlinHasTask = BooleanOptionItem.Create(RoleInfo, 24, OptionName.MerlinHasTask, false, false);
         OptionMerlinNomalTask = OverrideTasksData.Create(RoleInfo, 16, rolename: CustomRoles.Merlin, tasks: (true, 2, 0, 0), OptionMerlinHasTask);

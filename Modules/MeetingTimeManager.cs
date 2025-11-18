@@ -3,6 +3,7 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using TownOfHost.Roles.Impostor;
 
 namespace TownOfHost.Modules
 {
@@ -35,6 +36,12 @@ namespace TownOfHost.Modules
             if (Roles.Crewmate.Balancer.Id != 255 && Roles.Crewmate.Balancer.target1 is not 255 && Roles.Crewmate.Balancer.target1 is not 255)
             {
                 Balancer(Roles.Crewmate.Balancer.meetingtime);
+                return;
+            }
+            if (Assassin.assassin?.NowState is Assassin.AssassinMeeting.Guessing or Assassin.AssassinMeeting.CallMetting)
+            {
+                DiscussionTime = 0;
+                VotingTime = Assassin.OptionAssassinMeetingTime.GetInt();
                 return;
             }
             if (Options.AllAliveMeeting.GetBool() && PlayerCatch.IsAllAlive)
