@@ -1,90 +1,22 @@
 {
     "51.14.31": {
         "Unavailable": false,
-        "NotAvailableOnline": false,
-        "Events": [
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 10,
-                    "StartDay": 31,
-                    "EndDay": 31
-                }
-            },
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 11,
-                    "StartDay": 1,
-                    "EndDay": 15
-                }
-            }
-        ]
+        "NotAvailableOnline": false
     },
     "51.14.31.11": {
         "Unavailable": false,
-        "NotAvailableOnline": false,
-        "Events": [
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 10,
-                    "StartDay": 31,
-                    "EndDay": 31
-                }
-            },
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 11,
-                    "StartDay": 1,
-                    "EndDay": 15
-                }
-            }
-        ]
+        "NotAvailableOnline": false
     },
     "51.14.31.12": {
         "Unavailable": false,
-        "NotAvailableOnline": false,
-        "Events": [
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 10,
-                    "StartDay": 31,
-                    "EndDay": 31
-                }
-            },
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 11,
-                    "StartDay": 1,
-                    "EndDay": 15
-                }
-            }
-        ]
+        "NotAvailableOnline": false
     },
     "51.14.31.13": {
         "Unavailable": false,
-        "NotAvailableOnline": false,
-        "Events": [
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 10,
-                    "StartDay": 31,
-                    "EndDay": 31
-                }
-            },
-            {
-                "RoleId": 114,
-                "Period": {
-                    "Month": 11,
-                    "StartDay": 1,
-                    "EndDay": 15
-                }
-            }
-        ]
+        "NotAvailableOnline": false
+    },
+    "51.14.31.14": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
     }
 }
