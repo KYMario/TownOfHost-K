@@ -30,6 +30,7 @@ public static class HeliSabotageSystemUpdateSystemPatch
         {
             return false;
         }
+        if (Modules.SuddenDeathMode.NowSuddenDeathMode) return false;
         if (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.Slacker) && data.GiveSlacker.GetBool()) return false;
 
         if (Roles.AddOns.Common.Amnesia.CheckAbility(player))
