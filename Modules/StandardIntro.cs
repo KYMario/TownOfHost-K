@@ -13,6 +13,22 @@ namespace TownOfHost.Modules;
 
 class StandardIntro
 {
+    static int weight
+    {
+        get
+        {
+            if (Options.ExperimentalMode.GetBool())
+            {
+                switch (Options.ExIntroWeight.GetValue())
+                {
+                    case 0: return 800;
+                    case 1: return 600;
+                    case 2: return 400;
+                }
+            }
+            return 800;
+        }
+    }
     public static void CoGameIntroWeight()
     {
         if (!AmongUsClient.Instance.AmHost) return;
@@ -43,7 +59,7 @@ class StandardIntro
                     Logger.Info($"{data.GetLogPlayerName()}", "StandardIntro");
                     data.Serialize(stream, false);
                     stream.EndMessage();
-                    if (stream.Length > UtilsNotifyRoles.chengepake)
+                    if (stream.Length > weight)
                     {
                         IsSend = true;
                         stream.EndMessage();
@@ -135,7 +151,7 @@ class StandardIntro
                             sender.WritePacked(data.NetId);
                             data.Serialize(sender, false);
                             sender.EndMessage();
-                            if (sender.Length > UtilsNotifyRoles.chengepake)
+                            if (sender.Length > weight)
                             {
                                 issend = true;
                                 sender.EndMessage();
