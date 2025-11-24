@@ -139,7 +139,6 @@ namespace TownOfHost
         public static OptionItem ExAftermeetingflash;
         public static OptionItem ExHideChatCommand;
         public static OptionItem FixSpawnPacketSize;
-        public static OptionItem ExOldIntroSystem;
         public static OptionItem ExRpcWeightR;
         public static OptionItem ExCallMeetingBlackout;
 
@@ -1275,11 +1274,6 @@ namespace TownOfHost
             UseZoom = BooleanOptionItem.Create(1_000_008, "UseZoom", true, TabGroup.MainSettings, true)
                 .SetGameMode(CustomGameMode.All)
                 .SetColorcode("#9199a1");
-            ExOldIntroSystem = BooleanOptionItem.Create(105014, "ExOldIntroSystem", false, TabGroup.MainSettings, false)
-                .SetColor(new Color32(0, byte.MaxValue, 100, byte.MaxValue))
-                .SetHeader(true)
-                .SetGameMode(CustomGameMode.All)
-                .SetInfo($"<#ff1919>{Translator.GetString("ExOldIntroSystemInfo")}</color>");
 
             ApplyDenyNameList = BooleanOptionItem.Create(1_000_100, "ApplyDenyNameList", true, TabGroup.MainSettings, true)
                 .SetHeader(true)

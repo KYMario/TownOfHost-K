@@ -39,7 +39,6 @@ namespace TownOfHost
             StreamerInfo.JoinGame();
             SlotRoleAssign.Reset();
             ErrorText.Instance.Clear();
-            VanillaOptionHolder.SetVanillaValue();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 if (pc == null) continue;
@@ -82,6 +81,7 @@ namespace TownOfHost
                     if (Event.OptionLoad.Contains(option.Name) && !Event.Special) option.SetValue(0);
                     if (Event.CheckRole(option.CustomRole) is false) option.SetValue(0);
                 }
+                VanillaOptionHolder.SetVanillaValue();
             }
         }
     }
@@ -235,7 +235,7 @@ namespace TownOfHost
             {
                 Logger.Warn($"正常に完了しなかった切断 - 名前:{(data == null || data.PlayerName == null ? "(不明)" : data.PlayerName)}, 理由:{reason}, ping:{AmongUsClient.Instance.Ping}, Platform:{data?.PlatformData?.Platform ?? Platforms.Unknown} , friendcode:{data?.FriendCode ?? "???"} , PuId:{data?.ProductUserId ?? "???"}", "Session");
                 ErrorText.Instance.AddError(AmongUsClient.Instance.GameState is InnerNetClient.GameStates.Started ? ErrorCode.OnPlayerLeftPostfixFailedInGame : ErrorCode.OnPlayerLeftPostfixFailedInLobby);
-                IsIntroError = GameStates.Intro; //&& Options.ExOldIntroSystem.GetBool() is false;
+                IsIntroError = GameStates.Intro;
             }
 
             void SetDisconnect(ClientData data)

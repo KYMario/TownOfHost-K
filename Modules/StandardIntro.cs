@@ -17,7 +17,7 @@ class StandardIntro
     {
         if (!AmongUsClient.Instance.AmHost) return;
         // イントロ通信分割
-        if (!Options.ExOldIntroSystem.GetBool() && Options.CurrentGameMode is CustomGameMode.Standard)//役職配布前に通信擬装をしておく。
+        if (Options.CurrentGameMode is CustomGameMode.Standard)//役職配布前に通信擬装をしておく。
         {
             _ = new LateTask(() =>
             {
@@ -71,7 +71,6 @@ class StandardIntro
     public static void CoResetRoleY()
     {
         Logger.Info($"ShowIntro", "StandardIntro");
-        if (!Options.ExOldIntroSystem.GetBool())
         {
             var host = PlayerControl.LocalPlayer;
 
@@ -176,104 +175,6 @@ class StandardIntro
             Intoro();
             return;
         }
-        // イントロ緩和設定 ↑
-        // イントロ緩和設定OFF↓
-        {
-            //playercount ^2だったのがこれだとplayercount * 3(Serialize,Setrole) + αで済む。重くない←重いよ?
-            var host = PlayerControl.LocalPlayer;
-
-            InnerNetClientPatch.DontTouch = true;
-            GameDataSerializePatch.SerializeMessageCount++;
-            var stream = MessageWriter.Get(SendOption.Reliable);
-            stream.StartMessage(5);
-            stream.Write(AmongUsClient.Instance.GameId);
-            //_ = new LateTask(() =>
-            {
-                foreach (var data in GameData.Instance.AllPlayers)//これ1人でstream.Lengthが111
-                {
-                    data.Disconnected = true;
-                    stream.StartMessage(1);
-                    stream.WritePacked(data.NetId);
-                    data.Serialize(stream, false);
-                    stream.EndMessage();
-                }
-                stream.StartMessage(2);
-                stream.WritePacked(PlayerControl.LocalPlayer.NetId);
-                stream.Write((byte)RpcCalls.SetRole);
-                stream.Write((ushort)RoleTypes.Crewmate);
-                stream.Write(true);
-                stream.EndMessage();
-                var i = 0;
-                foreach (var data in GameData.Instance.AllPlayers)//これ1人でstream.Lengthが111
-                {
-                    i++;
-                    data.Disconnected = false;
-                    if (4 < i && Options.ExRpcWeightR.GetBool()) continue;
-                    stream.StartMessage(1);
-                    stream.WritePacked(data.NetId);
-                    data.Serialize(stream, false);
-                    stream.EndMessage();
-                }
-                stream.EndMessage();
-                AmongUsClient.Instance.SendOrDisconnect(stream);
-                stream.Recycle();
-                _ = new LateTask(() =>
-                {
-                    if (!Main.IsroleAssigned)
-                    {
-                        if (Options.ExRpcWeightR.GetBool())
-                        {
-                            var sender = MessageWriter.Get(SendOption.Reliable);
-                            sender.StartMessage(5);
-                            sender.Write(AmongUsClient.Instance.GameId);
-                            i = 0;
-                            bool issend = false;
-                            foreach (var data in GameData.Instance.AllPlayers)//これ1人でstream.Lengthが111
-                            {
-                                i++;
-                                if (4 < i)
-                                {
-                                    issend = true;
-                                    data.Disconnected = false;
-                                    sender.StartMessage(1);
-                                    sender.WritePacked(data.NetId);
-                                    data.Serialize(sender, false);
-                                    sender.EndMessage();
-                                }
-                            }
-                            if (issend)
-                            {
-                                sender.EndMessage();
-                                AmongUsClient.Instance.SendOrDisconnect(sender);
-                                sender.Recycle();
-                            }
-                        }
-                        _ = new LateTask(() =>
-                        {
-                            PlayerCatch.AllPlayerControls.Do(pc =>
-                            {
-                                if (RpcSetTasksPatch.taskIds.TryGetValue(pc.PlayerId, out var taskids))
-                                    pc.Data.RpcSetTasks(taskids);
-                                else
-                                {
-                                    Logger.Error($"{pc.Data.GetLogPlayerName()} => taskIds is null", "AssingTask");
-                                    pc.Data.RpcSetTasks(Array.Empty<byte>());//再配布と同じ処理を行なっておく。
-                                }
-                            });
-                            PlayerCatch.AllPlayerControls.Do(x => PlayerState.GetByPlayerId(x.PlayerId).InitTask(x));
-                            GameData.Instance.RecomputeTaskCounts();
-                            TaskState.InitialTotalTasks = GameData.Instance.TotalTasks;
-                        }, 3, "SetTask");
-                        roleAssigned = true;
-                        InnerNetClientPatch.DontTouch = false;
-
-                        GameDataSerializePatch.SerializeMessageCount--;
-                    }
-                }, 0.3f, "SetTaskDelay");
-                Intoro();
-            }
-
-        }
         void Intoro()
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -347,7 +248,6 @@ class StandardIntro
                 senders2 = null;
             }, 2.2f + (GameStates.IsOnlineGame ? 0.4f : 0), "", false);
             _ = new LateTask(() => SetRole(), 5.5f, "", true);
-            //}, Options.ExOldIntroSystem.GetBool() ? 1f : 0f, "gamestartsetrole");
         }
     }
     public static void SetRole()

@@ -907,8 +907,6 @@
 "ExHideChatCommandInfo","(Can't Use Voice,BetterCrew Room)","(CT卓でのみONにしてください)"
 "FixSpawnPacketSize","Set When Disconnect above 8-9 People","8～9人以上で切断される現象の修正"
 "FixSpawnPacketSizeInfo","<color=red>Disconnect Player","<color=red>切断者が発生した場合のみ"
-"ExOldIntroSystem","Old Intro System","イントロのシステムを戻す"
-"ExOldIntroSystemInfo","if Start Disconnect Bug","ON時、開始後回線切断の可能性有"
 "ExRpcWeightR","Rpc Weight","Rpcの送信頻度を制限する"
 "ExCallMeetingBlackout","Meeting Blackout","会議前に視界を暗転させる"
 "UseZoom","UseZoom (ModClient Only)","ズームを有効にする(ModClient Only)"
