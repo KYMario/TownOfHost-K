@@ -52,6 +52,17 @@ namespace TownOfHost
                 id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, () => notassing
             );
         }
+        public static AssignOptionItem Create(
+            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+        )
+        {
+            var opt = new AssignOptionItem(
+                roleInfo.ConfigId + idOffset, name.ToString(), defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, () => notassing
+            );
+            opt.SetParent(parent ?? roleInfo.RoleOption);
+            opt.SetParentRole(roleInfo.RoleName);
+            return opt;
+        }
 
         // Getter
         public override int GetInt() => Rule.GetValueByIndex(CurrentValue);

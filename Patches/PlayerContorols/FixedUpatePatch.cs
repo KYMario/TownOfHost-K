@@ -172,9 +172,9 @@ namespace TownOfHost
                             }
                         }
                     }
-                    SuddenDeathMode.UpdateTeam();
                 }
 
+                SuddenDeathMode.UpdateTeam();
                 Utils.ApplySuffix(__instance);
                 StreamerInfo.FixUpdate();
             }
