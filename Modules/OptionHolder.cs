@@ -141,6 +141,7 @@ namespace TownOfHost
         public static OptionItem FixSpawnPacketSize;
         public static OptionItem ExRpcWeightR;
         public static OptionItem ExCallMeetingBlackout;
+        public static OptionItem ExIntroWeight;
 
         //幽霊役職
         public static OptionItem GhostRoleOption;
@@ -626,7 +627,12 @@ namespace TownOfHost
                 .SetGameMode(CustomGameMode.All)
                 .SetColor(UtilsRoleText.GetRoleColor(CustomRoles.Connecting)).SetParent(TeamHideChat);
             ExRpcWeightR = BooleanOptionItem.Create(105009, "ExRpcWeightR", false, TabGroup.MainSettings, false).SetParent(ExperimentalMode);
-            ExCallMeetingBlackout = BooleanOptionItem.Create(105012, "ExCallMeetingBlackout", false, TabGroup.MainSettings, false).SetParent(ExperimentalMode);
+            ExCallMeetingBlackout = BooleanOptionItem.Create(105012, "ExCallMeetingBlackout", false, TabGroup.MainSettings, false)
+                .SetParent(ExperimentalMode)
+                .SetInfo(Translator.GetString("ExCallMeetingBlackoutInfo"));
+            ExIntroWeight = StringOptionItem.Create(105014, "ExIntroWeight", ["Weight_0", "Weight_1", "Weight_2"], 0, TabGroup.MainSettings, false)
+                .SetParent(ExperimentalMode)
+                .SetInfo(Translator.GetString("ExIntroWeightInfo"));
 
             //9人以上部屋で落ちる現象の対策
             FixSpawnPacketSize = BooleanOptionItem.Create(105010, "FixSpawnPacketSize", false, TabGroup.MainSettings, true)
@@ -1367,7 +1373,8 @@ namespace TownOfHost
                 .SetEnabled(() => !SlotRoleAssign.IsSeted(role))
                 .SetGameMode(customGameMode)
                 .SetHidden(hidevalue)
-                .SetParentRole(role);
+                .SetParentRole(role)
+                .RegisterUpdateValueEvent((object obj, OptionItem.UpdateValueEventArgs args) => spawnOption.Refresh());
 
             if (combination != CombinationRoles.None) Combinations.Add(combination);
             CustomRoleSpawnChances.Add(role, spawnOption);

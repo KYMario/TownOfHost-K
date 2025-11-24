@@ -261,18 +261,21 @@ namespace TownOfHost
             if (CustomRole is not CustomRoles.NotAssigned)
             {
                 var format = string.Format(Translator.GetString("Format." + ValueFormat), value);
-                switch (value)
+                if (Options.GetRoleCount(CustomRole) > 0)
                 {
-                    case "10": format = $"<#fc7979>{format}</color>"; break;
-                    case "20": format = $"<#f7b199>{format}</color>"; break;
-                    case "30": format = $"<#fcf479>{format}</color>"; break;
-                    case "40": format = $"<#dcfc79>{format}</color>"; break;
-                    case "50": format = $"<#b5f77c>{format}</color>"; break;
-                    case "60": format = $"<#99f79b>{format}</color>"; break;
-                    case "70": format = $"<#87ff9c>{format}</color>"; break;
-                    case "80": format = $"<#63ffc6>{format}</color>"; break;
-                    case "90": format = $"<#40ffc6>{format}</color>"; break;
-                    case "100": format = $"<#79e2fc>{format}</color>"; break;
+                    switch (value)
+                    {
+                        case "10": format = $"<#fc7979>{format}</color>"; break;
+                        case "20": format = $"<#f7b199>{format}</color>"; break;
+                        case "30": format = $"<#fcf479>{format}</color>"; break;
+                        case "40": format = $"<#dcfc79>{format}</color>"; break;
+                        case "50": format = $"<#b5f77c>{format}</color>"; break;
+                        case "60": format = $"<#99f79b>{format}</color>"; break;
+                        case "70": format = $"<#87ff9c>{format}</color>"; break;
+                        case "80": format = $"<#63ffc6>{format}</color>"; break;
+                        case "90": format = $"<#40ffc6>{format}</color>"; break;
+                        case "100": format = $"<#79e2fc>{format}</color>"; break;
+                    }
                 }
                 return format;
             }
