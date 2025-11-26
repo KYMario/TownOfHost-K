@@ -49,6 +49,8 @@ namespace TownOfHost
             CustomSpawnManager.UpdateOptionName();
             if (AmongUsClient.Instance.AmHost) //以下、ホストのみ実行
             {
+                VanillaOptionHolder.SetVanillaValue();
+
                 if (Main.NormalOptions.KillCooldown == 0f)
                     Main.NormalOptions.KillCooldown = Main.LastKillCooldown.Value;
 
