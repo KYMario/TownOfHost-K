@@ -29,6 +29,14 @@ namespace TownOfHost
             GameStates.ExiledAnimate = false;
             UtilsGameLog.day++;
             UtilsGameLog.WriteGameLog();
+            if (TaskBattle.IsAllMapMode)
+            {
+                TaskBattle.allmapmodetimer += HudManagerPatch.TaskBattleTimer;
+            }
+            if (CustomWinnerHolder.WinnerTeam is CustomWinner.Draw || (TaskBattle.IsAllMapMode && Main.NormalOptions.MapId is 5))
+            {
+                TaskBattle.IsAllMapMode = false;
+            }
 
             Logger.Info("-----------ゲーム終了-----------", "Phase");
             if (!GameStates.IsModHost) return;

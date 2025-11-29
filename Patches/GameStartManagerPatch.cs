@@ -74,7 +74,7 @@ namespace TownOfHost
                 cancelButton.OnClick = new();
                 cancelButton.OnClick.AddListener((Action)(() =>
                 {
-                    if (AmongUsClient.Instance.AmHost)
+                    if (AmongUsClient.Instance.AmHost && !TaskBattle.IsAllMapMode)
                         GameStartManager.Instance.ResetStartState();
                 }));
 
@@ -225,9 +225,32 @@ namespace TownOfHost
         {
             public static bool Prefix(GameStartManager __instance)
             {
-                SelectRandomPreset();
+                if (TaskBattle.IsAllMapMode is false)
+                {
+                    if (TaskBattle.AllMapMode.GetBool())
+                    {
+                        Main.NormalOptions.MapId = 0;
+                    }
+                    else
+                    {
+                        SelectRandomPreset();
 
-                SelectRandomMap();
+                        SelectRandomMap();
+                    }
+                }
+                else
+                {
+                    byte nextmapid = 0;
+                    switch (Main.NormalOptions.MapId)
+                    {
+                        case 0: nextmapid = 1; break;
+                        case 1: nextmapid = 2; break;
+                        case 2: nextmapid = 4; break;
+                        case 4: nextmapid = 5; break;
+                        default:; break;
+                    }
+                    Main.NormalOptions.MapId = nextmapid;
+                }
 
                 var invalidColor = PlayerCatch.AllPlayerControls.Where(p => p.Data.DefaultOutfit.ColorId < 0 || Palette.PlayerColors.Length <= p.Data.DefaultOutfit.ColorId);
                 if (invalidColor.Any())
@@ -348,7 +371,7 @@ namespace TownOfHost
             }
             private static void SelectRandomMap()
             {
-                if (Options.RandomMapsMode.GetBool())
+                if (Options.RandomMapsMode.GetBool() && !TaskBattle.AllMapMode.GetBool())
                 {
                     var rand = IRandom.Instance;
                     List<byte> randomMaps = new();
@@ -394,7 +417,7 @@ namespace TownOfHost
         [HarmonyPatch(typeof(GameStartManager), nameof(GameStartManager.ResetStartState))]
         class ResetStartStatePatch
         {
-            public static void Prefix()
+            public static bool Prefix()
             {
                 if (GameStates.IsCountDown)
                 {
@@ -405,6 +428,7 @@ namespace TownOfHost
                 {
                     Utils.ApplySuffix(null, true);
                 }
+                return TaskBattle.IsAllMapMode && Options.CurrentGameMode is CustomGameMode.TaskBattle;
             }
         }
         [HarmonyPatch(typeof(HostInfoPanel), nameof(HostInfoPanel.Update))]

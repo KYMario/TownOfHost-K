@@ -19,6 +19,7 @@ class TaskBattle
     public static bool IsAdding;
     public static byte RTAPlayerId;
     public static bool IsRTAMode;
+    public static bool IsAllMapMode = false; public static float allmapmodetimer;
     [Attributes.GameModuleInitializer]
     public static void Init()
     {
@@ -166,6 +167,7 @@ class TaskBattle
     public static OptionItem TaskBattleTeamWinType;
     public static OptionItem TaskBattleTeamWinTaskc;
     public static OptionItem TaskSoroeru;
+    public static OptionItem AllMapMode;
 
     public static OptionItem TaskAddMode;
     public static OptionItem NumCommonTasks;
@@ -195,6 +197,8 @@ class TaskBattle
             .SetGameMode(CustomGameMode.TaskBattle);
         TaskSoroeru = BooleanOptionItem.Create(200318, "TaskSoroeru", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
             .SetGameMode(CustomGameMode.TaskBattle);
+        AllMapMode = BooleanOptionItem.Create(200324, "AllMapMode", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
+        .SetColor(Palette.ImpostorRed).SetEnabled(() => GameStates.IsLocalGame);
 
         TaskAddMode = BooleanOptionItem.Create(200319, "TaskAddMode", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
             .SetGameMode(CustomGameMode.TaskBattle);

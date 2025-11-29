@@ -227,6 +227,7 @@
 "TaskSoroeru","Align the Tasks","全員のタスクを共通にする"
 "TaskAddMode","Task Add Mode","タスク完了時にタスクを追加する"
 "MaxAddCount","Max Add Count","追加回数"
+"AllMapMode","AllMapMode(Only Solo play)","全マップ周遊モード(RTA専用)"
 
 "# GM"
 "GM","GM","ゲームマスター","GM(管理员)","GM(遊戲大師)","Мастер Игры","MJ(Mestre de Jogo)","GM(Fantasma)"

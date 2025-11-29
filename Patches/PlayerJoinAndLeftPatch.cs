@@ -84,6 +84,12 @@ namespace TownOfHost
                     if (Event.CheckRole(option.CustomRole) is false) option.SetValue(0);
                 }
                 VanillaOptionHolder.SetVanillaValue();
+
+                if (TaskBattle.IsAllMapMode)
+                {
+                    _ = new LateTask(() => GameStartManager.Instance.BeginGame(), 1f, "NextStart", true);
+                }
+                else TaskBattle.allmapmodetimer = 0;
             }
         }
     }

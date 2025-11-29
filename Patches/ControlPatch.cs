@@ -152,7 +152,7 @@ namespace TownOfHost
                 }
             }
             //即スタート
-            if (Input.GetKeyDown(KeyCode.LeftShift) && GameStates.IsCountDown)
+            if (Input.GetKeyDown(KeyCode.LeftShift) && GameStates.IsCountDown && !TaskBattle.IsAllMapMode)
             {
                 if (!PlayerCatch.AllPlayerControls.Where(p => p.Data.DefaultOutfit.ColorId < 0 || Palette.PlayerColors.Length <= p.Data.DefaultOutfit.ColorId).Any())
                 {
@@ -169,7 +169,7 @@ namespace TownOfHost
                 }
             }
             //カウントダウンキャンセル
-            if (Input.GetKeyDown(KeyCode.C) && GameStates.IsCountDown)
+            if (Input.GetKeyDown(KeyCode.C) && GameStates.IsCountDown && !TaskBattle.IsAllMapMode)
             {
                 Logger.Info("Reset CountDownTimer", "KeyCommand");
                 GameStartManager.Instance.ResetStartState();

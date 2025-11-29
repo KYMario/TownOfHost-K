@@ -101,6 +101,7 @@ namespace TownOfHost
                     Logger.Warn("[TR] プレイヤーがnullです", "TaskBattle RTA");
                     return;
                 }
+                TaskBattle.IsAllMapMode = TaskBattle.AllMapMode.GetBool();
                 TaskBattle.RTAPlayerId = playerRTA.PlayerId;
                 HudManagerPatch.TaskBattleTimer = 0f;
             }, 1f, "TaskBattle TimerReset");
