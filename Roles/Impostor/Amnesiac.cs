@@ -172,6 +172,7 @@ public sealed class Amnesiac : RoleBase, IImpostor
 
     public override void OverrideDisplayRoleNameAsSeen(PlayerControl seer, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
     {
+        seer ??= Player;
         if (seer.GetCustomRole().IsImpostor() || seer.Is(CustomRoles.Egoist))
         {
             roleColor = Vanilla.Impostor.RoleInfo.RoleColor;
