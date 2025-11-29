@@ -150,20 +150,6 @@ namespace TownOfHost
                         }
                     }
 
-
-                    if (TaskBattle.IsRTAMode && GameStates.IsInTask)
-                    {
-                        LowerInfoText.enabled = true;
-                        LowerInfoText.text = GetTaskBattleTimer();
-                    }
-                    if (!GameStates.IsInTask)
-                        TaskBattleTimer = 0f;
-
-                    if (!AmongUsClient.Instance.IsGameStarted && AmongUsClient.Instance.NetworkMode != NetworkModes.FreePlay)
-                    {
-                        LowerInfoText.enabled = false;
-                    }
-
                     if (player.CanUseKillButton())
                     {
                         __instance.KillButton.ToggleVisible(/*player.IsAlive() && */GameStates.IsInTask);
@@ -212,6 +198,19 @@ namespace TownOfHost
                 LowerInfoText.text = player.GetRoleClass()?.GetLowerText(player, isForMeeting: GameStates.IsMeeting, isForHud: true) ?? "";
                 if (player.Is(CustomRoles.Amnesia)) LowerInfoText.text = "";
                 if (player.GetMisidentify(out _)) LowerInfoText.text = "";
+
+                if (TaskBattle.IsRTAMode && GameStates.IsInTask)
+                {
+                    LowerInfoText.enabled = true;
+                    LowerInfoText.text = GetTaskBattleTimer();
+                }
+                if (!GameStates.IsInTask)
+                    TaskBattleTimer = 0f;
+
+                if (!AmongUsClient.Instance.IsGameStarted && AmongUsClient.Instance.NetworkMode != NetworkModes.FreePlay)
+                {
+                    LowerInfoText.enabled = false;
+                }
 
 #if DEBUG
                 if (Main.ShowDistance.Value)
@@ -267,9 +266,22 @@ namespace TownOfHost
             int minutes = (int)TaskBattleTimer % 3600 / 60;
             int seconds = (int)TaskBattleTimer % 60;
             int milliseconds = (int)(TaskBattleTimer % 1 * 1000);
-            return hours > 0
-                ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", hours, minutes, seconds, milliseconds)
-                : string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, milliseconds);
+
+            var timer = hours > 0
+                    ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", hours, minutes, seconds, milliseconds)
+                    : string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, milliseconds);
+            if (TaskBattle.IsAllMapMode || TaskBattle.allmapmodetimer > 0)
+            {
+                var x = GameStates.IsInTask ? TaskBattleTimer : 0;
+                int allhours = (int)(TaskBattle.allmapmodetimer + x) / 3600;
+                int allminutes = (int)(TaskBattle.allmapmodetimer + x) % 3600 / 60;
+                int allseconds = (int)(TaskBattle.allmapmodetimer + x) % 60;
+                int allmilliseconds = (int)((TaskBattle.allmapmodetimer + x) % 1 * 1000);
+                return timer + "　<size=70%>" + (hours > 0
+                        ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", allhours, allminutes, allseconds, allmilliseconds)
+                        : string.Format("{0:00} : {1:00} : {2:000}", allminutes, allseconds, allmilliseconds)) + "</size>";
+            }
+            return timer;
         }
     }
     class CustomButtonHud
@@ -278,9 +290,6 @@ namespace TownOfHost
         public static bool? CantJikakuIsPresent;
         public static Sprite MotoKillButton = null;
         public static Sprite ImpVentButton = null;
-        public static Sprite ShapeShiftButton = null;
-        public static Sprite EngButton = null;
-        public static Sprite PhantomButton = null;
         static bool? OldValue = null;
         public static void BottonHud(bool reset = false)
         {
@@ -309,34 +318,19 @@ namespace TownOfHost
                     //リセット
                     if (__instance.KillButton.graphic.sprite && MotoKillButton && player.Data.RoleType is not RoleTypes.Viper) __instance.KillButton.graphic.sprite = MotoKillButton;
                     if (__instance.ImpostorVentButton.graphic.sprite && ImpVentButton) __instance.ImpostorVentButton.graphic.sprite = ImpVentButton;
-                    if (roleClass.HasAbility)
+                    if (roleClass.HasAbility || !player.IsAlive())
                     {
-                        Sprite abilitybutton = null;
-                        switch (player.Data.Role.Role)
+                        var image = RoleManager.Instance.AllRoles.ToArray().FirstOrDefault(role => role.Role == player.Data.Role.Role)?.Ability?.Image;
+                        if (player.Data.Role.Role is RoleTypes.Engineer or RoleTypes.Shapeshifter or RoleTypes.Phantom)
                         {
-                            case RoleTypes.Engineer:
-                                if (EngButton == null)
-                                    EngButton = player.Data.Role.Ability.Image;
-                                abilitybutton = EngButton;
-                                break;
-                            case RoleTypes.Shapeshifter:
-                                if (ShapeShiftButton == null)
-                                    ShapeShiftButton = player.Data.Role.Ability.Image;
-                                abilitybutton = ShapeShiftButton;
-                                break;
-                            case RoleTypes.Phantom:
-                                if (PhantomButton == null)
-                                    PhantomButton = player.Data.Role.Ability.Image;
-                                abilitybutton = PhantomButton;
-                                break;
-                            default:
-                                abilitybutton = null;
-                                break;
-                        }
-                        if (abilitybutton is not null)
-                        {
-                            player.Data.Role.Ability.Image = abilitybutton;
+                            player.Data.Role.Ability.Image = image;
                             player.Data.Role.InitializeAbilityButton();
+                        }
+                        else if (player.Data.Role.Role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost or RoleTypes.GuardianAngel)
+                        {
+                            player.Data.Role.Ability.Image = image;
+                            player.Data.Role.InitializeAbilityButton();
+                            return;
                         }
                     }
                     if (CustomRoles.Amnesia.IsPresent()) return;
