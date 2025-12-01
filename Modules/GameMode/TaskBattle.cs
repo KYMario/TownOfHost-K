@@ -156,6 +156,17 @@ class TaskBattle
         }
     }
 
+    public static void FixedUpdate(PlayerControl player)
+    {
+        if (RTAPlayerId != byte.MaxValue && RTAPlayerId == player.PlayerId)
+        {
+            HudManagerPatch.LowerInfoText.enabled = true;
+            HudManagerPatch.LowerInfoText.text = HudManagerPatch.GetTaskBattleTimer();
+            if (HudManagerPatch.TaskBattleTimer != 0 || player.MyPhysics.Animations.IsPlayingRunAnimation())
+                HudManagerPatch.TaskBattleTimer += UnityEngine.Time.deltaTime;
+        }
+    }
+
     public static OptionItem TaskBattleSet;
     public static OptionItem TaskBattleCanVent;
     public static OptionItem TaskBattleVentCooldown;

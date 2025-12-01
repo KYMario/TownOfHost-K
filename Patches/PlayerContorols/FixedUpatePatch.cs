@@ -40,13 +40,7 @@ namespace TownOfHost
 
             if (TaskBattle.IsRTAMode && GameStates.IsInTask && GameStates.introDestroyed)
             {
-                if (TaskBattle.RTAPlayerId != byte.MaxValue && TaskBattle.RTAPlayerId == player.PlayerId)
-                {
-                    HudManagerPatch.LowerInfoText.enabled = true;
-                    HudManagerPatch.LowerInfoText.text = HudManagerPatch.GetTaskBattleTimer();
-                    if (HudManagerPatch.TaskBattleTimer != 0 || player.MyPhysics.Animations.IsPlayingRunAnimation())
-                        HudManagerPatch.TaskBattleTimer += Time.deltaTime;
-                }
+                TaskBattle.FixedUpdate(__instance);
             }
 
             TargetArrow.OnFixedUpdate(player);
