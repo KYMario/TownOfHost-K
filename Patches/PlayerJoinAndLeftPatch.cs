@@ -123,6 +123,7 @@ namespace TownOfHost
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
         {
             checkjoin(client);
+            RPC.RpcVersionCheck();
         }
         public static void checkjoin(ClientData client)
         {
@@ -160,7 +161,6 @@ namespace TownOfHost
                 Logger.Info($"参加希望に無いプレイヤー{client?.PlayerName}({client.FriendCode})をKickしました。", "Kick");
                 return;
             }
-            RPC.RpcVersionCheck();
         }
     }
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerLeft))]
