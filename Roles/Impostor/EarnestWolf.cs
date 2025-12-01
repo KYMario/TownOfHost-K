@@ -166,4 +166,9 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
         count = reader.ReadInt32();
         OverKillMode = reader.ReadBoolean();
     }
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "EarnestWolf_Ability";
+        return true;
+    }
 }

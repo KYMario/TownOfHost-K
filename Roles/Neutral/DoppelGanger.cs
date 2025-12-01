@@ -222,4 +222,9 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         Target = reader.ReadByte();
         Afterkill = reader.ReadBoolean();
     }
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "DoppelGanger_Ability";
+        return true;
+    }
 }

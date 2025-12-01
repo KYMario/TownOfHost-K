@@ -271,6 +271,11 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
         }
     }
     public override string GetAbilityButtonText() => GetString(StringNames.ShapeshiftAbility);
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "Strawdoll_Ability";
+        return true;
+    }
 
     public void SendRPC()
     {
