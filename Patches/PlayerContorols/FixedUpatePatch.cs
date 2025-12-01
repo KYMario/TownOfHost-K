@@ -42,6 +42,10 @@ namespace TownOfHost
             {
                 TaskBattle.FixedUpdate(__instance);
             }
+            if (Options.CurrentGameMode is CustomGameMode.TaskBattle && player.PlayerId == PlayerControl.LocalPlayer.PlayerId && GameStates.IsInTask && GameStates.introDestroyed)
+            {
+                TaskBattle.timer += Time.deltaTime;
+            }
 
             TargetArrow.OnFixedUpdate(player);
             GetArrow.OnFixedUpdate(player);

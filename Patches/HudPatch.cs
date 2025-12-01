@@ -277,11 +277,23 @@ namespace TownOfHost
                 int allminutes = (int)(TaskBattle.allmapmodetimer + x) % 3600 / 60;
                 int allseconds = (int)(TaskBattle.allmapmodetimer + x) % 60;
                 int allmilliseconds = (int)((TaskBattle.allmapmodetimer + x) % 1 * 1000);
-                return timer + "　<size=70%>" + (hours > 0
+                return timer + "　<size=70%>" + (allhours > 0
                         ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", allhours, allminutes, allseconds, allmilliseconds)
                         : string.Format("{0:00} : {1:00} : {2:000}", allminutes, allseconds, allmilliseconds)) + "</size>";
             }
             return timer;
+        }
+        public static string GetTaskBattleTimerNonRta()
+        {
+
+            var x = GameStates.IsInTask ? TaskBattleTimer : 0;
+            int hours = (int)TaskBattle.timer / 3600;
+            int minutes = (int)TaskBattle.timer % 3600 / 60;
+            int seconds = (int)TaskBattle.timer % 60;
+            int milliseconds = (int)(TaskBattle.timer % 1 * 1000);
+            return "<size=70%>" + (hours > 0
+                    ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", hours, minutes, seconds, milliseconds)
+                    : string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, milliseconds)) + "</size>";
         }
     }
     class CustomButtonHud

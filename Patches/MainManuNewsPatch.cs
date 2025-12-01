@@ -1935,6 +1935,32 @@ public class ModNewsHistory
                 };
                 AllModNews.Add(news);
             }
+            {
+                var news = new ModNews
+                {
+                    Number = 100072,
+                    Title = "12月が始マｯた！",
+                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.15</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.14.31.15</color>",
+                    Text = "<size=80%>さﾑイ!"
+                    + "<size=125%>【バグ修正】</size>\n"
+                    + "・入室時にMod導入者が蹴られる問題の修正\n"
+                    + "・プロボーラーの転がりキルが自殺処理になっている問題の修正\n"
+                    + "・サドンデスでチーム分けが行えない問題の修正\n"
+                    + "・サドンデス中一部サボが修復できる問題の修正\n"
+                    + "・そのた軽微な問題の修正\n"
+                    + "\n<size=125%>【仕様変更】</size>\n"
+                    + "・役職の最大数が0人の時%に色を付けないように変更\n"
+                    + "・一部役職にボタンを追加\n"
+                    + "・通常時のタスクバトルにタイマー機能の追加(ゲームログ,試合結果でのみ表示されます)\n"
+                    + "\n<size=125%>【新設定】</size>\n"
+                    + "・タスクバトルに全マップのRTA機能の追加\n"
+                    + "・イントロの通信分割の設定を追加\n(ｷﾎﾝﾃﾞﾌｫﾙﾄﾃﾞ...)"
+                    ,
+                    Date = "2025-12-01T00:00:00Z"
+                };
+                AllModNews.Add(news);
+            }
             AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
         }
     }

@@ -497,6 +497,7 @@ namespace TownOfHost
 
                 GameStates.task = true;
                 Logger.Info("タスクフェイズ開始", "Phase");
+                TaskBattle.timer = 0;
 
                 //desyneインポかつ置き換えがimp以外ならそれにする。
                 if ((roleInfo?.IsDesyncImpostor == true || SuddenDeathMode.NowSuddenDeathMode) && roleInfo.BaseRoleType.Invoke() != RoleTypes.Impostor)

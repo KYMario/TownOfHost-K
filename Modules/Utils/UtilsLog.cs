@@ -180,7 +180,7 @@ namespace TownOfHost
                             CustomWinnerText = $"タイム: {HudManagerPatch.GetTaskBattleTimer().Replace(" : ", "：")}<size=0>";
                         }
                         else
-                            CustomWinnerText = Main.AllPlayerNames[winnerList[0]];
+                        { CustomWinnerText = Main.AllPlayerNames[winnerList[0]] + $"({HudManagerPatch.GetTaskBattleTimerNonRta().Replace(" : ", "：")})"; }
                     else
                     {
                         foreach (var (team, players) in TaskBattle.TaskBattleTeams)

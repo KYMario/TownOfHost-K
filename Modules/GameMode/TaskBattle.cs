@@ -18,7 +18,7 @@ class TaskBattle
     public static Dictionary<byte, int> TaskAddCount = new();
     public static bool IsAdding;
     public static byte RTAPlayerId;
-    public static bool IsRTAMode;
+    public static bool IsRTAMode; public static float timer;
     public static bool IsAllMapMode = false; public static float allmapmodetimer;
     [Attributes.GameModuleInitializer]
     public static void Init()
@@ -60,7 +60,7 @@ class TaskBattle
                             pc.SyncSettings();
                         }
                         UtilsNotifyRoles.NotifyRoles();
-                        UtilsGameLog.AddGameLog("TaskBattle", string.Format(Translator.GetString("TB"), UtilsName.GetPlayerColor(pc, true), taskState.CompletedTasksCount + "/" + taskState.AllTasksCount));
+                        UtilsGameLog.AddGameLog("TaskBattle", string.Format(Translator.GetString("TB"), UtilsName.GetPlayerColor(pc, true), taskState.CompletedTasksCount + "/" + taskState.AllTasksCount + $" ({HudManagerPatch.GetTaskBattleTimerNonRta().Replace(" : ", "：").RemoveSizeTags()})"));
                         return false;
                     }
                 }
@@ -92,7 +92,7 @@ class TaskBattle
         }
 
         UtilsNotifyRoles.NotifyRoles();
-        UtilsGameLog.AddGameLog("TaskBattle", string.Format(Translator.GetString("TB"), UtilsName.GetPlayerColor(pc, true), taskState.CompletedTasksCount + "/" + taskState.AllTasksCount));
+        UtilsGameLog.AddGameLog("TaskBattle", string.Format(Translator.GetString("TB"), UtilsName.GetPlayerColor(pc, true), taskState.CompletedTasksCount + "/" + taskState.AllTasksCount + $" ({HudManagerPatch.GetTaskBattleTimerNonRta().Replace(" : ", "：").RemoveSizeTags()})"));
         return true;
     }
 
