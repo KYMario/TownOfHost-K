@@ -146,6 +146,7 @@ public sealed class ProBowler : RoleBase, IImpostor
                 if (Bowltarget.IsAlive())
                 {
                     Bowltarget.RpcMurderPlayerV2(Bowltarget);
+                    Bowltarget.SetRealKiller(Player);
                     if (DeaathreasonIsFall)
                         PlayerState.GetByPlayerId(Bowltarget.PlayerId).DeathReason = CustomDeathReason.Fall;
                 }
@@ -163,6 +164,7 @@ public sealed class ProBowler : RoleBase, IImpostor
             if (DeaathreasonIsFall)
                 PlayerState.GetByPlayerId(Bowltarget.PlayerId).DeathReason = CustomDeathReason.Fall;
             Bowltarget.RpcMurderPlayerV2(Bowltarget);
+            Bowltarget.SetRealKiller(Player);
         }
     }
     public float CalculateKillCooldown() => KillCooldown;
