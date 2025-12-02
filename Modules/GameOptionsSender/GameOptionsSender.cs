@@ -109,6 +109,8 @@ namespace TownOfHost.Modules
         {
             if (GameManager.Instance is null || AmongUsClient.Instance?.GameId is null
             || GameManager.Instance?.LogicOptions?.gameOptionsFactory is null || GameOptionsManager.Instance is null) return;
+
+            if (AmongUsClient.Instance?.AmHost is not true) return;
             GameManager gm = GameManager.Instance;
             MessageWriter writer = MessageWriter.Get(SendOption.None);
             writer.StartMessage(5);

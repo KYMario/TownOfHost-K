@@ -59,6 +59,7 @@ class VanillaOptionHolder
     public static void SetVanillaValue()
     {
         if (Main.NormalOptions is null) return;
+        if (AmongUsClient.Instance?.AmHost is not true) return;
         if (VanillaOptions.Values.All(option =>
         {
             return option.DefaultValue == option.CurrentValue;
