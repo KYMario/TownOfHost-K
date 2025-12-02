@@ -428,7 +428,7 @@ namespace TownOfHost
                 {
                     Utils.ApplySuffix(null, true);
                 }
-                return TaskBattle.IsAllMapMode && Options.CurrentGameMode is CustomGameMode.TaskBattle;
+                return !(TaskBattle.IsAllMapMode && Options.CurrentGameMode is CustomGameMode.TaskBattle);
             }
         }
         [HarmonyPatch(typeof(HostInfoPanel), nameof(HostInfoPanel.Update))]
