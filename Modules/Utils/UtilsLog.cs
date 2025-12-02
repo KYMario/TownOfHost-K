@@ -177,7 +177,7 @@ namespace TownOfHost
                         if (TaskBattle.IsRTAMode)
                         {
                             WinText = "Game Over";
-                            CustomWinnerText = $"タイム: {HudManagerPatch.GetTaskBattleTimer().Replace(" : ", "：")}<size=0>";
+                            CustomWinnerText = $"{GetString("TaskBattle_Time")}: {HudManagerPatch.GetTaskBattleTimer().Replace(" : ", "：")}<size=0>";
                         }
                         else
                         { CustomWinnerText = Main.AllPlayerNames[winnerList[0]] + $"({HudManagerPatch.GetTaskBattleTimerNonRta().Replace(" : ", "：")})"; }
@@ -296,11 +296,11 @@ namespace TownOfHost
             .Append($"\n　{GetString(StringNames.GameCommonTasks)}: {Main.NormalOptions.NumCommonTasks + AddCommon}")
             .Append($"\n　{GetString(StringNames.GameShortTasks)}: {Main.NormalOptions.NumShortTasks + AddLong}")
             .Append($"\n　{GetString(StringNames.GameLongTasks)}: {Main.NormalOptions.NumLongTasks + AddShort}")
-            .Append($"\nタイム: {HudManagerPatch.GetTaskBattleTimer()}")
-            .Append($"\nMap: {(MapNames)Main.NormalOptions.MapId}")
-            .Append($"\nVent: " + (TaskBattle.TaskBattleCanVent.GetBool() ? "On" : "Off"));//マップの設定なども記載しなければならない
+            .Append($"\n{GetString("TaskBattle_Time")}: {HudManagerPatch.GetTaskBattleTimer()}")
+            .Append($"\n{GetString(StringNames.GameMapName)}: {(MapNames)Main.NormalOptions.MapId}")
+            .Append($"\n{GetString("Vent")}: " + GetString(TaskBattle.TaskBattleCanVent.GetBool() ? "On" : "Off"));//マップの設定なども記載しなければならない
             if (TaskBattle.TaskBattleCanVent.GetBool())
-                sb.Append($"\n　クールダウン:{TaskBattle.TaskBattleVentCooldown.GetFloat()}");
+                sb.Append($"\n　{GetString("Cooldown")}:{TaskBattle.TaskBattleVentCooldown.GetFloat()}");
             return sb;
         }
         public static void ShowLastResult(byte PlayerId = byte.MaxValue)
