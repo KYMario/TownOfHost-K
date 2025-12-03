@@ -32,6 +32,7 @@ namespace TownOfHost
             if (TaskBattle.IsAllMapMode)
             {
                 TaskBattle.allmapmodetimer += HudManagerPatch.TaskBattleTimer;
+                TaskBattle.Maptimer.Add(Main.NormalOptions.MapId, HudManagerPatch.TaskBattleTimer);
             }
             if (CustomWinnerHolder.WinnerTeam is CustomWinner.Draw || (TaskBattle.IsAllMapMode && Main.NormalOptions.MapId is 5))
             {

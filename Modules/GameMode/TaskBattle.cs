@@ -20,6 +20,7 @@ class TaskBattle
     public static byte RTAPlayerId;
     public static bool IsRTAMode; public static float timer;
     public static bool IsAllMapMode = false; public static float allmapmodetimer;
+    public static Dictionary<int, float> Maptimer = new();
     [Attributes.GameModuleInitializer]
     public static void Init()
     {

@@ -268,8 +268,8 @@ namespace TownOfHost
             int milliseconds = (int)(TaskBattleTimer % 1 * 1000);
 
             var timer = hours > 0
-                    ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", hours, minutes, seconds, milliseconds)
-                    : string.Format("{0:00} : {1:00} : {2:000}", minutes, seconds, milliseconds);
+                    ? string.Format("{0:00} : {1:00} : {2:00}.{3:000}", hours, minutes, seconds, milliseconds)
+                    : string.Format("{0:00} : {1:00}.{2:000}", minutes, seconds, milliseconds);
             if (TaskBattle.IsAllMapMode || TaskBattle.allmapmodetimer > 0)
             {
                 var x = GameStates.IsInTask ? TaskBattleTimer : 0;
@@ -278,8 +278,8 @@ namespace TownOfHost
                 int allseconds = (int)(TaskBattle.allmapmodetimer + x) % 60;
                 int allmilliseconds = (int)((TaskBattle.allmapmodetimer + x) % 1 * 1000);
                 return timer + "　<size=70%>" + (allhours > 0
-                        ? string.Format("{0:00} : {1:00} : {2:00} : {3:000}", allhours, allminutes, allseconds, allmilliseconds)
-                        : string.Format("{0:00} : {1:00} : {2:000}", allminutes, allseconds, allmilliseconds)) + "</size>";
+                        ? string.Format("{0:00} : {1:00} : {2:00}.{3:000}", allhours, allminutes, allseconds, allmilliseconds)
+                        : string.Format("{0:00} : {1:00}.{2:000}", allminutes, allseconds, allmilliseconds)) + "</size>";
             }
             return timer;
         }

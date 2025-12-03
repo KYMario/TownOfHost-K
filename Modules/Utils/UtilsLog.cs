@@ -300,7 +300,22 @@ namespace TownOfHost
             .Append($"\n{GetString(StringNames.GameMapName)}: {(MapNames)Main.NormalOptions.MapId}")
             .Append($"\n{GetString("Vent")}: " + GetString(TaskBattle.TaskBattleCanVent.GetBool() ? "On" : "Off"));//マップの設定なども記載しなければならない
             if (TaskBattle.TaskBattleCanVent.GetBool())
-                sb.Append($"\n　{GetString("Cooldown")}:{TaskBattle.TaskBattleVentCooldown.GetFloat()}");
+                sb.Append($"\n　クールダウン:{TaskBattle.TaskBattleVentCooldown.GetFloat()}");
+            if (TaskBattle.AllMapMode.GetBool())
+            {
+                foreach (var mapdata in TaskBattle.Maptimer)
+                {
+                    var timer = mapdata.Value;
+                    int hours = (int)timer / 3600;
+                    int minutes = (int)timer % 3600 / 60;
+                    int seconds = (int)timer % 60;
+                    int milliseconds = (int)(timer % 1 * 1000);
+
+                    sb.Append($"\n{(MapNames)mapdata.Key}  => " + (hours > 0
+                            ? string.Format("{0:00} : {1:00} : {2:00}.{3:000}", hours, minutes, seconds, milliseconds)
+                            : string.Format("{0:00} : {1:00}.{2:000}", minutes, seconds, milliseconds)));
+                }
+            }
             return sb;
         }
         public static void ShowLastResult(byte PlayerId = byte.MaxValue)

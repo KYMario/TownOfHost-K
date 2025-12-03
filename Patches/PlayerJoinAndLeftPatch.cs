@@ -92,7 +92,6 @@ namespace TownOfHost
                         GameStartManager.Instance.BeginGame();
                     }, 1f, "NextStart", true);
                 }
-                else TaskBattle.allmapmodetimer = 0;
             }
         }
     }
