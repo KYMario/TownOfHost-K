@@ -85,7 +85,12 @@ namespace TownOfHost
 
                 if (TaskBattle.IsAllMapMode)
                 {
-                    _ = new LateTask(() => GameStartManager.Instance.BeginGame(), 1f, "NextStart", true);
+                    _ = new LateTask(() =>
+                    {
+                        if (GameStartManager.Instance.startState != GameStartManager.StartingStates.NotStarting)
+                            return; //二重で開始しないように
+                        GameStartManager.Instance.BeginGame();
+                    }, 1f, "NextStart", true);
                 }
                 else TaskBattle.allmapmodetimer = 0;
             }
