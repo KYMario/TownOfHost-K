@@ -60,7 +60,7 @@ namespace TownOfHost
                 if (Main.IsAndroid() is false)
                     UnloadMod = ClientActionItem.Create("UnloadMod", ModUnloaderScreen.Show, __instance);
             }
-            if ((ForceEnd == null || ForceEnd.ToggleButton == null) && AmongUsClient.Instance.AmHost)
+            if ((ForceEnd == null || ForceEnd.ToggleButton == null) && AmongUsClient.Instance.AmHost && !CustomSpawnEditor.ActiveEditMode)
             {
                 ForceEnd = ClientActionItem.Create("ForceEnd", ForceEndProcess, __instance);
             }
@@ -169,7 +169,7 @@ namespace TownOfHost
                 }));
             }
 
-            if (!AmongUsClient.Instance.AmHost && ForceEnd != null)
+            if ((!AmongUsClient.Instance.AmHost || CustomSpawnEditor.ActiveEditMode) && ForceEnd != null)
                 ForceEnd = null;
 
         }
