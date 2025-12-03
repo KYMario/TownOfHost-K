@@ -447,6 +447,7 @@ public static class CustomRoleManager
             roleClass.Add();
             if (IsGame) roleClass.ChengeRoleAdd();
             if (roleClass is ISelfVoter selfVoter) selfVoter.AddSelfVoter(player);
+            if (roleClass is IRoomTasker roomTasker) roomTasker.AddRoomTaker(player.PlayerId);
         }
         else
         {

@@ -223,6 +223,7 @@ public static class MeetingHudPatch
                 }
             }
             CustomRoleManager.AllActiveRoles.Values.Do(role => role.OnStartMeeting());
+            RoomTaskAssign.AllRoomTasker.Values.Do(tasker => tasker.OnStartMeeting());
             SlowStarter.OnStartMeeting();
             Send = "<size=80%>";
             Title = "";

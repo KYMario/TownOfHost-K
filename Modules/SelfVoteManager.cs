@@ -16,6 +16,7 @@ namespace TownOfHost.Modules
         public static void Init()
         {
             CheckVote.Clear();
+            RoomTaskAssign.AllRoomTasker.Clear();
         }
         public static void AddSelfVotes(PlayerControl player)
         {

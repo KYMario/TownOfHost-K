@@ -170,6 +170,9 @@ namespace TownOfHost
                             }
                         }
                     }
+                    {
+                        RoomTaskAssign.AllRoomTasker.Values.Do(tasker => tasker?.fixupdate());
+                    }
                 }
 
                 SuddenDeathMode.UpdateTeam();
