@@ -25,7 +25,7 @@ public static class SoundSettingsScreen
 
         Text = Object.Instantiate(optionsMenuBehaviour.DisableMouseMovement.Text, Popup.transform);
         Text.name = "Sound Settings";
-        Text.text = $"<size=3>{Translator.GetString("SoundOption")}";
+        Text.text = $"<size=3>{Translator.GetString("SoundOptions")}";
         Text.transform.localPosition = new(0f, 2.25f, -1f);
         Text.gameObject.SetActive(true);
 
@@ -84,13 +84,26 @@ public static class SoundSettingsScreen
             SoundManager.instance.OnAudioSettingsChanged();
         }));
         Slideer.gameObject.name = $"{buttons}-Setting";
+
+        var titleTMP = Slideer.transform.FindChild("Text_TMP").GetComponent<TextMeshPro>();
+        var titleRect = Slideer.transform.FindChild("Text_TMP").GetComponent<RectTransform>();
+        titleTMP.enableWordWrapping = true;
+        titleTMP.overflowMode = TextOverflowModes.Overflow;
+        titleTMP.enableAutoSizing = true;
+        titleTMP.fontSizeMax = 2.1f;
+        titleTMP.fontSizeMin = 1.25f;
+        titleRect.offsetMax = new(0.18f, titleRect.offsetMax.y);
+        titleTMP.transform.SetLocalX(0.2498f);
+
         var button = Object.Instantiate(optionsMenuBehaviour.DisableMouseMovement, Slideer.transform);
         button.transform.localPosition = new Vector3(4.5f, 0f, 0f);
         button.transform.localScale -= new Vector3(0.4f, 0.4f);
         button.Text.text = Translator.GetString("Reset");
+
         var passiveButton = button.GetComponent<PassiveButton>();
         button.Background.size -= new Vector2(0.2f, 0f);
         button.transform.FindChild("ButtonHighlight").GetComponent<SpriteRenderer>().size -= new Vector2(0.2f, 0f);
+
         passiveButton.OnClick = new();
         switch (buttons)
         {
@@ -113,8 +126,8 @@ public static class SoundSettingsScreen
                 }));
                 break;
             case Buttons.Ambience:
-                Slideer.transform.FindChild("Text_TMP").GetComponent<TextMeshPro>().DestroyTranslator();
-                Slideer.transform.FindChild("Text_TMP").GetComponent<TextMeshPro>().text = Translator.GetString("Ambience");
+                titleTMP.DestroyTranslator();
+                titleTMP.text = Translator.GetString("Ambience");
                 Ambience = Slideer;
                 passiveButton.OnClick.AddListener((Action)(() =>
                 {
@@ -124,8 +137,8 @@ public static class SoundSettingsScreen
                 }));
                 break;
             case Buttons.MapTheme:
-                Slideer.transform.FindChild("Text_TMP").GetComponent<TextMeshPro>().DestroyTranslator();
-                Slideer.transform.FindChild("Text_TMP").GetComponent<TextMeshPro>().text = $"<size=60%>{Translator.GetString("LobbyBgm")}</size>";
+                titleTMP.DestroyTranslator();
+                titleTMP.text = $"{Translator.GetString("LobbyBGM")}";
                 MapTheme = Slideer;
                 passiveButton.OnClick.AddListener((Action)(() =>
                 {

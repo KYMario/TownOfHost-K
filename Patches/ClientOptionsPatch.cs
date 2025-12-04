@@ -143,7 +143,7 @@ namespace TownOfHost
                 soundSettingsButton.transform.localPosition = new(0, 1.27f, __instance.DisableMouseMovement.transform.localPosition.z);//左側:-1.3127f,1.5588f
                 soundSettingsButton.transform.localScale = new(0.7f, 0.7f);
                 soundSettingsButton.name = "SoundStgButton";
-                soundSettingsButton.Text.text = Translator.GetString("SoundOption");
+                soundSettingsButton.Text.text = Translator.GetString("SoundOptions");
                 soundSettingsButton.Background.color = Palette.DisabledGrey;
                 var soundSettingsPassiveButton = soundSettingsButton.GetComponent<PassiveButton>();
                 soundSettingsPassiveButton.OnClick = new();
