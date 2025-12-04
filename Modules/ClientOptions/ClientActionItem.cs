@@ -15,7 +15,8 @@ public class ClientActionItem
 
     protected ClientActionItem(
         string name,
-        OptionsMenuBehaviour optionsMenuBehaviour)
+        OptionsMenuBehaviour optionsMenuBehaviour,
+        bool showTooltip = false)
     {
         try
         {
@@ -102,6 +103,11 @@ public class ClientActionItem
             var passiveButton = ToggleButton.GetComponent<PassiveButton>();
             passiveButton.OnClick = new();
             passiveButton.OnClick.AddListener((Action)OnClick);
+            if (showTooltip)
+            {
+                passiveButton.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passiveButton, Translator.GetString($"{name}Info"), null)));
+                passiveButton.OnMouseOut.AddListener((Action)ToolTip.Hide);
+            }
         }
         finally
         {
@@ -119,9 +125,10 @@ public class ClientActionItem
     public static ClientActionItem Create(
         string name,
         Action onClickAction,
-        OptionsMenuBehaviour optionsMenuBehaviour)
+        OptionsMenuBehaviour optionsMenuBehaviour,
+        bool showTooltip = false)
     {
-        return new(name, optionsMenuBehaviour)
+        return new(name, optionsMenuBehaviour, showTooltip)
         {
             OnClickAction = onClickAction
         };

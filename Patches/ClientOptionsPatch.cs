@@ -84,7 +84,7 @@ namespace TownOfHost
             }
             if (HideSomeFriendCodes == null || HideSomeFriendCodes.ToggleButton == null)
             {
-                HideSomeFriendCodes = ClientOptionItem.Create("HideSomeFriendCodes", Main.HideSomeFriendCodes, __instance);
+                HideSomeFriendCodes = ClientOptionItem.Create("HideSomeFriendCodes", Main.HideSomeFriendCodes, __instance, showTooltip: true);
             }
             if (AutoSaveScreenShot == null || AutoSaveScreenShot.ToggleButton == null)
             {

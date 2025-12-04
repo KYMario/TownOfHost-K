@@ -522,17 +522,20 @@ namespace TownOfHost
                 ToggleButton.OnClick = new();
                 ToggleButton.OnClick.AddListener(action);
 
+                ToggleButton.OnMouseOut.AddListener((Action)ToolTip.Hide);
+                ToggleButton.OnMouseOver.AddListener((Action)(() => ToolTip.Show(ToggleButton, GetString($"{text}Info"), new Vector3(-4f, ToolTip.GetMoucePos().y - 0.35f, -255))));
+
                 var aspectPosition = ToggleButton.GetComponent<AspectPosition>();
                 aspectPosition.DistanceFromEdge = new Vector3(xPos, 2.49f, -200f);
                 aspectPosition.Alignment = AspectPosition.EdgeAlignments.Center;
 
-                var textTMP = new GameObject("Text_TMP").AddComponent<TMPro.TextMeshPro>();
+                /*var textTMP = new GameObject("Text_TMP").AddComponent<TMPro.TextMeshPro>();
                 textTMP.text = Utils.ColorString(color, GetString(text));
                 textTMP.transform.SetParent(ToggleButton.transform);
                 textTMP.transform.localPosition = new Vector3(0.8f, 0.8f);
                 textTMP.transform.localScale = new Vector3(0, -0.5f);
                 textTMP.alignment = TMPro.TextAlignmentOptions.Top;
-                textTMP.fontSize = 10f;
+                textTMP.fontSize = 10f;*/
             }
 
             void CreateLobbyInfo()

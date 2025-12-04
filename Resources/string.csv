@@ -2210,6 +2210,7 @@
 "FpsLimitRemoval","Fps Limit Removal","FPSの制限を解除する"
 "AutoSaveScreenShot","Auto Save ScreenShot","試合結果のスクショを自動保存する"
 "StreamList","HopeList","参加希望者リスト"
+"HideSomeFriendCodesInfo","","ロビーにいるクルーのフレンドコード等を非表示にします\n※自身の画面のみ"
 
 "## ヘルプテキスト"
 
@@ -2480,6 +2481,9 @@
 "OptionCopy","Copy","オプションをコピー"
 "OptionLoad","Load","オプションをロード"
 "OptionReset","Reset","オプションをリセット"
+"OptionCopyInfo","","バニラの設定 と プリセット をクリップボードにコピーします"
+"OptionLoadInfo","","クリップボードから バニラの設定 と プリセット を読み込みます\n<color=red>注意: 現在の選択しているプリセットが上書きされます</color>"
+"OptionResetInfo","","プリセット をリセットします\n<color=red>注意: 現在の選択しているプリセットが上書きされます</color>"
 "GameMasterON","GameMaster : ON","GameMaster : ON"
 "voteskip","No one was expelled.(Skip)","誰も追放されなかった(投票スキップ)"
 "votetie","No one was expelled.(Tie)","誰も追放もされなかった(同数投票)"

@@ -11,10 +11,12 @@ public sealed class ClientOptionItem : ClientActionItem
     private ClientOptionItem(
         string name,
         ConfigEntry<bool> config,
-        OptionsMenuBehaviour optionsMenuBehaviour)
+        OptionsMenuBehaviour optionsMenuBehaviour,
+        bool showTooltip = false)
     : base(
         name,
-        optionsMenuBehaviour)
+        optionsMenuBehaviour,
+        showTooltip)
     {
         Config = config;
         UpdateToggle();
@@ -32,9 +34,10 @@ public sealed class ClientOptionItem : ClientActionItem
         string name,
         ConfigEntry<bool> config,
         OptionsMenuBehaviour optionsMenuBehaviour,
-        Action additionalOnClickAction = null)
+        Action additionalOnClickAction = null,
+        bool showTooltip = false)
     {
-        var item = new ClientOptionItem(name, config, optionsMenuBehaviour);
+        var item = new ClientOptionItem(name, config, optionsMenuBehaviour, showTooltip);
         item.OnClickAction = () =>
         {
             config.Value = !config.Value;
