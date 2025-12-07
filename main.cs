@@ -94,6 +94,7 @@ namespace TownOfHost
         public static ConfigEntry<bool> CustomSprite { get; private set; }
         public static ConfigEntry<bool> HideSomeFriendCodes { get; private set; }
         public static ConfigEntry<bool> AutoSaveScreenShot { get; private set; }
+        public static ConfigEntry<bool> PreloadMapAssets { get; private set; }
         public static ConfigEntry<float> MapTheme { get; private set; }
         public static ConfigEntry<bool> ViewPingDetails { get; private set; }
         public static ConfigEntry<bool> DebugChatopen { get; private set; }
@@ -192,6 +193,7 @@ namespace TownOfHost
             CustomSprite = Config.Bind("Client Options", "CustomSprite", true);
             HideSomeFriendCodes = Config.Bind("Client Options", "Hide Some Friend Codes", false);
             AutoSaveScreenShot = Config.Bind("Client Options", "Auto Save Autro ScreenShot", false);
+            PreloadMapAssets = Config.Bind("Client Options", "Preload Map Assets", false);
             MapTheme = Config.Bind("Client Options", "MapTheme", AmongUs.Data.Settings.AudioSettingsData.DEFAULT_MUSIC_VOLUME);
             ViewPingDetails = Config.Bind("Client Options", "View Ping Details", false);
             DebugChatopen = Config.Bind("Client Options", "Debug Chat open", false);

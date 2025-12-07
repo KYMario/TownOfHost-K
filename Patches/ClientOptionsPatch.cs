@@ -29,6 +29,7 @@ namespace TownOfHost
         private static ClientActionItem ShowDistance;
         private static ClientActionItem FpsLimitRemoval;
         private static ClientActionItem AutoSaveScreenShot;
+        private static ClientActionItem PreloadMapAssets;
 
         public static void Postfix(OptionsMenuBehaviour __instance)
         {
@@ -90,6 +91,10 @@ namespace TownOfHost
             {
                 if (Main.IsAndroid() is false)
                     AutoSaveScreenShot = ClientOptionItem.Create("AutoSaveScreenShot", Main.AutoSaveScreenShot, __instance);
+            }
+            if ((PreloadMapAssets == null || PreloadMapAssets.ToggleButton == null) && !Main.IsAndroid())
+            {
+                PreloadMapAssets = ClientOptionItem.Create("PreloadMapAssets", Main.PreloadMapAssets, __instance, showTooltip: true);
             }
 #if DEBUG
             if (ViewPingDetails == null || ViewPingDetails.ToggleButton == null)

@@ -2209,8 +2209,11 @@
 "DebugTours","DebugTours","DebugTours"
 "FpsLimitRemoval","Fps Limit Removal","FPSの制限を解除する"
 "AutoSaveScreenShot","Auto Save ScreenShot","試合結果のスクショを自動保存する"
+"PreloadMapAssets","Preload Map Assets","事前にマップアセットを読み込む"
 "StreamList","HopeList","参加希望者リスト"
+
 "HideSomeFriendCodesInfo","","ロビーにいるクルーのフレンドコード等を非表示にします\n※自身の画面のみ"
+"PreloadMapAssetsInfo","Loads maps on launch / lobby join.\nMay reduce game start loading time.\nRejoin lobby to apply.","ゲーム起動時/ロビー参加時 にマップを読み込みます\nこれによりゲーム開始時のロードが早くなる可能性があります\n※適応にはロビーへの再参加が必要です"
 
 "## ヘルプテキスト"
 
