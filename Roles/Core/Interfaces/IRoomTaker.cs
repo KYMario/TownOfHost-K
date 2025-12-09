@@ -38,9 +38,10 @@ public interface IRoomTasker
     /// <param name="seer"></param>
     /// <param name="colorcode"></param>
     public string GetLowerText(PlayerControl seer, string colorcode = "#ffffff") => GetMyRoomData(seer.PlayerId)?.GetLowerText(seer, colorcode);
+
     /// <summary>
-    /// Maxのタスク数を設定する。</br>
-    /// nullの場合、設定しない(妖狐的な。)</br>
+    /// Maxのタスク数を設定する。<br/>
+    /// nullの場合、設定しない(妖狐的な。)<br/>
     /// </summary>
     /// <returns></returns>
     public int? GetMaxTaskCount() => null;

@@ -7,7 +7,7 @@ using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
+public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTasker
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -43,16 +43,21 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         player
     )
     {
+        IsAssignRoomtask = OptionRoomTask.GetBool();
+
         target = null;
         targetId = byte.MaxValue;
         targetrole = CustomRoles.NotAssigned;
         MeetingNotice = false;
+        IsStolen = false;
     }
     static OptionItem OptionKillCoolDown;
     static OptionItem OptionCantSetCount;
     static OptionItem OptionSoloWin;
     static OptionItem OptionNotice;
     static OptionItem OptionNoticetype;
+    static OptionItem OptionRoomTask; static bool IsAssignRoomtask;
+    bool IsStolen;
     byte targetId;
     CustomRoles targetrole;
     PlayerControl target;
@@ -64,13 +69,15 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         PhantomThiefCantSetCount,
         PhantomThiefSoloWin,
         PhantomThiefNotice,
-        PhantomThiefNoticeType
+        PhantomThiefNoticeType,
+        PhantomThiefRoomTask
     }
     enum Notice
     {
         NoticeNone, //なし
         NoticeTeam,//陣営のみ
         NoticePlayer,//個人
+        NoticeRole//対象の役職
     }
     private static void SetupOptionItem()
     {
@@ -80,7 +87,48 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         OptionCantSetCount = IntegerOptionItem.Create(RoleInfo, 11, OptionName.PhantomThiefCantSetCount, new(1, 15, 1), 8, false).SetValueFormat(OptionFormat.Players);
         OptionNotice = BooleanOptionItem.Create(RoleInfo, 13, OptionName.PhantomThiefNotice, true, false);
         OptionNoticetype = StringOptionItem.Create(RoleInfo, 14, OptionName.PhantomThiefNoticeType, EnumHelper.GetAllNames<Notice>(), 1, false, OptionNotice);
+        OptionRoomTask = BooleanOptionItem.Create(RoleInfo, 15, OptionName.PhantomThiefRoomTask, true, false);
         OptionSoloWin = BooleanOptionItem.Create(RoleInfo, 12, OptionName.PhantomThiefSoloWin, false, false);
+    }
+    public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
+    public bool? CheckKillFlash(MurderInfo info)
+    {
+        var (killer, target) = info.AppearanceTuple;
+        return target.PlayerId == targetId;
+    }
+    public bool CanUseKillButton() => !(OptionCantSetCount.GetFloat() > PlayerCatch.AllAlivePlayersCount);
+    public bool CanUseImpostorVentButton() => false;
+    public bool CanUseSabotageButton() => false;
+    public override void ApplyGameOptions(IGameOptions opt)
+    {
+        opt.SetVision(false);
+    }
+    public override void OnMurderPlayerAsTarget(MurderInfo info)
+    {
+        target = null;
+        targetId = byte.MaxValue;
+        targetrole = CustomRoles.NotAssigned;
+        MeetingNotice = false;
+        SendRPC_SetTarget();
+    }
+    public void OnCheckMurderAsKiller(MurderInfo info)
+    {
+        var (killer, target) = info.AttemptTuple;
+
+        info.DoKill = false;
+
+        if (OptionCantSetCount.GetFloat() > PlayerCatch.AllAlivePlayersCount) return;
+        if (targetId != byte.MaxValue) return;
+
+        killer.ResetKillCooldown();
+        targetId = target.PlayerId;
+        this.target = target;
+        targetrole = target.GetCustomRole();
+        MeetingNotice = true;
+        SendRPC_SetTarget();
+        _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.2f, "PhantomThief Target");
+        killer.SetKillCooldown(target: target, delay: true);
+        return;
     }
     public override void OnFixedUpdate(PlayerControl player)
     {
@@ -97,36 +145,6 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         Player.SetKillCooldown();
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, "PhantomThief Target");
     }
-    public override void OnMurderPlayerAsTarget(MurderInfo info)
-    {
-        target = null;
-        targetId = byte.MaxValue;
-        targetrole = CustomRoles.NotAssigned;
-        MeetingNotice = false;
-        SendRPC();
-    }
-    public void OnCheckMurderAsKiller(MurderInfo info)
-    {
-        var (killer, target) = info.AttemptTuple;
-
-        info.DoKill = false;
-
-        if (OptionCantSetCount.GetFloat() > PlayerCatch.AllAlivePlayersCount) return;
-        if (targetId != byte.MaxValue) return;
-
-        killer.ResetKillCooldown();
-        targetId = target.PlayerId;
-        this.target = target;
-        targetrole = target.GetCustomRole();
-        MeetingNotice = true;
-        SendRPC();
-        _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.2f, "PhantomThief Target");
-        killer.SetKillCooldown(target: target, delay: true);
-        return;
-    }
-    public bool CanUseKillButton() => !(OptionCantSetCount.GetFloat() > PlayerCatch.AllAlivePlayersCount);
-    public bool CanUseImpostorVentButton() => false;
-    public bool CanUseSabotageButton() => false;
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
         seen ??= seer;
@@ -143,14 +161,11 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
                 else return isForHud ? notage.RemoveSizeTags() : notage;
 
             var hehhehhe = "<size=60%>" + UtilsName.GetPlayerColor(targetId) + GetString("PhantomThiefwoitadakuze") + "</size>";
+            if (isForMeeting is false) hehhehhe += "\n" + (seer.GetRoleClass() as IRoomTasker)?.GetLowerText(seer, RoleInfo.RoleColorCode) ?? "";
 
             return isForHud ? hehhehhe.RemoveSizeTags() : hehhehhe;
         }
         return "";
-    }
-    public override void ApplyGameOptions(IGameOptions opt)
-    {
-        opt.SetVision(false);
     }
     public override void OverrideDisplayRoleNameAsSeer(PlayerControl seen, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
     {
@@ -191,25 +206,17 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
                 sendmeg = string.Format(GetString("PhantomThiefNoticePlayer0"), playername);
                 tumari = string.Format(GetString("PhantomThiefmegInfo"), UtilsName.GetPlayerColor(target.Data));
                 break;
+            case Notice.NoticeRole:
+                var role = target.GetCustomRole().GetCustomRoleTypes().ToString();
+                if (target.GetCustomRole().GetCustomRoleTypes() == CustomRoleTypes.Madmate) role = "Impostor";
+                if (target.IsLovers()) role = "Lovers";
+
+                sendmeg = string.Format(GetString("PhantomThiefNoticeRole"), GetString($"PhantomThiefRole.{role}"), UtilsRoleText.GetRoleColorAndtext(role is "Lovers" ? target.GetLoverRole() : target.GetCustomRole()));
+                tumari = "";
+                break;
         }
-        sendmeg += $"<size=40%>\n{tumari}</size>";
+        sendmeg += tumari is not "" ? $"<size=40%>\n{tumari}</size>" : "";
         if (sendmeg.RemoveHtmlTags() != "") _ = new LateTask(() => Utils.SendMessage(sendmeg, title: GetString("PhantomThiefTitle").Color(UtilsRoleText.GetRoleColor(CustomRoles.PhantomThief))), 5f, "SendPhantom", true);
-    }
-    public bool OverrideKillButtonText(out string text)
-    {
-        text = GetString("PhantomThiefButtonText");
-        return true;
-    }
-    public bool OverrideKillButton(out string text)
-    {
-        text = "PhantomThief_Kill";
-        return true;
-    }
-    public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
-    public bool? CheckKillFlash(MurderInfo info)
-    {
-        var (killer, target) = info.AppearanceTuple;
-        return target.PlayerId == targetId;
     }
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
@@ -219,6 +226,26 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         if (seen.PlayerId == targetId) return $"<color={RoleInfo.RoleColorCode}>◆</color>";
 
         return "";
+    }
+    // 部屋タスク↓
+    int? IRoomTasker.GetMaxTaskCount() => null;
+    bool IRoomTasker.IsAssignRoomTask() => IsStolen is false && targetId is not byte.MaxValue && IsAssignRoomtask && Player.IsAlive();
+    void IRoomTasker.ChangeRoom(PlainShipRoom TaskRoom) => SendRPC_ChengeRoom(TaskRoom);
+    void IRoomTasker.OnComplete(int completeroom)
+    {
+        SendRPC_CompleteRoom(completeroom);
+        IsStolen = true;
+    }
+    public override string MeetingAddMessage()
+    {
+        var addmeg = "";
+        if (targetId is not byte.MaxValue && IsAssignRoomtask && Player.IsAlive() && IsStolen is false)
+        {
+            addmeg = $"<size=90%><{RoleInfo.RoleColorCode}>{GetString("PhantomThief_Title")}</size></color>";
+            addmeg += $"\n<size=70%>{GetString($"PhantomThiefStolenMessage_{IRandom.Instance.Next(3)}")}</size>\n";
+        }
+        IsStolen = false;
+        return addmeg;
     }
     public bool CheckWin()
     {
@@ -269,14 +296,55 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable
         return false;
     }
 
-    public void SendRPC()
+    public void SendRPC_SetTarget()
     {
         using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.SetTarget);
         sender.Writer.Write(targetId);
     }
-
+    public void SendRPC_CompleteRoom(int completeroom)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.CompleteRoom);
+    }
+    public void SendRPC_ChengeRoom(PlainShipRoom TaskPSR)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.ChengeRoom);
+        sender.Writer.Write((byte)TaskPSR.RoomId);
+    }
     public override void ReceiveRPC(MessageReader reader)
     {
-        targetId = reader.ReadByte();
+        var iroomtasker = Player.GetRoleClass() is IRoomTasker roomTasker ? roomTasker : null;
+        switch ((RPC_Types)reader.ReadPackedInt32())
+        {
+            case RPC_Types.SetTarget:
+                targetId = reader.ReadByte();
+                break;
+            case RPC_Types.ChengeRoom:
+                iroomtasker?.ReceiveRoom(Player.PlayerId, reader);
+                break;
+            case RPC_Types.CompleteRoom:
+                iroomtasker?.ReceiveCompleteRoom(Player.PlayerId, reader);
+                IsStolen = true;
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        SetTarget,
+        ChengeRoom,
+        CompleteRoom
+    }
+    public bool OverrideKillButtonText(out string text)
+    {
+        text = GetString("PhantomThiefButtonText");
+        return true;
+    }
+    public bool OverrideKillButton(out string text)
+    {
+        text = "PhantomThief_Kill";
+        return true;
     }
 }
