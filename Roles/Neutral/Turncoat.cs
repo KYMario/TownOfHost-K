@@ -46,7 +46,7 @@ public sealed class Turncoat : RoleBase, IKiller
         TurncoatCanTargetMadmate,
         TurncoatCanTargetNeutral
     }
-    byte Target;
+    byte targetid;
     bool IsTargetDied;
     string TargetColorcode;
 
@@ -67,7 +67,7 @@ public sealed class Turncoat : RoleBase, IKiller
     //ターゲットの選択
     public override void Add()
     {
-        Target = byte.MaxValue;
+        targetid = byte.MaxValue;
         IsTargetDied = false;
 
         if (!AmongUsClient.Instance.AmHost) return;
@@ -107,7 +107,7 @@ public sealed class Turncoat : RoleBase, IKiller
 
         //リストの中からランダムでプレイヤーを選び、その人をターゲットに
         PlayerControl RandomPlayer = list.ToArray()[IRandom.Instance.Next(list.Count())];
-        Target = RandomPlayer.PlayerId;
+        targetid = RandomPlayer.PlayerId;
         TargetColorcode = Palette.PlayerColors[RandomPlayer.cosmetics.ColorId].ColorCode();
         Logger.Info($"{Player?.Data?.GetLogPlayerName() ?? "???"} => {RandomPlayer?.Data?.GetLogPlayerName() ?? "???"}", "Turncoat");
         SendRPC();
@@ -116,7 +116,7 @@ public sealed class Turncoat : RoleBase, IKiller
     {
         if (!AmongUsClient.Instance.AmHost || AntiBlackout.IsCached || IsTargetDied || !Player.IsAlive()) return;
 
-        PlayerControl target = PlayerCatch.GetPlayerById(Target);
+        PlayerControl target = PlayerCatch.GetPlayerById(targetid);
 
         //回線切断時。いくらなんでもなのでオポチュに
         if (target?.Data?.Disconnected is true or null)
@@ -137,16 +137,43 @@ public sealed class Turncoat : RoleBase, IKiller
         //生きてないなら負け。
         if (!Player.IsAlive()) return;
 
+        if (targetid.GetPlayerControl() is null)//相手が回線落ちの場合の特別処理
+        {
+            Logger.Info($"{targetid} is null.", "Turncoat_Wincheck");
+            var role = targetid.GetPlayerState().MainRole;
+            var CountTypes = role.GetRoleInfo()?.CountType;
+            var subroles = targetid.GetPlayerState().SubRoles;
+            if (subroles.Any(role => role is CustomRoles.Amanojaku))
+            {
+                if (CustomWinnerHolder.WinnerTeam is CustomWinner.Crewmate)
+                {
+                    Win();
+                }
+                return;
+            }
+
+            if (role.IsCrewmate() && CustomWinnerHolder.WinnerTeam is CustomWinner.Crewmate) return;
+            if ((CountTypes == TownOfHost.CountTypes.Jackal || role is CustomRoles.Jackaldoll) && CustomWinnerHolder.WinnerTeam is CustomWinner.Jackal) return;
+            if (role.IsImpostorTeam() && CustomWinnerHolder.WinnerTeam is CustomWinner.Impostor) return;
+            //↑陣営勝利しているかのチェック ↓ 単独勝利してるのかのチェック。
+            if ((CustomWinner)role == CustomWinnerHolder.WinnerTeam && //念のため役職名とWinnerTeamが同じなのかのチェック
+            role.ToString() == CustomWinnerHolder.WinnerTeam.ToString()) return;
+
+            //どこかで除外されていない場合、勝利
+            Win();
+            return;
+        }
+
         //勝利IDに含まれていないかつ、勝利役職に含まれてない場合 → かち！
-        if (!CustomWinnerHolder.WinnerIds.Contains(Target)
-        && !CustomWinnerHolder.WinnerRoles.Contains(Target.GetPlayerControl()?.GetCustomRole() ?? CustomRoles.Emptiness))
+        if (!CustomWinnerHolder.WinnerIds.Contains(targetid)
+        && !CustomWinnerHolder.WinnerRoles.Contains(targetid.GetPlayerControl()?.GetCustomRole() ?? CustomRoles.Emptiness))
         {
             Win();
             return;
         }
 
         //何が何でも負けるリストに含まれている場合 → かち！
-        if (CustomWinnerHolder.CantWinPlayerIds.Contains(Target))
+        if (CustomWinnerHolder.CantWinPlayerIds.Contains(targetid))
         {
             Win();
             return;
@@ -163,7 +190,7 @@ public sealed class Turncoat : RoleBase, IKiller
     //スタンダードなら白位置にねじ込んでキルさせる、強引に吊りに行く等誘導してもらいたい
     public override void OverrideDisplayRoleNameAsSeer(PlayerControl seen, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
     {
-        if (seen.PlayerId == Target && IsTargetDied)
+        if (seen.PlayerId == targetid && IsTargetDied)
         {
             enabled = true;
             addon |= false;
@@ -173,7 +200,7 @@ public sealed class Turncoat : RoleBase, IKiller
     {
         seen ??= seer;
 
-        if (Is(seer) && seen.PlayerId == Target) return $"<color={RoleInfo.RoleColorCode}>★</color>";
+        if (Is(seer) && seen.PlayerId == targetid) return $"<color={RoleInfo.RoleColorCode}>★</color>";
         //if (seer.PlayerId == seen.PlayerId) return $"<color={TargetColorcode}>★</color>";
 
         return "";
@@ -183,11 +210,11 @@ public sealed class Turncoat : RoleBase, IKiller
         seen ??= seer;
         if (!Player.IsAlive() || isForMeeting) return "";
 
-        var targetpc = PlayerCatch.GetPlayerById(Target);
-        var targetname = UtilsName.GetPlayerColor(targetpc, true);
+        var targetstate = PlayerState.GetByPlayerId(targetid);
+        var targetname = UtilsName.GetPlayerColor(targetid, true);
         if (IsTargetDied)
         {
-            var role = targetpc.GetCustomRole();
+            var role = targetstate.MainRole;
             targetname += $"{Utils.ColorString(UtilsRoleText.GetRoleColor(role), $"({GetString($"{role}")})")}";
         }
         return $"{string.Format(GetString("TurncoatLowerText"), targetname)}";
@@ -198,14 +225,14 @@ public sealed class Turncoat : RoleBase, IKiller
     {
         using var sender = CreateSender();
         sender.Writer.Write(IsTargetDied);
-        sender.Writer.Write(Target);
+        sender.Writer.Write(targetid);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
         IsTargetDied = reader.ReadBoolean();
-        Target = reader.ReadByte();
-        TargetColorcode = Palette.PlayerColors[PlayerCatch.GetPlayerById(Target).cosmetics.ColorId].ColorCode();
+        targetid = reader.ReadByte();
+        TargetColorcode = Palette.PlayerColors[PlayerCatch.GetPlayerById(targetid).cosmetics.ColorId].ColorCode();
     }
 
     bool IKiller.CanUseImpostorVentButton() => false;
