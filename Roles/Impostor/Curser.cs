@@ -125,4 +125,9 @@ public sealed class Curser : RoleBase, IImpostor
     public override void ApplyGameOptions(IGameOptions opt) => AURoleOptions.ShapeshifterCooldown = Cooldown;
     public float CalculateKillCooldown() => KillCooldown;
     public override string GetAbilityButtonText() => GetString("MadChanger_Targetset");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "Curser_Ability";
+        return true;
+    }
 }

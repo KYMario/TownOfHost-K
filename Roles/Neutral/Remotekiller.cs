@@ -114,5 +114,20 @@ namespace TownOfHost.Roles.Neutral
             return true;
         }
         public bool CanUseSabotageButton() => false;
+        bool IKiller.OverrideKillButton(out string text)
+        {
+            text = "Remotekiller_Kill";
+            return true;
+        }
+        bool IKiller.OverrideKillButtonText(out string text)
+        {
+            text = GetString("MadChanger_Targetset");
+            return true;
+        }
+        bool IKiller.OverrideImpVentButton(out string text)
+        {
+            text = "Remotekiller_Vent";
+            return ReamoteTargetId is not byte.MaxValue;
+        }
     }
 }

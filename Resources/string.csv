@@ -2192,7 +2192,8 @@
 "EraserAbility","Erase","役職を消す"
 "ProBowler_Ability","Dig","穴を掘る"
 "BalloonerAbility","Rupture","破裂"
-"CharismaStarGatherButtonText","Gather","集合",
+"CharismaStarGatherButtonText","Gather","集合"
+"QuickKiller_Timer","QuickTime","クイックモード"
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""

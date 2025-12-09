@@ -305,4 +305,9 @@ public sealed class TeleportKiller : RoleBase, IImpostor
         }
     }
     public override string GetAbilityButtonText() => GetString(StringNames.ShapeshiftAbility);
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "TeleportKiller_Ability";
+        return true;
+    }
 }

@@ -276,6 +276,12 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
         text = "Strawdoll_Ability";
         return true;
     }
+    bool IKiller.OverrideKillButtonText(out string text) { text = GetString("MadChanger_Targetset"); return true; }
+    bool IKiller.OverrideKillButton(out string text)
+    {
+        text = "Strawdoll_Kill";
+        return true;
+    }
 
     public void SendRPC()
     {

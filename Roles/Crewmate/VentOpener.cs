@@ -197,4 +197,9 @@ public sealed class VentOpener : RoleBase
     }
 
     public override string GetAbilityButtonText() => GetString("VentOpenerAbility");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "VentOpener_Ability";
+        return true;
+    }
 }

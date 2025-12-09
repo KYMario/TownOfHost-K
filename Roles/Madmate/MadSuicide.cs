@@ -121,6 +121,16 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
     {
         return GetString("Suicide");
     }
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "MadSuicide_Ability";
+        return true;
+    }
+    bool IKiller.OverrideKillButton(out string text)
+    {
+        text = "MadSuicide_Kill";
+        return true;
+    }
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
         seen ??= seer;

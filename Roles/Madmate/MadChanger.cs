@@ -106,5 +106,15 @@ public sealed class MadChanger : RoleBase, IKiller, IKillFlashSeeable, IDeathRea
         text = GetString("MadChanger_Targetset");
         return true;
     }
+    bool IKiller.OverrideKillButton(out string text)
+    {
+        text = "MadChanger_Kill";
+        return true;
+    }
     public override string GetAbilityButtonText() => GetString("MadChanger_Change");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "MadChanger_Ability";
+        return true;
+    }
 }

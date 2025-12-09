@@ -74,7 +74,6 @@ public sealed class Comebacker : RoleBase
         UtilsNotifyRoles.NotifyRoles(Player, OnlyMeName: true);
         return true;
     }
-    public override string GetAbilityButtonText() => GetString("CamebackerAbility");
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
         seen ??= seer;
@@ -94,5 +93,11 @@ public sealed class Comebacker : RoleBase
     {
         Logger.Info("ベントを設定するよ!", "Comebacker");
         ComebackPosString = Player.GetShipRoomName();
+    }
+    public override string GetAbilityButtonText() => GetString("CamebackerAbility");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "Comebacker_Ability";
+        return true;
     }
 }

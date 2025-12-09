@@ -231,6 +231,11 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     public override string GetProgressText(bool comms = false, bool GameLog = false)
         => Utils.ColorString(gatherLimitCount > 0 ? RoleInfo.RoleColor : Color.gray, $"[{gatherLimitCount}]");
     public override string GetAbilityButtonText() => Translator.GetString("CharismaStarGatherButtonText");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "CharismaStar_Ability";
+        return true;
+    }
 
     public void RpcAbility()
     {

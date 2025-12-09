@@ -424,7 +424,9 @@ namespace TownOfHost
             {
                 if (GameStates.AfterIntro && role < CustomRoles.NotAssigned)
                 {
+                    Main.showkillbutton = false;
                     CustomButtonHud.BottonHud(true);
+                    _ = new LateTask(() => Main.showkillbutton = true, 0.5f, "", true);
                 }
 
                 RemoveDisableDevicesPatch.UpdateDisableDevices();

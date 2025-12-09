@@ -131,4 +131,9 @@ public sealed class Warlock : RoleBase, IImpostor
         IsCursed = false;
         Shapeshifting = false;
     }
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "Warlock_Ability";
+        return true;
+    }
 }

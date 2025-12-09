@@ -167,6 +167,11 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
         return "";
     }
     public override string GetAbilityButtonText() => GetString("EraserAbility");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "Eraser_Ability";
+        return true;
+    }
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
         seen ??= seer;

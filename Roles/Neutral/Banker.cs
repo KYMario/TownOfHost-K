@@ -180,4 +180,9 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         TaskMode = reader.ReadBoolean();
         HaveCoin = reader.ReadInt32();
     }
+    bool IKiller.OverrideImpVentButton(out string text)
+    {
+        text = "Banker_Vent";
+        return true;
+    }
 }

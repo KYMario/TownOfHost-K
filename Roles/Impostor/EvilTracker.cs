@@ -202,6 +202,11 @@ public sealed class EvilTracker : RoleBase, IImpostor, IKillFlashSeeable, ISidek
         AURoleOptions.ShapeshifterDuration = 1f;
     }
     public override string GetAbilityButtonText() => GetString("EvilTrackerChangeButtonText");
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "EvilTracker_Ability";
+        return true;
+    }
     public override bool CanUseAbilityButton() => CanTarget();
 
     // 値取得の関数
