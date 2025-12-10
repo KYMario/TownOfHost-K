@@ -208,6 +208,7 @@ public class CustomSpawnEditor
         [HarmonyPatch(typeof(TutorialManager), nameof(TutorialManager.Awake)), HarmonyPostfix]
         public static void RunTutorialPatch(TutorialManager __instance)
         {
+            if (!ActiveEditMode) return;
             __instance.StartCoroutine(RunEditor().WrapToIl2Cpp());
         }//PostFixなら多分行けると思う。
 
