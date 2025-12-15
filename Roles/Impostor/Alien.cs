@@ -1229,7 +1229,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         OptionMeetingKill = BooleanOptionItem.Create(RoleInfo, 45, OptionName.PenguinMeetingKill, false, false, OptionModePenguin);
         OptionModeComebaker = FloatOptionItem.Create(RoleInfo, 49, OptionName.AlienCComebacker, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         OptionModeNomal = FloatOptionItem.Create(RoleInfo, 8, OptionName.AlienCNomal, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
-        OptUetuke = BooleanOptionItem.Create(RoleInfo, 46, OptionName.AlienUetuke, false, false);
+        OptUetuke = BooleanOptionItem.Create(RoleInfo, 46, OptionName.AlienUetuke, false, false).SetTooltip(GetString("AlienUetukeInfo"));
         OptUetukeCount = IntegerOptionItem.Create(RoleInfo, 47, OptionName.AlienUetukeCount, new(1, 20, 1), 1, false, OptUetuke);
         OptUetuketukeTrun = IntegerOptionItem.Create(RoleInfo, 48, OptionName.AlienUetukeTrun, new(1, 20, 1), 2, false, OptUetuke);
     }

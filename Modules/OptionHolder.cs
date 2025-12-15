@@ -583,10 +583,11 @@ namespace TownOfHost
                 .SetHeader(true)
                 .SetColorcode("#00c1ff");
             InsiderMode = BooleanOptionItem.Create(100001, "InsiderMode", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
-                .SetGameMode(CustomGameMode.Standard);
+                .SetGameMode(CustomGameMode.Standard)
+                .SetTooltip(Translator.GetString("InsiderModeOptionInfo"));
             InsiderModeCanSeeTask = BooleanOptionItem.Create(200002, "InsiderModeCanSeeTask", false, TabGroup.MainSettings, false).SetParent(InsiderMode);
             ColorNameMode = BooleanOptionItem.Create(100003, "ColorNameMode", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
-                .SetGameMode(CustomGameMode.All);
+                .SetGameMode(CustomGameMode.All).SetTooltip(Translator.GetString("ColorNameModeInfo")); ;
             CanSeeImpostorRole = BooleanOptionItem.Create(100004, "CanSeeImpostorRole", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
                 .SetGameMode(CustomGameMode.Standard);
             AllPlayerSkinShuffle = BooleanOptionItem.Create(100005, "AllPlayerSkinShuffle", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
@@ -645,7 +646,7 @@ namespace TownOfHost
 
             DoubleTriggerThreshold = FloatOptionItem.Create(102500, "DoubleTriggerThreashould", new(0.3f, 1f, 0.1f), 0.5f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
-                .SetValueFormat(OptionFormat.Seconds);
+                .SetValueFormat(OptionFormat.Seconds).SetTooltip(Translator.GetString("DoubleTriggerThresholdInfo"));
             DefaultShapeshiftCooldown = FloatOptionItem.Create(102501, "DefaultShapeshiftCooldown", new(1f, 999f, 1f), 15f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds);

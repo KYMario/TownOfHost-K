@@ -623,6 +623,17 @@ namespace TownOfHost
                                 }
                             }));
                         }
+                        if (option.Tooltip is not "")//一旦こういう実装にしているが、？マークをどこかに設置してでもいいかも?
+                        {
+                            stringOption.LabelBackground.gameObject.AddComponent<PassiveButton>();
+                            stringOption.LabelBackground.gameObject.AddComponent<BoxCollider2D>().autoTiling = true;
+                            var passive = stringOption.LabelBackground.gameObject.GetComponent<PassiveButton>();
+                            passive.OnMouseOut = new();
+                            passive.OnMouseOver = new();
+                            passive.OnClick = new();
+                            passive.OnMouseOut.AddListener((Action)(() => ToolTip.Hide()));
+                            passive.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passive, option.Tooltip, null)));
+                        }
 
                         var transform = stringOption.ValueText.transform;
                         var pos = transform.localPosition;
@@ -837,6 +848,18 @@ namespace TownOfHost
                                 }
                             }
                         }
+                        if (option.Tooltip is not "")
+                        {
+                            stringOption.LabelBackground.gameObject.AddComponent<PassiveButton>();
+                            stringOption.LabelBackground.gameObject.AddComponent<BoxCollider2D>().autoTiling = true;
+                            var passive = stringOption.LabelBackground.gameObject.GetComponent<PassiveButton>();
+                            passive.OnMouseOut = new();
+                            passive.OnMouseOver = new();
+                            passive.OnClick = new();
+                            passive.OnMouseOut.AddListener((Action)(() => ToolTip.Hide()));
+                            passive.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passive, option.Tooltip, null)));
+                        }
+
                         var transform = stringOption.ValueText.transform;
                         var pos = transform.localPosition;
                         transform.localPosition = new Vector3((pos.x + 0.7322f), pos.y, pos.z);

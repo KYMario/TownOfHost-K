@@ -2385,6 +2385,13 @@
 "StrawdollKilledLog","{0}","藁人形が{0}回切られた..."
 "MissioneerAddpoint","Mission Complete. Addpoint{0},Point:{1}","Mission Complete. {0}ポイント入手し、合計{1}ポイントとなった"
 
+"## つーるちっぷ"
+"InsiderModeOptionInfo","Impostor Can See AllPlayer Role","<#ff1919>インポスター</color>が全員の役職を把握します"
+"ColorNameModeInfo","Set the player name as the color name","ゲーム中、プレイヤーの名前が色名に変更されます。"
+"DoubleTriggerThresholdInfo","The duration of double-clicks will be adjusted.\n<size=60%>Shorter durations are more susceptible to lag, while longer durations may prevent kills from occurring as intended.","ダブルクリック使用役職の\nダブルクリック受付期限を変更します。\n<size=60%>短いとラグに影響されやすいですが、長いとキルが思い通りにいかないことがあります。"
+"SlotRoleInfo","Only one of the specified roles will be assigned.","指定した役職のどちらかのみがアサインされるようになります。"
+"AlienUetukeInfo","During meetings, you can temporarily transfer your abilities to an impostor ally for a set number of turns. While the transfer is active, your role will be displayed as <#ff1919>Hijack Alien</color>.","会議中、自身の能力を仲間のインポスターに\n一定ターン植え付けることができます。\n植え付け中は役職が「<#ff1919>ハイジャックエイリアン</color>」になります。"
+
 "## その他"
 
 "DefaultSystemMessageTitle","【===== System Message =====】","【===== システムメッセージ ======】","【===== 系统信息 ======】","【===== 系統訊息 ======】","【=== Системное сообщение ===】","【===== Mensagem do Sistema ======】",""

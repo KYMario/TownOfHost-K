@@ -125,7 +125,7 @@ namespace TownOfHost
 
                     //seerの名前を一時的に上書きするかのチェック
                     string name = ""; bool nomarker = false;
-                    var TemporaryName = seerRole?.GetTemporaryName(ref name, ref nomarker, seer);
+                    var TemporaryName = seerRole?.GetTemporaryName(ref name, ref nomarker, false, seer);
 
                     //seer役職が対象のMark
                     if (Amnesiacheck && !IsMisidentify)
@@ -270,7 +270,7 @@ namespace TownOfHost
 
                             /// targetの名前を一時的に上書きするかのチェック
                             string name = ""; bool nomarker = false;
-                            var TemporaryName = targetrole?.GetTemporaryName(ref name, ref nomarker, seer, target) ?? false;
+                            var TemporaryName = targetrole?.GetTemporaryName(ref name, ref nomarker, false, seer, target) ?? false;
 
                             //seerに関わらず発動するMark
                             TargetMark.Append(CustomRoleManager.GetMarkOthers(seer, target, false));
@@ -480,7 +480,7 @@ namespace TownOfHost
 
                     //seerの名前を一時的に上書きするかのチェック
                     string name = ""; bool nomarker = false;
-                    var TemporaryName = seerRole?.GetTemporaryName(ref name, ref nomarker, seer);
+                    var TemporaryName = seerRole?.GetTemporaryName(ref name, ref nomarker, true, seer);
 
                     //seer役職が対象のMark
                     if (Amnesiacheck && !IsMisidentify)
@@ -611,7 +611,7 @@ namespace TownOfHost
 
                             /// targetの名前を一時的に上書きするかのチェック
                             string name = ""; bool nomarker = false;
-                            var TemporaryName = targetrole?.GetTemporaryName(ref name, ref nomarker, seer, target) ?? false;
+                            var TemporaryName = targetrole?.GetTemporaryName(ref name, ref nomarker, true, seer, target) ?? false;
 
                             //seerに関わらず発動するMark
                             TargetMark.Append(CustomRoleManager.GetMarkOthers(seer, target, true));

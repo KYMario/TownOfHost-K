@@ -12,7 +12,7 @@ class ToolTip
     public static SimpleButton button = null;
     public static MonoBehaviour obj;
     public static Coroutine coTimer;
-    public static float delay = 1.0f;
+    public static float delay = 0.35f;
 
     public static void Setup()
     {

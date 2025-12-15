@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Epic.OnlineServices.RTC;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using UnityEngine;
@@ -43,6 +44,7 @@ namespace TownOfHost
         public CustomRoles CustomRole { get; protected set; }
         public CustomRoles ParentRole { get; protected set; }
         public Func<string> funcOptionName { get; protected set; }
+        public string Tooltip { get; protected set; }
         public Dictionary<string, string> ReplacementDictionary
         {
             get => _replacementDictionary;
@@ -98,6 +100,7 @@ namespace TownOfHost
             funcOptionName = () => "";
             ZeroNotation = OptionZeroNotation.None;
             parented = false;
+            Tooltip = "";
             CustomRole = CustomRoles.NotAssigned;
             ParentRole = CustomRoles.NotAssigned;
 
@@ -156,6 +159,7 @@ namespace TownOfHost
         public OptionItem SetInfo(string value) => Do(i => i.Fromtext = "<line-height=25%><size=25%>\n</size><size=60%></color> <b>" + value + "</b></size>");
         public OptionItem SetZeroNotation(OptionZeroNotation value) => Do(i => i.ZeroNotation = value);
         public OptionItem SetOptionName(Func<string> value) => Do(i => i.funcOptionName = value);
+        public OptionItem SetTooltip(string value) => Do(i => i.Tooltip = value);
 
         public OptionItem SetParent(OptionItem parent) => Do(i =>
         {

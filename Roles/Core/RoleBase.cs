@@ -493,8 +493,9 @@ public abstract class RoleBase : IDisposable
     /// </summary>
     /// <param name = "name" > 変更する名前 </param>
     /// <param name = "NoMarker" > マーカーや追加情報を表示しない </param>
+    /// <param name = "isForMeeting" > 会議中か否か </param>
     /// <returns>名前を変更するかどうか</returns>
-    public virtual bool GetTemporaryName(ref string name, ref bool NoMarker, PlayerControl seer, PlayerControl seen = null) => false;
+    public virtual bool GetTemporaryName(ref string name, ref bool NoMarker, bool isForMeeting, PlayerControl seer, PlayerControl seen = null) => false;
 
     /// <summary>
     /// 回線切断者が起こった時に呼ばれる関数

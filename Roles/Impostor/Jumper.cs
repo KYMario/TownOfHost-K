@@ -5,6 +5,7 @@ using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
 using System.Collections.Generic;
+using System;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -186,6 +187,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         JumpY = Y / OptionJumpcount.GetInt();
         Main.AllPlayerSpeed[Player.PlayerId] = Main.MinSpeed;
         Logger.Info($"{Player?.Data?.GetLogPlayerName()}Jump!", "Jumper");
+        _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, "JumperSet", true);
         _ = new LateTask(() =>
         {
             Player.RpcSetPet("");
@@ -196,10 +198,10 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         }, 0.4f, "Jumper0Speed", true);
 
     }
-    public override bool GetTemporaryName(ref string name, ref bool NoMarker, PlayerControl seer, PlayerControl seen = null)
+    public override bool GetTemporaryName(ref string name, ref bool NoMarker, bool isForMeeting, PlayerControl seer, PlayerControl seen = null)
     {
         seen ??= seer;
-        if (Player == seen && ShowMark && !GameStates.CalledMeeting)
+        if (Player == seen && ShowMark && !isForMeeting)
         {
             switch (Jumpdistance)
             {
@@ -216,7 +218,8 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
     }
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
-        if (isForMeeting) return "";
+        seen ??= seer;
+        if (isForMeeting || ShowMark) return "";
         if (Player.IsAlive())
             return JumpToPosition == new Vector2(999f, 999f) ? GetString("Jumper_SetJumpPos") : GetString("Jumper_Jump");
         return "";

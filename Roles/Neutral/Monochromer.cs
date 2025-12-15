@@ -54,10 +54,10 @@ public sealed class Monochromer : RoleBase
     }
     public override bool NotifyRolesCheckOtherName => true;
     public override void ApplyGameOptions(IGameOptions opt) => opt.SetVision(HasImpostorVision.GetBool());
-    public override bool GetTemporaryName(ref string name, ref bool NoMarker, PlayerControl seer, PlayerControl seen = null)
+    public override bool GetTemporaryName(ref string name, ref bool NoMarker, bool isForMeeting, PlayerControl seer, PlayerControl seen = null)
     {
         seen ??= seer;
-        if (GameStates.CalledMeeting || !GameStates.IsInTask) return false;
+        if (isForMeeting) return false;
         if (seer == seen) return false;
         if (!Is(seer)) return false;
         if (!Player.IsAlive()) return false;

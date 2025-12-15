@@ -292,7 +292,7 @@ namespace TownOfHost
                     }
 
                     //名前を一時的に上書きするかのチェック
-                    var TemporaryName = roleclass?.GetTemporaryName(ref name, ref nomarker, seer, target) ?? false;
+                    var TemporaryName = roleclass?.GetTemporaryName(ref name, ref nomarker, false, seer, target) ?? false;
 
                     //名前変更
                     RealName = TemporaryName ? name : target.GetRealName();

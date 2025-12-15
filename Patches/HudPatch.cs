@@ -425,7 +425,7 @@ namespace TownOfHost
             Suffix.Clear();
 
             //名前を一時的に上書きするかのチェック
-            var TemporaryName = target.GetRoleClass()?.GetTemporaryName(ref name, ref nomarker, seer, target) ?? false;
+            var TemporaryName = target.GetRoleClass()?.GetTemporaryName(ref name, ref nomarker, false, seer, target) ?? false;
 
             //名前変更
             RealName = TemporaryName ? name : target.GetRealName();
