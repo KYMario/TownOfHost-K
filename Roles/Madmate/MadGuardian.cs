@@ -13,7 +13,7 @@ public sealed class MadGuardian : RoleBase, IKillFlashSeeable, IDeathReasonSeeab
             typeof(MadGuardian),
             player => new MadGuardian(player),
             CustomRoles.MadGuardian,
-            () => RoleTypes.Crewmate,
+            () => OptionCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate,
             CustomRoleTypes.Madmate,
             7600,
             SetupOptionItem,
@@ -35,6 +35,7 @@ public sealed class MadGuardian : RoleBase, IKillFlashSeeable, IDeathReasonSeeab
 
     private static OptionItem OptionTaskTrigger;
     private static OptionItem OptionCanSeeWhoTriedToKill;
+    private static OptionItem OptionCanUseVent;
     public static OverrideTasksData Tasks;
     enum OptionName
     {
@@ -45,6 +46,7 @@ public sealed class MadGuardian : RoleBase, IKillFlashSeeable, IDeathReasonSeeab
     private static void SetupOptionItem()
     {
         OptionCanSeeWhoTriedToKill = BooleanOptionItem.Create(RoleInfo, 10, OptionName.MadGuardianCanSeeWhoTriedToKill, false, false);
+        OptionCanUseVent = BooleanOptionItem.Create(RoleInfo, 13, GeneralOption.CanVent, false, false);
         OptionTaskTrigger = IntegerOptionItem.Create(RoleInfo, 12, GeneralOption.TaskTrigger, new(0, 99, 1), 1, false).SetValueFormat(OptionFormat.Pieces);
         //ID10120~10123を使用
         Tasks = OverrideTasksData.Create(RoleInfo, 20);
