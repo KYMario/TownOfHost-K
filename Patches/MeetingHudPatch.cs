@@ -245,6 +245,11 @@ public static class MeetingHudPatch
             {
                 Send += "<#001e43>※" + Oniku + "</color>\n";
             }
+            var neswmeg = News.SendMessage();
+            if (neswmeg != "")
+            {
+                Send += neswmeg + "\n";
+            }
             if (Options.SyncButtonMode.GetBool())
             {
                 Send += "<#006e54>★" + string.Format(GetString("Message.SyncButtonLeft"), Options.SyncedButtonCount.GetFloat() - Options.UsedButtonCount) + "</color>\n";

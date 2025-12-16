@@ -299,7 +299,7 @@ namespace TownOfHost
                     {CustomRoles.Tiebreaker,"#00552e"},
                     {CustomRoles.Guarding, "#7b68ee"},
                     {CustomRoles.MagicHand , "#dea785"},
-                    {CustomRoles.Stack , "#b55f47ff"},
+                    {CustomRoles.Stack , "#b55f47"},
                     //{CustomRoles.AntiTeleporter,"#dea785"},
                     //デバフ
                     { CustomRoles.NonReport,"#006666"},
@@ -312,9 +312,10 @@ namespace TownOfHost
                     {CustomRoles.Amnesia,"#4682b4"},
                     {CustomRoles.SlowStarter,"#ff00ff"},
                     {CustomRoles.InfoPoor ,"#555647"},
+                    {CustomRoles.News, "#828282"},
 
                     //第三属性
-                    {CustomRoles.Amanojaku,"#005243"},
+                    { CustomRoles.Amanojaku,"#005243"},
                     {CustomRoles.Faction,"#695328"},
                     {CustomRoles.Lovers, "#ff6be4"},
                     {CustomRoles.RedLovers, "#d70035"},

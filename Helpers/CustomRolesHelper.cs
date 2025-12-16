@@ -98,7 +98,8 @@ namespace TownOfHost
                 CustomRoles.Amnesia or
                 CustomRoles.Clumsy or
                 CustomRoles.SlowStarter or
-                CustomRoles.InfoPoor
+                CustomRoles.InfoPoor or
+                CustomRoles.News
                 ;
         }
         public static bool IsBuffAddon(this CustomRoles roles)
@@ -135,7 +136,8 @@ namespace TownOfHost
                 CustomRoles.Amnesia or
                 CustomRoles.Clumsy or
                 CustomRoles.SlowStarter or
-                CustomRoles.InfoPoor
+                CustomRoles.InfoPoor or
+                CustomRoles.News
                 ;
         }
         public static bool IsCombinationRole(this CustomRoles role) => role is

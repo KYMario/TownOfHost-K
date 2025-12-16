@@ -497,6 +497,7 @@ public static class CustomRoleManager
                 case CustomRoles.Slacker: Slacker.Add(pc.PlayerId); break;
                 case CustomRoles.Elector: Elector.Add(pc.PlayerId); break;
                 case CustomRoles.Amnesia: Amnesia.Add(pc.PlayerId); break;
+                case CustomRoles.News: News.Add(pc.PlayerId); break;
 
                 case CustomRoles.Amanojaku: Amanojaku.Add(pc.PlayerId); break;
                 case CustomRoles.OneWolf: OneWolf.Add(pc.PlayerId); break;
@@ -958,6 +959,7 @@ public enum CustomRoles
     Slacker,
     SlowStarter,
     InfoPoor,
+    News,
 
     //GhostRoles
 

@@ -48,6 +48,7 @@ class GhostRoleCore
         Notvoter.Init();
         PlusVote.Init();
         Elector.Init();
+        News.Init();
         InfoPoor.Init();
         Water.Init();
         SlowStarter.Init();
@@ -88,6 +89,7 @@ class GhostRoleCore
         Moon.SetupCustomOption();
         //デバフ達
         Amnesia.SetupCustomOption();
+        News.SetupCustomOption();
         SlowStarter.SetupCustomOption();
         Notvoter.SetupCustomOption();
         Elector.SetupCustomOption();
