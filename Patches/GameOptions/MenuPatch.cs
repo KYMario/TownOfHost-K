@@ -603,22 +603,22 @@ namespace TownOfHost
                             stringOption.PlusBtn.OnClick.AddListener((System.Action)(() =>
                             {
                                 CustomRoles[] notAssign = [];
-                                var (imp, mad, crew, neu) = (true, true, true, true);
+                                var (imp, mad, crew, neu, addon) = (true, true, true, true, true);
                                 if (option is FilterOptionItem filterOptionItem)
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
                                     (imp, mad, crew, neu) = filterOptionItem.roles;
                                     ShowFilter.NowOption = option;
-                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu));
+                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu, addon));
                                     return;
                                 }
                                 if (option is AssignOptionItem assignoptionitem)
                                 {
                                     notAssign = assignoptionitem.NotAssin?.Invoke() ?? [];
-                                    (imp, mad, crew, neu) = assignoptionitem.roles;
+                                    (imp, mad, crew, neu, addon) = assignoptionitem.roles;
 
                                     ShowFilter.NowOption = option;
-                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu));
+                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu, addon));
                                     return;
                                 }
                             }));
@@ -693,7 +693,7 @@ namespace TownOfHost
                             stringOption.PlusBtn.OnClick.AddListener((System.Action)(() =>
                             {
                                 CustomRoles[] notAssign = [];
-                                var (imp, mad, crew, neu) = (true, true, true, true);
+                                var (imp, mad, crew, neu, addon) = (true, true, true, true, true);
                                 if (option is FilterOptionItem filterOptionItem)
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
@@ -702,14 +702,14 @@ namespace TownOfHost
                                 if (option is AssignOptionItem assignoptionitem)
                                 {
                                     notAssign = assignoptionitem.NotAssin?.Invoke() ?? [];
-                                    (imp, mad, crew, neu) = assignoptionitem.roles;
+                                    (imp, mad, crew, neu, addon) = assignoptionitem.roles;
 
                                     ShowFilter.NowOption = option;
-                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu));
+                                    ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu, addon));
                                     return;
                                 }
                                 ShowFilter.NowOption = option;
-                                ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu));
+                                ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu, addon));
                             }));
                         }
                         if (option.CustomRole is not CustomRoles.NotAssigned and not CustomRoles.GM)

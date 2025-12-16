@@ -56,6 +56,7 @@ class GhostRoleCore
         Clumsy.Init();
         OneWolf.Init();
         Twins.Init();
+        Stack.Init();
     }
     public static void SetupCustomOptionAddonAndIsGhostRole()
     {
@@ -65,6 +66,7 @@ class GhostRoleCore
         LastNeutral.SetupCustomOption();
         Workhorse.SetupCustomOption();
 
+        Stack.SetupCustomOption();
         //バフ(ゲッサー→特定陣営→会議効果→タスクターン)
         Guesser.SetupCustomOption();
         OneWolf.SetupCustomOption();

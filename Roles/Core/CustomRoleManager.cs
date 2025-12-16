@@ -500,6 +500,7 @@ public static class CustomRoleManager
 
                 case CustomRoles.Amanojaku: Amanojaku.Add(pc.PlayerId); break;
                 case CustomRoles.OneWolf: OneWolf.Add(pc.PlayerId); break;
+                case CustomRoles.Stack: Stack.Add(pc.PlayerId); break;
 
                 case CustomRoles.Ghostbuttoner: Ghostbuttoner.Add(pc.PlayerId); break;
                 case CustomRoles.GhostNoiseSender: GhostNoiseSender.Add(pc.PlayerId); break;
@@ -939,6 +940,7 @@ public enum CustomRoles
     Speeding,
     Management,
     Opener,
+    Stack,
     //AntiTeleporter,
     Seeing,
     Lighting,

@@ -17,7 +17,7 @@ class ShowFilter
     public static List<CustomRoles> Activeroles = new();
 
     public static void CreateFilterOptionMenu(Transform tabtransform
-    , List<CustomRoles> activeroles, CustomRoles[] NotAssign, (bool imp, bool mad, bool crew, bool neu) role)
+    , List<CustomRoles> activeroles, CustomRoles[] NotAssign, (bool imp, bool mad, bool crew, bool neu, bool addon) role)
     {
         if (CustomBackground is null)
         {
@@ -89,17 +89,20 @@ class ShowFilter
                     var numItems = 0;
                     bool IsFilterOption = NowOption is not AssignOptionItem;
                     List<CustomRoles> rolelist = new();
-                    rolelist.Add(CustomRoles.Crewmate);
-                    rolelist.Add(CustomRoles.Impostor);
-                    rolelist.Add(CustomRoles.Merlin);
-                    rolelist.Add(CustomRoles.Braid);
-                    rolelist.Add(CustomRoles.Fool);
+                    if (role.addon is false)
+                    {
+                        rolelist.Add(CustomRoles.Crewmate);
+                        rolelist.Add(CustomRoles.Impostor);
+                        rolelist.Add(CustomRoles.Merlin);
+                        rolelist.Add(CustomRoles.Braid);
+                        rolelist.Add(CustomRoles.Fool);
+                    }
                     Options.CustomRoleSpawnChances.Keys.Do(r => rolelist.Add(r));
                     foreach (var customrole in rolelist)
                     {
-                        if (customrole.IsMainRole() is false) continue;
+                        if (customrole.IsMainRole() is false && !role.addon) continue;
                         if (customrole is CustomRoles.SKMadmate or CustomRoles.Emptiness or CustomRoles.HASFox or CustomRoles.HASTroll) continue;
-                        if (IsFilterOption is false)
+                        if (IsFilterOption is false && !role.addon)
                         {
                             if ((customrole is CustomRoles.Merlin && CustomRoles.Assassin.IsEnable()) ||
                                 (customrole is CustomRoles.Braid && CustomRoles.Driver.IsEnable()) ||
@@ -113,13 +116,15 @@ class ShowFilter
                             }
                         }
                         if (NotAssign.Contains(customrole)) continue;
-                        var roletype = customrole.GetCustomRoleTypes();
-                        if (roletype is CustomRoleTypes.Impostor && role.imp is false) continue;
-                        if (roletype is CustomRoleTypes.Madmate && role.mad is false) continue;
-                        if (roletype is CustomRoleTypes.Crewmate && role.crew is false) continue;
-                        if (roletype is CustomRoleTypes.Neutral && role.neu is false) continue;
-                        if (!Event.CheckRole(customrole)) continue;
-
+                        if (!customrole.IsAddOn())
+                        {
+                            var roletype = customrole.GetCustomRoleTypes();
+                            if (roletype is CustomRoleTypes.Impostor && role.imp is false) continue;
+                            if (roletype is CustomRoleTypes.Madmate && role.mad is false) continue;
+                            if (roletype is CustomRoleTypes.Crewmate && role.crew is false) continue;
+                            if (roletype is CustomRoleTypes.Neutral && role.neu is false) continue;
+                            if (!Event.CheckRole(customrole)) continue;
+                        }
                         // ボタン生成
                         var ToggleButton = Object.Instantiate(mouseMoveToggle, Scrollbargameobject.GetComponentInParent<Scroller>().Inner.transform);
                         ToggleButton.transform.localPosition = new Vector3(

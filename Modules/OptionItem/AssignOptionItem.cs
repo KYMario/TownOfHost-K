@@ -17,10 +17,10 @@ namespace TownOfHost
         public Dictionary<int, List<CustomRoles>> RoleValues = new(7);
         public List<CustomRoles> GetNowRoleValue() => RoleValues[Getpresetid()];
         public static int Getpresetid() => PresetOptionItem.Preset.GetInt();
-        public (bool impostor, bool madmate, bool crewmate, bool neutral) roles;
+        public (bool impostor, bool madmate, bool crewmate, bool neutral, bool addon) roles;
 
         // コンストラクタ
-        public AssignOptionItem(int id, string name, int defaultValue, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null)
+        public AssignOptionItem(int id, string name, int defaultValue, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, Func<CustomRoles[]> notassing = null)
         : base(id, name, defaultValue, tab, isSingleValue)
         {
             for (var i = 0; i < NumPresets; i++)
@@ -41,23 +41,23 @@ namespace TownOfHost
                 Selection = Selections;
             }
             NotAssin = notassing;
-            roles = (imp, mad, crew, neu);
+            roles = (imp, mad, crew, neu, addon);
             Rule = (0, Selections.Count - 1, 1);
         }
         public static AssignOptionItem Create(
-            int id, string name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+            int id, string name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, params CustomRoles[] notassing
         )
         {
             return new AssignOptionItem(
-                id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, () => notassing
+                id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, addon, () => notassing
             );
         }
         public static AssignOptionItem Create(
-            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, params CustomRoles[] notassing
         )
         {
             var opt = new AssignOptionItem(
-                roleInfo.ConfigId + idOffset, name.ToString(), defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, () => notassing
+                roleInfo.ConfigId + idOffset, name.ToString(), defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, addon, () => notassing
             );
             opt.SetParent(parent ?? roleInfo.RoleOption);
             opt.SetParentRole(roleInfo.RoleName);

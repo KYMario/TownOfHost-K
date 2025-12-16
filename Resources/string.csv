@@ -269,6 +269,7 @@
 "Guarding","Guarding","ガーディング"
 "MagicHand","MagicHand","マジックハンド"
 "AntiTeleporter","AntiTeleporter","アンチテレポーター"
+"Stack","Stack","スタック"
 
 "# デバフ属性"
 "SlowStarter","SlowStarter","スロースターター"
@@ -532,6 +533,7 @@
 "GuardingInfo","I thought you were dead...","何をしてでも生き残りたいの！！"
 "MagicHandInfo","I Have Magic hand","あらよっと"
 "AntiTeleporterInfo","I don't want Teleport","絶対にテレポートしたくないでござる","我不想传送"
+"StackInfo","Add-onBundle","属性の詰め合わセット"
 
 "# デバフ属性"
 "SlowStarterInfo","I'm sure he'll do it later","んー...後5分だけぇ..."
@@ -824,6 +826,7 @@
 "GuardingInfoLong","Add-ons:\nGive Nomal Kill Guard","(属性):\nガードすることが出来る。(設定有)"
 "MagicHandInfoLong","Add-ons:\nGive to Only Kill Roles\nKill distance becomes a set value.","(属性):\nキル可能役職にのみ付与される属性。\nキルディスタンスが設定値になる。"
 "AntiTeleporterInfoLong","Add-ons:\nThe Anti Teleport Modifier prevents the player from getting teleported to the Meeting Table if a body gets reported or an Emergency Meeting is called.\nThe player will start the round where the previous one ended (Emergency Meeting Call/Body Report).","(属性):\n会議や死体レポートなどが起こってもその後にテレポートせず、元居た場所からスタートします。","(附加效果):\n如果有尸体被报告或紧急会议被召集，通讯兵效果可以防止玩家被远程传送到会议桌。\n玩家将在上一回合结束时的位置继续（紧急会议/尸体报告）."
+"StackInfoLong","The attributes you set will be applied at the start of the game.","設定した属性がゲーム開始時に付与される。"
 
 "# デバフ属性"
 "SlowStarterInfoLong","Add-ons:\nGive to Impostor Only.\nCan't make a kill until the number of imposters is reduced.","(属性):\nインポスターにしか付与されない。\n味方の生存人数が一定人数を下回るまでキルできない。"
@@ -1785,6 +1788,7 @@
 "CanSeeFactionMate","Can See Other Faction","徒党が見える"
 "OneWolfImpostorKillMe","Impostor Kill OneWolf Mode","インポスターが一匹狼をキルした時"
 "OneWolfMeCanKillImpostor","OneWolf Kill Impostor Mode","一匹狼がインポスターをキルした時"
+"AssignAddon","Assign Addon","付与するアドオン"
 
 "## 幽霊役職設定"
 "GhostRoleOptions","GhostRole Options","幽霊役職の設定"

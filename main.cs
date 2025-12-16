@@ -299,9 +299,10 @@ namespace TownOfHost
                     {CustomRoles.Tiebreaker,"#00552e"},
                     {CustomRoles.Guarding, "#7b68ee"},
                     {CustomRoles.MagicHand , "#dea785"},
+                    {CustomRoles.Stack , "#b55f47ff"},
                     //{CustomRoles.AntiTeleporter,"#dea785"},
                     //デバフ
-                    {CustomRoles.NonReport,"#006666"},
+                    { CustomRoles.NonReport,"#006666"},
                     {CustomRoles.Notvoter,"#6c848d"},
                     {CustomRoles.Water,"#003f8e"},
                     {CustomRoles.Clumsy,"#942343"},

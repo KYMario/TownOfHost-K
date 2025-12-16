@@ -10,7 +10,7 @@ namespace TownOfHost
         {
             for (var i = 0; i < 15; i++)
             {
-                var slotrole = (AssignOptionItem)AssignOptionItem.Create(114000 + i * 100, $"SlotRole{i + 1}", 0, TabGroup.Combinations, false, true, true, true, true)
+                var slotrole = (AssignOptionItem)AssignOptionItem.Create(114000 + i * 100, $"SlotRole{i + 1}", 0, TabGroup.Combinations, false, true, true, true, true, false)
                     .SetHeader(i is 0).SetColorcode("#efd87f").SetTooltip(i is 0 ? Translator.GetString("SlotRoleInfo") : "");
                 SlotRoles.Add(new SlotBaseOptionInfo(slotrole));
             }

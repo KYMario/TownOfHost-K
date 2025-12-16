@@ -46,7 +46,7 @@ class ColorLovers
         SoloWinOption.Create(id + 7, TabGroup.Combinations, role, () => !LoverCanAddWin.GetBool(), defo: 6);
         Win3player = BooleanOptionItem.Create(id + 8, "LoverSoloWin3players", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
         LoverSetRole = BooleanOptionItem.Create(id + 9, "FixedRole", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
-        LoversRole1 = (AssignOptionItem)AssignOptionItem.Create(id + 10, "FixedRole", 0, TabGroup.Combinations, false, true, true, true, true, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
+        LoversRole1 = (AssignOptionItem)AssignOptionItem.Create(id + 10, "FixedRole", 0, TabGroup.Combinations, false, true, true, true, true, false, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
         AssingImpostor = BooleanOptionItem.Create(id + 11, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
         AssingMadmate = BooleanOptionItem.Create(id + 12, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
         AssingCrewmate = BooleanOptionItem.Create(id + 13, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
