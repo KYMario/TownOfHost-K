@@ -437,6 +437,7 @@ namespace TownOfHost
         TeleportKill,
         Trap,
         NotGather,
+        Hit,
         etc = -1
     }
     //WinData
