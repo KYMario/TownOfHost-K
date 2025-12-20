@@ -17,7 +17,7 @@ class TaskBattle
     /// <summary>追加でタスクを付与した数</summary>
     public static Dictionary<byte, int> TaskAddCount = new();
     public static bool IsAdding;
-    public static byte RTAPlayerId;
+    public static byte RTAPlayerId; public static string roomname;
     public static bool IsRTAMode; public static float timer;
     public static bool IsAllMapMode = false; public static float allmapmodetimer;
     public static Dictionary<int, float> Maptimer = new();
@@ -27,6 +27,7 @@ class TaskBattle
         IsAdding = false;
         TaskAddCount = new();
         IsTaskBattleTeamMode = TaskBattleTeamMode.GetBool();
+        roomname = "";
 
         if (TaskAddMode.GetBool())
         {
@@ -307,6 +308,7 @@ class TaskBattle
                     reason = GameOverReason.CrewmatesByTask;
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.TaskPlayerB);
                     CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
+                    roomname = RandomSpawn.SpawnMap.NextSpornName.TryGetValue(RTAPlayerId, out var name) ? name : "???";
                     RTAPlayerId = byte.MaxValue;
                 }
             }

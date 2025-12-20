@@ -15,6 +15,7 @@ using static TownOfHost.Translator;
 using static TownOfHost.PlayerCatch;
 using static TownOfHost.UtilsRoleText;
 using TownOfHost.Attributes;
+using Rewired;
 
 namespace TownOfHost
 {
@@ -281,9 +282,9 @@ namespace TownOfHost
         }
         public static StringBuilder GetRTAText(List<byte> winnerList = null)
         {
-            var AddCommon = TaskBattle.NumCommonTasks.GetInt() * TaskBattle.MaxAddCount.GetInt();
-            var AddLong = TaskBattle.NumLongTasks.GetInt() * TaskBattle.MaxAddCount.GetInt();
-            var AddShort = TaskBattle.NumShortTasks.GetInt() * TaskBattle.MaxAddCount.GetInt();
+            var AddCommon = TaskBattle.NumCommonTasks.GetInt();
+            var AddLong = TaskBattle.NumLongTasks.GetInt();
+            var AddShort = TaskBattle.NumShortTasks.GetInt();
             if (!TaskBattle.TaskAddMode.GetBool())
                 (AddCommon, AddLong, AddShort) = (0, 0, 0);
             StringBuilder sb = new();
@@ -293,11 +294,15 @@ namespace TownOfHost
                 sb.Append($"{GetString("TaskPlayerB")}:\n　{Main.AllPlayerNames[winnerList[0]] ?? "?"}");
 
             sb.Append($"\n{GetString("TaskCount")}:")
-            .Append($"\n　{GetString(StringNames.GameCommonTasks)}: {Main.NormalOptions.NumCommonTasks + AddCommon}")
-            .Append($"\n　{GetString(StringNames.GameShortTasks)}: {Main.NormalOptions.NumShortTasks + AddLong}")
-            .Append($"\n　{GetString(StringNames.GameLongTasks)}: {Main.NormalOptions.NumLongTasks + AddShort}")
+            .Append($"\n　{GetString(StringNames.GameCommonTasks)}: {Main.NormalOptions.NumCommonTasks}{$"{(AddCommon > 0 ? $"+ {AddCommon} * {TaskBattle.MaxAddCount.GetInt()}" : "")}"}")
+            .Append($"\n　{GetString(StringNames.GameLongTasks)}: {Main.NormalOptions.NumLongTasks}{$"{(AddLong > 0 ? $"+ {AddLong} * {TaskBattle.MaxAddCount.GetInt()}" : "")}"}")
+            .Append($"\n　{GetString(StringNames.GameShortTasks)}: {Main.NormalOptions.NumShortTasks}{$"{(AddShort > 0 ? $"+ {AddShort} * {TaskBattle.MaxAddCount.GetInt()}" : "")}"}")
             .Append($"\n{GetString("TaskBattle_Time")}: {HudManagerPatch.GetTaskBattleTimer()}")
             .Append($"\n{GetString(StringNames.GameMapName)}: {(MapNames)Main.NormalOptions.MapId}")
+            .Append($"\n{GetString(StringNames.GamePlayerSpeed)} : {Main.NormalOptions.PlayerSpeedMod}")
+            .Append($"\nSpawn:{TaskBattle.roomname}")
+            .Append(Options.DisableTasks.GetBool() ? $"\n・{GetString("DisableTasks")}" : "")
+            .Append(Options.UploadDataIsLongTask.GetBool() ? $"\n・{GetString("UploadDataIsLongTask")}" : "")
             .Append($"\n{GetString("Vent")}: " + GetString(TaskBattle.TaskBattleCanVent.GetBool() ? "On" : "Off"));//マップの設定なども記載しなければならない
             if (TaskBattle.TaskBattleCanVent.GetBool())
                 sb.Append($"\n　クールダウン:{TaskBattle.TaskBattleVentCooldown.GetFloat()}");
