@@ -92,6 +92,7 @@ public sealed class QuickKiller : RoleBase, IImpostor
     public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
     public override void OnStartMeeting() => timer = null;
     public override string GetAbilityButtonText() => GetString("QuickKiller_Timer");
+    public override bool CanUseAbilityButton() => timer is not null;
     public override bool OverrideAbilityButton(out string text)
     {
         text = "QuickKiller_Ability";

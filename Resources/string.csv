@@ -606,7 +606,7 @@
 "ShapeKillerInfoLong","ShapeKiller can disguise reports.\nBy shape-shifting and reporting, ShapeKiller can report the shape-shifted target.","通報を偽装できるインポスター。\nシェイプシフトして死体通報することでシェイプシフトした相手の通報にできる。"
 "CharismaStarInfoLong","An imposter that allows any player to assemble to the nearest vent from himself. The \n kill button uses double clicks. The single click determines the member to assemble, while the double click usually kills. Multiple members can be set to gather, and by pressing the disappear button, the members can be gathered to a vent near you. [\n “gather all” setting is turned on, all members can be gathered together if no one has been chosen. When the \n gathering setting is on, if the target player is using a ladder, he/she cannot gather. If a player cannot assemble due to the setting, he/she will self-destruct.","任意のプレイヤーを自身から一番近いベントへ集合させることができるインポスター。\nキルボタンはダブルクリックを使い分ける。シングルクリックでは集合メンバーを決め、ダブルクリックでは通常キルをする。集合メンバーは複数人設定することができ、消えるボタンを押すことでそのメンバーを自身付近のベントに集めることができる。\n全員集合できる設定をONにしている時、誰もメンバーを決めていないと全員を集合させることができる。\n集合をかけた時、対象プレイヤーがはしごを使用していると集まることが出来ない。設定により、集まれないプレイヤーは自爆する。",
 "AssassinInfoLong","Combination Role with <#8cc2ff>Merlin</color>. \n Assassin's Conference can be triggered upon death when the \n banishment or the setting “Causing Assassin's Conference outside of banishment” is enabled. \n If you can guess (vote) for Merlin in the Assassin's Conference, the Imposter will win. \n Also, when the setting is enabled, the ability of some roles can be held along with Assassin.","<#8cc2ff>マーリン</color>とのコンビネーション役職。\n\n追放、又は「追放以外でもアサシン会議を起こす」の設定が有効時に死亡時に\nアサシン会議を発生させることができる。\n\nアサシン会議でマーリンに推測(投票)できればインポスターの勝利。\n\nまた、設定有効時にはアサシンと併せて一部の役職の能力を持つこともできる。"
-"ArcherInfoLong","An Impostor who can kill Crewmates using a bow and arrows.\nPress the Phantom button and move in the opposite direction of where you want to fire to shoot an arrow.\nPlayers hit by the arrow die instantly (deathreason: Hit).\nThe arrow disappears when it hits a wall or after a certain amount of time.","弓矢を駆使し、クルーをキルすることができるインポスター。\nファントムボタンを押し、矢を放ちたい方向と逆方向に移動することで矢を放つことができる。\n矢が当たったプレイヤーはその場で死亡する(死因:命中)\n矢は壁に当たるか一定時間経過すると消滅する。"
+"ArcherInfoLong","An Impostor who can kill Crewmates using a bow and arrows.\nPress the Phantom button and move in the opposite direction of where you want to fire to shoot an arrow.\nPlayers hit by the arrow die instantly (deathreason: Hit).\nThe arrow disappears when it hits a wall or after a certain amount of time.","弓矢を駆使し、クルーをキルすることができるインポスター。\nファントムボタンを押し、矢を放ちたい方向と逆方向に移動し、\nもう一度ファントムボタンを押すことで矢を放つことができる。\n矢が当たったプレイヤーはその場で死亡する(死因:命中)\n矢は壁に当たるか一定時間経過すると消滅する。"
 "#ImpostorInfoLong"
 
 "# マッドメイト系役職"
@@ -1402,6 +1402,7 @@
 "ArcherMyArrow","Tp Arrow","矢と一緒に飛ぶ"
 "ArcherCanNomalKill","Can Use Kill. Has Arrow","矢を所持した状態でキルが行える"
 "ArcherArrowTime","Have Arrow","矢の所持数"
+"ArcherArrowSpeed","Arrow Speed","矢の速度"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
@@ -2131,8 +2132,9 @@
 "MadBetrayerLowerTextBetray","You betrayed us. Become the imposter's replacement","裏切った。インポスターの代わりとなれ"
 "StrawdollSetTarget","Kill → SetTarget","キル → ターゲット指定"
 "StrawdollShape","Phantombutton → ShapeShift","ファントムボタン → 変身"
-"ArcherLower_SetBow","Move to Snipe","移動した反対側に矢を放つ"
-"ArcherLower_Phantom","Phantom → SetBow","ファントムボタン → 矢を放つ"
+"ArcherLower_SetBow","Phantom → Move to Snipe","ファントムボタン → 移動した反対側に矢を放つ"
+"ArcherLower_Phantom","Phantom → SetBow","ファントムボタン → 弓を取り出す"
+"ArcherLower_ArrowActive","ShootNow","発射中..."
 
 "## かくれんぼ設定"
 "HideAndSeekOptions","Hide and Seek Settings","かくれんぼの設定","躲猫猫设置","躲貓貓設定","Настройки Пряток","Configurações do Esconde-Esconde",""
@@ -2217,6 +2219,7 @@
 "BalloonerAbility","Rupture","破裂"
 "CharismaStarGatherButtonText","Gather","集合"
 "QuickKiller_Timer","QuickTime","クイックモード"
+"Archer_AbilityButton","Shot","矢を放つ"
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""
