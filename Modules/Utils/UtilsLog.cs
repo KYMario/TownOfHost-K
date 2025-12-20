@@ -444,7 +444,7 @@ namespace TownOfHost
         public static void WH_ShowActiveRoles()
         {
             StringBuilder sb;
-            if (Options.CurrentGameMode == CustomGameMode.Standard)
+            if (GameModeManager.IsStandardClass())
             {
 
                 sb = new StringBuilder("```cs\n").Append(GetString("Roles")).Append(':');

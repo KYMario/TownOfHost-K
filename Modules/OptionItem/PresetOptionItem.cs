@@ -25,9 +25,7 @@ namespace TownOfHost
         public override string GetString()//プリセット名決める適菜奴作りたいなぁ。
         {
             var ch = "";
-            if (SuddenDeathMode.SuddenDeathModeActive.GetBool()) ch = Translator.GetString("SuddenDeathMode");
-            if (Options.StandardHAS.GetBool()) ch = Translator.GetString("StandardHAS");
-            if (Options.CurrentGameMode == CustomGameMode.Standard)
+            if (GameModeManager.IsStandardClass())
             {
                 if (UtilsShowOption.GetRoleTypesCount() != "")
                     ch += $"<size=70%>{UtilsShowOption.GetRoleTypesCount()}</size>";

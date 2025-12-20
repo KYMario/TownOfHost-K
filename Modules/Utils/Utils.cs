@@ -462,20 +462,6 @@ namespace TownOfHost
 
             if (GameStates.IsLobby && !Iscountdown && (force || (pc.name != "Player(Clone)" && pc.PlayerId != PlayerControl.LocalPlayer.PlayerId && !pc.IsModClient())))
             {
-                /*
-                var info = "<size=80%>";
-                var at = "";
-                if (Options.NoGameEnd.OptionMeGetBool()) info += $"\r\n" + ColorString(Color.red, GetString("NoGameEnd")); else at += "\r\n";
-                if (Options.IsStandardHAS) info += $"\r\n" + ColorString(Color.yellow, GetString("StandardHAS")); else at += "\r\n";
-                if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) info += $"\r\n" + ColorString(Color.red, GetString("HideAndSeek")); else at += "\r\n";
-                if (Options.CurrentGameMode == CustomGameMode.TaskBattle) info += $"\r\n" + ColorString(Color.cyan, GetString("TaskBattle")); else at += "\r\n";
-                if (SuddenDeathMode.SuddenDeathModeActive.InfoGetBool()) info += "\r\n" + ColorString(GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode")); else at += "\r\n";
-                if (Options.EnableGM.OptionMeGetBool()) info += $"\r\n" + ColorString(GetRoleColor(CustomRoles.GM), GetString("GM")); else at += "\r\n";
-                if (DebugModeManager.IsDebugMode)
-                    info += "\r\n" + (DebugModeManager.EnableTOHkDebugMode.OptionMeGetBool() ? "<#0066de>DebugMode</color>" : ColorString(Color.green, "デバッグモード"));
-                else at += "\r\n";
-                info += "</size>";*/
-                //n = "<size=120%><line-height=-1450%>\n\r<b></line-height>" + name + "\n<line-height=-100%>" + info.RemoveText() + at + $"<line-height=-1400%>\r\n{name}<size=120%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}<size=120%></line-height>{info}{at}</b><size=0>　";
                 n = "<line-height=-100%>\n<b></line-height>" + name + $"\n<line-height=-200%>\n<size=60%><line-height=0%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}</size><line-height=100%>\n<size=0> ";
                 if (force)
                     PlayerCatch.AllPlayerControls.DoIf(x => x.name != "Player(Clone)" && x.PlayerId != PlayerControl.LocalPlayer.PlayerId && !x.IsModClient(), x => PlayerControl.LocalPlayer.RpcSetNamePrivate(n, true, x, true));
@@ -888,7 +874,7 @@ namespace TownOfHost
             Balancer.Id = 255;
             Main.DisableTaskPlayerList = new();
             Stolener.Killers.Clear();
-            Options.firstturnmeeting = Options.FirstTurnMeeting.GetBool() && !SuddenDeathMode.SuddenDeathModeActive.GetBool();
+            Options.firstturnmeeting = Options.FirstTurnMeeting.GetBool() && Options.CurrentGameMode is CustomGameMode.Standard;
             CoEnterVentPatch.OldOnEnterVent = new();
 
             if (Options.CantUseVentMode.GetBool() && (Options.CantUseVentTrueCount.GetFloat() >= PlayerCatch.AllAlivePlayerControls.Count())) CantUseVent = true;

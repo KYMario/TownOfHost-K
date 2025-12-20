@@ -97,7 +97,7 @@ namespace TownOfHost
                 Logger.Info("HideAndSeekの待機時間中だったため、キルをキャンセルしました。", "CheckMurder");
                 return false;
             }
-            if (Options.CurrentGameMode == CustomGameMode.Standard && Options.firstturnmeeting && MeetingStates.FirstMeeting)
+            if (GameModeManager.IsStandardClass() && Options.firstturnmeeting && MeetingStates.FirstMeeting)
             {
                 Logger.Info(killer.GetNameWithRole().RemoveHtmlTags() + "が強制会議前にキルしようとしたから弾いたぞ！", "CheckMurder");
                 return false;

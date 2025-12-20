@@ -31,7 +31,7 @@ class VentManager
         //ゲーム中でなければ実行しない
         if (!GameStates.IsInGame) return;
 
-        if (Options.CurrentGameMode == CustomGameMode.Standard && GameStates.IsInTask && GameStates.introDestroyed && player.IsAlive() && !player.IsModClient())
+        if (GameModeManager.IsStandardClass() && GameStates.IsInTask && GameStates.introDestroyed && player.IsAlive() && !player.IsModClient())
         {
             Vector2 position = player.transform.position;
 

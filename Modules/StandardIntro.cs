@@ -33,7 +33,7 @@ class StandardIntro
     {
         if (!AmongUsClient.Instance.AmHost) return;
         // イントロ通信分割
-        if (Options.CurrentGameMode is CustomGameMode.Standard)//役職配布前に通信擬装をしておく。
+        if (GameModeManager.IsStandardClass())//役職配布前に通信擬装をしておく。
         {
             _ = new LateTask(() =>
             {
@@ -286,7 +286,7 @@ class StandardIntro
                 if (send) RPC.RpcSyncAllNetworkedPlayer();
 
                 PlayerCatch.AllPlayerControls.Do(Player => PlayerOutfitManager.Save(Player));
-                if (Options.CurrentGameMode == CustomGameMode.Standard)
+                if (GameModeManager.IsStandardClass())
                 {
                     //初手強制会議あるなら戻さない
                     if (!SuddenDeathMode.NowSuddenDeathMode && Options.FirstTurnMeeting.GetBool()) return;
@@ -377,7 +377,7 @@ class StandardIntro
                         }
                 }
 
-                if (Options.CurrentGameMode == CustomGameMode.Standard)
+                if (GameModeManager.IsStandardClass())
                     _ = new LateTask(() =>
                     {
                         foreach (var Player in PlayerCatch.AllPlayerControls)

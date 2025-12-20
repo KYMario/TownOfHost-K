@@ -713,7 +713,7 @@ namespace TownOfHost
         public static bool Cancel = true;
         public static bool Prefix(HudManager __instance)
         {
-            if (AmongUsClient.Instance.AmHost && Options.CurrentGameMode == CustomGameMode.Standard && Cancel)
+            if (AmongUsClient.Instance.AmHost && GameModeManager.IsStandardClass() && Cancel)
             {
                 Logger.Warn("イントロの表示をキャンセルしました", "CoShowIntro");
                 return false;

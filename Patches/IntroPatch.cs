@@ -426,7 +426,7 @@ namespace TownOfHost
                     GameStates.AfterIntro = true;
                 }
 
-                if (!(Options.CurrentGameMode is CustomGameMode.Standard && Main.SetRoleOverride))
+                if (!(GameModeManager.IsStandardClass() && Main.SetRoleOverride))
                     _ = new LateTask(() => PlayerCatch.AllPlayerControls.Do(pc => pc.RpcSetRoleDesync(RoleTypes.Shapeshifter, -3)), 2f, "SetImpostorForServer");
 
                 if (PlayerControl.LocalPlayer.Is(CustomRoles.GM))

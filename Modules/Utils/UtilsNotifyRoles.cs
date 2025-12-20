@@ -55,7 +55,7 @@ namespace TownOfHost
                     if (!UtilsGameLog.LastLogPro.TryAdd(pp.PlayerId, str))
                         UtilsGameLog.LastLogPro[pp.PlayerId] = str;
 
-                    if (Options.CurrentGameMode == CustomGameMode.Standard)
+                    if (GameModeManager.IsStandardClass())
                     {
                         var mark = GetSubRolesText(pp.PlayerId, mark: true);
                         if (!UtilsGameLog.LastLogSubRole.TryAdd(pp.PlayerId, mark))
@@ -421,7 +421,7 @@ namespace TownOfHost
                     if (!UtilsGameLog.LastLogPro.TryAdd(pp.PlayerId, str))
                         UtilsGameLog.LastLogPro[pp.PlayerId] = str;
 
-                    if (Options.CurrentGameMode == CustomGameMode.Standard)
+                    if (GameModeManager.IsStandardClass())
                     {
                         var mark = GetSubRolesText(pp.PlayerId, mark: true);
                         if (!UtilsGameLog.LastLogSubRole.TryAdd(pp.PlayerId, mark))

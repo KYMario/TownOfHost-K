@@ -53,7 +53,7 @@ namespace TownOfHost.Roles
             "AssignAlgorithm.Fixed",
             "AssignAlgorithm.Random"
         };
-        private static CustomRoles[] AllMainRoles => Options.CurrentGameMode == CustomGameMode.Standard ? CustomRolesHelper.AllStandardRoles : CustomRolesHelper.AllHASRoles;
+        private static CustomRoles[] AllMainRoles => GameModeManager.IsStandardClass() ? CustomRolesHelper.AllStandardRoles : CustomRolesHelper.AllHASRoles;
         public static OptionItem OptionAssignMode;
         private static Dictionary<CustomRoleTypes, RandomAssignOptions> RandomAssignOptionsCollection = new(CustomRolesHelper.AllRoleTypes.Length);
         private static Dictionary<CustomRoleTypes, int> AssignCount = new(CustomRolesHelper.AllRoleTypes.Length);
@@ -208,7 +208,7 @@ namespace TownOfHost.Roles
                 var numImpostorAssign = targetRoles.Count(role => role.GetAssignRoleType() == CustomRoleTypes.Impostor);
                 var numOthersAssign = targetRoles.Length - numImpostorAssign;
                 //アサイン枠が足りてない場合
-                if ((numImpostorAssign > numImpostorsLeft || numOthersAssign > numOthersLeft) && !SuddenDeathMode.SuddenDeathModeActive.GetBool()) continue;
+                if ((numImpostorAssign > numImpostorsLeft || numOthersAssign > numOthersLeft) && Options.CurrentGameMode is not CustomGameMode.SuddenDeath) continue;
 
                 AssignRoleList.AddRange(targetRoles);
                 numImpostorsLeft -= numImpostorAssign;

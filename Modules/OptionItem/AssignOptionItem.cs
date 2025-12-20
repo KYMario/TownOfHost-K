@@ -194,6 +194,8 @@ namespace TownOfHost
         {
             base.SetValue(RoleValues.Count, doSync);
         }
-        public override bool GetBool() => RoleValues[Getpresetid()].Count > 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent)) && (GameMode == CustomGameMode.All || GameMode == Options.CurrentGameMode);
+        public override bool GetBool() => RoleValues[Getpresetid()].Count > 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent))
+                    && (Tag == CustomOptionTags.All || GameModeManager.GetTags(Options.CurrentGameMode).Contains(Tag))
+                    && (GameModeManager.GetTags(Options.CurrentGameMode).Any(tag => DisableTag.Contains(tag)) is false);
     }
 }

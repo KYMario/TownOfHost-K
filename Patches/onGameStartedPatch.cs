@@ -285,7 +285,7 @@ namespace TownOfHost
                     {
                         AllPlayers.RemoveAll(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId);
                         PlayerControl.LocalPlayer.RpcSetCustomRole(CustomRoles.GM);
-                        PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.Crewmate, Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard);
+                        PlayerControl.LocalPlayer.RpcSetRole(RoleTypes.Crewmate, Main.SetRoleOverride && GameModeManager.IsStandardClass());
                         PlayerControl.LocalPlayer.Data.IsDead = true;
                     }
                     if (DebugModeManager.EnableTOHkDebugMode.GetBool())
@@ -294,7 +294,7 @@ namespace TownOfHost
                         {
                             AllPlayers.RemoveAll(x => x.PlayerId == PlayerControl.LocalPlayer.PlayerId);
                             PlayerControl.LocalPlayer.RpcSetCustomRole(Main.HostRole, true);
-                            PlayerControl.LocalPlayer.RpcSetRole(Main.HostRole.GetRoleInfo()?.BaseRoleType.Invoke() ?? RoleTypes.Crewmate, Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard);
+                            PlayerControl.LocalPlayer.RpcSetRole(Main.HostRole.GetRoleInfo()?.BaseRoleType.Invoke() ?? RoleTypes.Crewmate, Main.SetRoleOverride && GameModeManager.IsStandardClass());
                             PlayerControl.LocalPlayer.Data.IsDead = true;
                         }
                     }
@@ -306,7 +306,7 @@ namespace TownOfHost
                     Dictionary<(byte, byte), RoleTypes> rolesMap = new();
                     foreach (var (role, info) in CustomRoleManager.AllRolesInfo)
                     {
-                        if (info.IsDesyncImpostor || role is CustomRoles.Amnesiac || role.IsMadmate() || (role.IsNeutral() && role is not CustomRoles.Egoist) || SuddenDeathMode.SuddenDeathModeActive.GetBool())
+                        if (info.IsDesyncImpostor || role is CustomRoles.Amnesiac || role.IsMadmate() || (role.IsNeutral() && role is not CustomRoles.Egoist) || Options.CurrentGameMode is CustomGameMode.SuddenDeath)
                         {
                             AssignDesyncRole(role, AllPlayers, senders, rolesMap, BaseRole: info.BaseRoleType.Invoke());
                         }
@@ -478,7 +478,7 @@ namespace TownOfHost
                     if (role.IsMadmate()) continue;
                     if (role.IsNeutral() && role is not CustomRoles.Egoist) continue;
                     if (role is CustomRoles.Amnesiac) continue;
-                    if (SuddenDeathMode.SuddenDeathModeActive.GetBool()) continue;
+                    if (Options.CurrentGameMode is CustomGameMode.SuddenDeath) continue;
                     var baseRoleTypes = role.GetRoleTypes() switch
                     {
                         RoleTypes.Impostor => Impostors,
@@ -535,7 +535,7 @@ namespace TownOfHost
                     var roleOpt = Main.NormalOptions.roleOptions;
                     roleOpt.SetRoleRate(roleTypes, 0, 0);
                 }
-                if (!SuddenDeathMode.SuddenDeathModeActive.GetBool()) GameEndChecker.SetPredicateToNormal();
+                if (Options.CurrentGameMode is not CustomGameMode.SuddenDeath) GameEndChecker.SetPredicateToNormal();
                 else GameEndChecker.SetPredicateToSadness();
             }
             GameOptionsSender.AllSenders.Clear();
@@ -593,13 +593,13 @@ namespace TownOfHost
                 state.NowRoleType = rolebasetype;
             }
 
-            if (Lovers.OneLovePlayer.BelovedId != byte.MaxValue && Options.CurrentGameMode == CustomGameMode.Standard)
+            if (Lovers.OneLovePlayer.BelovedId != byte.MaxValue && GameModeManager.IsStandardClass())
             {
                 UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.BelovedId] += Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡");
                 if (Lovers.OneLovePlayer.doublelove) UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.OneLove] += Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡");
             }
 
-            if (Options.CurrentGameMode == CustomGameMode.Standard)
+            if (GameModeManager.IsStandardClass())
                 StandardIntro.CoResetRoleY();
             //RPC.RpcSyncAllNetworkedPlayer();
 
@@ -652,7 +652,7 @@ namespace TownOfHost
                 }
                 RpcSetRoleReplacer.OverriddenSenderList.Add(senders[player.PlayerId]);
                 //ホスト視点はロール決定
-                player.StartCoroutine(player.CoSetRole(othersRole, Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard));
+                player.StartCoroutine(player.CoSetRole(othersRole, Main.SetRoleOverride && GameModeManager.IsStandardClass()));
                 player.Data.IsDead = true;
             }
         }
@@ -758,11 +758,11 @@ namespace TownOfHost
             }
             public static void Release()
             {
-                if (Options.CurrentGameMode is CustomGameMode.Standard)
+                if (GameModeManager.IsStandardClass())
                 {
                     foreach (var pair in StoragedData)
                     {
-                        pair.Item1.StartCoroutine(pair.Item1.CoSetRole(pair.Item2, Main.SetRoleOverride && Options.CurrentGameMode is CustomGameMode.Standard));
+                        pair.Item1.StartCoroutine(pair.Item1.CoSetRole(pair.Item2, Main.SetRoleOverride && GameModeManager.IsStandardClass()));
                     }
                     return;
                 }
@@ -780,10 +780,10 @@ namespace TownOfHost
 
                     foreach (var pair in StoragedData)
                     {
-                        pair.Item1.StartCoroutine(pair.Item1.CoSetRole(pair.Item2, Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard));
+                        pair.Item1.StartCoroutine(pair.Item1.CoSetRole(pair.Item2, Main.SetRoleOverride && GameModeManager.IsStandardClass()));
                         sender.Value.AutoStartRpc(pair.Item1.NetId, (byte)RpcCalls.SetRole, PlayerCatch.GetPlayerById(sender.Key).GetClientId())
                             .Write((ushort)pair.Item2)
-                            .Write(Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard)
+                            .Write(Main.SetRoleOverride && GameModeManager.IsStandardClass())
                             .EndRpc();
                     }
                     sender.Value.EndMessage();

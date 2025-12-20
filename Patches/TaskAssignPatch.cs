@@ -122,7 +122,7 @@ namespace TownOfHost
                 !Options.CommnTaskResetAssing.GetBool() && hasCommonTasks && NumCommonTasks == Main.NormalOptions.NumCommonTasks && NumLongTasks == Main.NormalOptions.NumLongTasks && NumShortTasks == Main.NormalOptions.NumShortTasks
                 && !Options.UploadDataIsLongTask.GetBool())
             {
-                if (Options.CurrentGameMode == CustomGameMode.Standard)
+                if (GameModeManager.IsStandardClass())
                     if (!Main.IsroleAssigned)
                     {
                         taskIds[__instance.PlayerId] = taskTypeIds;
@@ -222,7 +222,7 @@ namespace TownOfHost
                 taskTypeIds[i] = TasksList[i];
             }
 
-            if (Options.CurrentGameMode == CustomGameMode.Standard)
+            if (GameModeManager.IsStandardClass())
                 if (!Main.IsroleAssigned)
                 {
                     taskIds[__instance.PlayerId] = taskTypeIds;

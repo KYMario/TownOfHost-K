@@ -39,7 +39,7 @@ class VentilationSystemUpdateSystemPatch
             return false; //タスバトだとベント掃除で追い出されないように～
 
         //タスクを持っていないならベント掃除をなかったことにする
-        if (Options.CurrentGameMode == CustomGameMode.Standard)
+        if (GameModeManager.IsStandardClass())
             return UtilsTask.HasTasks(player.Data);
 
         return true;

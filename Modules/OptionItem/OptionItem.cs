@@ -36,7 +36,8 @@ namespace TownOfHost
         public string Fromtext { get; protected set; }
         public OptionZeroNotation ZeroNotation { get; protected set; }
         public OptionFormat ValueFormat { get; protected set; }
-        public CustomGameMode GameMode { get; protected set; }
+        public CustomOptionTags Tag { get; protected set; }
+        public CustomOptionTags[] DisableTag { get; protected set; }
         public bool IsHeader { get; protected set; }
         public bool IsHidden { get; protected set; }
         public Func<bool> IsEnabled { get; protected set; }
@@ -93,7 +94,8 @@ namespace TownOfHost
             NameColor = Color.white;
             NameColorCode = "#ffffff";
             ValueFormat = OptionFormat.None;
-            GameMode = CustomGameMode.All;
+            Tag = CustomOptionTags.All;
+            DisableTag = [];
             IsHeader = false;
             IsHidden = false;
             IsEnabled = () => true;
@@ -151,7 +153,8 @@ namespace TownOfHost
         public OptionItem SetColor(Color value) => Do(i => i.NameColor = value);
         public OptionItem SetColorcode(string value) => Do(i => i.NameColorCode = value);
         public OptionItem SetValueFormat(OptionFormat value) => Do(i => i.ValueFormat = value);
-        public OptionItem SetGameMode(CustomGameMode value) => Do(i => i.GameMode = value);
+        public OptionItem SetTag(CustomOptionTags value) => Do(i => i.Tag = value);
+        public OptionItem SetDisableTag(CustomOptionTags[] value) => Do(i => i.DisableTag = value);
         public OptionItem SetHeader(bool value) => Do(i => i.IsHeader = value);
         public OptionItem SetCustomRole(CustomRoles role) => Do(i => i.CustomRole = role);
         public OptionItem SetHidden(bool value) => Do(i => i.IsHidden = value);
@@ -214,7 +217,8 @@ namespace TownOfHost
             return NameColorCode != "#ffffff" ? $"<{NameColorCode}>" + Translator.GetString(Name, ReplacementDictionary) + "</color>" : Utils.ColorString(NameColor, Translator.GetString(Name, ReplacementDictionary));
         }
         public virtual bool GetBool() => CurrentValue != 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent))
-                                        && (GameMode == CustomGameMode.All || GameMode == Options.CurrentGameMode);
+                    && (Tag == CustomOptionTags.All || GameModeManager.GetTags(Options.CurrentGameMode).Contains(Tag))
+                    && (GameModeManager.GetTags(Options.CurrentGameMode).Any(tag => DisableTag.Contains(tag)) is false);
         public bool InfoGetBool() => CurrentValue != 0 && (Parent == null || Parent.InfoGetBool());
         public bool CheckRoleOption(OptionItem option) => option.CustomRole is not CustomRoles.NotAssigned;
 
@@ -243,9 +247,11 @@ namespace TownOfHost
         // 旧IsHidden関数
         public virtual bool IsHiddenOn(CustomGameMode mode)
         {
-            if (IsEnabled == null) return IsHidden || (GameMode != CustomGameMode.All && GameMode != mode);
+            if (IsEnabled == null) return IsHidden || (Tag != CustomOptionTags.All && !GameModeManager.GetTags(Options.CurrentGameMode).Contains(Tag))
+            || GameModeManager.GetTags(Options.CurrentGameMode).Any(tag => DisableTag.Contains(tag));
 
-            return IsHidden || (GameMode != CustomGameMode.All && GameMode != mode) || !IsEnabled();
+            return IsHidden || (Tag != CustomOptionTags.All && !GameModeManager.GetTags(Options.CurrentGameMode).Contains(Tag))
+            || GameModeManager.GetTags(Options.CurrentGameMode).Any(tag => DisableTag.Contains(tag)) || !IsEnabled();
         }
 
         public string ApplyFormat(string value, bool coloroff = true)

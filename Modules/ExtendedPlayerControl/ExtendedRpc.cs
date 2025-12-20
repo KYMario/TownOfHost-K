@@ -278,12 +278,12 @@ namespace TownOfHost
 
             if (AmongUsClient.Instance.ClientId == clientId)
             {
-                player.StartCoroutine(player.CoSetRole(role, Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard));
+                player.StartCoroutine(player.CoSetRole(role, Main.SetRoleOverride && GameModeManager.IsStandardClass()));
                 return;
             }
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)RpcCalls.SetRole, sendoption, clientId);
             writer.Write((ushort)role);
-            writer.Write(Main.SetRoleOverride && Options.CurrentGameMode == CustomGameMode.Standard);
+            writer.Write(Main.SetRoleOverride && GameModeManager.IsStandardClass());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             if (player?.PlayerId == pc?.Character?.PlayerId)
             {

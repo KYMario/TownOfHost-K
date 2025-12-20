@@ -49,7 +49,7 @@ namespace TownOfHost
             else
             {
                 //Standardの時のみ実行
-                if (Options.CurrentGameMode == CustomGameMode.Standard)
+                if (GameModeManager.IsStandardClass())
                 {
                     var roleType = CustomRoleTypes.Impostor;
                     var farst = true;
@@ -67,7 +67,7 @@ namespace TownOfHost
                     var otherrole = Options.CustomRoleSpawnChances.Where(r => !r.Key.IsImpostor() && !r.Key.IsCrewmate() && !r.Key.IsMadmate() && !r.Key.IsNeutral()).ToArray();
                     var addoncheck = false;
                     foreach (var kvp in impostorrole.AddRangeToArray(madmaterole).AddRangeToArray(crewmaterole).AddRangeToArray(neutralrole).AddRangeToArray(otherrole))
-                        if (kvp.Value.GameMode is CustomGameMode.Standard or CustomGameMode.All && kvp.Value.GetBool()) //スタンダードか全てのゲームモードで表示する役職
+                        if (kvp.Value.Tag is CustomOptionTags.Role or CustomOptionTags.All && kvp.Value.GetBool()) //スタンダードか全てのゲームモードで表示する役職
                         {
                             var role = kvp.Key;
                             if (role.IsCombinationRole() || SlotRoleAssign.IsSeted(role)) continue;

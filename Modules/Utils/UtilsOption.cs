@@ -43,7 +43,7 @@ namespace TownOfHost
                 if (Options.SabotageActivetimerControl.GetBool()) { SendMessage(GetString("SabotageActivetimerControlInfo"), PlayerId); }
                 if (Options.RandomMapsMode.GetBool()) { SendMessage(GetString("RandomMapsModeInfo"), PlayerId); }
                 if (Options.InsiderMode.GetBool()) { SendMessage(GetString("InsiderModeInfo"), PlayerId); }
-                if (SuddenDeathMode.SuddenDeathModeActive.GetBool()) { SendMessage(GetString("SuddenDeathInfo"), PlayerId); }
+                if (Options.CurrentGameMode is CustomGameMode.SuddenDeath) { SendMessage(GetString("SuddenDeathInfo"), PlayerId); }
                 if (Options.IsStandardHAS) { SendMessage(GetString("StandardHASInfo"), PlayerId); }
                 if (Options.EnableGM.GetBool()) { SendMessage(GetRoleName(CustomRoles.GM) + GetString("GMInfoLong"), PlayerId); }
                 foreach (var role in CustomRolesHelper.AllStandardRoles)
@@ -87,15 +87,11 @@ namespace TownOfHost
                 case CustomGameMode.HideAndSeek:
                     sb.Append($"<size=30%>{GetString("HideAndSeekInfo")}</size>\n");
                     break;
-                case CustomGameMode.Standard:
-                    if (SuddenDeathMode.SuddenDeathModeActive.GetBool())
-                    {
-                        sb.Append($"<size=30%>{GetString("SuddenDeathInfo")}</size>\n");
-                    }
-                    if (Options.StandardHAS.GetBool())
-                    {
-                        sb.Append($"<size=30%>{GetString("StandardHASInfo")}</size>\n");
-                    }
+                case CustomGameMode.SuddenDeath:
+                    sb.Append($"<size=30%>{GetString("SuddenDeathInfo")}</size>\n");
+                    break;
+                case CustomGameMode.StandardHAS:
+                    sb.Append($"<size=30%>{GetString("StandardHASInfo")}</size>\n");
                     break;
             }
 
@@ -300,8 +296,8 @@ namespace TownOfHost
             sb.AppendFormat("<size={0}>", "70%");
             CustomRoles[] roles = null;
             CustomRoles[] addons = null;
-            if (Options.CurrentGameMode == CustomGameMode.Standard) roles = CustomRolesHelper.AllStandardRoles;
-            if (Options.CurrentGameMode == CustomGameMode.Standard) addons = CustomRolesHelper.AllAddOns;
+            if (GameModeManager.IsStandardClass()) roles = CustomRolesHelper.AllStandardRoles;
+            if (GameModeManager.IsStandardClass()) addons = CustomRolesHelper.AllAddOns;
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) roles = CustomRolesHelper.AllHASRoles;
             var nowcount = 3;
             if (roles != null)
