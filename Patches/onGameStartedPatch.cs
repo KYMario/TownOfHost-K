@@ -535,8 +535,12 @@ namespace TownOfHost
                     var roleOpt = Main.NormalOptions.roleOptions;
                     roleOpt.SetRoleRate(roleTypes, 0, 0);
                 }
-                if (Options.CurrentGameMode is not CustomGameMode.SuddenDeath) GameEndChecker.SetPredicateToNormal();
-                else GameEndChecker.SetPredicateToSadness();
+                switch (Options.CurrentGameMode)
+                {
+                    case CustomGameMode.SuddenDeath: GameEndChecker.SetPredicateToSadness(); break;
+                    case CustomGameMode.MurderMystery: GameEndChecker.SetPredicateToMurderMystery(); break;
+                    default: GameEndChecker.SetPredicateToNormal(); break;
+                }
             }
             GameOptionsSender.AllSenders.Clear();
             foreach (var pc in PlayerCatch.AllPlayerControls)

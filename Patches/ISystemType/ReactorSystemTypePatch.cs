@@ -32,7 +32,7 @@ public static class ReactorSystemTypeUpdateSystemPatch
         {
             return false;
         }
-        if (Modules.SuddenDeathMode.NowSuddenDeathMode) return false;
+        if (Options.CurrentGameMode is CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery) return false;
         if (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.Slacker) && data.GiveSlacker.GetBool()) return false;
 
         if (Amnesia.CheckAbility(player))
@@ -47,10 +47,10 @@ public static class ReactorSystemTypeUpdateSystemPatch
         // サボタージュ発動時
         if (__state == ReactorSystemType.StartCountdown)
         {
-            if (Modules.SuddenDeathMode.NowSuddenDeathMode)
+            switch (Options.CurrentGameMode)
             {
-                __instance.Countdown = SuddenDeathMode.SuddenDeathReactortime.GetFloat();
-                return;
+                case CustomGameMode.SuddenDeath: __instance.Countdown = SuddenDeathMode.SuddenDeathReactortime.GetFloat(); return;
+                case CustomGameMode.MurderMystery: __instance.Countdown = 60; return;
             }
             if (!Options.SabotageActivetimerControl.GetBool())
             {

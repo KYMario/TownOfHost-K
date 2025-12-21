@@ -30,7 +30,7 @@ public static class HeliSabotageSystemUpdateSystemPatch
         {
             return false;
         }
-        if (Modules.SuddenDeathMode.NowSuddenDeathMode) return false;
+        if (Options.CurrentGameMode is CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery) return false;
         if (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.Slacker) && data.GiveSlacker.GetBool()) return false;
 
         if (Roles.AddOns.Common.Amnesia.CheckAbility(player))
@@ -50,17 +50,24 @@ public static class HeliSabotageSystemPatch
 {
     public static void Prefix(HeliSabotageSystem __instance)
     {
-        if (!__instance.IsActive || (!Options.SabotageActivetimerControl.GetBool() && !SuddenDeathMode.NowSuddenDeathMode))
+        if (!__instance.IsActive || (!Options.SabotageActivetimerControl.GetBool() && !(Options.CurrentGameMode is CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery)))
             return;
         if (AirshipStatus.Instance != null)
+        {
             if (SuddenDeathMode.NowSuddenDeathMode)
             {
                 if (__instance.Countdown >= SuddenDeathMode.SuddenDeathReactortime.GetFloat())
                     __instance.Countdown = SuddenDeathMode.SuddenDeathReactortime.GetFloat();
                 return;
             }
-        if (AirshipStatus.Instance != null)
+            if (Options.CurrentGameMode is CustomGameMode.MurderMystery)
+            {
+                if (__instance.Countdown >= 60)
+                    __instance.Countdown = 60;
+                return;
+            }
             if (__instance.Countdown >= Options.AirshipReactorTimeLimit.GetFloat())
                 __instance.Countdown = Options.AirshipReactorTimeLimit.GetFloat();
+        }
     }
 }

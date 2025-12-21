@@ -383,6 +383,11 @@ namespace TownOfHost.Roles
                 var chance = role.GetChance();
                 var count = role.GetAssignCount();
                 if (chance < availableRate || count == 0) continue;
+                if (Options.CustomRoleSpawnChances.TryGetValue(role, out var option))
+                {
+                    if ((option.Tag != CustomOptionTags.All && !GameModeManager.GetTags(Options.CurrentGameMode).Contains(option.Tag))
+                    || GameModeManager.GetTags(Options.CurrentGameMode).Any(tag => option.DisableTag.Contains(tag))) continue;
+                }
                 candidateRoleList.AddRange(Enumerable.Repeat(role, count).ToList());
             }
             return candidateRoleList;

@@ -73,7 +73,7 @@ namespace TownOfHost
     {
         public static bool Prefix(ShipStatus __instance)
         {
-            if (Options.CurrentGameMode == CustomGameMode.HideAndSeek || Options.IsStandardHAS) return false;
+            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.StandardHAS or CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery) return false;
             if (Options.CurrentGameMode != CustomGameMode.Standard || SuddenDeathMode.NowSuddenDeathMode) return false;
 
             return !Options.AllowCloseDoors.GetBool();

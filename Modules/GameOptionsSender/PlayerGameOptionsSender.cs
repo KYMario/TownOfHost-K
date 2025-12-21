@@ -298,6 +298,12 @@ namespace TownOfHost.Modules
                     opt.SetInt(Int32OptionNames.EmergencyCooldown, 3600);
                     opt.SetInt(Int32OptionNames.NumEmergencyMeetings, 0);
                 }
+
+                if (CurrentGameMode is CustomGameMode.MurderMystery && MurderMystery.sabotage)
+                {
+                    opt.SetFloat(FloatOptionNames.ImpostorLightMod, role.IsImpostor() ? MurderMystery.ImpostorVision : MurderMystery.Crewvision);
+                    opt.SetFloat(FloatOptionNames.CrewLightMod, role.IsImpostor() ? MurderMystery.ImpostorVision : MurderMystery.Crewvision);
+                }
             }
             else
             {

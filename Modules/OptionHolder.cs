@@ -19,6 +19,7 @@ namespace TownOfHost
         TaskBattle, //= 0x03,
         StandardHAS,//= 0x04
         SuddenDeath,//= 0x05
+        MurderMystery,//= 0x06
         All = int.MaxValue
     }
 
@@ -29,6 +30,7 @@ namespace TownOfHost
         HideAndSeek,//かくれんぼモード
         TaskBattle,//タスクバトルMode
         SuddenDeath,//サドンデス(Sta)
+        MurderMystery,
         StandardHAS,//役職入りかくれんぼ(Sta)
         Role,//役職設定
         GameOption,//ゲーム設定
@@ -90,7 +92,7 @@ namespace TownOfHost
 
         public static readonly string[] gameModes =
         {
-            "Standard", "HideAndSeek","TaskBattle","StandardHAS","SuddenDeath",
+            "Standard", "HideAndSeek","TaskBattle","StandardHAS","SuddenDeath","MurderMystery",
         };
 
         // MapActive
@@ -657,6 +659,7 @@ namespace TownOfHost
                 .SetHeader(true)
                 .SetColorcode("#ff9966");
             SuddenDeathMode.CreateOption();
+            MurderMystery.SetUpMurderMysteryOption();
             // Impostor
             CreateRoleOption(sortedRoleInfo, CustomRoleTypes.Impostor);
 
@@ -822,7 +825,7 @@ namespace TownOfHost
             //デバイス設定
             DevicesOption = BooleanOptionItem.Create(104000, "DevicesOption", false, TabGroup.MainSettings, false)
                 .SetHeader(true)
-                .SetColorcode("#d860e0").SetTag(CustomOptionTags.Standard);
+                .SetColorcode("#d860e0").SetTag(CustomOptionTags.GameOption); ;
             DisableDevices = BooleanOptionItem.Create(104001, "DisableDevices", false, TabGroup.MainSettings, false).SetParent(DevicesOption)
                 .SetColorcode("#00ff99");
             DisableSkeldDevices = BooleanOptionItem.Create(104002, "DisableSkeldDevices", false, TabGroup.MainSettings, false).SetParent(DisableDevices)
@@ -906,7 +909,7 @@ namespace TownOfHost
             Sabotage = BooleanOptionItem.Create(108000, "Sabotage", false, TabGroup.MainSettings, false)
                 .SetHeader(true)
                 .SetColorcode("#b71e1e")
-                .SetTag(CustomOptionTags.Standard);
+                .SetTag(CustomOptionTags.Standard).SetDisableTag([CustomOptionTags.SuddenDeath, CustomOptionTags.StandardHAS, CustomOptionTags.MurderMystery]);
             // リアクターの時間制御
             SabotageActivetimerControl = BooleanOptionItem.Create(108001, "SabotageActivetimerControl", false, TabGroup.MainSettings, false).SetParent(Sabotage)
                 .SetColorcode("#f22c50");
@@ -1150,7 +1153,8 @@ namespace TownOfHost
                 .SetColorcode("#00c1ff");
             SuffixMode = StringOptionItem.Create(1_000_001, "SuffixMode", suffixModes, 0, TabGroup.MainSettings, true)
                 .SetColorcode("#00c1ff");
-            ChangeNameToRoleInfo = BooleanOptionItem.Create(1_000_004, "ChangeNameToRoleInfo", true, TabGroup.MainSettings, true);
+            ChangeNameToRoleInfo = BooleanOptionItem.Create(1_000_004, "ChangeNameToRoleInfo", true, TabGroup.MainSettings, true)
+                .SetColorcode("#00c1ff");
             RoleAssigningAlgorithm = StringOptionItem.Create(1_000_005, "RoleAssigningAlgorithm", RoleAssigningAlgorithms, 0, TabGroup.MainSettings, true)
                 .SetColorcode("#00c1ff")
                 .RegisterUpdateValueEvent(
@@ -1228,16 +1232,22 @@ namespace TownOfHost
             assignCountRule ??= new(1, 15, 1);
             var from = "<line-height=25%><size=25%>\n</size><size=60%><pos=10%></color> <b>" + fromtext + "</b></size>";
 
-            var tag = customGameMode is CustomGameMode.HideAndSeek ? CustomOptionTags.HideAndSeek : CustomOptionTags.Role;
+            var tag = CustomOptionTags.Role;
+            if (role is CustomRoles.MMArcher) customGameMode = CustomGameMode.MurderMystery;
+            switch (customGameMode)
+            {
+                case CustomGameMode.HideAndSeek: tag = CustomOptionTags.HideAndSeek; break;
+                case CustomGameMode.MurderMystery: tag = CustomOptionTags.MurderMystery; break;
+            }
             var spawnOption = IntegerOptionItem.Create(id, combination == CombinationRoles.None ? role.ToString() : combination.ToString(), new(0, 100, 10), 0, tab, false, from)
-                .SetColorcode(UtilsRoleText.GetRoleColorCode(role))
-                .SetColor(UtilsRoleText.GetRoleColor(role, true))
-                .SetCustomRole(role)
-                .SetValueFormat(OptionFormat.Percent)
-                .SetHeader(true)
-                .SetEnabled(() => role is not CustomRoles.Crewmate and not CustomRoles.Impostor)
-                .SetHidden(role == CustomRoles.NotAssigned)
-                .SetTag(tag) as IntegerOptionItem;
+                    .SetColorcode(UtilsRoleText.GetRoleColorCode(role))
+                    .SetColor(UtilsRoleText.GetRoleColor(role, true))
+                    .SetCustomRole(role)
+                    .SetValueFormat(OptionFormat.Percent)
+                    .SetHeader(true)
+                    .SetEnabled(() => role is not CustomRoles.Crewmate and not CustomRoles.Impostor)
+                    .SetHidden(role == CustomRoles.NotAssigned)
+                    .SetTag(tag) as IntegerOptionItem;
             var hidevalue = role.IsCombinationRole() || role.IsLovers() || (assignCountRule.MaxValue == assignCountRule.MinValue);
 
             if (role is CustomRoles.Crewmate or CustomRoles.Impostor) return spawnOption;

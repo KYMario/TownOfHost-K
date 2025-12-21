@@ -28,6 +28,14 @@ namespace TownOfHost
                 ret &= TaskBattle.TaskBattleCompleteTask(pc, taskState);
                 return ret;
             }
+            if (Options.CurrentGameMode == CustomGameMode.MurderMystery)
+            {
+                ret &= true;
+                MurderMystery.OnCompleteTask(pc);
+                UtilsNotifyRoles.NotifyRoles();
+                UtilsGameLog.AddGameLog("Task", string.Format(Translator.GetString("Taskfin"), UtilsName.GetPlayerColor(pc, true)));
+                return ret;
+            }
 
             if (roleClass != null)
             {

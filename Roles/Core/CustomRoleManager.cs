@@ -328,6 +328,7 @@ public static class CustomRoleManager
         PlayerCatch.CountAlivePlayers(true);
 
         Utils.TargetDies(info);
+        MurderMystery.CheckDeath(attemptTarget);
 
         UtilsOption.SyncAllSettings();
         UtilsNotifyRoles.NotifyRoles();
@@ -911,6 +912,7 @@ public enum CustomRoles
     //HideAndSeek
     HASFox,
     HASTroll,
+    MMArcher,
     //GM
     GM,
     //Combination

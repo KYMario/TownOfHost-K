@@ -35,7 +35,8 @@ namespace TownOfHost
     {
         public static void Postfix(EmergencyMinigame __instance)
         {
-            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.TaskBattle || SuddenDeathMode.NowSuddenDeathMode)
+            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.TaskBattle
+            or CustomGameMode.StandardHAS or CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery)
                 __instance.Close();
         }
     }

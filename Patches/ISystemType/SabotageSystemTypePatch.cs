@@ -24,7 +24,7 @@ public static class SabotageSystemTypeUpdateSystemPatch
         //HASモードではサボタージュ不可
         if (Options.CurrentGameMode == CustomGameMode.HideAndSeek || Options.IsStandardHAS) return false;
 
-        if (SuddenDeathMode.NowSuddenDeathMode) return false;
+        if (Options.CurrentGameMode is CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery) return false;
         if (GameStates.CalledMeeting && amount.HasBit(SwitchSystem.DamageSystem)) return false;
 
         if (!CustomRoleManager.OnSabotage(player, nextSabotage))

@@ -196,6 +196,7 @@ namespace TownOfHost
                         if (SuddenDeathMode.SuddenDeathTimeLimit.GetFloat() > 0) SuddenDeathMode.SuddenDeathReactor();
                         if (SuddenDeathMode.SuddenPlayerArrow.GetBool()) SuddenDeathMode.ItijohoSend();
                     }
+                    MurderMystery.OnFixedUpdate();
                 }
 
                 {

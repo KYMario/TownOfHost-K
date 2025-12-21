@@ -180,7 +180,7 @@ namespace TownOfHost
         }
         public static void AllPlayerKillFlash()
         {
-            if (SuddenDeathMode.NowSuddenDeathMode) return;
+            if (SuddenDeathMode.NowSuddenDeathMode || Options.CurrentGameMode is CustomGameMode.MurderMystery) return;
 
             if (IsActive(SystemTypes.Reactor) || IsActive(SystemTypes.HeliSabotage))
             {
@@ -462,7 +462,17 @@ namespace TownOfHost
 
             if (GameStates.IsLobby && !Iscountdown && (force || (pc.name != "Player(Clone)" && pc.PlayerId != PlayerControl.LocalPlayer.PlayerId && !pc.IsModClient())))
             {
-                n = "<line-height=-100%>\n<b></line-height>" + name + $"\n<line-height=-200%>\n<size=60%><line-height=0%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}</size><line-height=100%>\n<size=0> ";
+                var sb = new StringBuilder();
+
+                switch (Options.CurrentGameMode)
+                {
+                    case CustomGameMode.StandardHAS: sb.Append($"\r\n").Append(ColorString(Color.yellow, GetString("StandardHAS"))); break;
+                    case CustomGameMode.HideAndSeek: sb.Append($"\r\n").Append(ColorString(Color.red, GetString("HideAndSeek"))); break;
+                    case CustomGameMode.TaskBattle: sb.Append($"\r\n").Append(ColorString(Color.cyan, GetString("TaskBattle"))); break;
+                    case CustomGameMode.SuddenDeath: sb.Append("\r\n").Append(ColorString(GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode"))); break;
+                    case CustomGameMode.MurderMystery: sb.Append("\r\n").Append($"<#1a389c>{GetString("MurderMystery")}"); break;
+                }
+                n = "<line-height=-100%>\n<b></line-height>" + name + $"\n<line-height=-{(sb.Length is 0 ? "200" : "300")}%>\n<size=60%><line-height=0%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}<line-height=100%>{sb.ToString()}</size>\n<size=0> ";
                 if (force)
                     PlayerCatch.AllPlayerControls.DoIf(x => x.name != "Player(Clone)" && x.PlayerId != PlayerControl.LocalPlayer.PlayerId && !x.IsModClient(), x => PlayerControl.LocalPlayer.RpcSetNamePrivate(n, true, x, true));
                 else if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)

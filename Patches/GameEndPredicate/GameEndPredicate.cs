@@ -101,7 +101,7 @@ public abstract class GameEndPredicate
             (critical = sys.TryCast<ICriticalSabotage>()) != null && // キャスト可能確認
             critical.Countdown < 0f) // タイムアップ確認
         {
-            if (SuddenDeathMode.NowSuddenDeathMode)
+            if (Options.CurrentGameMode is CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery)
             {
                 PlayerCatch.AllAlivePlayerControls.Do(p => p.RpcMurderPlayerV2(p));
                 CustomWinnerHolder.ResetAndSetWinner(CustomWinner.None);

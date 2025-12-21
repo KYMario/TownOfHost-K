@@ -314,7 +314,7 @@ namespace TownOfHost
         public static void SetPredicateToNormal() => predicate = new NormalGameEndPredicate();
         public static void SetPredicateToHideAndSeek() => predicate = new HideAndSeekGameEndPredicate();
         public static void SetPredicateToTaskBattle() => predicate = new TaskBattle.TaskBattleGameEndPredicate();
-
+        public static void SetPredicateToMurderMystery() => predicate = new MurderMystery.MurderMysteryGameEndPredicate();
         public static void SetPredicateToSadness() => predicate = new SadnessGameEndPredicate();
     }
 }

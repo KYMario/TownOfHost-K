@@ -186,6 +186,7 @@ namespace TownOfHost
                 GameData.Instance.RecomputeTaskCounts();
                 TaskState.InitialTotalTasks = GameData.Instance.TotalTasks;
             }
+            MurderMystery.CheckArcher();
         }
     }
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]

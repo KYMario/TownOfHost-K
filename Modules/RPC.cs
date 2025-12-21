@@ -545,7 +545,8 @@ namespace TownOfHost
         {
             SyncDeviceTimer,
             SyncRoomTimer,
-            SyncSkinShuffle
+            SyncSkinShuffle,
+            SyncMuderMystery
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -571,6 +572,10 @@ namespace TownOfHost
                         Main.AllPlayerNames[targetId] = reader.ReadString(); //data.PlayerNameから取得しようとしたら名前がシステムメセになったのでどうしようか悩む
                         Main.PlayerColors[targetId] = Palette.PlayerColors[data.DefaultOutfit.ColorId];
                     }
+                    break;
+                case ModSystem.SyncMuderMystery:
+                    var readdata = reader.ReadInt32();
+                    MurderMystery.DeadArcherCount = readdata is -5 ? null : readdata;
                     break;
             }
         }

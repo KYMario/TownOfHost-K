@@ -61,10 +61,15 @@ namespace TownOfHost
                     if (!GameStates.IsFreePlay)
                     {
                         if ((Options.NoGameEnd.OptionMeGetBool() && GameStates.IsLobby) || (Main.DontGameSet && !GameStates.IsLobby)) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("NoGameEnd")));
-                        if (Options.IsStandardHAS) sb.Append($"\r\n").Append(Utils.ColorString(Color.yellow, GetString("StandardHAS")));
-                        if (Options.CurrentGameMode == CustomGameMode.HideAndSeek) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("HideAndSeek")));
-                        if (Options.CurrentGameMode == CustomGameMode.TaskBattle) sb.Append($"\r\n").Append(Utils.ColorString(Color.cyan, GetString("TaskBattle")));
-                        if (Options.CurrentGameMode == CustomGameMode.SuddenDeath) sb.Append("\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode")));
+
+                        switch (Options.CurrentGameMode)
+                        {
+                            case CustomGameMode.StandardHAS: sb.Append($"\r\n").Append(Utils.ColorString(Color.yellow, GetString("StandardHAS"))); break;
+                            case CustomGameMode.HideAndSeek: sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("HideAndSeek"))); break;
+                            case CustomGameMode.TaskBattle: sb.Append($"\r\n").Append(Utils.ColorString(Color.cyan, GetString("TaskBattle"))); break;
+                            case CustomGameMode.SuddenDeath: sb.Append("\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode"))); break;
+                            case CustomGameMode.MurderMystery: sb.Append("\r\n").Append($"<#1a389c>{GetString("MurderMystery")}"); break;
+                        }
                         if (Options.EnableGM.OptionMeGetBool()) sb.Append($"\r\n").Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.GM), GetString("GM")));
                         if (!GameStates.IsModHost) sb.Append($"\r\n").Append(Utils.ColorString(Color.red, GetString("Warning.NoModHost")));
                         if (DebugModeManager.IsDebugMode)

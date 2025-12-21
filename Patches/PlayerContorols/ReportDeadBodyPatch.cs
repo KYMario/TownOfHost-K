@@ -41,14 +41,15 @@ namespace TownOfHost
                 return false;
             }
 
+            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.TaskBattle or CustomGameMode.MurderMystery || Options.IsStandardHAS)
+            {
+                GameStates.CalledMeeting = false;
+                MurderMystery.OnReportDeadBody(__instance, target);
+                return false;
+            }
             GameStates.CalledMeeting = true;
             if (Options.IsStandardHAS && target != null && __instance == target.Object) return true; //[StandardHAS] ボタンでなく、通報者と死体が同じなら許可
 
-            if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.TaskBattle || Options.IsStandardHAS)
-            {
-                GameStates.CalledMeeting = false;
-                return false;
-            }
 
             if (!CanReport[__instance.PlayerId])
             {

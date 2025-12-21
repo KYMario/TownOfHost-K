@@ -274,7 +274,7 @@ namespace TownOfHost
         }
         public static bool CanUseSabotageButton(this PlayerControl pc)
         {
-            if (SuddenDeathMode.NowSuddenDeathMode) return false;
+            if (Options.CurrentGameMode is CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery) return false;
             if (pc.GetPlayerState() is null) return false;
             if (pc.Is(CustomRoles.DemonicSupporter)) return true;
             if (pc.Is(CustomRoles.Amnesia) && !pc.Is(CustomRoleTypes.Impostor)) return false;

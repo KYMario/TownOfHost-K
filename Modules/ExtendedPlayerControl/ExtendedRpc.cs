@@ -117,7 +117,7 @@ namespace TownOfHost
                 //会議中なら処理しない
                 if (GameStates.CalledMeeting) return;
 
-                if (roleInfo?.IsDesyncImpostor ?? false || SuddenDeathMode.NowSuddenDeathMode)
+                if (roleInfo?.IsDesyncImpostor ?? false || Options.CurrentGameMode is CustomGameMode.StandardHAS or CustomGameMode.SuddenDeath or CustomGameMode.MurderMystery)
                 {
                     var subSenders = new List<CustomRpcSender>();
                     var sender = CustomRpcSender.Create("SetCustomRole", SendOption.Reliable);
