@@ -549,7 +549,7 @@ public abstract class RoleBase : IDisposable
     //一々Translator参照戦でいいから多分楽 
     public static string GetString(StringNames stringName)
             => DestroyableSingleton<TranslationController>.Instance.GetString(stringName, new Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppReferenceArray<Il2CppSystem.Object>(0));
-    public static string GetString(string str, Dictionary<string, string> replacementDic = null) => Translator.GetString(str);
+    public static string GetString(string str, Dictionary<string, string> replacementDic = null) => Translator.GetString(str, replacementDic);
     protected enum GeneralOption
     {
         Cooldown,
