@@ -330,6 +330,7 @@ public static class CustomRoleManager
         Utils.TargetDies(info);
         MurderMystery.CheckDeath(attemptTarget);
 
+        appearanceKiller.ResetKillCooldown();
         UtilsOption.SyncAllSettings();
         UtilsNotifyRoles.NotifyRoles();
         //サブロールは表示めんどいしながいから省略★

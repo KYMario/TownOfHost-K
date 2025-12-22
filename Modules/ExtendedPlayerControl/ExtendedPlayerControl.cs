@@ -325,6 +325,15 @@ namespace TownOfHost
         }
         public static void ResetKillCooldown(this PlayerControl player)
         {
+            if (SuddenDeathMode.NowSuddenDeathMode)
+            {
+                var killcool = SuddenDeathMode.SuddenKillcooltime.GetFloat();
+                if (player.GetPlayerState().Killcount <= 0 && 0 < killcool)
+                {
+                    Main.AllPlayerKillCooldown[player.PlayerId] = killcool;
+                    return;
+                }
+            }
             if (!Main.AllPlayerKillCooldown.ContainsKey(player.PlayerId)) Main.AllPlayerKillCooldown.Add(player.PlayerId, Options.DefaultKillCooldown);
             Main.AllPlayerKillCooldown[player.PlayerId] = (player.GetRoleClass() as IKiller)?.CalculateKillCooldown() ?? Options.DefaultKillCooldown; //キルクールをデフォルトキルクールに変更
             if (player.Is(CustomRoles.Serial))
