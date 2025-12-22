@@ -592,7 +592,6 @@ namespace TownOfHost.Modules
                 }
             }
         }
-        public static OptionItem SuddenDeathModeActive;
         public static OptionItem SuddenSharingRoles;
         public static OptionItem SuddenCantSeeOtherName;
         //時間制限
@@ -623,18 +622,20 @@ namespace TownOfHost.Modules
         public static OptionItem SuddenPurpleTeamRole;
         public static void CreateOption()
         {
-            SuddenSharingRoles = BooleanOptionItem.Create(101001, "SuddenSharingRoles", false, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive).SetTag(CustomOptionTags.SuddenDeath);
-            SuddenCantSeeOtherName = BooleanOptionItem.Create(101012, "SuddenCannotSeeName", false, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive).SetTag(CustomOptionTags.SuddenDeath);
-            SuddenRemainingPlayerCount = BooleanOptionItem.Create(101013, "SuddenRemainingPlayerCount", true, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive);
-            SuddenCanSeeKillflash = BooleanOptionItem.Create(101014, "SuddenCanSeeKillflash", true, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive);
-            SuddenKillcooltime = FloatOptionItem.Create(101015, "SuddenKillcooltime", RoleBase.OptionBaseCoolTime, 15f, TabGroup.MainSettings, false).SetZeroNotation(OptionZeroNotation.Off).SetParent(SuddenDeathModeActive).SetValueFormat(OptionFormat.Seconds);
-            SuddenfinishTaskWin = BooleanOptionItem.Create(101016, "SuddenfinishTaskWin", true, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive);
-            SuddenDeathTimeLimit = FloatOptionItem.Create(101017, "SuddenDeathTimeLimit", new(0, 300, 1f), 120f, TabGroup.MainSettings, false).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(SuddenDeathModeActive).SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.SuddenDeath);
-            SuddenDeathReactortime = FloatOptionItem.Create(101018, "SuddenDeathReactortime", new(1, 300, 1f), 15f, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive).SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.SuddenDeath);
-            SuddenPlayerArrow = BooleanOptionItem.Create(101019, "SuddenPlayerArrow", true, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive).SetTag(CustomOptionTags.SuddenDeath);
+            var color = UtilsRoleText.GetRoleColor(CustomRoles.Comebacker);
+            ObjectOptionitem.Create(1_000_114, "OtherOption", true, null, TabGroup.MainSettings).SetOptionName(() => "Sudden Death").SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
+            SuddenSharingRoles = BooleanOptionItem.Create(101001, "SuddenSharingRoles", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.SuddenDeath).SetHeader(true).SetColor(color);
+            SuddenCantSeeOtherName = BooleanOptionItem.Create(101012, "SuddenCannotSeeName", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.SuddenDeath).SetColor(color);
+            SuddenRemainingPlayerCount = BooleanOptionItem.Create(101013, "SuddenRemainingPlayerCount", true, TabGroup.MainSettings, false).SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
+            SuddenCanSeeKillflash = BooleanOptionItem.Create(101014, "SuddenCanSeeKillflash", true, TabGroup.MainSettings, false).SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
+            SuddenKillcooltime = FloatOptionItem.Create(101015, "SuddenKillcooltime", RoleBase.OptionBaseCoolTime, 15f, TabGroup.MainSettings, false).SetZeroNotation(OptionZeroNotation.Off).SetValueFormat(OptionFormat.Seconds).SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
+            SuddenfinishTaskWin = BooleanOptionItem.Create(101016, "SuddenfinishTaskWin", true, TabGroup.MainSettings, false).SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
+            SuddenDeathTimeLimit = FloatOptionItem.Create(101017, "SuddenDeathTimeLimit", new(0, 300, 1f), 120f, TabGroup.MainSettings, false).SetZeroNotation(OptionZeroNotation.Infinity).SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.SuddenDeath).SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
+            SuddenDeathReactortime = FloatOptionItem.Create(101018, "SuddenDeathReactortime", new(1, 300, 1f), 15f, TabGroup.MainSettings, false).SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.SuddenDeath).SetColor(color);
+            SuddenPlayerArrow = BooleanOptionItem.Create(101019, "SuddenPlayerArrow", true, TabGroup.MainSettings, false).SetTag(CustomOptionTags.SuddenDeath).SetColor(color);
             SuddenArrowSendTime = FloatOptionItem.Create(101020, "SuddenArrowSendTime", new(0, 300, 0.5f), 90f, TabGroup.MainSettings, false).SetParent(SuddenPlayerArrow).SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.SuddenDeath);
             SuddenArrowSenddis = FloatOptionItem.Create(101021, "SuddenArrowSenddis", new(0, 180, 0.5f), 5f, TabGroup.MainSettings, false).SetParent(SuddenPlayerArrow).SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.SuddenDeath);
-            SuddenTeam = BooleanOptionItem.Create(101022, "SuddenTeam", false, TabGroup.MainSettings, false).SetParent(SuddenDeathModeActive);
+            SuddenTeam = BooleanOptionItem.Create(101022, "SuddenTeam", false, TabGroup.MainSettings, false).SetColor(color).SetTag(CustomOptionTags.SuddenDeath);
             SuddenAddTeamYellow = BooleanOptionItem.Create(101023, "SuddenTeamYellow", true, TabGroup.MainSettings, false).SetParent(SuddenTeam).SetColor(ModColors.Yellow);
             SuddenAddTeamGreen = BooleanOptionItem.Create(101024, "SuddenTeamGreen", true, TabGroup.MainSettings, false).SetParent(SuddenTeam).SetColor(ModColors.Green);
             SuddenAddTeamPurple = BooleanOptionItem.Create(101025, "SuddenTeamPurple", true, TabGroup.MainSettings, false).SetParent(SuddenTeam).SetColor(ModColors.Purple);

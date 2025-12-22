@@ -2,6 +2,7 @@ using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.AddOns.Crewmate;
 using TownOfHost.Roles.AddOns.Impostor;
 using TownOfHost.Roles.AddOns.Neutral;
+using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Ghost;
 
 namespace TownOfHost;
@@ -68,9 +69,10 @@ class GhostRoleCore
         Workhorse.SetupCustomOption();
 
         Stack.SetupCustomOption();
+        ObjectOptionitem.Create(1_000_116, "Buff-Addon", true, null, TabGroup.Addons)
+            .SetOptionName(() => "Buff Add-on").SetColor(UtilsRoleText.GetRoleColor(CustomRoles.Moon)).SetTag(CustomOptionTags.Role);
         //バフ(ゲッサー→特定陣営→会議効果→タスクターン)
         Guesser.SetupCustomOption();
-        OneWolf.SetupCustomOption();
         Serial.SetupCustomOption();
         MagicHand.SetupCustomOption();
         Connecting.SetupCustomOption();
@@ -88,8 +90,11 @@ class GhostRoleCore
         Lighting.SetupCustomOption();
         Moon.SetupCustomOption();
         //デバフ達
+        ObjectOptionitem.Create(1_000_117, "Debuff-Addon", true, null, TabGroup.Addons)
+            .SetOptionName(() => "Debuff Add-on").SetColor(UtilsRoleText.GetRoleColor(CustomRoles.SlowStarter)).SetTag(CustomOptionTags.Role);
         Amnesia.SetupCustomOption();
         News.SetupCustomOption();
+        OneWolf.SetupCustomOption();
         SlowStarter.SetupCustomOption();
         Notvoter.SetupCustomOption();
         Elector.SetupCustomOption();
@@ -100,11 +105,17 @@ class GhostRoleCore
         Clumsy.SetupCustomOption();
         Slacker.SetupCustomOption();
         //ゆーれーやくしょく
+        ObjectOptionitem.Create(1_000_118, "Madmate", true, null, TabGroup.GhostRoles)
+            .SetOptionName(() => "Mad Ghost").SetColor(ModColors.MadMateOrenge).SetTag(CustomOptionTags.Role);
         DemonicTracker.SetupCustomOption();
         DemonicCrusher.SetupCustomOption();
         DemonicVenter.SetupCustomOption();
         DemonicSupporter.SetupCustomOption();
+        ObjectOptionitem.Create(1_000_119, "Madmate", true, null, TabGroup.GhostRoles)
+            .SetOptionName(() => "Neutral Ghost").SetColor(ModColors.NeutralGray).SetTag(CustomOptionTags.Role);
         AsistingAngel.SetupCustomOption();
+        ObjectOptionitem.Create(1_000_120, "Madmate", true, null, TabGroup.GhostRoles)
+            .SetOptionName(() => "Crew Ghost").SetColor(ModColors.CrewMateBlue).SetTag(CustomOptionTags.Role);
         Ghostbuttoner.SetupCustomOption();
         GhostNoiseSender.SetupCustomOption();
         GhostReseter.SetupCustomOption();

@@ -91,9 +91,9 @@ namespace TownOfHost
         public static CustomRoles NowRoleTab;
         public static CustomRoles Nowinfo;
         public static Dictionary<TabGroup, GameOptionsMenu> list = new();
-        public static Dictionary<TabGroup, Il2CppSystem.Collections.Generic.List<OptionBehaviour>> scOptions = new();
+        public static Dictionary<TabGroup, Il2CppSystem.Collections.Generic.List<MonoBehaviour>> scOptions = new();
         public static Dictionary<CustomRoles, GameOptionsMenu> crlist = new();
-        public static Dictionary<CustomRoles, Il2CppSystem.Collections.Generic.List<OptionBehaviour>> crOptions = new();
+        public static Dictionary<CustomRoles, Il2CppSystem.Collections.Generic.List<MonoBehaviour>> crOptions = new();
         public static List<OptionItem> roleopts = new();
         public static Dictionary<CustomRoles, PassiveButton> rolebutton = new();
         public static Dictionary<CustomRoles, PassiveButton> roleInfobutton = new();
@@ -298,7 +298,12 @@ namespace TownOfHost
                 {
                     var tab = (TabGroup)i;
                     var tabs = list[tab];
-                    tabs.Children = scOptions[tab];
+                    Il2CppSystem.Collections.Generic.List<OptionBehaviour> options = new();
+                    foreach (var option in scOptions[tab])
+                    {
+                        if (option is OptionBehaviour behaviour) options.Add(behaviour);
+                    }
+                    tabs.Children = options;
                     tabs.gameObject.SetActive(false);
                     tabs.enabled = true;
                     menus.Add(tab, tabs.gameObject);
@@ -317,7 +322,13 @@ namespace TownOfHost
                 foreach (var role in EnumHelper.GetAllValues<CustomRoles>())
                 {
                     var tabs = crlist[role];
-                    tabs.Children = crOptions[role];
+                    Il2CppSystem.Collections.Generic.List<OptionBehaviour> options = new();
+                    foreach (var option in crOptions[role])
+                    {
+                        if (option is OptionBehaviour behaviour) options.Add(behaviour);
+                    }
+                    tabs.Children = options;
+                    tabs.Children = options;
                     tabs.gameObject.SetActive(false);
                     tabs.enabled = true;
                     crmenus.Add(role, tabs.gameObject);
@@ -571,6 +582,32 @@ namespace TownOfHost
                 if (option.OptionBehaviour == null)
                 {
                     var parentrole = option.ParentRole;
+                    //タブの場合
+                    if ((option as ObjectOptionitem)?.IsHedderObject is true)
+                    {
+                        var optionsMenu = parentrole is not CustomRoles.NotAssigned && option.CustomRole is CustomRoles.NotAssigned ?
+                        crlist[parentrole] : list[option.Tab];
+                        var defotabtitle = ModSettingsTab.transform.FindChild("Scroller/SliderInner/ChancesTab");
+                        var tabtitle = Object.Instantiate(defotabtitle, optionsMenu.transform);
+                        var chm = tabtitle.transform.FindChild("CategoryHeaderMasked").GetComponent<CategoryHeaderMasked>();
+                        CategoryHeaderEditRole[] tabsubtitle = chm.transform.parent.GetComponentsInChildren<CategoryHeaderEditRole>();
+                        chm.Title.DestroyTranslator();
+                        chm.Title.text = $"<b>{option.GetName(false)}</b>";
+                        option.OptionBehaviour = chm;
+                        tabtitle.name = option.Name;
+                        tabtitle.transform.localPosition = new Vector3(-0.7789f, -0.15f, -10);
+
+                        if (parentrole is not CustomRoles.NotAssigned && option.CustomRole is CustomRoles.NotAssigned)
+                        {
+                            crOptions[parentrole].Add(chm);
+                            roleopts.Add(option);
+                        }
+                        else
+                        {
+                            scOptions[option.Tab].Add(chm);
+                        }
+                        continue;
+                    }
                     //役職設定の場合
                     if (parentrole is not CustomRoles.NotAssigned && option.CustomRole is CustomRoles.NotAssigned)
                     {
@@ -621,6 +658,17 @@ namespace TownOfHost
                                     ShowFilter.CreateFilterOptionMenu(tabtransfrom, assignoptionitem.RoleValues[AssignOptionItem.Getpresetid()], notAssign, (imp, mad, crew, neu, addon));
                                     return;
                                 }
+                            }));
+                        }
+                        if ((option as ObjectOptionitem)?.ClickAction is not null)
+                        {
+                            stringOption.ValueText.transform.localPosition =
+                            stringOption.transform.FindChild("ValueBox").transform.localPosition =
+                            stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
+                            stringOption.MinusBtn.OnClick = new();
+                            stringOption.MinusBtn.OnClick.AddListener((Action)(() =>
+                            {
+                                (option as ObjectOptionitem)?.ClickAction?.Invoke();
                             }));
                         }
                         if (option.Tooltip is not "")//一旦こういう実装にしているが、？マークをどこかに設置してでもいいかも?
@@ -847,6 +895,17 @@ namespace TownOfHost
                                     Showoptionbutton.gameObject.transform.SetLocalZ(-50);
                                 }
                             }
+                        }
+                        if ((option as ObjectOptionitem)?.ClickAction is not null)
+                        {
+                            stringOption.ValueText.transform.localPosition =
+                            stringOption.transform.FindChild("ValueBox").transform.localPosition =
+                            stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
+                            stringOption.MinusBtn.OnClick = new();
+                            stringOption.MinusBtn.OnClick.AddListener((Action)(() =>
+                            {
+                                (option as ObjectOptionitem)?.ClickAction?.Invoke();
+                            }));
                         }
                         if (option.Tooltip is not "")
                         {

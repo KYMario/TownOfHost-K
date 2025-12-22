@@ -169,7 +169,7 @@ class TaskBattle
         }
     }
 
-    public static OptionItem TaskBattleSet;
+    //public static OptionItem TaskBattleSet;
     public static OptionItem TaskBattleCanVent;
     public static OptionItem TaskBattleVentCooldown;
     public static OptionItem TaskBattelCanSeeOtherPlayer;
@@ -189,40 +189,31 @@ class TaskBattle
     public static OptionItem MaxAddCount;
     public static void SetupOptionItem()
     {
-        TaskBattleSet = BooleanOptionItem.Create(200317, "TaskBattleSet", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.TaskBattle)
-            .SetHeader(true)
-            .SetColorcode("#87cffa");
-        TaskBattleCanVent = BooleanOptionItem.Create(200307, "TaskBattleCanVent", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
-            .SetTag(CustomOptionTags.TaskBattle);
+        ObjectOptionitem.Create(1_000_122, "TaskBattle", true, null, TabGroup.MainSettings).SetOptionName(() => "Task Battle").SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
+        //TaskBattleSet = BooleanOptionItem.Create(200317, "TaskBattleSet", false, TabGroup.MainSettings, false)
+        TaskBattleCanVent = BooleanOptionItem.Create(200307, "TaskBattleCanVent", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle).SetHeader(true);
         TaskBattleVentCooldown = FloatOptionItem.Create(200308, "TaskBattleVentCooldown", new(0f, 99f, 1f), 5f, TabGroup.MainSettings, false).SetParent(TaskBattleCanVent)
-            .SetValueFormat(OptionFormat.Seconds)
-            .SetTag(CustomOptionTags.TaskBattle);
-        TaskBattelShowAllTask = BooleanOptionItem.Create(200309, "TaskBattelShowAllTask", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.TaskBattle).SetParent(TaskBattleSet);
-        TaskBattelCanSeeOtherPlayer = BooleanOptionItem.Create(200311, "TaskBattelCanSeeOtherPlayer", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.TaskBattle).SetParent(TaskBattleSet);
-        TaskBattleShowFastestPlayer = BooleanOptionItem.Create(200312, "TaskBattleShowFastestPlayer", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.TaskBattle).SetParent(TaskBattleSet);
-        TaskBattleTeamMode = BooleanOptionItem.Create(200313, "TaskBattleTeamMode", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
-            .SetTag(CustomOptionTags.TaskBattle);
-        TaskBattleTeamCount = IntegerOptionItem.Create(200314, "TaskBattleTeamCount", new(1, 15, 1), 2, TabGroup.MainSettings, false).SetParent(TaskBattleTeamMode)
-            .SetTag(CustomOptionTags.TaskBattle);
-        TaskBattleTeamWinType = BooleanOptionItem.Create(200315, "TaskBattleTeamGameTaskComp", false, TabGroup.MainSettings, false).SetParent(TaskBattleTeamMode)
-            .SetTag(CustomOptionTags.TaskBattle);
-        TaskBattleTeamWinTaskc = IntegerOptionItem.Create(200316, "TaskBattleTeamWinTaskc", new(1, 999, 1), 20, TabGroup.MainSettings, false).SetParent(TaskBattleTeamWinType)
-            .SetTag(CustomOptionTags.TaskBattle);
-        TaskSoroeru = BooleanOptionItem.Create(200318, "TaskSoroeru", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
-            .SetTag(CustomOptionTags.TaskBattle);
-        AllMapMode = BooleanOptionItem.Create(200324, "AllMapMode", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
-        .SetColor(Palette.ImpostorRed).SetEnabled(() => GameStates.IsLocalGame).SetTag(CustomOptionTags.TaskBattle);
+            .SetValueFormat(OptionFormat.Seconds);
+        TaskBattelShowAllTask = BooleanOptionItem.Create(200309, "TaskBattelShowAllTask", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
+        TaskBattelCanSeeOtherPlayer = BooleanOptionItem.Create(200311, "TaskBattelCanSeeOtherPlayer", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
+        TaskBattleShowFastestPlayer = BooleanOptionItem.Create(200312, "TaskBattleShowFastestPlayer", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
+        TaskBattleTeamMode = BooleanOptionItem.Create(200313, "TaskBattleTeamMode", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
+        TaskBattleTeamCount = IntegerOptionItem.Create(200314, "TaskBattleTeamCount", new(1, 15, 1), 2, TabGroup.MainSettings, false).SetParent(TaskBattleTeamMode);
+        TaskBattleTeamWinType = BooleanOptionItem.Create(200315, "TaskBattleTeamGameTaskComp", false, TabGroup.MainSettings, false).SetParent(TaskBattleTeamMode);
+        TaskBattleTeamWinTaskc = IntegerOptionItem.Create(200316, "TaskBattleTeamWinTaskc", new(1, 999, 1), 20, TabGroup.MainSettings, false).SetParent(TaskBattleTeamWinType);
+        TaskSoroeru = BooleanOptionItem.Create(200318, "TaskSoroeru", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
+        AllMapMode = BooleanOptionItem.Create(200324, "AllMapMode", false, TabGroup.MainSettings, false).SetTag(CustomOptionTags.TaskBattle)
+        .SetColor(Palette.ImpostorRed).SetEnabled(() => GameStates.IsLocalGame);
 
-        TaskAddMode = BooleanOptionItem.Create(200319, "TaskAddMode", false, TabGroup.MainSettings, false).SetParent(TaskBattleSet)
-            .SetTag(CustomOptionTags.TaskBattle);
+        TaskAddMode = BooleanOptionItem.Create(200319, "TaskAddMode", false, TabGroup.MainSettings, false).SetColorcode("#87cffa").SetTag(CustomOptionTags.TaskBattle);
         NumCommonTasks = IntegerOptionItem.Create(200320, "WorkhorseNumCommonTasks", new(0, 99, 1), 1, TabGroup.MainSettings, false).SetParent(TaskAddMode)
-            .SetTag(CustomOptionTags.TaskBattle).SetValueFormat(OptionFormat.Pieces);
+            .SetValueFormat(OptionFormat.Pieces);
         NumLongTasks = IntegerOptionItem.Create(200321, "WorkhorseNumLongTasks", new(0, 99, 1), 1, TabGroup.MainSettings, false).SetParent(TaskAddMode)
-            .SetTag(CustomOptionTags.TaskBattle).SetValueFormat(OptionFormat.Pieces);
+            .SetValueFormat(OptionFormat.Pieces);
         NumShortTasks = IntegerOptionItem.Create(200322, "WorkhorseNumShortTasks", new(0, 99, 1), 1, TabGroup.MainSettings, false).SetParent(TaskAddMode)
-            .SetTag(CustomOptionTags.TaskBattle).SetValueFormat(OptionFormat.Pieces);
+            .SetValueFormat(OptionFormat.Pieces);
         MaxAddCount = IntegerOptionItem.Create(200323, "MaxAddCount", new(1, 99, 1), 1, TabGroup.MainSettings, false)
-            .SetTag(CustomOptionTags.TaskBattle).SetParent(TaskAddMode);
+            .SetParent(TaskAddMode);
     }
     public static void ResetAndSetTeam()
     {

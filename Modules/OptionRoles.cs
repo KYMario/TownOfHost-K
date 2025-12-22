@@ -127,7 +127,8 @@ namespace TownOfHost
             {
                 OptionWin = IntegerOptionItem.Create(IdStart, "SoloWinOption", new(0, 50, 1), defo, tab, false)
                 .SetEnabled(show)
-                .SetColor(UtilsRoleText.GetRoleColor(role));
+                .SetColor(UtilsRoleText.GetRoleColor(role))
+                .SetTag(CustomOptionTags.Standard);
             }
             else
             {

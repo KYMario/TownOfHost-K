@@ -133,37 +133,16 @@ namespace TownOfHost
 
                     var enabled = true;
                     var parent = option.Parent;
-                    var opt = option.OptionBehaviour.LabelBackground;
+                    var opt = (option.OptionBehaviour as OptionBehaviour)?.LabelBackground ?? null;
                     var isroleoption = option.CustomRole is not CustomRoles.NotAssigned;
                     /*if (isroleoption && rolebutton.TryGetValue(option.CustomRole, out var button))
                     {
                         button.gameObject.SetActive(false);
                     }*/
-                    if (roleInfobutton.TryGetValue(option.CustomRole, out var infobutton))
-                    {
-                        if (!infobutton.isActiveAndEnabled)
-                        {
-                            infobutton.gameObject.SetActive(true);
-                        }
-                    }
-                    enabled = AmongUsClient.Instance.AmHost && !option.IsHiddenOn(Options.CurrentGameMode);
+
                     Color color = new Color32(200, 200, 200, 255);
                     Vector2 size = new(5.0f, 0.68f);
-
-                    if (option.Tab is TabGroup.MainSettings or TabGroup.Combinations && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
-                    {
-                        color = option.NameColor == Color.white ? StringHelper.CodeColor(option.NameColorCode) : option.NameColor;
-
-                        color = color.ShadeColor(-6);
-                    }
-                    if (isroleoption)
-                    {
-                        color = option.NameColor.ShadeColor(-5);
-                    }
-
-                    Transform titleText = option.OptionBehaviour.transform.Find("Title Text");
-                    RectTransform titleTextRect = titleText.GetComponent<RectTransform>();
-
+                    enabled = AmongUsClient.Instance.AmHost && !option.IsHiddenOn(Options.CurrentGameMode);
                     var i = 0;
                     while (parent != null && enabled)
                     {
@@ -172,42 +151,64 @@ namespace TownOfHost
                         parent = parent.Parent;
                     }
 
-                    switch (i)
+                    if (opt is not null)
                     {
-                        case 0:
-                            break;
-                        case 1:
-                            color = new Color32(40, 50, 80, 255);
-                            size = new(4.6f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.8566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.4f, 0.6f);
-                            break;
-                        case 2:
-                            color = new Color32(20, 60, 40, 255);
-                            size = new(4.4f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.7566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.35f, 0.6f);
-                            break;
-                        case 3:
-                            color = new Color32(60, 20, 40, 255);
-                            size = new(4.2f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.3f, 0.6f);
-                            break;
-                        case 4:
-                            color = new Color32(60, 40, 10, 255);
-                            size = new(4.0f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.25f, 0.6f);
-                            break;
-                    }
+                        if (roleInfobutton.TryGetValue(option.CustomRole, out var infobutton))
+                        {
+                            if (!infobutton.isActiveAndEnabled)
+                            {
+                                infobutton.gameObject.SetActive(true);
+                            }
+                        }
 
-                    option.OptionBehaviour.gameObject.SetActive(enabled);
-                    if (enabled)
-                    {
+                        if (option.Tab is TabGroup.MainSettings or TabGroup.Combinations && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
+                        {
+                            color = option.NameColor == Color.white ? StringHelper.CodeColor(option.NameColorCode) : option.NameColor;
+
+                            color = color.ShadeColor(-6);
+                        }
+                        if (isroleoption)
+                        {
+                            color = option.NameColor.ShadeColor(-5);
+                        }
+
+                        Transform titleText = option.OptionBehaviour.transform.Find("Title Text");
+                        RectTransform titleTextRect = titleText.GetComponent<RectTransform>();
+
+                        switch (i)
+                        {
+                            case 0:
+                                break;
+                            case 1:
+                                color = new Color32(40, 50, 80, 255);
+                                size = new(4.6f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.8566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.4f, 0.6f);
+                                break;
+                            case 2:
+                                color = new Color32(20, 60, 40, 255);
+                                size = new(4.4f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.7566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.35f, 0.6f);
+                                break;
+                            case 3:
+                                color = new Color32(60, 20, 40, 255);
+                                size = new(4.2f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.3f, 0.6f);
+                                break;
+                            case 4:
+                                color = new Color32(60, 40, 10, 255);
+                                size = new(4.0f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.25f, 0.6f);
+                                break;
+                        }
                         opt.color = color;
                         opt.size = size;
-
+                    }
+                    if (enabled)
+                    {
                         offset -= option.IsHeader ? 0.68f : 0.45f;
                         option.OptionBehaviour.transform.localPosition = new Vector3(
                             option.OptionBehaviour.transform.localPosition.x,//0.952f,
@@ -304,34 +305,9 @@ namespace TownOfHost
                             enabled = false;
                         }
                     }
-                    var opt = option.OptionBehaviour.LabelBackground;
-                    if (isroleoption && rolebutton.TryGetValue(option.CustomRole, out var button))
-                    {
-                        button.gameObject.SetActive(!(3.5f < opt.transform.position.y || opt.transform.position.y <= -0.4));
-
-                        if (roleInfobutton.TryGetValue(option.CustomRole, out var infobutton))
-                        {
-                            if (!infobutton.isActiveAndEnabled) infobutton.gameObject.SetActive(true);
-                        }
-                    }
-
+                    var opt = (option.OptionBehaviour as OptionBehaviour)?.LabelBackground ?? null;
                     Color color = new Color32(200, 200, 200, 255);
                     Vector2 size = new(5.0f, 0.68f);
-
-                    if (option.Tab is TabGroup.MainSettings or TabGroup.Combinations && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
-                    {
-                        color = option.NameColor == Color.white ? StringHelper.CodeColor(option.NameColorCode) : option.NameColor;
-
-                        color = color.ShadeColor(-6);
-                    }
-                    if (isroleoption)
-                    {
-                        color = option.NameColor.ShadeColor(-5);
-                    }
-
-                    Transform titleText = option.OptionBehaviour.transform.Find("Title Text");
-                    RectTransform titleTextRect = titleText.GetComponent<RectTransform>();
-
                     var i = 0;
                     while (parent != null && enabled)
                     {
@@ -339,42 +315,68 @@ namespace TownOfHost
                         enabled = parent.GetBool();
                         parent = parent.Parent;
                     }
-
-                    switch (i)
+                    if (opt is not null)
                     {
-                        case 0:
-                            break;
-                        case 1:
-                            color = new Color32(40, 50, 80, 255);
-                            size = new(4.6f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.8566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.4f, 0.6f);
-                            break;
-                        case 2:
-                            color = new Color32(20, 60, 40, 255);
-                            size = new(4.4f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.7566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.35f, 0.6f);
-                            break;
-                        case 3:
-                            color = new Color32(60, 20, 40, 255);
-                            size = new(4.2f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.3f, 0.6f);
-                            break;
-                        case 4:
-                            color = new Color32(60, 40, 10, 255);
-                            size = new(4.0f, 0.68f);
-                            titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
-                            titleTextRect.sizeDelta = new Vector2(6.25f, 0.6f);
-                            break;
+                        if (isroleoption && rolebutton.TryGetValue(option.CustomRole, out var button))
+                        {
+                            button.gameObject.SetActive(!(3.5f < opt.transform.position.y || opt.transform.position.y <= -0.4));
+
+                            if (roleInfobutton.TryGetValue(option.CustomRole, out var infobutton))
+                            {
+                                if (!infobutton.isActiveAndEnabled) infobutton.gameObject.SetActive(true);
+                            }
+                        }
+
+                        if (option.Tab is TabGroup.MainSettings or TabGroup.Combinations && (option.NameColor != Color.white || option.NameColorCode != "#ffffff"))
+                        {
+                            color = option.NameColor == Color.white ? StringHelper.CodeColor(option.NameColorCode) : option.NameColor;
+
+                            color = color.ShadeColor(-6);
+                        }
+                        if (isroleoption)
+                        {
+                            color = option.NameColor.ShadeColor(-5);
+                        }
+
+                        Transform titleText = option.OptionBehaviour.transform.Find("Title Text");
+                        RectTransform titleTextRect = titleText.GetComponent<RectTransform>();
+
+                        switch (i)
+                        {
+                            case 0:
+                                break;
+                            case 1:
+                                color = new Color32(40, 50, 80, 255);
+                                size = new(4.6f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.8566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.4f, 0.6f);
+                                break;
+                            case 2:
+                                color = new Color32(20, 60, 40, 255);
+                                size = new(4.4f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.7566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.35f, 0.6f);
+                                break;
+                            case 3:
+                                color = new Color32(60, 20, 40, 255);
+                                size = new(4.2f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.3f, 0.6f);
+                                break;
+                            case 4:
+                                color = new Color32(60, 40, 10, 255);
+                                size = new(4.0f, 0.68f);
+                                titleText.transform.localPosition = new Vector3(-1.6566f, 0f);
+                                titleTextRect.sizeDelta = new Vector2(6.25f, 0.6f);
+                                break;
+                        }
+                        opt.color = color;
+                        opt.size = size;
                     }
 
                     option.OptionBehaviour.gameObject.SetActive(enabled);
                     if (enabled)
                     {
-                        opt.color = color;
-                        opt.size = size;
                         offset -= option.IsHeader ? 0.68f : 0.45f;
                         option.OptionBehaviour.transform.localPosition = new Vector3(
                             option.OptionBehaviour.transform.localPosition.x,//0.952f,

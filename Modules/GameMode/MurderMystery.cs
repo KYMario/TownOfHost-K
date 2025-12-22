@@ -60,6 +60,7 @@ class MurderMystery
     public static int? DeadArcherCount; public static bool sabotage;
     public static void SetUpMurderMysteryOption()
     {
+        ObjectOptionitem.Create(115804, "MurderMystery", true, null, TabGroup.MainSettings).SetOptionName(() => "Murder Mystery").SetColor(Color.blue).SetTag(CustomOptionTags.MurderMystery);
         OptionTimeLimit = FloatOptionItem.Create(115800, "MMTimeLimit", new(70, 600, 5), 360, TabGroup.MainSettings, false)
         .SetTag(CustomOptionTags.MurderMystery).SetHeader(true).SetColor(Color.blue);
         OptionSeeImpostorArrow = BooleanOptionItem.Create(115801, "MMSeeImpostorArrow", true, TabGroup.MainSettings, false).SetTag(CustomOptionTags.MurderMystery).SetColor(Color.blue);

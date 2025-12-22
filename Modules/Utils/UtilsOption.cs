@@ -157,7 +157,7 @@ namespace TownOfHost
                     }
                 }
                 //sb.Append("</line-hight><line-height=55%>");
-                foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 80000 && !x.IsHiddenOn(Options.CurrentGameMode)))
+                foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 80000 && !x.IsHiddenOn(Options.CurrentGameMode) && x is not ObjectOptionitem))
                 {
                     if (opt.Name is "RandomSpawn")
                     {

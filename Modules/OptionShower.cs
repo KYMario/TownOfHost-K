@@ -205,7 +205,7 @@ namespace TownOfHost
                 }
                 else flug = true;
                 sb.Append("</size><size=90%>");
-                foreach (var opt in OptionItem.AllOptions.Where(x => x.Id >= 90000 && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null))
+                foreach (var opt in OptionItem.AllOptions.Where(x => x.Id >= 90000 && !x.IsHiddenOn(Options.CurrentGameMode) && x.Parent == null && x is not ObjectOptionitem))
                 {
                     if (opt is AssignOptionItem && opt.GetBool() is false) continue;
                     if (opt.IsHeader) sb.Append('\n');

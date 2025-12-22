@@ -599,8 +599,24 @@ namespace TownOfHost
 
             //タスクバトル
             TaskBattle.SetupOptionItem();
+            //最初のオプションのみここ
+            SuddenDeathMode.CreateOption();
+            MurderMystery.SetUpMurderMysteryOption();
+            ObjectOptionitem.Create(1_000_121, "StandardHAS", true, null, TabGroup.MainSettings).SetOptionName(() => "Standard HAS").SetColorcode("#ecff41ff").SetTag(CustomOptionTags.StandardHAS);
+            StandardHASWaitingTime = FloatOptionItem.Create(100007, "StandardHASWaitingTime", new(0f, 180f, 2.5f), 10f, TabGroup.MainSettings, false)
+                .SetValueFormat(OptionFormat.Seconds).SetTag(CustomOptionTags.StandardHAS).SetHeader(true);
+            // HideAndSeek
+            ObjectOptionitem.Create(1_000_123, "StandardHAS", true, null, TabGroup.MainSettings).SetOptionName(() => "HideAndSeek").SetColorcode("#ff1919").SetTag(CustomOptionTags.HideAndSeek);
+            SetupRoleOptions(112000, TabGroup.NeutralRoles, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
+            SetupRoleOptions(112100, TabGroup.NeutralRoles, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
+            KillDelay = FloatOptionItem.Create(112200, "HideAndSeekWaitingTime", new(0f, 180f, 5f), 10f, TabGroup.MainSettings, false)
+                .SetValueFormat(OptionFormat.Seconds)
+                .SetHeader(true).SetTag(CustomOptionTags.HideAndSeek);
+            IgnoreVent = BooleanOptionItem.Create(112002, "IgnoreVent", false, TabGroup.MainSettings, false)
+                .SetTag(CustomOptionTags.HideAndSeek);
 
             //特殊モード
+            ObjectOptionitem.Create(1_000_113, "GameOption", true, null, TabGroup.MainSettings).SetOptionName(() => "Game").SetColorcode("#ea633eff");
             ONspecialMode = BooleanOptionItem.Create(100000, "ONspecialMode", false, TabGroup.MainSettings, false)
                 .SetHeader(true)
                 .SetColorcode("#00c1ff");
@@ -614,11 +630,7 @@ namespace TownOfHost
                 .SetTag(CustomOptionTags.Standard);
             AllPlayerSkinShuffle = BooleanOptionItem.Create(100005, "AllPlayerSkinShuffle", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
                 .SetEnabled(() => Event.April || Event.Special).SetInfo(Translator.GetString("AprilfoolOnly"));
-            StandardHAS = BooleanOptionItem.Create(100006, "StandardHAS", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
-            .SetTag(CustomOptionTags.Standard);
-            StandardHASWaitingTime = FloatOptionItem.Create(100007, "StandardHASWaitingTime", new(0f, 180f, 2.5f), 10f, TabGroup.MainSettings, false).SetParent(StandardHAS)
-                .SetValueFormat(OptionFormat.Seconds)
-                .SetTag(CustomOptionTags.Standard);
+
 
             // 試験的機能
             ExperimentalMode = BooleanOptionItem.Create(105000, "ExperimentalMode", false, TabGroup.MainSettings, false).SetColor(Palette.CrewmateSettingChangeText)
@@ -658,13 +670,6 @@ namespace TownOfHost
                 .SetColor(new Color32(255, 255, 0, 255))
                 .SetInfo(Translator.GetString("FixSpawnPacketSizeInfo"));
 
-            //最初のオプションのみここ
-            SuddenDeathMode.SuddenDeathModeActive = BooleanOptionItem.Create(101000, "SuddenDeathMode", false, TabGroup.MainSettings, false)
-                .SetTag(CustomOptionTags.SuddenDeath)
-                .SetHeader(true)
-                .SetColorcode("#ff9966");
-            SuddenDeathMode.CreateOption();
-            MurderMystery.SetUpMurderMysteryOption();
             // Impostor
             CreateRoleOption(sortedRoleInfo, CustomRoleTypes.Impostor);
 
@@ -723,6 +728,8 @@ namespace TownOfHost
             MadmateCanMovedByVent = BooleanOptionItem.Create(102019, "MadmateCanMovedByVent", true, TabGroup.MadmateRoles, false).SetColorcode("#8cffff").SetParent(MadMateOption);
 
             //Com
+
+            ObjectOptionitem.Create(1_000_115, "Group-Addon", true, null, TabGroup.Combinations).SetOptionName(() => "Combi Add-on").SetColor(ModColors.AddonsColor).SetTag(CustomOptionTags.Role);
             Faction.SetUpOption();
             Twins.SetUpTwinsOptions();
             Lovers.SetLoversOptions();
@@ -763,15 +770,6 @@ namespace TownOfHost
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds)
                 .SetColorcode("#bf483f");
-
-            // HideAndSeek
-            SetupRoleOptions(112000, TabGroup.NeutralRoles, CustomRoles.HASFox, customGameMode: CustomGameMode.HideAndSeek);
-            SetupRoleOptions(112100, TabGroup.NeutralRoles, CustomRoles.HASTroll, customGameMode: CustomGameMode.HideAndSeek);
-            KillDelay = FloatOptionItem.Create(112200, "HideAndSeekWaitingTime", new(0f, 180f, 5f), 10f, TabGroup.MainSettings, false)
-                .SetValueFormat(OptionFormat.Seconds)
-                .SetHeader(true).SetTag(CustomOptionTags.HideAndSeek);
-            IgnoreVent = BooleanOptionItem.Create(112002, "IgnoreVent", false, TabGroup.MainSettings, false)
-                .SetTag(CustomOptionTags.HideAndSeek);
 
             // マップ改造
             MapModification = BooleanOptionItem.Create(107000, "MapModification", false, TabGroup.MainSettings, false)
@@ -1146,6 +1144,8 @@ namespace TownOfHost
                 .SetColorcode("#ccff00");
             NoGameEnd = BooleanOptionItem.Create(1_000_201, "NoGameEnd", false, TabGroup.MainSettings, false)
                 .SetColorcode("#ff1919");
+
+            ObjectOptionitem.Create(1_000_112, "OtherOption", true, null, TabGroup.MainSettings).SetOptionName(() => "Other").SetColorcode("#4f9bffff");
             // プリセット対象外
             AutoDisplayLastResult = BooleanOptionItem.Create(1_000_000, "AutoDisplayLastResult", true, TabGroup.MainSettings, true)
                 .SetHeader(true)
