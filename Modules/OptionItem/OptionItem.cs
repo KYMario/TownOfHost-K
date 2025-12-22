@@ -71,7 +71,8 @@ namespace TownOfHost
         public OptionItem Parent { get; private set; }
         public List<OptionItem> Children;
 
-        public MonoBehaviour OptionBehaviour;
+        public OptionBehaviour OptionBehaviour;
+        public MonoBehaviour OptionHedder;
 
         // イベント
         // eventキーワードにより、クラス外からのこのフィールドに対する以下の操作は禁止されます。

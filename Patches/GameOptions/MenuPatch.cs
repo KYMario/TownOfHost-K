@@ -91,9 +91,9 @@ namespace TownOfHost
         public static CustomRoles NowRoleTab;
         public static CustomRoles Nowinfo;
         public static Dictionary<TabGroup, GameOptionsMenu> list = new();
-        public static Dictionary<TabGroup, Il2CppSystem.Collections.Generic.List<MonoBehaviour>> scOptions = new();
+        public static Dictionary<TabGroup, Il2CppSystem.Collections.Generic.List<OptionBehaviour>> scOptions = new();
         public static Dictionary<CustomRoles, GameOptionsMenu> crlist = new();
-        public static Dictionary<CustomRoles, Il2CppSystem.Collections.Generic.List<MonoBehaviour>> crOptions = new();
+        public static Dictionary<CustomRoles, Il2CppSystem.Collections.Generic.List<OptionBehaviour>> crOptions = new();
         public static List<OptionItem> roleopts = new();
         public static Dictionary<CustomRoles, PassiveButton> rolebutton = new();
         public static Dictionary<CustomRoles, PassiveButton> roleInfobutton = new();
@@ -299,11 +299,7 @@ namespace TownOfHost
                     var tab = (TabGroup)i;
                     var tabs = list[tab];
                     Il2CppSystem.Collections.Generic.List<OptionBehaviour> options = new();
-                    foreach (var option in scOptions[tab])
-                    {
-                        if (option is OptionBehaviour behaviour) options.Add(behaviour);
-                    }
-                    tabs.Children = options;
+                    tabs.Children = scOptions[tab];
                     tabs.gameObject.SetActive(false);
                     tabs.enabled = true;
                     menus.Add(tab, tabs.gameObject);
@@ -323,12 +319,7 @@ namespace TownOfHost
                 {
                     var tabs = crlist[role];
                     Il2CppSystem.Collections.Generic.List<OptionBehaviour> options = new();
-                    foreach (var option in crOptions[role])
-                    {
-                        if (option is OptionBehaviour behaviour) options.Add(behaviour);
-                    }
-                    tabs.Children = options;
-                    tabs.Children = options;
+                    tabs.Children = crOptions[role];
                     tabs.gameObject.SetActive(false);
                     tabs.enabled = true;
                     crmenus.Add(role, tabs.gameObject);
@@ -593,18 +584,13 @@ namespace TownOfHost
                         CategoryHeaderEditRole[] tabsubtitle = chm.transform.parent.GetComponentsInChildren<CategoryHeaderEditRole>();
                         chm.Title.DestroyTranslator();
                         chm.Title.text = $"<b>{option.GetName(false)}</b>";
-                        option.OptionBehaviour = chm;
+                        option.OptionHedder = chm;
                         tabtitle.name = option.Name;
                         tabtitle.transform.localPosition = new Vector3(-0.7789f, -0.15f, -10);
 
                         if (parentrole is not CustomRoles.NotAssigned && option.CustomRole is CustomRoles.NotAssigned)
                         {
-                            crOptions[parentrole].Add(chm);
                             roleopts.Add(option);
-                        }
-                        else
-                        {
-                            scOptions[option.Tab].Add(chm);
                         }
                         continue;
                     }
