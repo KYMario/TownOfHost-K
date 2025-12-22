@@ -143,29 +143,32 @@ namespace TownOfHost
                     }
                     if (DisableDevice.DoDisable)
                     {
-                        if (timer % 2 is 0) DisableDevice.FixedUpdate();
-                        //情報機器制限
-                        if (DisableDevice.optTimeLimitDevices || DisableDevice.optTurnTimeLimitDevice)
+                        if (timer % 2 is 0)
                         {
-                            if (DisableDevice.UseCount > 0)
+                            DisableDevice.FixedUpdate();
+                            //情報機器制限
+                            if (DisableDevice.optTimeLimitDevices || DisableDevice.optTurnTimeLimitDevice)
                             {
-                                var nowuseing = true;
-                                if (DisableDevice.optTimeLimitCamAndLog > 0 && DisableDevice.GameLogAndCamTimer > DisableDevice.optTimeLimitCamAndLog)
-                                    nowuseing = false;
-
-                                if (DisableDevice.optTurnTimeLimitCamAndLog > 0 && DisableDevice.TurnLogAndCamTimer > DisableDevice.optTurnTimeLimitCamAndLog)
-                                    nowuseing = false;
-
-                                if (nowuseing)
+                                if (DisableDevice.UseCount > 0)
                                 {
-                                    if (DisableDevice.optTimeLimitDevices)
-                                        DisableDevice.GameLogAndCamTimer += Time.fixedDeltaTime * DisableDevice.UseCount;
-                                    if (DisableDevice.optTurnTimeLimitDevice)
-                                        DisableDevice.TurnLogAndCamTimer += Time.fixedDeltaTime * DisableDevice.UseCount;
-                                }
-                                else
-                                {
-                                    DisableDevice.UseCount = 0;
+                                    var nowuseing = true;
+                                    if (DisableDevice.optTimeLimitCamAndLog > 0 && DisableDevice.GameLogAndCamTimer > DisableDevice.optTimeLimitCamAndLog)
+                                        nowuseing = false;
+
+                                    if (DisableDevice.optTurnTimeLimitCamAndLog > 0 && DisableDevice.TurnLogAndCamTimer > DisableDevice.optTurnTimeLimitCamAndLog)
+                                        nowuseing = false;
+
+                                    if (nowuseing)
+                                    {
+                                        if (DisableDevice.optTimeLimitDevices)
+                                            DisableDevice.GameLogAndCamTimer += Time.fixedDeltaTime * DisableDevice.UseCount;
+                                        if (DisableDevice.optTurnTimeLimitDevice)
+                                            DisableDevice.TurnLogAndCamTimer += Time.fixedDeltaTime * DisableDevice.UseCount;
+                                    }
+                                    else
+                                    {
+                                        DisableDevice.UseCount = 0;
+                                    }
                                 }
                             }
                         }
