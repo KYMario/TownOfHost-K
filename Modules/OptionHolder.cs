@@ -563,7 +563,12 @@ namespace TownOfHost
 
         public static int GetRoleChance(CustomRoles role)
         {
-            return CustomRoleSpawnChances.TryGetValue(role, out var option) ? option.GetInt() : 0;
+            if (CustomRoleSpawnChances.TryGetValue(role, out var option))
+            {
+                if (option.GetBool())
+                    return option.GetInt();
+            }
+            return 0;
         }
         public static void Load()
         {
