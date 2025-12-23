@@ -192,7 +192,7 @@ namespace TownOfHost
                 }));
                 activeonly.gameObject.SetActive(false);
 
-                ModSettingsTab = Object.Instantiate(__instance.RoleSettingsTab, __instance.RoleSettingsTab.transform.parent).GetComponent<RolesSettingsMenu>();
+                ModSettingsTab = Object.Instantiate(__instance.RoleSettingsTab, __instance.RoleSettingsTab.transform.parent);
                 var backButton = ModSettingsTab.BackButton.Cast<PassiveButton>();
                 backButton.OnClick = new();
                 backButton.OnClick.AddListener((Action)(() => { ModSettingsTab.CloseMenu(); __instance.ChangeTab(3, true); }));
@@ -349,18 +349,18 @@ namespace TownOfHost
                         tabButton.SelectButton(true);
                         tabButton.selectedSprites.GetComponent<SpriteRenderer>().sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Tab.TabIcon_S_{tab}.png", 120);
                         menus[tab].SetActive(true);
-                        var tabtitle = ModSettingsTab.transform.FindChild("Scroller/SliderInner/ChancesTab/CategoryHeaderMasked").GetComponent<CategoryHeaderMasked>();
-                        CategoryHeaderEditRole[] tabsubtitle = tabtitle.transform.parent.GetComponentsInChildren<CategoryHeaderEditRole>();
-                        tabtitle.Title.DestroyTranslator();
-                        tabtitle.Title.text = GetString("TabGroup." + tab);
+                        var tabTitle = ModSettingsTab.quotaHeader;
+                        CategoryHeaderEditRole[] tabSubTitle = tabTitle.transform.parent.GetComponentsInChildren<CategoryHeaderEditRole>();
+                        tabTitle.Title.DestroyTranslator();
+                        tabTitle.Title.text = GetString("TabGroup." + tab);
 
-                        tabtitle.Background.color = ModColors.Gray;
-                        tabtitle.Title.color = Color.white;
+                        tabTitle.Background.color = ModColors.Gray;
+                        tabTitle.Title.color = Color.white;
 
                         ModSettingsTab.scrollBar.velocity = Vector2.zero;
                         ModSettingsTab.scrollBar.Inner.localPosition = new Vector3(ModSettingsTab.scrollBar.Inner.localPosition.x, 0, ModSettingsTab.scrollBar.Inner.localPosition.z);
                         ModSettingsTab.scrollBar.ScrollRelative(Vector2.zero);
-                        foreach (var sub in tabsubtitle)
+                        foreach (var sub in tabSubTitle)
                         {
                             Object.Destroy(sub.gameObject);
                         }
@@ -452,7 +452,7 @@ namespace TownOfHost
                             if (!(ModSettingsTab?.gameObject?.active ?? false)) return;
                             ShowModSetting = false;
                             if (tabButtons[0] != null)
-                                tabButtons[0].GetComponent<PassiveButton>().OnClick.Invoke();
+                                tabButtons[0].OnClick.Invoke();
                         }, 0.05f, "", true);
                     }
                 }));
