@@ -126,7 +126,7 @@ namespace TownOfHost.Patches
             for (var index = 0; index < OptionItem.AllOptions.Count; ++index)
             {
                 var option = OptionItem.AllOptions[index];
-                if (option.Tab != TabGroup.MainSettings || option.IsHiddenOn(Options.CurrentGameMode) || (!option?.Parent?.GetBool() ?? false)) continue;
+                if (option.Tab != TabGroup.MainSettings || option.IsHiddenOn(Options.CurrentGameMode) || (!option?.Parent?.GetBool() ?? false) || option is ObjectOptionitem) continue;
 
                 bool hasChildren = option.Children.Count > 0;
 
