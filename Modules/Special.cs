@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
+using Hazel;
 using TownOfHost.Attributes;
 using TownOfHost.Modules;
 using TownOfHost.Roles;
@@ -21,9 +22,9 @@ static class Event
     public static bool Tanabata = DateTime.Now.Month == 7 && DateTime.Now.Day is > 6 and < 15;
     public static bool IsEventDay => IsChristmas || White || IsInitialRelease || IsHalloween || GoldenWeek || April;
     public static bool Special = false;
-    public static bool NowRoleEvent => DateTime.Now.Month == 8 && DateTime.Now.Year is 2025;//&& DateTime.Now.Day is 16 or 17 or 18 or 19 or 20 or 21 or 22 or 23;
+    public static bool NowRoleEvent => false;
     public static List<string> OptionLoad = new();
-    public static bool IsE(this CustomRoles role) => role is CustomRoles.SpeedStar or CustomRoles.Chameleon;
+    public static bool IsE(this CustomRoles role) => role is CustomRoles.SpeedStar or CustomRoles.Chameleon or CustomRoles.Fortuner;
 
     /// <summary>
     /// 期間限定ロールが使用可能かをチェックします<br/>
@@ -66,6 +67,7 @@ static class Event
         {CustomRoles.Vega,() => Tanabata},
         {CustomRoles.SpeedStar , () => Special},
         {CustomRoles.Chameleon , () => Special},
+        {CustomRoles.Fortuner , () => Special},
         {CustomRoles.Cakeshop , () => NowRoleEvent}
     };
 
@@ -156,6 +158,7 @@ public sealed class SpeedStar : RoleBase, IImpostor, IUsePhantomButton
     {
         Event.OptionLoad.Add("SpeedStar");
         Event.OptionLoad.Add("Chameleon");
+        Event.OptionLoad.Add("Fortuner");
     }
     public override void ApplyGameOptions(IGameOptions opt) => AURoleOptions.PhantomCooldown = cooldown;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
@@ -200,6 +203,163 @@ public sealed class SpeedStar : RoleBase, IImpostor, IUsePhantomButton
         return $"<size=50%>{GetString("PhantomButtonLowertext")}</size>";
     }
     public override string GetAbilityButtonText() => GetString("SpeedStarAbility");
+}
+public sealed class Fortuner : RoleBase, IKiller
+{
+    public static readonly SimpleRoleInfo RoleInfo =
+        SimpleRoleInfo.Create(
+            typeof(Fortuner),
+            player => new Fortuner(player),
+            CustomRoles.Fortuner,
+            () => RoleTypes.Crewmate,
+            CustomRoleTypes.Crewmate,
+            24100,
+            SetUpOptionItem,
+            "fo",
+            "#34f098",
+            OptionSort: (0, 51),
+            from: From.Speyrp
+        );
+    public Fortuner(PlayerControl player)
+    : base(
+        RoleInfo,
+        player,
+        () => HasTask.True
+    )
+    {
+        UseCount = OptionUseCount.GetInt();
+        cooldown = OptionCooldown.GetFloat();
+        giveplayerid = new();
+    }
+    List<byte> giveplayerid = new();
+    int UseCount; static OptionItem OptionUseCount;
+    float cooldown; static OptionItem OptionCooldown;
+    public static void SetUpOptionItem()
+    {
+        OptionUseCount = IntegerOptionItem.Create(RoleInfo, 10, GeneralOption.OptionCount, new(1, 50, 1), 2, false);
+        OptionCooldown = FloatOptionItem.Create(RoleInfo, 11, GeneralOption.Cooldown, OptionBaseCoolTime, 30, false);
+        OverrideTasksData.Create(RoleInfo, 12);
+    }
+    public override RoleTypes? AfterMeetingRole => MyTaskState.IsTaskFinished ? RoleTypes.Impostor : RoleTypes.Crewmate;
+    bool IKiller.CanUseSabotageButton() => false;
+    bool IKiller.CanUseImpostorVentButton() => false;
+    bool IKiller.IsKiller => false;
+    bool IKiller.CanUseKillButton() => MyTaskState.IsTaskFinished && UseCount > 0;
+    float IKiller.CalculateKillCooldown() => cooldown;
+    void IKiller.OnCheckMurderAsKiller(MurderInfo info)
+    {
+        giveplayerid.Add(info.AppearanceTarget.PlayerId);
+        Logger.Info($"{info.AppearanceTarget.PlayerId}", "F<EGTfaAr>or<canoacw>tu<na!>n<ruanor1>er".RemoveHtmlTags());
+        info.DoKill = false;
+        Player.SetKillCooldown(target: info.AppearanceTarget);
+        SendRpc();
+    }
+    public override void ApplyGameOptions(IGameOptions opt)
+    {
+        opt.SetVision(false);
+    }
+    public override string GetProgressText(bool comms = false, bool GameLog = false)
+        => MyTaskState.IsTaskFinished ? $"<{RoleInfo.RoleColorCode}> ({UseCount})</color>" : "";
+    public override CustomRoles Misidentify() => MyTaskState.IsTaskFinished ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
+    public override bool OnCompleteTask(uint taskid)
+    {
+        if (Player.IsAlive() && MyTaskState.IsTaskFinished)
+        {
+            Player.RpcSetRoleDesync(RoleTypes.Impostor, Player.GetClientId());
+            _ = new LateTask(() =>
+            {
+                Player.SetKillCooldown();
+                UtilsNotifyRoles.NotifyRoles();
+            }, 0.2f);
+        }
+        return true;
+    }
+    CustomRoles[] givel1addons =
+    {
+        CustomRoles.Lighting,
+        CustomRoles.Moon,
+        CustomRoles.Tiebreaker,
+        CustomRoles.Opener,
+        CustomRoles.Management,
+        CustomRoles.Autopsy
+    };
+    CustomRoles[] givel2addons =
+    {
+        CustomRoles.Autopsy,
+        CustomRoles.Lighting,
+        CustomRoles.Moon,
+        CustomRoles.Tiebreaker,
+        CustomRoles.Opener,
+        CustomRoles.Management,
+        CustomRoles.MagicHand,
+        CustomRoles.Serial
+    };
+    CustomRoles[] givel3addons =
+    {
+        CustomRoles.Autopsy,
+        CustomRoles.Lighting,
+        CustomRoles.Moon,
+        CustomRoles.Guesser,
+        CustomRoles.Tiebreaker,
+        CustomRoles.Opener,
+        CustomRoles.Management,
+        CustomRoles.Speeding,
+        CustomRoles.MagicHand,
+        CustomRoles.Serial,
+        CustomRoles.PlusVote,
+        CustomRoles.Seeing
+    };
+    enum Fortune
+    {
+        GiveLv1Addon = 40,
+        GiveLv2Addon = 75,
+        GiveLv3Addon = 100
+    }
+    public override void OnStartMeeting()
+    {
+        foreach (var id in giveplayerid)
+        {
+            var player = id.GetPlayerControl();
+            var role = CustomRoles.NotAssigned;
+            if (player.IsAlive())
+            {
+                var chance = IRandom.Instance.Next(100);
+                if (chance < (int)Fortune.GiveLv1Addon)
+                {
+                    var roles = givel1addons.Where(role => !player.Is(role)).ToList();
+                    if (role.GetCount() <= 0) continue;
+                    role = roles[IRandom.Instance.Next(roles.Count)];
+                    player.RpcSetCustomRole(role);
+                }
+                else if (chance < (int)Fortune.GiveLv2Addon)
+                {
+                    var roles = givel2addons.Where(role => !player.Is(role)).ToList();
+                    if (role.GetCount() <= 0) continue;
+                    role = roles[IRandom.Instance.Next(roles.Count)];
+                    player.RpcSetCustomRole(role);
+                }
+                else
+                {
+                    var roles = givel3addons.Where(role => !player.Is(role)).ToList();
+                    if (role.GetCount() <= 0) continue;
+                    role = roles[IRandom.Instance.Next(roles.Count)];
+                    player.RpcSetCustomRole(role);
+                }
+            }
+            if (role is not CustomRoles.NotAssigned)
+                _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("For<deador>tu<life>ne_Meg".RemoveHtmlTags()), UtilsRoleText.GetRoleColorAndtext(role))), 0.5f, "forsendmeg", true);
+        }
+        giveplayerid.Clear();
+    }
+    void SendRpc()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(UseCount);
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        UseCount = reader.ReadInt32();
+    }
 }
 public sealed class Chameleon : RoleBase, IAdditionalWinner
 {
@@ -260,6 +420,7 @@ public sealed class Chameleon : RoleBase, IAdditionalWinner
             TeamList.Add(CustomRoles.Fox);
         if (CustomRoles.Arsonist.IsPresent())
             TeamList.Add(CustomRoles.Arsonist);
+
     }
     CustomRoles NowTeam;
     List<CustomRoles> TeamList = new();
@@ -267,6 +428,7 @@ public sealed class Chameleon : RoleBase, IAdditionalWinner
     public override void StartGameTasks() => ChengeTeam();
     void ChengeTeam()
     {
+        if (AmongUsClient.Instance.AmHost is false) return;
         var oldteam = NowTeam;
         if (!PlayerCatch.AllAlivePlayerControls.Any(p => p.GetCustomRole() is CustomRoles.Jackal or CustomRoles.JackalAlien or CustomRoles.JackalMafia))
             TeamList.Remove(CustomRoles.Jackal);
@@ -290,7 +452,17 @@ public sealed class Chameleon : RoleBase, IAdditionalWinner
 
         Logger.Info($"Now : {NowTeam}", "Chameleon");
 
+        SendRpc();
         if (oldteam != NowTeam) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
+    }
+    void SendRpc()
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)NowTeam);
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        NowTeam = (CustomRoles)reader.ReadPackedInt32();
     }
     public override void OverrideTrueRoleName(ref UnityEngine.Color roleColor, ref string roleText) => roleText = Translator.GetString($"{NowTeam}").Color(UtilsRoleText.GetRoleColor(NowTeam)) + Translator.GetString("Chameleon");
     public override void AfterMeetingTasks() => _ = new LateTask(() => { if (!GameStates.CalledMeeting) ChengeTeam(); }, 5f, "", true);

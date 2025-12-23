@@ -81,6 +81,7 @@ public static class MeetingHudPatch
                 {
                     MeetingVoteManager.Instance?.SetVote(srcPlayerId, suspectPlayerId, isoverride: false);
                     __instance.RpcClearVote(voter.GetClientId());
+                    Utils.SendMessage(GetString("SelfVoterCancelMessage"), voter.PlayerId);
                     return true;
                 }
             }

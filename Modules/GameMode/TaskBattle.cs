@@ -299,7 +299,7 @@ class TaskBattle
                     reason = GameOverReason.CrewmatesByTask;
                     CustomWinnerHolder.ResetAndSetWinner(CustomWinner.TaskPlayerB);
                     CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
-                    roomname = RandomSpawn.SpawnMap.NextSpornName.TryGetValue(RTAPlayerId, out var name) ? name : "???";
+                    roomname = RandomSpawn.SpawnMap.NextSpornName.TryGetValue(RTAPlayerId, out var name) ? name : "Defalt";
                     RTAPlayerId = byte.MaxValue;
                 }
             }

@@ -867,6 +867,7 @@ public enum CustomRoles
     CandleLighter,
     Express,
     Inspector,
+    Fortuner,
     AllArounder,
     Observer,
     Satellite,
