@@ -39,6 +39,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
     {
         WinGivePresentCount = OptWinGivePresentCount.GetInt();
         AddWin = OptAddWin.GetBool();
+        MaxHavePresent = OptionMaxHavePresent.GetInt();
 
         IWinflag = false;
         MeetingNotify = false;
@@ -50,15 +51,18 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         meetinggift = 0;
         GiftedPlayers.Clear();
         Memo = "";
+        RoomName = "";
     }
     static OptionItem OptWinGivePresentCount; static int WinGivePresentCount;
     static OptionItem OptAddWin; static bool AddWin;
     static OptionItem Optpresent;
+    static OptionItem OptionMaxHavePresent; static int MaxHavePresent;
     enum OptionName
     {
         SantaClausWinGivePresentCount,
         CountKillerAddWin,//追加勝利
-        SantaClausGivePresent
+        SantaClausGivePresent,
+        SantaClausMaxHavePresent
     }
     bool IWinflag;
     bool MeetingNotify;
@@ -69,10 +73,12 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
     int meetinggift;
     Vector3? EntotuVentPos;
     string Memo;
+    string RoomName;
     static List<byte> GiftedPlayers = new();
     private static void SetupOptionItem()
     {
         OptWinGivePresentCount = IntegerOptionItem.Create(RoleInfo, 10, OptionName.SantaClausWinGivePresentCount, new(1, 30, 1), 4, false);
+        OptionMaxHavePresent = IntegerOptionItem.Create(RoleInfo, 18, OptionName.SantaClausMaxHavePresent, new(1, 15, 1), 2, false);
         OptAddWin = BooleanOptionItem.Create(RoleInfo, 15, OptionName.CountKillerAddWin, false, false);
         SoloWinOption.Create(RoleInfo, 16, show: () => !OptAddWin.GetBool(), defo: 1);
         Optpresent = BooleanOptionItem.Create(RoleInfo, 17, OptionName.SantaClausGivePresent, true, false);
@@ -90,6 +96,15 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         {
             havepresent++;
             UtilsNotifyRoles.NotifyRoles();
+
+            if (havepresent < MaxHavePresent)
+            {
+                _ = new LateTask(() =>
+                {
+                    Player.Data.RpcSetTasks(Array.Empty<byte>());
+                    MyTaskState.CompletedTasksCount = 0;
+                }, 1, "SetTask", true);
+            }
         }
         return true;
     }
@@ -97,7 +112,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
     {
         var win = $"{giftpresent}/{WinGivePresentCount}";
 
-        return $" <color=#e05050>({win})</color>";
+        return $"({havepresent}) <color=#e05050>({win})</color>";
     }
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
@@ -145,8 +160,11 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         //プレゼントを渡せたって言う処理
         Player.RpcProtectedMurderPlayer();
 
-        Player.Data.RpcSetTasks(Array.Empty<byte>());
-        MyTaskState.CompletedTasksCount = 0;
+        if (havepresent < MaxHavePresent)
+        {
+            Player.Data.RpcSetTasks(Array.Empty<byte>());
+            MyTaskState.CompletedTasksCount = 0;
+        }
         giftpresent++;
         meetinggift++;
         Player.SyncSettings();
@@ -189,14 +207,14 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         if (isForMeeting || !Player.IsAlive()) return "";
 
         //配達先が決まっている時
-        if (EntotuVentPos != null && EntotuVentId != null && havepresent > 0)
-            return $"<color=#e05050>{GetString("SantaClausLower1") + GetArrow.GetArrows(seer, (Vector3)EntotuVentPos)}</color>";
+        if (EntotuVentPos != null && EntotuVentId != null && MaxHavePresent <= havepresent)
+            return $"<color=#e05050>{GetString("SantaClausLower1") + GetArrow.GetArrows(seer, (Vector3)EntotuVentPos)}({RoomName})</color>";
 
         // プレゼントの用意をするんだぜ
         var pos = "";
         if (EntotuVentPos != null && EntotuVentId != null)
         {
-            pos = GetString("SantaClausLower1") + GetArrow.GetArrows(seer, (Vector3)EntotuVentPos);
+            pos = GetString("SantaClausLower1") + GetArrow.GetArrows(seer, (Vector3)EntotuVentPos) + $"({RoomName})";
         }
         return $"<color=#e05050>{GetString("SantaClausLower2")}<size=60%>{pos}</size></color>";
     }
@@ -226,6 +244,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         EntotuVentPos = new Vector3(ev.transform.position.x, ev.transform.position.y);
         GetArrow.Add(Player.PlayerId, (Vector3)EntotuVentPos);
         SendRPC();
+        RoomName = ExtendedPlayerControl.GetShipRoomName(EntotuVentPos.Value);
     }
     CustomRoles[] giveaddons =
     {
@@ -308,6 +327,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
             if (vent != null && pos.HasValue)
             {
                 GetArrow.Add(Player.PlayerId, pos.Value);
+                RoomName = ExtendedPlayerControl.GetShipRoomName(pos.Value);
             }
 
             EntotuVentPos = pos;

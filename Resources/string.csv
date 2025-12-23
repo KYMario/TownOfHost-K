@@ -1666,6 +1666,7 @@
 "Fox3playersCanwin","Can win 3players","生存人数が3人以下の時でも勝利できるか"
 "SantaClausWinGivePresentCount","win Must Presennt","勝利に必要なプレゼント投下数"
 "SantaClausGivePresent","Give AddOn Present","一部アドオンをプレゼントする"
+"SantaClausMaxHavePresent","MaxHavePresent","同時にプレゼントを持てる数"
 "VultrueCanSeeKillFlushTaskCount","Killflash task count","キルフラッシュが見えるタスク完了数"
 "VultrueCanSeeOnikuArrowTaskCount","Arrow task count","矢印が見えるタスク完了数"
 "VultrueWinEatcount","WinEatcount","勝利に必要なつまみぐい数"
