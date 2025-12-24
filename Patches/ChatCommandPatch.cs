@@ -341,6 +341,12 @@ namespace TownOfHost
                                         SendMessage(GetString("TaskBattleInfo"), playerh);
                                         break;
 
+                                    case "マーダーミステリー":
+                                    case "murderermystery":
+                                    case "mm":
+                                        SendMessage(GetString("MurderMysteryInfo"), playerh);
+                                        break;
+
                                     case "nogameend":
                                     case "nge":
                                         SendMessage(GetString("NoGameEndInfo"), playerh);
@@ -449,15 +455,15 @@ namespace TownOfHost
                                             SendMessage("<b><line-height=2.0pic><size=150%>" + GetString(role.ToString()).Color(player.GetRoleColor()) + "\n</b><size=90%><line-height=1.8pic>" + player.GetRoleDesc(true), player.PlayerId, RoleInfoTitle);
                                         }
                                         else
-                                        if (role.GetRoleInfo()?.Description is { } description)
-                                        {
-                                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
-                                        }
-                                        // roleInfoがない役職
-                                        else
-                                        {
-                                            SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
-                                        }
+                                            if (role.GetRoleInfo()?.Description is { } description)
+                                            {
+                                                SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
+                                            }
+                                            // roleInfoがない役職
+                                            else
+                                            {
+                                                SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
+                                            }
                                         GetAddonsHelp(player);
 
                                         if (player.IsGhostRole())
@@ -1359,15 +1365,15 @@ namespace TownOfHost
                             SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
                         }
                         else
-                        if (role.GetRoleInfo()?.Description is { } description)
-                        {
-                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
-                        }
-                        // roleInfoがない役職
-                        else
-                        {
-                            SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
-                        }
+                            if (role.GetRoleInfo()?.Description is { } description)
+                            {
+                                SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
+                            }
+                            // roleInfoがない役職
+                            else
+                            {
+                                SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
+                            }
                         GetAddonsHelp(player);
                     }
                     break;
