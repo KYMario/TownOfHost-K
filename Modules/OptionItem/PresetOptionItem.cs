@@ -27,8 +27,9 @@ namespace TownOfHost
             var ch = "";
             if (GameModeManager.IsStandardClass())
             {
-                if (UtilsShowOption.GetRoleTypesCount() != "")
-                    ch += $"<size=70%>{UtilsShowOption.GetRoleTypesCount()}</size>";
+                var text = UtilsShowOption.GetRoleTypesCount();
+                if (text != "")
+                    ch += $"<size=70%>{text}</size>";
             }
             return CurrentValue switch
             {
