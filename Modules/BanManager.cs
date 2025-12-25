@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using HarmonyLib;
@@ -12,6 +13,9 @@ namespace TownOfHost
         private static readonly string DENY_NAME_LIST_PATH = Main.BaseDirectory + "/DenyName.txt";
         private static readonly string BAN_LIST_PATH = Main.BaseDirectory + "/BanList.txt";
         private static readonly string WhiteList_LIST_PATH = Main.BaseDirectory + "/WhiteList.txt";
+        private static FileSystemWatcher watcher;
+        private static bool changedWhiteList = false;
+        private static List<string> whiteList = new();
 
         [PluginModuleInitializer]
         public static void Init()
@@ -20,6 +24,18 @@ namespace TownOfHost
             if (!File.Exists(DENY_NAME_LIST_PATH)) File.Create(DENY_NAME_LIST_PATH).Close();
             if (!File.Exists(BAN_LIST_PATH)) File.Create(BAN_LIST_PATH).Close();
             if (!File.Exists(WhiteList_LIST_PATH)) File.Create(WhiteList_LIST_PATH).Close();
+
+            watcher = new FileSystemWatcher()
+            {
+                Path = Path.GetDirectoryName(WhiteList_LIST_PATH),
+                Filter = Path.GetFileName(WhiteList_LIST_PATH),
+                NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size
+            };
+
+            watcher.Changed += (_, __) => changedWhiteList = true;
+            watcher.EnableRaisingEvents = true;
+
+            LoadWhiteList();
         }
         public static void AddBanPlayer(InnerNet.ClientData player)
         {
@@ -128,6 +144,21 @@ namespace TownOfHost
             }
             return false;
         }
+
+        public static void LoadWhiteList()
+        {
+            if (!File.Exists(WhiteList_LIST_PATH)) File.Create(WhiteList_LIST_PATH).Close();
+
+            whiteList.Clear();
+            using StreamReader sr = new(WhiteList_LIST_PATH);
+            string line;
+            while ((line = sr.ReadLine()) != null)
+            {
+                if (line == "") continue;
+                whiteList.Add(line);
+            }
+        }
+
         public static bool CheckWhiteList(string code, string hashedpuid = "")
         {
             bool OnlyCheckPuid = false;
@@ -138,12 +169,14 @@ namespace TownOfHost
             else if (code == "") return false;
             try
             {
-                if (!File.Exists(WhiteList_LIST_PATH)) File.Create(WhiteList_LIST_PATH).Close();
-                using StreamReader sr = new(WhiteList_LIST_PATH);
-                string line;
-                while ((line = sr.ReadLine()) != null)
+                if (changedWhiteList)
                 {
-                    if (line == "") continue;
+                    changedWhiteList = false;
+                    LoadWhiteList();
+                }
+                for (var i = 0; i < whiteList.Count; ++i)
+                {
+                    var line = whiteList[i];
                     if (!OnlyCheckPuid)
                         if (line.Contains(code)) return true;
                     if (line.Contains(hashedpuid)) return true;
