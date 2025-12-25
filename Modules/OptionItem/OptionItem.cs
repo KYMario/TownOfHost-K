@@ -195,9 +195,10 @@ namespace TownOfHost
         // Getter
         public virtual string GetName(bool disableColor = false, bool isoption = false)
         {
-            if (funcOptionName.Invoke() is not "")
+            var funcName = funcOptionName.Invoke();
+            if (funcName is not "")
             {
-                var name = funcOptionName.Invoke();
+                var name = funcName;
                 if (disableColor) return name;
 
                 if (isoption) return name;
@@ -217,9 +218,18 @@ namespace TownOfHost
             }
             return NameColorCode != "#ffffff" ? $"<{NameColorCode}>" + Translator.GetString(Name, ReplacementDictionary) + "</color>" : Utils.ColorString(NameColor, Translator.GetString(Name, ReplacementDictionary));
         }
-        public virtual bool GetBool() => CurrentValue != 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent))
-                    && (Tag == CustomOptionTags.All || GameModeManager.GetTags(Options.CurrentGameMode).Contains(Tag))
-                    && (GameModeManager.GetTags(Options.CurrentGameMode).Any(tag => DisableTag.Contains(tag)) is false);
+        public virtual bool GetBool()
+        {
+            if (!(CurrentValue != 0 && (Parent == null || Parent.GetBool() || CheckRoleOption(Parent))))
+                return false;
+
+            var tags = GameModeManager.GetTags(Options.CurrentGameMode);
+
+            if (!(Tag == CustomOptionTags.All || tags.Contains(Tag)))
+                return false;
+
+            return !tags.Any(tag => DisableTag.Contains(tag));
+        }
         public bool InfoGetBool() => CurrentValue != 0 && (Parent == null || Parent.InfoGetBool());
         public bool CheckRoleOption(OptionItem option) => option.CustomRole is not CustomRoles.NotAssigned;
 
