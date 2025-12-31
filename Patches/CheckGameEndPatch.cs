@@ -34,6 +34,9 @@ namespace TownOfHost
             //ゲーム終了しないモードで廃村以外の場合は中断
             if (Main.DontGameSet && CustomWinnerHolder.WinnerTeam != CustomWinner.Draw) return false;
 
+            //カススポエディターでは終了させたくないので中断
+            if (CustomSpawnEditor.ActiveEditMode) return false;
+
             //後追い処理等が終わってないなら中断
             if (predicate is NormalGameEndPredicate && Main.AfterMeetingDeathPlayers.Count is not 0) return false;
 
