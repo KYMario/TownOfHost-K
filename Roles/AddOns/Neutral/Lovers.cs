@@ -181,6 +181,7 @@ class Lovers
                 {
                     if (!loversPlayer.Data.IsDead && loversPlayer.PlayerId != deathId) continue;
                     isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId) || Main.meetingdeadlist.Contains(loversPlayer.PlayerId) || GameStates.IsMeeting;
+                    isExiled &= ExtendedPlayerControl.GetDeadBodys().Contains(loversPlayer.Data) is false;//死体が存在していない
 
                     isOneLoveDead = true;
                     foreach (var partnerPlayer in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.OneLove)))
@@ -210,6 +211,8 @@ class Lovers
                 if (my.PlayerId != deathId && !my.Data.IsDead)
                 {
                     PlayerState.GetByPlayerId(my.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
+                    isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == pc.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(pc.PlayerId) || Main.meetingdeadlist.Contains(pc.PlayerId) || GameStates.IsMeeting;
+                    isExiled &= ExtendedPlayerControl.GetDeadBodys().Contains(pc.Data) is false;
                     if (isExiled)
                     {
                         MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.FollowingSuicide, my.PlayerId);
@@ -229,6 +232,7 @@ class Lovers
             {
                 if (!MadonnaLoversPlayer.Data.IsDead && MadonnaLoversPlayer.PlayerId != deathId) continue;
                 isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == MadonnaLoversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(MadonnaLoversPlayer.PlayerId) || Main.meetingdeadlist.Contains(MadonnaLoversPlayer.PlayerId) || GameStates.IsMeeting;
+                isExiled &= ExtendedPlayerControl.GetDeadBodys().Contains(MadonnaLoversPlayer.Data) is false;//死体が存在していない
 
                 isMadonnaLoversDead = true;
                 foreach (var partnerPlayer in MaMadonnaLoversPlayers)

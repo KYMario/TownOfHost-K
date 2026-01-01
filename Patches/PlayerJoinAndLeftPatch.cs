@@ -78,8 +78,8 @@ namespace TownOfHost
                 roleData.ProtectionDurationSeconds = 9999999999;
                 foreach (var option in OptionItem.AllOptions)
                 {
-                    if (Event.OptionLoad.Contains(option.Name) && !Event.Special) option.SetValue(0);
-                    if (Event.CheckRole(option.CustomRole) is false) option.SetValue(0);
+                    if ((Event.OptionLoad.Contains(option.Name) && !Event.Special) &&
+                    (Event.CheckRole(option.CustomRole) is false)) option.SetValue(0);
                 }
                 VanillaOptionHolder.SetVanillaValue();
 

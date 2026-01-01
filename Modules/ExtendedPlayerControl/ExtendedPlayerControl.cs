@@ -657,6 +657,20 @@ namespace TownOfHost
         }
         public static bool IsProtected(this PlayerControl self) => self.protectedByGuardianId > -1;
 
+        public static List<NetworkedPlayerInfo> GetDeadBodys()
+        {
+            List<DeadBody> list = UnityEngine.Object.FindObjectsOfType<DeadBody>().ToList();
+            List<byte> list2 = [];
+            for (int j = 0; j < list.Count; j++)
+            {
+                if ((UnityEngine.Object)(object)list[j] != null && (UnityEngine.Object)(object)list[j].gameObject != null)
+                {
+                    list2.Add(list[j].ParentId);
+                }
+            }
+            List<NetworkedPlayerInfo> deadBodies = list2.Select((byte b) => GameData.Instance.GetPlayerById(b)).ToList();
+            return deadBodies;
+        }
         //汎用
         public static bool Is(this PlayerControl target, CustomRoles role) =>
             role > CustomRoles.NotAssigned ? (role.IsGhostRole() ? PlayerState.GetByPlayerId(target.PlayerId).GhostRole == role : target.GetCustomSubRoles().Contains(role)) : target.GetCustomRole() == role;

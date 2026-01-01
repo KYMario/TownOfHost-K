@@ -173,7 +173,6 @@ namespace TownOfHost.Modules
                 opt.SetFloat(FloatOptionNames.EngineerCooldown, DefaultEngineerCooldown.GetFloat());
                 opt.SetFloat(FloatOptionNames.EngineerInVentMaxTime, DefaultEngineerInVentMaxTime.GetFloat());
                 opt.SetInt(Int32OptionNames.NumEmergencyMeetings, (int)state.NumberOfRemainingButtons);
-                opt.BlackOut(state.IsBlackOut);
 
                 var HasLithing = player.Is(CustomRoles.Lighting);
                 var HasMoon = player.Is(CustomRoles.Moon);
@@ -304,6 +303,7 @@ namespace TownOfHost.Modules
                     opt.SetFloat(FloatOptionNames.ImpostorLightMod, role.IsImpostor() ? MurderMystery.ImpostorVision : MurderMystery.Crewvision);
                     opt.SetFloat(FloatOptionNames.CrewLightMod, role.IsImpostor() ? MurderMystery.ImpostorVision : MurderMystery.Crewvision);
                 }
+                opt.BlackOut(state.IsBlackOut);
             }
             else
             {
