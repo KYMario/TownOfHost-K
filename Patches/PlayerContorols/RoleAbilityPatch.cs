@@ -428,27 +428,37 @@ namespace TownOfHost
                         AmongUsClient.Instance.FinishRpcImmediately(writer);*/
 
                         int clientId = user.GetClientId();
-                        _ = new LateTask(() =>
-                        {
-                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
-                            writer2.Write(id);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                        }, 0.1f, "Vent- BootFromVent", true);
+                        //_ = new LateTask(() =>
+                        //{
+                        MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
+                        writer2.Write(id);
+                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
+                        //}, 0.1f, "Vent- BootFromVent", true);
                         _ = new LateTask(() =>
                         {
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.EnterVent, SendOption.None, clientId);
                             writer2.Write(id);
                             AmongUsClient.Instance.FinishRpcImmediately(writer2);
                             user.RpcResetAbilityCooldown(false, false);//最低でも1sクールあればベントぱかりできない。
-                        }, 0.25f, "Vent- EnterVent", true);
-                        __instance.myPlayer.inVent = false;
+                        }, 0.2f, "Vent- EnterVent", true);
+
                         _ = new LateTask(() =>
                         {
                             MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
                             writer2.Write(id);
                             AmongUsClient.Instance.FinishRpcImmediately(writer2);
                             __instance.myPlayer.inVent = false;
-                        }, 0.8f, "Fix DesyncImpostor Stuck", true);
+                            __instance.myPlayer.walkingToVent = false;
+                            __instance.myPlayer.moveable = true;
+                            __instance.myPlayer.Visible = true;
+                        }, 0.8f, "Vent- EnterVent", true);
+                        _ = new LateTask(() =>
+                        {
+                            __instance.myPlayer.inVent = false;
+                            __instance.myPlayer.walkingToVent = false;
+                            __instance.myPlayer.moveable = true;
+                            __instance.myPlayer.Visible = true;
+                        }, 1f, "FixVentState", true);
                         return false;
                     }
                 }

@@ -47,21 +47,21 @@ namespace TownOfHost.Roles.AddOns.Common
             if (AmongUsClient.Instance.AmHost) { using var sender = new SubRoleRPCSender(CustomRoles.OneWolf, playerId); }
 
             _ = new LateTask(() =>
-        {
-            foreach (var imp in PlayerCatch.AllPlayerControls.Where(pc => pc.GetCustomRole().IsImpostor() && playerIdList.Contains(pc.PlayerId) is false))
             {
-                if (player.PlayerId == imp.PlayerId) continue;
-                if (AmongUsClient.Instance.AmHost)
+                foreach (var imp in PlayerCatch.AllPlayerControls.Where(pc => pc.GetCustomRole().IsImpostor() && playerIdList.Contains(pc.PlayerId) is false))
                 {
-                    imp.RpcSetRoleDesync(imp.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, player.GetClientId());
-                    player.RpcSetRoleDesync(player.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, imp.GetClientId());
+                    if (player.PlayerId == imp.PlayerId) continue;
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        imp.RpcSetRoleDesync(imp.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, player.GetClientId());
+                        player.RpcSetRoleDesync(player.IsAlive() ? RoleTypes.Impostor : RoleTypes.ImpostorGhost, imp.GetClientId());
+                    }
+                    if (playerId == PlayerControl.LocalPlayer.PlayerId)
+                    {
+                        imp.Data.Role.NameColor = Palette.ImpostorRed;
+                    }
                 }
-                if (playerId == PlayerControl.LocalPlayer.PlayerId)
-                {
-                    imp.Data.Role.NameColor = Palette.ImpostorRed;
-                }
-            }
-        }, 0.2f, "SetImpostor", null);
+            }, 0.2f, "SetImpostor", null);
             UtilsNotifyRoles.NotifyRoles(true, true);
         }
         public static void OnCheckMurder(MurderInfo info)

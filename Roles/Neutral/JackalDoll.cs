@@ -31,7 +31,8 @@ public sealed class JackalDoll : RoleBase
     public JackalDoll(PlayerControl player)
     : base(
         RoleInfo,
-        player
+        player,
+        () => HasTask.False
     )
     {
         BossAndSidekicks.Clear();

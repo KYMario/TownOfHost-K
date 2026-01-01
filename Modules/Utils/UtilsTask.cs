@@ -54,6 +54,7 @@ namespace TownOfHost
                     {
                         case CustomRoles.GM:
                         case CustomRoles.SKMadmate:
+                        case CustomRoles.Jackaldoll:
                             hasTasks = false;
                             break;
                         default:

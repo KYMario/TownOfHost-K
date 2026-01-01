@@ -159,7 +159,7 @@ public sealed class Satellite : RoleBase, ISelfVoter
     {
         if (Utils.IsActive(SystemTypes.Comms))
         {
-            Utils.SendMessage(string.Format(GetString("SatelliteModeInfoFall") + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}"));
+            Utils.SendMessage(string.Format(GetString("SatelliteModeInfoFall") + string.Format(GetString("EvilSateliteSkillInfo3"), maximum - UsedSkillCount), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{string.Format(GetString("SatelliteTitle"), UtilsName.GetPlayerColor(votedForId))}"), Player.PlayerId);
             return;
         }
 
