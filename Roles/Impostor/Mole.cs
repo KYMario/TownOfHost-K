@@ -35,7 +35,11 @@ namespace TownOfHost.Roles.Impostor
             ventcount++;
             _ = new LateTask(() =>
             {
-                if (ventcount > 1) return;//2つ以上溜まっている場合は処理無し。
+                if (ventcount > 1)
+                {
+                    ventcount--;
+                    return;//2つ以上溜まっている場合は処理無し。
+                }
                 ventcount--;
                 //簡単の方がええやろ(拗)
                 int chance = IRandom.Instance.Next(0, ShipStatus.Instance.AllVents.Count);
@@ -44,7 +48,7 @@ namespace TownOfHost.Roles.Impostor
                 {
                     Patches.ISystemType.VentilationSystemUpdateSystemPatch.NowVentId[Player.PlayerId] = (byte)ShipStatus.Instance.AllVents[chance].Id;
                 }
-            }, 0.7f, "TP", null);
+            }, 0.7f, $"TP-{ventcount}", null);
             return true;
         }
         public bool OverrideImpVentButton(out string text)
