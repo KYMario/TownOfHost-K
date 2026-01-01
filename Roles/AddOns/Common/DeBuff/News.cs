@@ -63,6 +63,7 @@ namespace TownOfHost.Roles.AddOns.Common
                     SendRole.Add(UtilsRoleText.GetRoleColorAndtext(player.GetCustomRole()));
                 }
             }
+            if (SendRole.Count <= 0) return "";
             sendmessage = string.Format(Translator.GetString($"News_MeetingNews{IRandom.Instance.Next(3)}"), string.Join('、', SendRole));
             return sendmessage;
         }
