@@ -280,7 +280,8 @@ namespace TownOfHost
                     }
                     var setrole = (IDesycImpostor && Player != pc) ? (!isalive ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate) : role;
 
-                    if (pc.PlayerId == Player.PlayerId && pc.GetRoleClass()?.AfterMeetingRole is not null && pc.IsAlive() && !pc.Is(CustomRoles.Amnesia) && Amnesia.dontcanUseability)
+                    if (pc.PlayerId == Player.PlayerId && pc.GetRoleClass()?.AfterMeetingRole is not null && pc.IsAlive()
+                        && (!pc.Is(CustomRoles.Amnesia) || !Amnesia.dontcanUseability))
                     {
                         setrole = pc.GetRoleClass().AfterMeetingRole.Value;
                     }
