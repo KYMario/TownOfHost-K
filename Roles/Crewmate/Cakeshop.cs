@@ -48,40 +48,44 @@ public sealed class Cakeshop : RoleBase, INekomata
             Player.RpcSetCustomRole(CustomRoles.Emptiness);
             return;
         }
-        Logger.Info("あっ、ケーキの効果が切れちゃった!!", nameof(Cakeshop));
-        foreach (var gu in Addedaddons.Where(v => v.Value is CustomRoles.Guarding))
+        _ = new LateTask(() =>
         {
-            var state = PlayerCatch.GetPlayerState(gu.Key);
-
-            state.HaveGuard[1] -= Guarding.HaveGuard;
-        }
-        PlayerState.AllPlayerStates.DoIf(
-            x => Addedaddons.ContainsKey(x.Key),
-            state => PlayerCatch.GetPlayerById(state.Key).RpcReplaceSubRole(Addedaddons[state.Key], true));
-
-        if (!Player.IsAlive())
-        {
-            Addedaddons.Clear();
-            return;
-        }
-        Logger.Info("ケーキちょうど焼けたからあげる!!", nameof(Cakeshop));
-        PlayerCatch.AllAlivePlayerControls.Do(pc =>
-        {
-            if (pc == null) return;
-            var addons = GetAddons(pc.GetCustomRole().GetCustomRoleTypes());
-            if (addons == null) return;
-            var addon = addons.Where(x => !pc.GetCustomSubRoles().Contains(x) && x is not CustomRoles.Amnesia and not CustomRoles.Amanojaku)
-                              .OrderBy(x => Guid.NewGuid())
-                              .FirstOrDefault();
-            Addedaddons[pc.PlayerId] = addon;
-
-            if (addon is CustomRoles.Guarding)
+            Logger.Info("あっ、ケーキの効果が切れちゃった!!", nameof(Cakeshop));
+            foreach (var gu in Addedaddons.Where(v => v.Value is CustomRoles.Guarding))
             {
-                var state = pc.GetPlayerState();
-                state.HaveGuard[1] += Guarding.HaveGuard;
+                var state = PlayerCatch.GetPlayerState(gu.Key);
+
+                state.HaveGuard[1] -= Guarding.HaveGuard;
             }
-            pc.RpcSetCustomRole(addon);
-        });
+            PlayerState.AllPlayerStates.DoIf(
+                x => Addedaddons.ContainsKey(x.Key),
+                state => PlayerCatch.GetPlayerById(state.Key).RpcReplaceSubRole(Addedaddons[state.Key], true));
+
+            if (!Player.IsAlive())
+            {
+                Addedaddons.Clear();
+                return;
+            }
+            Logger.Info("ケーキちょうど焼けたからあげる!!", nameof(Cakeshop));
+            PlayerCatch.AllAlivePlayerControls.Do(pc =>
+            {
+                if (pc == null) return;
+                var addons = GetAddons(pc.GetCustomRole().GetCustomRoleTypes());
+                if (addons == null) return;
+                var addon = addons.Where(x => !pc.GetCustomSubRoles().Contains(x) && x is not CustomRoles.Amnesia and not CustomRoles.Amanojaku)
+                                .OrderBy(x => Guid.NewGuid())
+                                .FirstOrDefault();
+                Addedaddons[pc.PlayerId] = addon;
+
+                if (addon is CustomRoles.Guarding)
+                {
+                    var state = pc.GetPlayerState();
+                    state.HaveGuard[1] += Guarding.HaveGuard;
+                }
+                pc.RpcSetCustomRole(addon);
+            });
+            UtilsNotifyRoles.NotifyRoles();
+        }, 5f, "CakeshopAssign", true);
     }
 
     CustomRoles[] GetAddons(CustomRoleTypes type)
