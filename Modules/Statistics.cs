@@ -7,11 +7,13 @@ using TownOfHost.Roles.Core;
 using static TownOfHost.Translator;
 using static TownOfHost.PlayerCatch;
 using static TownOfHost.UtilsRoleText;
+using System;
 
 namespace TownOfHost
 {
     public class SaveStatistics
     {
+        public static bool IsOldVersion = false;//過去バージョンで起動されているかの確認。データが壊れる可能性があるので統計しない。
         private static readonly string PATH = new($"{Application.persistentDataPath}/TownOfHost_K/Statistics.txt");
         public static void SetLogFolder()
         {
@@ -32,6 +34,7 @@ namespace TownOfHost
                 {
                     File.Move($"{Application.persistentDataPath}/TownOfHost_K/Statistics.txt", PATH);
                 }
+                if (IsOldVersion) return;
 
                 if (Statistics.NowStatistics == null || Statistics.riset)
                 {
@@ -56,6 +59,12 @@ namespace TownOfHost
                     t += "!";
                     t += $"414";
                     t += $"!0!0";
+                    t += "!";
+                    foreach (var mo in EnumHelper.GetAllValues<CustomGameMode>())
+                    {
+                        t += $"{(int)mo}$0$0&";
+                    }
+                    t += $"!{Main.version}";
                     Main.SKey.Value = $"414";
                     Statistics.riset = false;
                     Logger.Info($"や<color>っ<size>ほ<line=ad>～！".RemoveHtmlTags(), "Statistics");
@@ -89,6 +98,13 @@ namespace TownOfHost
                     t += $"{a}";
                     t += $"!{Statistics.NowStatistics.task.Item1}!{Statistics.NowStatistics.task.Item2}";
 
+                    t += "!";
+                    foreach (var mode in Statistics.NowStatistics.gamemodecount)
+                    {
+                        t += $"{(int)mode.Key}${mode.Value.count}${mode.Value.win}&";
+                    }
+                    t += $"!{Main.version}";
+
                     File.WriteAllText(PATH, t);
                     Main.SKey.Value = $"{a}";
                 }
@@ -121,12 +137,13 @@ namespace TownOfHost
                     return null;
                 }
                 var age = Text.Split("!");
-                if (age.Count() is not 7) return null;
+                if (age.Count() is not 9 and not 7) return null;
                 int.TryParse(age[0], out int gamecount);
 
                 Dictionary<CustomRoles, (int win, int loss)> RoleCount = new();
                 Dictionary<CustomDeathReason, int> Killcount = new();
                 Dictionary<CustomDeathReason, int> diecount = new();
+                Dictionary<CustomGameMode, (int count, int win)> gamemodecount = new();
 
                 var rolea = age[1];
                 var roleage = rolea.Split("&");
@@ -175,7 +192,33 @@ namespace TownOfHost
                 if (!int.TryParse(age[5], out int task)) task = 0;
                 if (!int.TryParse(age[6], out int all)) all = 0;
 
-                return new Statistics(gamecount, RoleCount, Killcount, diecount, (task, all));
+                var version = Main.version;
+                if (age.Count() is not 7)
+                {
+                    var mode = age[7];
+                    var modeage = mode.Split("&");
+                    foreach (var text in modeage)
+                    {
+                        var subage = text.Split("$");
+                        if (subage.Count() != 3) { Logger.Error($"modeのsubageが3以外({subage.Count()})", "Statistics"); continue; }
+                        if (!int.TryParse(subage[0], out int gamemodenumber)) continue;
+                        if (!int.TryParse(subage[1], out int count)) continue;
+                        if (!int.TryParse(subage[2], out int win)) continue;
+
+                        CustomGameMode gamemode = (CustomGameMode)gamemodenumber;
+                        gamemodecount.TryAdd(gamemode, (count, win));
+                    }
+                    version = Version.Parse(age[8]);
+                    if (Main.version < version) IsOldVersion = true;
+                }
+                else
+                {
+                    foreach (var mo in EnumHelper.GetAllValues<CustomGameMode>())
+                    {
+                        gamemodecount.TryAdd(mo, (0, 0));
+                    }
+                }
+                return new Statistics(gamecount, RoleCount, Killcount, diecount, (task, all), gamemodecount, version);
             }
             catch
             {
@@ -192,6 +235,10 @@ namespace TownOfHost
             {
                 return GetString("StatisticsError.Null");
             }
+            if (IsOldVersion)
+            {
+                return GetString("StatisticsError.Oldversion");
+            }
 
             text += $"<size=60%>{GetString("Statistics.GameCount")}：{Statistics.NowStatistics.gamecount}";
 
@@ -207,6 +254,13 @@ namespace TownOfHost
                 wincount += roledata.Value.Item2;
             }
             text += $"\n{GetString("Statistics.WinCount")}{wincount}";
+            var modetext = "";
+            foreach (var gamemodedata in Statistics.NowStatistics.gamemodecount)
+            {
+                if (gamemodedata.Key is CustomGameMode.All) continue;
+                modetext += $"\n{GetString(gamemodedata.Key.ToString())} ： {gamemodedata.Value.win}/{gamemodedata.Value.count}";
+            }
+            if (modetext != "") text += $"\n★{GetString("Statistics.Modecount")}<size=50%>{modetext}</size>";
             if (role != "") text += $"\n★{GetString("Statistics.RoleWinCount")}<size=50%>{role}</size>";
 
             var kill = "";
@@ -241,18 +295,24 @@ namespace TownOfHost
         public Dictionary<CustomDeathReason, int> Killcount;
         public Dictionary<CustomDeathReason, int> diecount;
         public (int, int) task;
+        public Dictionary<CustomGameMode, (int count, int win)> gamemodecount;
+        public Version version;
 
-        public Statistics(int gamecount, Dictionary<CustomRoles, (int, int)> Rolecount, Dictionary<CustomDeathReason, int> Killcount, Dictionary<CustomDeathReason, int> diecount, (int, int) task)
+        public Statistics(int gamecount, Dictionary<CustomRoles, (int, int)> Rolecount, Dictionary<CustomDeathReason, int> Killcount, Dictionary<CustomDeathReason, int> diecount, (int, int) task
+        , Dictionary<CustomGameMode, (int count, int win)> gamemodecount, Version version)
         {
             this.gamecount = gamecount;
             this.Rolecount = Rolecount;
             this.Killcount = Killcount;
             this.diecount = diecount;
             this.task = task;
+            this.gamemodecount = gamemodecount;
+            this.version = version;
         }
 
         public static string CheckAdd(bool InLoby)
         {
+            if (SaveStatistics.IsOldVersion) return GetString("StatisticsError.Oldversion");
             if (CustomWinnerHolder.WinnerTeam == CustomWinner.Default && !InLoby) return GetString("StatisticsError.forceend");
 #if DEBUG
             if (DebugModeManager.EnableDebugMode.GetBool() || DebugModeManager.EnableTOHkDebugMode.GetBool()) return GetString("StatisticsError.Debug");
@@ -279,13 +339,20 @@ namespace TownOfHost
             var rc = NowStatistics.Rolecount;
             var kc = NowStatistics.Killcount;
             var dc = NowStatistics.diecount;
+            bool Iswinner = false;
 
+            if (Main.winnerList.Contains(pc.PlayerId))
+            {
+                Iswinner = true;
+            }
             {
                 if (!rc.TryGetValue(role, out var data)) goto pyoon;
                 var i1 = data.Item1;
                 var i2 = data.Item2;
-                if (Main.winnerList.Contains(pc.PlayerId)) i2 += 1;
-
+                if (Iswinner)
+                {
+                    i2 += 1;
+                }
                 rc[role] = (i1 + 1, i2);
             }
             goto pyoon;
@@ -310,8 +377,15 @@ namespace TownOfHost
 
                 task = (task.Item1 + state.CompletedTasksCount, task.Item2 + (state.IsTaskFinished ? 1 : 0));
             }
+            var newgamemodecount = NowStatistics.gamemodecount;
+            var modecount = NowStatistics.gamemodecount.TryGetValue(Options.CurrentGameMode, out var gamedata) ? gamedata : (0, 0);
+            var newcount = (modecount.Item1 + 1, modecount.Item2 + (Iswinner ? 1 : 0));
+            if (!newgamemodecount.TryAdd(Options.CurrentGameMode, newcount))
+            {
+                newgamemodecount[Options.CurrentGameMode] = newcount;
+            }
 
-            NowStatistics = new Statistics(NowStatistics.gamecount + 1, rc, kc, dc, task);
+            NowStatistics = new Statistics(NowStatistics.gamecount + 1, rc, kc, dc, task, newgamemodecount, Main.version);
 
             SaveStatistics.Save();
         }

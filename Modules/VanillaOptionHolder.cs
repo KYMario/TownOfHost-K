@@ -16,6 +16,7 @@ class VanillaOptionHolder
         GameEmergencyCooldown, GameDiscussTime, GameVotingTime,
         GameKillDistance, GameImpostorLight, GameCrewLight,
         GameCommonTasks, GameLongTasks, GameShortTasks, NumEmergencyMeetings,
+        MapId,
         //bool
         GameAnonymousVotes = 200
     }
@@ -42,6 +43,7 @@ class VanillaOptionHolder
                     case VanillaOptionName.GameNumImpostors:
                     case VanillaOptionName.NumEmergencyMeetings: Rulu = new(0, 15, 1); defo = 1f; break;
                     case VanillaOptionName.GameKillDistance:
+                    case VanillaOptionName.MapId: Rulu = new(0, 5, 1); defo = 1f; break;
                     case VanillaOptionName.GameLongTasks: Rulu = new(0, 99, 1); defo = 2f; break;
                     case VanillaOptionName.GameShortTasks: Rulu = new(0, 99, 1); defo = 4f; break;
                     case VanillaOptionName.GameCommonTasks: Rulu = new(0, 99, 1); defo = 2f; break;
@@ -87,6 +89,7 @@ class VanillaOptionHolder
                 case VanillaOptionName.GameShortTasks: Main.NormalOptions.SetInt(Int32OptionNames.NumShortTasks, data.Value.GetInt()); break;
                 case VanillaOptionName.NumEmergencyMeetings: Main.NormalOptions.SetInt(Int32OptionNames.NumEmergencyMeetings, data.Value.GetInt()); break;
                 case VanillaOptionName.GameAnonymousVotes: Main.NormalOptions.SetBool(BoolOptionNames.AnonymousVotes, data.Value.GetBool()); break;
+                case VanillaOptionName.MapId: Main.NormalOptions.SetByte(ByteOptionNames.MapId, (byte)data.Value.GetInt()); break;
             }
         }
         StringOptionStartPatch.all.Do(x =>
