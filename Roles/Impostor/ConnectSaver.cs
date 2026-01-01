@@ -183,9 +183,8 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
                 CheckMurderPatch.TimeSinceLastKill[killer.PlayerId] = 30f;//キル連打とかいう奴を無視する奴
                 var targetid = target.PlayerId == target1 ? target2 : target1;
                 var connecttarget = PlayerCatch.GetPlayerById(targetid);
-                if (CustomRoleManager.OnCheckMurder(killer, connecttarget, connecttarget, connecttarget, true, Killpower: 10))//一応殺した判定は貰うしガードとかいうの知らない。
+                if (CustomRoleManager.OnCheckMurder(killer, connecttarget, connecttarget, connecttarget, true, Killpower: 10, deathReason: deathReasons[OptionDeathReason.GetValue()]))//一応殺した判定は貰うしガードとかいうの知らない。
                 {
-                    PlayerState.GetByPlayerId(connecttarget.PlayerId).DeathReason = deathReasons[OptionDeathReason.GetValue()];
                     connecttarget.SetRealKiller(killer);
                 }
             }

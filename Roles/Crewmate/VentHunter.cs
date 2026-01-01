@@ -142,11 +142,7 @@ public sealed class VentHunter : RoleBase
     public void TrapKill(PlayerControl pc)
     {
         if (!pc.IsAlive()) return;
-        if (CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, false))
-        {
-            var state = PlayerState.GetByPlayerId(pc.PlayerId);
-            state.DeathReason = CustomDeathReason.Trap;
-        }
+        CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, false, deathReason: CustomDeathReason.Trap);
     }
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)

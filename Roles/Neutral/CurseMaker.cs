@@ -200,10 +200,7 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
         {
             var target = PlayerCatch.GetPlayerById(Cursedid.Key);
             var state = PlayerState.GetByPlayerId(Cursedid.Key);
-            if (CustomRoleManager.OnCheckMurder(Player, target, target, target, true, true, 10))
-            {
-                state.DeathReason = CustomDeathReason.Spell;
-            }
+            CustomRoleManager.OnCheckMurder(Player, target, target, target, true, true, 10, CustomDeathReason.Spell);
         }
 
         CanWin = true;

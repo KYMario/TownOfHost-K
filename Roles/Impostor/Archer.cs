@@ -226,9 +226,8 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
             if (distances.Count <= 0) return true;
             var nearplayerId = distances.OrderBy(x => x.Value).First().Key;
             var nearplayer = PlayerCatch.GetPlayerById(nearplayerId);
-            if (CustomRoleManager.OnCheckMurder(Player, nearplayer, nearplayer, nearplayer, true, Killpower: 1))
+            if (CustomRoleManager.OnCheckMurder(Player, nearplayer, nearplayer, nearplayer, true, Killpower: 1, deathReason: CustomDeathReason.Hit))
             {
-                PlayerState.GetByPlayerId(nearplayerId).DeathReason = CustomDeathReason.Hit;
                 if (Player.IsModClient()) RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
                 else Player.KillFlash();
             }

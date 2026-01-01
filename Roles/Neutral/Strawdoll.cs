@@ -194,9 +194,8 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             }
             _ = new LateTask(() =>
             {
-                if (CustomRoleManager.OnCheckMurder(killer, Target, Target, Target, true, true, 10))
+                if (CustomRoleManager.OnCheckMurder(killer, Target, Target, Target, true, true, 10, CustomDeathReason.Spell))
                 {
-                    Target.GetPlayerState().DeathReason = CustomDeathReason.Spell;
                     Target = null;
                     killedcount++;
                     UtilsGameLog.AddGameLog("Strawdoll", string.Format(GetString("StrawdollKilledLog"), killedcount));

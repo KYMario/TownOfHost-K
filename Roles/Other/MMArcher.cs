@@ -224,9 +224,8 @@ public sealed class MMArcher : RoleBase, IKiller, IUsePhantomButton
                     return false;
                 }
             }
-            if (CustomRoleManager.OnCheckMurder(Player, nearplayer, nearplayer, nearplayer, true, Killpower: 1))
+            if (CustomRoleManager.OnCheckMurder(Player, nearplayer, nearplayer, nearplayer, true, Killpower: 1, deathReason: CustomDeathReason.Hit))
             {
-                PlayerState.GetByPlayerId(nearplayerId).DeathReason = CustomDeathReason.Hit;
                 if (Player.IsModClient()) RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
                 else Player.KillFlash();
 

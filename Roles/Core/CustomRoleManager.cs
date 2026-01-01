@@ -44,14 +44,16 @@ public static class CustomRoleManager
     /// <param name="force">RoleClassのCheckMurder/Guardのチェックをスルーしてキルを行うか</param>
     /// <param name="RoleAbility">キル後のMurderPlayerの処理を行うか</param>
     /// <param name="Killpower">キルの強さ</param>
+    /// <param name="deathReason">死因</param>
     /// <returns></returns>
-    public static bool OnCheckMurder(PlayerControl attemptKiller, PlayerControl attemptTarget, PlayerControl appearanceKiller, PlayerControl appearanceTarget, bool? force = false, bool? DontRoleAbility = false, int Killpower = 1)
+    public static bool OnCheckMurder(PlayerControl attemptKiller, PlayerControl attemptTarget, PlayerControl appearanceKiller, PlayerControl appearanceTarget, bool? force = false, bool? DontRoleAbility = false, int Killpower = 1,
+    CustomDeathReason deathReason = CustomDeathReason.Kill)
     {
         Logger.Info($"Attempt  :{attemptKiller.GetNameWithRole().RemoveHtmlTags()} => {attemptTarget.GetNameWithRole().RemoveHtmlTags()}", "CheckMurder");
         if (appearanceKiller != attemptKiller || appearanceTarget != attemptTarget)
             Logger.Info($"Apperance:{appearanceKiller.GetNameWithRole().RemoveHtmlTags()} => {appearanceTarget.GetNameWithRole().RemoveHtmlTags()}", "CheckMurder");
 
-        var info = new MurderInfo(attemptKiller, attemptTarget, appearanceKiller, appearanceTarget, DontRoleAbility, Killpower, 0);
+        var info = new MurderInfo(attemptKiller, attemptTarget, appearanceKiller, appearanceTarget, DontRoleAbility, Killpower, 0, deathReason);
 
         appearanceKiller.ResetKillCooldown();
 
@@ -313,7 +315,7 @@ public static class CustomRoleManager
         if (targetState.DeathReason == CustomDeathReason.etc)
         {
             //死因が設定されていない場合は死亡判定
-            targetState.DeathReason = CustomDeathReason.Kill;
+            targetState.DeathReason = info?.DeathReason ?? CustomDeathReason.Kill;
         }
         //あっ!死ぬ前にどこにいたかだけ教えてね!
         var roomName = attemptTarget.GetShipRoomName();
@@ -678,7 +680,8 @@ public class MurderInfo
     /// キルができる状態か
     /// </summary>
     public bool IsCanKilling => !CheckHasGuard() && !IsSuicide && !IsFakeSuicide && DoKill && CanKill && !IsAccident;
-    public MurderInfo(PlayerControl attemptKiller, PlayerControl attemptTarget, PlayerControl appearanceKiller, PlayerControl appearancetarget, bool? DontRoleAbility = false, int Killpower = 1, int guardpower = 0)
+    public CustomDeathReason DeathReason;
+    public MurderInfo(PlayerControl attemptKiller, PlayerControl attemptTarget, PlayerControl appearanceKiller, PlayerControl appearancetarget, bool? DontRoleAbility = false, int Killpower = 1, int guardpower = 0, CustomDeathReason deathReason = CustomDeathReason.Kill)
     {
         AttemptKiller = attemptKiller;
         AttemptTarget = attemptTarget;
@@ -688,6 +691,7 @@ public class MurderInfo
         killerpos = appearanceKiller.transform.position;
         KillPower = Killpower;
         GuardPower = guardpower;
+        DeathReason = deathReason;
     }
     public bool CheckHasGuard() => KillPower <= GuardPower;
 }

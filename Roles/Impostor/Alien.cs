@@ -215,11 +215,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
                     Player.RpcMurderPlayer(Player);
                     continue;
                 }
-                if (CustomRoleManager.OnCheckMurder(Player, bomtarget, bomtarget, bomtarget, true, true, 2))
-                {
-                    PlayerState.GetByPlayerId(bomtarget.PlayerId).DeathReason = CustomDeathReason.Bombed;
-                    bomtarget.SetRealKiller(bomtarget);
-                }
+                CustomRoleManager.OnCheckMurder(Player, bomtarget, bomtarget, bomtarget, true, true, 2, CustomDeathReason.Bombed);
             }
             return;
         }
@@ -353,10 +349,7 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
                 return;
             }
             IsDead = true;
-            if (CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false))
-            {
-                PlayerState.GetByPlayerId(killer.PlayerId).DeathReason = CustomDeathReason.Revenge;
-            }
+            CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false, deathReason: CustomDeathReason.Revenge);
         }
     }
     public bool IsCandidate(PlayerControl player)
@@ -380,9 +373,8 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         var vampire = Player;
         if (target.IsAlive())
         {
-            if (CustomRoleManager.OnCheckMurder(vampire, target, target, target, true, Killpower: 1))
+            if (CustomRoleManager.OnCheckMurder(vampire, target, target, target, true, Killpower: 1, deathReason: CustomDeathReason.Bite))
             {
-                PlayerState.GetByPlayerId(target.PlayerId).DeathReason = CustomDeathReason.Bite;
                 target.SetRealKiller(vampire);
                 Logger.Info($"Alienに噛まれている{target.name}を自爆させました。", "Alien.Va");
                 if (!isButton && vampire.IsAlive())

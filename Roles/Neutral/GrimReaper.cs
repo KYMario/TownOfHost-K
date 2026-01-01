@@ -153,9 +153,7 @@ namespace TownOfHost.Roles.Neutral
             var Grim = Player;
             if (target.IsAlive() && Player.IsAlive())
             {
-                PlayerState.GetByPlayerId(target.PlayerId).DeathReason = CustomDeathReason.Grim;
-                target.SetRealKiller(Grim);
-                CustomRoleManager.OnCheckMurder(Grim, target, target, target, true, true, Killpower: 2);
+                CustomRoleManager.OnCheckMurder(Grim, target, target, target, true, true, Killpower: 2, deathReason: CustomDeathReason.Grim);
                 if (!isButton && Grim.IsAlive()) RPC.PlaySoundRPC(Grim.PlayerId, Sounds.KillSound);
             }
         }

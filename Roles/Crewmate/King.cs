@@ -168,9 +168,7 @@ public sealed class King : RoleBase
                         continue;
                     }
 
-                    PlayerState state = PlayerState.GetByPlayerId(pc.PlayerId);
-                    state.DeathReason = deathReasons[OptDeathReason.GetValue()];
-                    CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 999);
+                    CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 999, deathReason: deathReasons[OptDeathReason.GetValue()]);
                     Logger.Info($"{pc.name}が巻き込まれちゃった！", "Kingaboooooon");
                     crews.Remove(pc);
                 }

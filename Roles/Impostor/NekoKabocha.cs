@@ -78,10 +78,7 @@ public sealed class NekoKabocha : RoleBase, IImpostor, INekomata
             logger.Info("キラーは仕返し対象ではないので仕返しされません");
             return;
         }
-        if (CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false))
-        {
-            PlayerState.GetByPlayerId(killer.PlayerId).DeathReason = CustomDeathReason.Revenge;
-        }
+        CustomRoleManager.OnCheckMurder(Player, killer, Player, killer, true, false, deathReason: CustomDeathReason.Revenge);
     }
     public bool DoRevenge(CustomDeathReason deathReason) => revengeOnExile && deathReason == CustomDeathReason.Vote;
     public bool IsCandidate(PlayerControl player)

@@ -150,10 +150,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
             var dis = Vector2.Distance(target.GetTruePosition(), Player.GetTruePosition());
             if (dis <= NowBoomDis)
             {
-                if (CustomRoleManager.OnCheckMurder(Player, target, target, target, true, false, 2))
-                {
-                    target.GetPlayerState().DeathReason = CustomDeathReason.Bombed;
-                }
+                CustomRoleManager.OnCheckMurder(Player, target, target, target, true, false, 2, CustomDeathReason.Bombed);
             }
         }
         if (OptionSuicide.GetBool() is false)

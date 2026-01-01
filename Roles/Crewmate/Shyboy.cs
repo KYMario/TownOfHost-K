@@ -146,9 +146,7 @@ public sealed class Shyboy : RoleBase
                             float dis = vector.magnitude;
                             if (HitoDistance <= Shydeathdi && !PhysicsHelpers.AnyNonTriggersBetween(GSpos, pc.transform.position, dis, Constants.ShipAndObjectsMask))
                             {
-                                if (CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 10))
-                                    pc.PlayerId.GetPlayerState().DeathReason = CustomDeathReason.Bombed;
-
+                                CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 10, CustomDeathReason.Bombed);
                                 Logger.Info($"Booooooooooooom! => {pc.Data.GetLogPlayerName()}", "ShyboyDie");
                             }
                         }

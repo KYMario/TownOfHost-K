@@ -116,9 +116,8 @@ namespace TownOfHost.Roles.Impostor
                         Player.RpcMurderPlayer(Player);
                         continue;
                     }
-                    if (CustomRoleManager.OnCheckMurder(Player, target, target, target, true, true, 10))
+                    if (CustomRoleManager.OnCheckMurder(Player, target, target, target, true, true, 10, CustomDeathReason.Bombed))
                     {
-                        PlayerState.GetByPlayerId(target.PlayerId).DeathReason = CustomDeathReason.Bombed;
                         target.SetRealKiller(target);
                     }
                 }
