@@ -394,6 +394,12 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
+            if (Statistisc.gameObject != null)
+                Statistisc.gameObject.SetActive(false);
+            if (NextButton.Button.gameObject != null)
+                NextButton.Button.gameObject.SetActive(false);
+            if (NextButton.Button.gameObject != null)
+                BackButton.Button.gameObject.SetActive(false);
 
             {
                 var warning = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/CrossplayWarning");

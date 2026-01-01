@@ -73,6 +73,7 @@ namespace TownOfHost
                     if (!che) return true;
                     __instance.UpdateValue();
                     GameOptionsSender.RpcSendOptions();
+                    OptionSaver.Save();
                     OptionShower.Update = true;//バニラ側の処理で送信されないため個別でフラグを立てる
                     return false;
                 }
@@ -87,9 +88,11 @@ namespace TownOfHost
                     __instance.UpdateValue();
                     GameOptionsSender.RpcSendOptions();
                     OptionShower.Update = true;
+                    OptionSaver.Save();
                     return false;
                 }
             }
+            OptionSaver.Save();
             return true;
         }
     }
@@ -161,6 +164,7 @@ namespace TownOfHost
                     __instance.UpdateValue();
                     GameOptionsSender.RpcSendOptions();
                     OptionShower.Update = true; //バニラ側の処理で送信されないため個別でフラグを立てる
+                    OptionSaver.Save();
                     return false;
                 }
             }
@@ -174,9 +178,11 @@ namespace TownOfHost
                     __instance.UpdateValue();
                     GameOptionsSender.RpcSendOptions();
                     OptionShower.Update = true;
+                    OptionSaver.Save();
                     return false;
                 }
             }
+            OptionSaver.Save();
             return true;
         }
     }

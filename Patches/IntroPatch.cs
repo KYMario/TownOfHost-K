@@ -37,6 +37,7 @@ namespace TownOfHost
             {
                 CustomRoles role = PlayerControl.LocalPlayer.GetCustomRole();
                 if (PlayerControl.LocalPlayer.GetMisidentify(out var missrole)) role = missrole;
+                // コピペ貼り付け
 
                 if (!role.IsVanilla() && !PlayerControl.LocalPlayer.Is(CustomRoles.Amnesia))
                 {
