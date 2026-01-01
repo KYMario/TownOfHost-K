@@ -42,7 +42,7 @@ class VanillaOptionHolder
                     case VanillaOptionName.GameImpostorLight: Rulu = new(0f, 5, 0.01f); defo = 1f; break;
                     case VanillaOptionName.GameNumImpostors:
                     case VanillaOptionName.NumEmergencyMeetings: Rulu = new(0, 15, 1); defo = 1f; break;
-                    case VanillaOptionName.GameKillDistance:
+                    case VanillaOptionName.GameKillDistance: Rulu = new(0, 3, 1); defo = 0f; break;
                     case VanillaOptionName.MapId: Rulu = new(0, 5, 1); defo = 1f; break;
                     case VanillaOptionName.GameLongTasks: Rulu = new(0, 99, 1); defo = 2f; break;
                     case VanillaOptionName.GameShortTasks: Rulu = new(0, 99, 1); defo = 4f; break;
@@ -137,6 +137,7 @@ class VanillaOptionHolder
                 case VanillaOptionName.GameShortTasks: data.Value.SetValue((int)(normaloption.GetInt(Int32OptionNames.NumShortTasks) / ((FloatOptionItem)data.Value).Rule.Step), false, false); break;
                 case VanillaOptionName.NumEmergencyMeetings: data.Value.SetValue((int)(normaloption.GetInt(Int32OptionNames.NumEmergencyMeetings) / ((FloatOptionItem)data.Value).Rule.Step), false, false); break;
                 case VanillaOptionName.GameAnonymousVotes: data.Value.SetValue(normaloption.GetBool(BoolOptionNames.AnonymousVotes) ? 1 : 0, false); break;
+                case VanillaOptionName.MapId: data.Value.SetValue(normaloption.GetByte(ByteOptionNames.MapId)); break;
             }
         }
         OptionSaver.Save();
@@ -161,6 +162,7 @@ class VanillaOptionHolder
                 case VanillaOptionName.GameShortTasks: Main.NormalOptions.SetInt(Int32OptionNames.NumShortTasks, 4); break;
                 case VanillaOptionName.NumEmergencyMeetings: Main.NormalOptions.SetInt(Int32OptionNames.NumEmergencyMeetings, 1); break;
                 case VanillaOptionName.GameAnonymousVotes: Main.NormalOptions.SetBool(BoolOptionNames.AnonymousVotes, true); break;
+                case VanillaOptionName.MapId: Main.NormalOptions.SetByte(ByteOptionNames.MapId, 0); break;
             }
         }
         StringOptionStartPatch.all.Do(x =>
