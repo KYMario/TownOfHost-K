@@ -129,7 +129,6 @@ namespace TownOfHost
                         }
                         LastNeutral.CheckAddWin(pc, reason);
                         Amanojaku.CheckWin(pc, reason);
-
                     }
                 }
                 if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw)

@@ -94,7 +94,7 @@ namespace TownOfHost
             var callerMethod = caller.GetMethod();
             string callerMethodName = callerMethod.Name;
             string callerClassName = callerMethod.DeclaringType.FullName;
-            Logger.Info($"RASACW {WinnerTeam} => {winner} , Call:{callerMethodName}.{callerClassName}", "CustomWinner");
+            Logger.Info($"RASACW {WinnerTeam} =>? {winner}, Call:{callerClassName}.{callerMethodName}", "CustomWinner");
 
             if (SoloWinOption.AllData.TryGetValue(hantrole is CustomRoles.NotAssigned ? (CustomRoles)winner : hantrole, out var data))
             {
@@ -109,6 +109,7 @@ namespace TownOfHost
                     Reset();
                     WinPriority = data.OptionWin.GetInt();
                     WinnerTeam = winner;
+                    Logger.Info($"{WinPriority} < {data.OptionWin.GetInt()}", "CustomWinner");
                     if (playerId is byte.MaxValue) return true;
                     WinnerIds.Add(playerId);
                     return true;
@@ -119,6 +120,7 @@ namespace TownOfHost
                     //追加勝利
                     UtilsGameLog.AddGameLog("AddWinner", $"AddWin:{UtilsRoleText.GetRoleColorAndtext(winnerRole)}");
                     AdditionalWinnerRoles.Add((CustomRoles)winner);
+                    Logger.Info($"{WinPriority} == {data.OptionWin.GetInt()}", "CustomWinner");
                     if (playerId is byte.MaxValue) return true;
                     WinnerIds.Add(playerId);
                     CantWinPlayerIds.Remove(playerId);
@@ -126,6 +128,7 @@ namespace TownOfHost
                 }
                 else
                 {
+                    Logger.Info($"{WinPriority} > {data.OptionWin.GetInt()}", "CustomWinner");
                     return false;
                 }
             }
