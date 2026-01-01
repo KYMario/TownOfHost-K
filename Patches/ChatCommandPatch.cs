@@ -26,6 +26,7 @@ using static TownOfHost.Translator;
 using static TownOfHost.PlayerCatch;
 using TownOfHost.Roles.Core.Descriptions;
 using TownOfHost.Patches;
+using TownOfHost.Roles.AddOns.Common;
 
 namespace TownOfHost
 {
@@ -483,28 +484,40 @@ namespace TownOfHost
                                 send += ag;
                             }
 
-                            Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "impostorsChat");
-                            foreach (var imp in PlayerCatch.AllPlayerControls)
+                            Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "impostorsChat"); List<PlayerControl> sendplayers = new();
+                            foreach (var imp in AllPlayerControls)
                             {
-                                if ((imp.GetRoleClass() as Amnesiac)?.Realized == false) continue;
-                                if (imp && (((imp?.GetCustomRole().IsImpostor() ?? false) || imp?.GetCustomRole() is CustomRoles.Egoist) && !PlayerControl.LocalPlayer.Is(CustomRoles.OneWolf)) || !imp.IsAlive())
+                                if ((imp.GetRoleClass() as Amnesiac)?.Realized == false && imp.IsAlive()) continue;
+
+                                if ((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist)
+                                && OneWolf.playerIdList.Contains(imp.PlayerId) is false)
                                 {
-                                    var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                                    writer.StartMessage(imp.GetClientId());
-                                    writer.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)RpcCalls.SetName)
-                                    .Write(PlayerControl.LocalPlayer.Data.NetId)
-                                    .Write($"<line-height=-18%>\n<#ff1919>☆{PlayerControl.LocalPlayer.GetPlayerColor()}☆</color></line-height>")
-                                    .EndRpc();
-                                    writer.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)RpcCalls.SendChat)
-                                    .Write(send.Mark(Palette.ImpostorRed))
-                                    .EndRpc();
-                                    writer.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)RpcCalls.SetName)
-                                    .Write(PlayerControl.LocalPlayer.Data.NetId)
-                                    .Write(PlayerControl.LocalPlayer.Data.GetLogPlayerName())
-                                    .EndRpc();
-                                    writer.EndMessage();
-                                    writer.SendMessage();
+                                    sendplayers.Add(imp);
+                                    continue;
                                 }
+                                if (!imp.IsAlive())
+                                {
+                                    sendplayers.Add(imp);
+                                    continue;
+                                }
+                            }
+                            foreach (var sendplayer in sendplayers)
+                            {
+                                var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                                writer.StartMessage(sendplayer.GetClientId());
+                                writer.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)RpcCalls.SetName)
+                                .Write(PlayerControl.LocalPlayer.Data.NetId)
+                                .Write($"<line-height=-18%>\n<#ff1919>☆{PlayerControl.LocalPlayer.GetPlayerColor()}☆</color></line-height>")
+                                .EndRpc();
+                                writer.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)RpcCalls.SendChat)
+                                .Write(send.Mark(Palette.ImpostorRed))
+                                .EndRpc();
+                                writer.StartRpc(PlayerControl.LocalPlayer.NetId, (byte)RpcCalls.SetName)
+                                .Write(PlayerControl.LocalPlayer.Data.NetId)
+                                .Write(PlayerControl.LocalPlayer.Data.GetLogPlayerName())
+                                .EndRpc();
+                                writer.EndMessage();
+                                writer.SendMessage();
                             }
                         }
                         break;
@@ -1415,9 +1428,9 @@ namespace TownOfHost
                 case "/impstorchat":
                 case "/impct":
                 case "/ic":
-                    if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && player.IsAlive() && (player.GetCustomRole().IsImpostor() || player.GetCustomRole() is CustomRoles.Egoist) && !player.Is(CustomRoles.OneWolf))
+                    if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && player.IsAlive() && (player.GetCustomRole().IsImpostor() || player.GetCustomRole() is CustomRoles.Egoist))
                     {
-                        if ((player.GetRoleClass() as Amnesiac)?.Realized == false)
+                        if ((player.GetRoleClass() as Amnesiac)?.Realized == false || OneWolf.playerIdList.Contains(player.PlayerId))
                         {
                             canceled = true;
                             break;
@@ -1426,19 +1439,33 @@ namespace TownOfHost
                         if (GetHideSendText(ref canceled, ref send) is false) return;
 
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "ImpostorChat");
+                        List<PlayerControl> sendplayers = new();
                         foreach (var imp in AllPlayerControls)
                         {
                             if ((imp.GetRoleClass() as Amnesiac)?.Realized == false && imp.IsAlive()) continue;
-                            if (imp && (((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist) && !player.Is(CustomRoles.OneWolf)) || (!imp.IsAlive() && PlayerControl.LocalPlayer.PlayerId == imp?.PlayerId) || (Isclient && !imp.IsAlive())) && (imp.PlayerId != player.PlayerId && !Isclient))
+                            if (imp.PlayerId == player.PlayerId && !Isclient) continue;
+
+                            if ((imp.GetCustomRole().IsImpostor() || imp.GetCustomRole() is CustomRoles.Egoist)
+                            && OneWolf.playerIdList.Contains(imp.PlayerId) is false)
                             {
-                                if (AmongUsClient.Instance.AmHost)
-                                {
-                                    var clientid = imp.GetClientId();
-                                    if (clientid == -1) continue;
-                                    string title = $"<line-height=-18%>\n<#ff1919>☆{player.GetPlayerColor()}☆</line-height>";
-                                    string sendtext = send.Mark(Palette.ImpostorRed);
-                                    SendMessage(sendtext, imp.PlayerId, title);
-                                }
+                                sendplayers.Add(imp);
+                                continue;
+                            }
+                            if (!imp.IsAlive() && (PlayerControl.LocalPlayer.PlayerId == imp?.PlayerId || Isclient))
+                            {
+                                sendplayers.Add(imp);
+                                continue;
+                            }
+                        }
+                        foreach (var sendplayer in sendplayers)
+                        {
+                            if (AmongUsClient.Instance.AmHost)
+                            {
+                                var clientid = sendplayer.GetClientId();
+                                if (clientid == -1) continue;
+                                string title = $"<line-height=-18%>\n<#ff1919>☆{player.GetPlayerColor()}☆</line-height>";
+                                string sendtext = send.Mark(Palette.ImpostorRed);
+                                SendMessage(sendtext, sendplayer.PlayerId, title);
                             }
                         }
                         player.RpcProtectedMurderPlayer();

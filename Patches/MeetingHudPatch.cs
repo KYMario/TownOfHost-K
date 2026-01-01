@@ -75,7 +75,7 @@ public static class MeetingHudPatch
                     return false;
                 }
             }
-            if (voter.GetRoleClass() is ISelfVoter selfVoter)
+            if (voter.GetRoleClass() is ISelfVoter selfVoter && Amnesia.CheckAbility(voter))
             {
                 if (selfVoter.CanUseVoted())
                 {

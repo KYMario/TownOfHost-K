@@ -251,6 +251,7 @@ public sealed class Fortuner : RoleBase, IKiller
         giveplayerid.Add(info.AppearanceTarget.PlayerId);
         Logger.Info($"{info.AppearanceTarget.PlayerId}", "F<EGTfaAr>or<canoacw>tu<na!>n<ruanor1>er".RemoveHtmlTags());
         info.DoKill = false;
+        UseCount--;
         Player.SetKillCooldown(target: info.AppearanceTarget);
         SendRpc();
     }
@@ -327,27 +328,27 @@ public sealed class Fortuner : RoleBase, IKiller
                 if (chance < (int)Fortune.GiveLv1Addon)
                 {
                     var roles = givel1addons.Where(role => !player.Is(role)).ToList();
-                    if (role.GetCount() <= 0) continue;
+                    if (roles.Count <= 0) continue;
                     role = roles[IRandom.Instance.Next(roles.Count)];
                     player.RpcSetCustomRole(role);
                 }
                 else if (chance < (int)Fortune.GiveLv2Addon)
                 {
                     var roles = givel2addons.Where(role => !player.Is(role)).ToList();
-                    if (role.GetCount() <= 0) continue;
+                    if (roles.Count <= 0) continue;
                     role = roles[IRandom.Instance.Next(roles.Count)];
                     player.RpcSetCustomRole(role);
                 }
                 else
                 {
                     var roles = givel3addons.Where(role => !player.Is(role)).ToList();
-                    if (role.GetCount() <= 0) continue;
+                    if (roles.Count <= 0) continue;
                     role = roles[IRandom.Instance.Next(roles.Count)];
                     player.RpcSetCustomRole(role);
                 }
             }
             if (role is not CustomRoles.NotAssigned)
-                _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("For<deador>tu<life>ne_Meg".RemoveHtmlTags()), UtilsRoleText.GetRoleColorAndtext(role))), 0.5f, "forsendmeg", true);
+                _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("For<deador>tu<life>ne_Meg".RemoveHtmlTags()), UtilsRoleText.GetRoleColorAndtext(role))), 0.5f, "forsendmeg", null);
         }
         giveplayerid.Clear();
     }
