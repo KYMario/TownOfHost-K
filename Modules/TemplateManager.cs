@@ -37,7 +37,7 @@ namespace TownOfHost
             ["Roles"] = () => UtilsShowOption.GetActiveRoleText(byte.MaxValue),
             ["Timer"] = () => Utils.GetTimer(),
             ["ModColor"] = () => Main.ModColor,
-            ["NumImpostorRoles"] = () => UtilsShowOption.GetRoleTypesCountInt().imp.ToString(),
+            ["NumImpostorRoles"] = () => UtilsShowOption.GetRoleTypesCountInt(true).imp.ToString(),
             ["NumCrewmateRoles"] = () => UtilsShowOption.GetRoleTypesCountInt().crew.ToString(),
             ["NumMadmateRoles"] = () => UtilsShowOption.GetRoleTypesCountInt().mad.ToString(),
             ["NumNeutralRoles"] = () => UtilsShowOption.GetRoleTypesCountInt().neutral.ToString(),

@@ -838,7 +838,7 @@ namespace TownOfHost
         /// </summary>
         /// <param name="shouryaku"></param>
         /// <returns>(imp , mad , crew , neutral , addon , lovers , ghost)</returns>
-        public static (int imp, int mad, int crew, int neutral, int addon, int lovers, int ghost) GetRoleTypesCountInt()
+        public static (int imp, int mad, int crew, int neutral, int addon, int lovers, int ghost) GetRoleTypesCountInt(bool getcustomimpostor = true)
         {
             if (Options.CurrentGameMode != CustomGameMode.Standard) return (0, 0, 0, 0, 0, 0, 0);
             var (i, m, c, n, a, l, g) = (0, 0, 0, 0, 0, 0, 0);
@@ -849,7 +849,7 @@ namespace TownOfHost
                 if (role.IsCrewmate()) c++;
                 if (role.IsNeutral()) n++;
             }
-            if (Main.NormalOptions.NumImpostors <= i) i = Main.NormalOptions.NumImpostors;
+            if (Main.NormalOptions.NumImpostors <= i && getcustomimpostor) i = Main.NormalOptions.NumImpostors;
             List<CustomRoles> loverch = new();
             foreach (var subRole in CustomRolesHelper.AllAddOns)
             {
