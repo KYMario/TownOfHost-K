@@ -170,13 +170,14 @@ class MurderMystery
     public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (seer == seen && seer.GetCustomRole().IsImpostor() && sabotage && IsImpostorArrow)
+        if (seer != seen) return "";
+        if (seer.GetCustomRole().IsImpostor() && sabotage && IsImpostorArrow)
         {
             List<byte> list = new();
             PlayerCatch.AllAlivePlayerControls.Where(pc => pc.GetCustomRole().IsCrewmate()).Do(pc => list.Add(pc.PlayerId));
-            return TargetArrow.GetArrows(seer, list.ToArray());
+            return TargetArrow.GetArrows(seer, list.ToArray()) + $"({PlayerCatch.AliveImpostorCount}|{PlayerCatch.AlivePlayersCount(CountTypes.Crew)})";
         }
-        return "";
+        return $"({PlayerCatch.AliveImpostorCount}|{PlayerCatch.AlivePlayersCount(CountTypes.Crew)})";
     }
     public static string GetLowerTextOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
@@ -184,10 +185,10 @@ class MurderMystery
         if (seen != seer) return "";
         if (DeadArcherCount is null) return "";
         var crewtext = "";
-        if ((seer.GetRoleClass() as MMArcher)?.IsPromotioned is not false
+        if ((seer.GetRoleClass() as MMArcher)?.IsPromotioned is true or null
         && seer.GetCustomRole().IsCrewmate()) crewtext += Translator.GetString("MM_ArceherIsDead_Crew");
 
-        return DeadArcherCount.Value > 0 ? $"<#ff1919>{Translator.GetString("MM_ArceherIsDead")}</color>"
+        return DeadArcherCount.Value > 0 ? $"<#ff1919>{Translator.GetString("MM_ArceherIsDead")}{crewtext}</color>"
         : $"<#30b6ef>{Translator.GetString("MM_ArceherIsAlive")}</color>";
     }
     public static void SendRpc()

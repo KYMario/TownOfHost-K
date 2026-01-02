@@ -540,6 +540,11 @@ namespace TownOfHost
                 suddeninfo += "<size=80%>" + GetString("SuddenDeathModeInfo") + "</size>";
                 return suddeninfo;
             }
+            if (Options.CurrentGameMode is CustomGameMode.MurderMystery && role.IsVanilla())
+            {
+                var mminfo = GetString($"{Prefix}{text}Info_MM");
+                return mminfo;
+            }
             return GetString($"{Prefix}{text}{Info}");
         }
         public static void SetRealKiller(this PlayerControl target, PlayerControl killer, bool NotOverRide = false)

@@ -879,6 +879,8 @@
 "MMSeeImpostorArrow","1m CanSeeArrow","残り1分になると殺人鬼に矢印を表示する"
 "MMCrewvision","ActiveSabotage Crewvision","残り1分のクルー視界"
 "MMImpostorvision","ActiveSabotage ImpostorVision","残り1分のインポスター視界"
+"CrewmateInfo_MM","","タスクを終わらせ、弓を入手しよう"
+"ImpostorInfo_MM","","クルーを全滅させろ"
 
 "# ヘルプ"
 "Count","Count","カウント"
