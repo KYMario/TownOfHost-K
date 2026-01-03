@@ -41,7 +41,7 @@ static class Event
             return cachedData;
 
         bool result = check.Invoke();
-        if (!useApiData || VersionInfoManager.version?.Events == null)
+        if (!useApiData || (VersionInfoManager.version?.Events == null && VersionInfoManager.allversion?.Events == null))
         {
             //apiが使えない状態orフラグがfalseの場合はローカルの状態を使用
             cachedEventFlags[(role, false)] = result;
@@ -49,21 +49,26 @@ static class Event
         }
 
         var roleId = (int)role;
-        var events = VersionInfoManager.version.Events;
-        var allverevents = VersionInfoManager.allversion.Events;
+        var events = VersionInfoManager.version?.Events;
+        var allverevents = VersionInfoManager.allversion?.Events;
 
         //全イベント情報をチェック
-        foreach (var data in events)
+        if (events != null)
         {
-            if (result) continue;
-            result |= data.RoleId == roleId && data.Period.IsActive;
+            foreach (var data in events)
+            {
+                if (result) continue;
+                result |= data.RoleId == roleId && data.Period.IsActive;
+            }
         }
-        foreach (var data in allverevents)
+        if (allverevents != null)
         {
-            if (result) continue;
-            result |= data.RoleId == roleId && data.Period.IsActive;
+            foreach (var data in allverevents)
+            {
+                if (result) continue;
+                result |= data.RoleId == roleId && data.Period.IsActive;
+            }
         }
-
         cachedEventFlags[(role, true)] = result;
         return result;
     }
