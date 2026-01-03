@@ -176,6 +176,8 @@ namespace TownOfHost.Modules
 
                 var HasLithing = player.Is(CustomRoles.Lighting);
                 var HasMoon = player.Is(CustomRoles.Moon);
+                opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
+                opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
 
                 switch (role.GetCustomRoleTypes())
                 {

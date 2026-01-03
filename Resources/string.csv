@@ -2571,6 +2571,7 @@
 "BalancerMeeting","Balancer Meeting!","天秤会議の時間だ。"
 "Skillplayer","Ability activation target:","能力発動先:"
 "GuessInfo","∮Guesser Command : /bt <#ffff00>ID</color> Role","∮ゲッサーコマンド: /bt <#ffff00>ID<size=35%>(色名)</size></color> 役職名"
+"GuessInfoForVanilla","∮Guesse: /bt <#ffff00>ID</color> Role","∮推測コマンド: /bt <#ffff00>ID<size=35%>(色名)</size></color> 役職名"
 "NowTime","Now","現在の"
 "MI.die","DeadBody : {0}","{0}の死体通報"
 "MI.Bot","Call Meeting","緊急会議ボタン"

@@ -205,8 +205,6 @@ namespace TownOfHost
         }
         public static void BlackOut(this IGameOptions opt, bool IsBlackOut)
         {
-            opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
-            opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
             if (IsBlackOut)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0);
