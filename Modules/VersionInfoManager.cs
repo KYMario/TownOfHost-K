@@ -23,6 +23,7 @@ class VersionInfoManager
     //public static readonly string URL = "https://raw.githubusercontent.com/KYMario/TOHk-Test/main/versions.json";
     public static Dictionary<string, VersionInfo> Versions { get; protected set; }
     public static VersionInfo version { get; protected set; }
+    public static VersionInfo allversion { get; protected set; }
     public static bool isChecked = false;
     private static bool IsSupported = true;
     private static int totalSeconds = 0;
@@ -37,11 +38,12 @@ class VersionInfoManager
         var result = CheckVersionsJson();
         if (result) isChecked = true;
 
-        if (version == null) return;
+        if (version == null || allversion == null) return;
 
         string infoText = "";
 
-        if (!version.HighestSupportedVersion.IsNullOrWhiteSpace())
+        if (!version.HighestSupportedVersion.IsNullOrWhiteSpace()
+        || !allversion.HighestSupportedVersion.IsNullOrWhiteSpace())
         {
             if (Version.TryParse(version.HighestSupportedVersion, out var highestSupported))
             {
@@ -51,14 +53,17 @@ class VersionInfoManager
         }
 
         //オンライン無効化
-        if (version.NotAvailableOnline == true)
+        if (version.NotAvailableOnline is true
+        || allversion.NotAvailableOnline is true)
         {
             infoText = Main.UseingJapanese ? "現在MODを導入してオンラインでプレイすることができません" : "Currently, you cannot Create Room with MODs installed.";
 
             __instance.PlayOnlineButton.gameObject.SetActive(false);
             __instance.playLocalButton.transform.SetLocalX(0);
         }
-        if (version.Unavailable == true || !IsSupported || Options.LoadError)
+        if (version.Unavailable is true
+        || allversion.Unavailable is true
+        || !IsSupported || Options.LoadError)
         {
             infoText = Main.UseingJapanese ? "現在MODを導入してプレイすることができません" : "Currently, you cannot play with MODs installed.";
 
@@ -69,12 +74,13 @@ class VersionInfoManager
         }
         if (!IsSupported) infoText += Main.UseingJapanese ? "\n・サポートされていません。" : "\n・UnSupport.";
         if (Options.LoadError) infoText += Main.UseingJapanese ? "\n・エラーが発生しています。" : "\n・LoadError.";
-        if (version.BlockPublicRoom.HasValue)
+        if (version.BlockPublicRoom.HasValue
+        || allversion.BlockPublicRoom.HasValue)
         {
-            ModUpdater.BlockPublicRoom = version.BlockPublicRoom;
+            ModUpdater.BlockPublicRoom = version.BlockPublicRoom.Value || allversion.BlockPublicRoom.Value;
         }
 
-        if (!version.AnnounceText.IsNullOrWhiteSpace())
+        if (!version.AnnounceText.IsNullOrWhiteSpace())//allversion使用不可
         {
             var announceText = new GameObject("ModAnnounceText").AddComponent<TextMeshPro>();
 
@@ -102,12 +108,12 @@ class VersionInfoManager
         text.gameObject.SetActive(true);
         ModInfoText = text;
 
-        if (isChecked && version.Update?.Version != null)
+        if (isChecked && (version.Update?.Version != null || allversion.Update?.Version != null))
         {
-            if (ModUpdater.hasUpdate || version.Update?.ShowUpdateButton == true)
+            if (ModUpdater.hasUpdate || version.Update?.ShowUpdateButton == true || allversion.Update?.ShowUpdateButton == true)
             {
                 ModUpdater.CheckRelease(all: true).GetAwaiter().GetResult();
-                var release = ModUpdater.releases.FirstOrDefault(x => x.TagName == version.Update?.Version, null);
+                var release = ModUpdater.releases.FirstOrDefault(x => x.TagName == (version.Update?.Version is null ? allversion.Update?.Version : version.Update?.Version), null);
                 if (release != null)
                 {
                     ModUpdater.downloadUrl = release.DownloadUrl;
@@ -117,7 +123,7 @@ class VersionInfoManager
                 }
             }
 
-            MainMenuManagerPatch.UpdateButton.Button.gameObject.SetActive(ModUpdater.hasUpdate || version.Update?.ShowUpdateButton == true);
+            MainMenuManagerPatch.UpdateButton.Button.gameObject.SetActive(ModUpdater.hasUpdate || version.Update?.ShowUpdateButton == true || allversion.Update?.ShowUpdateButton == true);
             MainMenuManagerPatch.UpdateButton.Label.text = $"{Translator.GetString("updateButton")}\n{ModUpdater.latestTitle}";
         }
 
@@ -134,7 +140,7 @@ class VersionInfoManager
             catch (Exception ex) { Logger.Exception(ex, "VersionInfo"); }
         }
 
-        if (version.CustomFlags != null)
+        if (version.CustomFlags != null)//allversion不可
         {
             ulong bits = 0;
             foreach (var kv in version.CustomFlags)
@@ -221,7 +227,7 @@ class VersionInfoManager
             button.buttonText.text = Main.UseingJapanese ? "最新の情報を取得" : "Get the latest information";
     }
 
-    private static void SendBugList(byte sendTo = byte.MaxValue)
+    private static void SendBugList(byte sendTo = byte.MaxValue)//allversion不可
     {
         if (version?.BugInfos == null) return;
         var bugTexts = new Dictionary<BugCategory, StringBuilder>();
@@ -241,7 +247,7 @@ class VersionInfoManager
             Utils.SendMessage(bugText.ToString(), sendTo, Translator.GetString(category.ToString()));
         }
     }
-    public static void SendBugInfo(int? index = null, byte sendTo = byte.MaxValue)
+    public static void SendBugInfo(int? index = null, byte sendTo = byte.MaxValue)//allversion不可
     {
         //バグ一覧がまだない
         if (version?.BugInfos == null || !version.BugInfos.Any())
@@ -282,6 +288,7 @@ class VersionInfoManager
             if (versions == null) return false;
             Versions = versions;
             if (Versions.ContainsKey(Main.PluginVersion)) version = Versions[Main.PluginVersion];
+            if (Versions.ContainsKey("AllVersion")) allversion = Versions["AllVersion"];
             return true;
         }
         catch (Exception ex)

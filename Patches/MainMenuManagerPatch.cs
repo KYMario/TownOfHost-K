@@ -345,7 +345,8 @@ namespace TownOfHost
         [HarmonyPrefix]
         public static bool ClickOpenEnterCodeMenu()
         {
-            return !(VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true);
+            return !(VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true
+            && VersionInfoManager.allversion != null && VersionInfoManager.allversion.DisableRoomJoin == true);
         }
         [HarmonyPatch(nameof(MainMenuManager.ClickBackOnline))]
         [HarmonyPostfix]
@@ -376,7 +377,8 @@ namespace TownOfHost
             {
                 Findbuttongo.SetActive(false);
             }
-            if (Codebutton && VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true)
+            if (Codebutton && ((VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true) ||
+            VersionInfoManager.allversion != null && VersionInfoManager.allversion.DisableRoomJoin == true))
             {
                 var buttonCollider = Codebutton.GetComponent<BoxCollider2D>();
                 buttonCollider.offset = new(100f, 100f);
@@ -408,6 +410,7 @@ namespace TownOfHost
 
                 var TMP = TMPobjct.transform.GetComponent<TextMeshPro>();
                 var cantJoin = VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true;
+                cantJoin |= VersionInfoManager.allversion != null && VersionInfoManager.allversion.DisableRoomJoin == true;
                 var text = Main.IsAndroid() ? Translator.GetString("CantAndroidCreateGame") : cantJoin ? Translator.GetString("CantPublickAndJoin") : "";
                 TMP.SetText(text);
                 _ = new LateTask(() => TMP.SetText(text), 0.05f, "Set", true);

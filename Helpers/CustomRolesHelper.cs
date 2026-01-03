@@ -242,10 +242,17 @@ namespace TownOfHost
                         or CustomRoles.AsistingAngel
                         ;
         }
+        static System.Collections.Generic.List<CustomRoles> GiveGuesserrole =
+        [
+            CustomRoles.Cakeshop,
+            CustomRoles.SantaClaus,
+            CustomRoles.Fortuner
+        ];
         public static bool CheckGuesser()
         {
             foreach (var role in AllStandardRoles.Where(r => r.IsEnable()))
             {
+                if (GiveGuesserrole.Contains(role)) return true;
                 if (RoleAddAddons.GetRoleAddon(role, out var op, subrole: CustomRoles.Guesser))
                     if (op.GiveGuesser.GetBool()) return true;
             }

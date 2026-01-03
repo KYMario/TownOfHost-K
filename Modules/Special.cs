@@ -50,9 +50,15 @@ static class Event
 
         var roleId = (int)role;
         var events = VersionInfoManager.version.Events;
+        var allverevents = VersionInfoManager.allversion.Events;
 
         //全イベント情報をチェック
         foreach (var data in events)
+        {
+            if (result) continue;
+            result |= data.RoleId == roleId && data.Period.IsActive;
+        }
+        foreach (var data in allverevents)
         {
             if (result) continue;
             result |= data.RoleId == roleId && data.Period.IsActive;

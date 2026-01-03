@@ -435,7 +435,10 @@ namespace TownOfHost
             /* 会議拡張の奴 */
             var Minfo = $"<voffset=20><line-height=0><{Main.ModColor}><size=85%>TownOfHost-K</size>\t\t \n \t\t</color><size=70%><#ffffff>v{Main.PluginShowVersion}</color></size></voffset>";
             Minfo += $"<voffset=17.5>\n<#fc9003>Day.{UtilsGameLog.day}</color>" + Bakery.BakeryMark() + $"<voffset=15>\n{ExtendedMeetingText}</voffset>";
-
+            if (CustomRolesHelper.CheckGuesser() || PlayerCatch.AllPlayerControls.Any(pc => pc.Is(CustomRoles.Guesser)))
+            {
+                Minfo += $"<voffset=12.5>\n<#999900><size=60%>{Translator.GetString("GuessInfoForVanilla").RemoveColorTags()}</voffset></size>";
+            }
             //seer:ここで行われた変更を見ることができるプレイヤー
             //target:seerが見ることができる変更の対象となるプレイヤー
             foreach (var seer in PlayerControl.AllPlayerControls)
@@ -462,6 +465,10 @@ namespace TownOfHost
                 var seercone = seer.Is(CustomRoles.Connecting);
                 var IsMisidentify = seer.GetMisidentify(out _);
                 RoleAddAddons.GetRoleAddon(role, out var data, seer, subrole: [CustomRoles.Guesser]);
+                var hasgessuer = seerSubrole.Contains(CustomRoles.Guesser)
+                            || data.GiveGuesser.GetBool()
+                            || (seerSubrole.Contains(CustomRoles.LastImpostor) && LastImpostor.giveguesser)
+                            || (seerSubrole.Contains(CustomRoles.LastNeutral) && LastNeutral.GiveGuesser.GetBool());
 
                 {
                     var aliveplayer = PlayerCatch.AllAlivePlayerControls.OrderBy(x => x.PlayerId);
@@ -708,10 +715,7 @@ namespace TownOfHost
                             //ターゲットのプレイヤー名の色を書き換えます。
                             TargetPlayerName = TargetPlayerName.ApplyNameColorData(seer, target, true);
 
-                            if (seerSubrole.Contains(CustomRoles.Guesser)
-                            || data.GiveGuesser.GetBool()
-                            || (seerSubrole.Contains(CustomRoles.LastImpostor) && LastImpostor.giveguesser)
-                            || (seerSubrole.Contains(CustomRoles.LastNeutral) && LastNeutral.GiveGuesser.GetBool()))
+                            if (hasgessuer)
                             {
                                 if (seerisAlive && targetisalive)
                                 {
