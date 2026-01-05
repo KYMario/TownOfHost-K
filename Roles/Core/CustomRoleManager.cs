@@ -12,6 +12,7 @@ using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Ghost;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
+using TownOfHost.Modules;
 
 namespace TownOfHost.Roles.Core;
 
@@ -332,7 +333,9 @@ public static class CustomRoleManager
         Utils.TargetDies(info);
         MurderMystery.CheckDeath(attemptTarget);
 
-        appearanceKiller.ResetKillCooldown();
+        //サドンデスの初手キル処理なので、バウハン等の影響受けないように限定にしておく
+        if (SuddenDeathMode.NowSuddenDeathMode && appearanceKiller.GetPlayerState().Is10secKillButton)
+            appearanceKiller.ResetKillCooldown();
         UtilsOption.SyncAllSettings();
         UtilsNotifyRoles.NotifyRoles();
         //サブロールは表示めんどいしながいから省略★
