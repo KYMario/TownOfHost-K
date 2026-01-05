@@ -582,7 +582,8 @@ namespace TownOfHost
             // ゲームモード
             GameMode = StringOptionItem.Create(1, "GameMode", gameModes, 0, TabGroup.MainSettings, false)
                 .SetHeader(true)
-                .SetColor(ModColors.bluegreen);
+                .SetColor(ModColors.bluegreen)
+                .SetTooltip(() => Translator.GetString($"GameModeInfo_{CurrentGameMode}"));
 
             #region 役職・詳細設定
             CustomRoleCounts = new();
@@ -592,7 +593,8 @@ namespace TownOfHost
             // GM
             EnableGM = BooleanOptionItem.Create(100, "GM", false, TabGroup.MainSettings, false)
                 .SetColor(UtilsRoleText.GetRoleColor(CustomRoles.GM))
-                .SetHeader(true);
+                .SetHeader(true)
+                .SetTooltip(() => Translator.GetString($"GM_Info"));
 
             RoleAssignManager.SetupOptionItem();
             WinOption.SetupCustomOption();
@@ -622,10 +624,10 @@ namespace TownOfHost
                 .SetColorcode("#00c1ff");
             InsiderMode = BooleanOptionItem.Create(100001, "InsiderMode", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
                 .SetTag(CustomOptionTags.Standard)
-                .SetTooltip(Translator.GetString("InsiderModeOptionInfo"));
+                .SetTooltip(() => Translator.GetString("InsiderModeOptionInfo"));
             InsiderModeCanSeeTask = BooleanOptionItem.Create(200002, "InsiderModeCanSeeTask", false, TabGroup.MainSettings, false).SetParent(InsiderMode);
             ColorNameMode = BooleanOptionItem.Create(100003, "ColorNameMode", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
-                .SetTooltip(Translator.GetString("ColorNameModeInfo")); ;
+                .SetTooltip(() => Translator.GetString("ColorNameModeInfo")); ;
             CanSeeImpostorRole = BooleanOptionItem.Create(100004, "CanSeeImpostorRole", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
                 .SetTag(CustomOptionTags.Standard);
             AllPlayerSkinShuffle = BooleanOptionItem.Create(100005, "AllPlayerSkinShuffle", false, TabGroup.MainSettings, false).SetParent(ONspecialMode)
@@ -675,7 +677,7 @@ namespace TownOfHost
 
             DoubleTriggerThreshold = FloatOptionItem.Create(102500, "DoubleTriggerThreashould", new(0.3f, 1f, 0.1f), 0.5f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
-                .SetValueFormat(OptionFormat.Seconds).SetTooltip(Translator.GetString("DoubleTriggerThresholdInfo"));
+                .SetValueFormat(OptionFormat.Seconds).SetTooltip(() => Translator.GetString("DoubleTriggerThresholdInfo"));
             DefaultShapeshiftCooldown = FloatOptionItem.Create(102501, "DefaultShapeshiftCooldown", new(1f, 999f, 1f), 15f, TabGroup.ImpostorRoles, false)
                 .SetHeader(true)
                 .SetValueFormat(OptionFormat.Seconds);
@@ -801,12 +803,8 @@ namespace TownOfHost
                 .SetColorcode("#eada2eff")
                 .SetHeader(true);
             // タスク無効化
-            UploadDataIsLongTask = BooleanOptionItem.Create(107200, "UploadDataIsLongTask", false, TabGroup.MainSettings, false)
-
-                .SetParent(TaskOption);
-            DisableTasks = BooleanOptionItem.Create(107201, "DisableTasks", false, TabGroup.MainSettings, false).SetParent(TaskOption)
-
-                .SetColorcode("#6b6b6b");
+            UploadDataIsLongTask = BooleanOptionItem.Create(107200, "UploadDataIsLongTask", false, TabGroup.MainSettings, false).SetParent(TaskOption);
+            DisableTasks = BooleanOptionItem.Create(107201, "DisableTasks", false, TabGroup.MainSettings, false).SetParent(TaskOption).SetColorcode("#6b6b6b");
             DisableSwipeCard = BooleanOptionItem.Create(107202, "DisableSwipeCardTask", false, TabGroup.MainSettings, false).SetParent(DisableTasks);
             DisableSubmitScan = BooleanOptionItem.Create(107203, "DisableSubmitScanTask", false, TabGroup.MainSettings, false).SetParent(DisableTasks);
             DisableUnlockSafe = BooleanOptionItem.Create(107204, "DisableUnlockSafeTask", false, TabGroup.MainSettings, false).SetParent(DisableTasks);

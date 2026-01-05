@@ -228,7 +228,8 @@ public sealed class Fortuner : RoleBase, IKiller
             SetUpOptionItem,
             "fo",
             "#34f098",
-            OptionSort: (0, 51),
+            (0, 51),
+            true,
             from: From.Speyrp
         );
     public Fortuner(PlayerControl player)
@@ -260,10 +261,11 @@ public sealed class Fortuner : RoleBase, IKiller
     void IKiller.OnCheckMurderAsKiller(MurderInfo info)
     {
         giveplayerid.Add(info.AppearanceTarget.PlayerId);
-        Logger.Info($"{info.AppearanceTarget.PlayerId}", "F<EGTfaAr>or<canoacw>tu<na!>n<ruanor1>er".RemoveHtmlTags());
+        Logger.Info($"{info.AppearanceTarget.PlayerId}-{UseCount}", "F<EGTfaAr>or<canoacw>tu<na!>n<ruanor1>er".RemoveHtmlTags());
         info.DoKill = false;
         UseCount--;
         Player.SetKillCooldown(target: info.AppearanceTarget);
+        UtilsNotifyRoles.NotifyRoles();
         SendRpc();
     }
     public override void ApplyGameOptions(IGameOptions opt)

@@ -2443,9 +2443,16 @@
 "DoubleTriggerThresholdInfo","The duration of double-clicks will be adjusted.\n<size=60%>Shorter durations are more susceptible to lag, while longer durations may prevent kills from occurring as intended.","ダブルクリック使用役職の\nダブルクリック受付期限を変更します。\n<size=60%>短いとラグに影響されやすいですが、長いとキルが思い通りにいかないことがあります。"
 "SlotRoleInfo","Only one of the specified roles will be assigned.","指定した役職のどちらかのみがアサインされるようになります。"
 "AlienUetukeInfo","During meetings, you can temporarily transfer your abilities to an impostor ally for a set number of turns. While the transfer is active, your role will be displayed as <#ff1919>Hijack Alien</color>.","会議中、自身の能力を仲間のインポスターに\n一定ターン植え付けることができます。\n植え付け中は役職が「<#ff1919>ハイジャックエイリアン</color>」になります。"
+"GameModeInfo_Standard","<Standard>\nNormalAmongUs.","＜スタンダード＞\n通常のAmongUsです。"
+"GameModeInfo_HideAndSeek","<HideAndSeek>\n<size=60%>This is a mode where players are divided into Impostors (red) and Crewmates (blue).\nImpostors win by eliminating all Crewmates, while Crewmates win by completing all tasks.\nThere are also special roles designed specifically for Hide and Seek.","＜かくれんぼ＞\n<size=60%>インポスター(赤)とクルー(青)に分かれて遊ぶモードです。\nインポスターはクルー全滅、クルーはタスク完了で勝利です。\nかくれんぼ専用役職もあります。"
+"GameModeInfo_TaskBattle","<TaskBattle>\n<size=60%>This is a mode where the goal is to be the first to complete all tasks.\nThere are no Impostors, and all players compete as players.\n\nWhen playing solo, it becomes an RTA mode that measures the time taken to complete all tasks.","＜タスクバトル＞\n<size=60%>一番最初にタスクを全て完了させることを目標とするモードです。\nインポスターは存在しておらず、全プレイヤーがプレイヤーとなって競います。\n\n1人だと完了までの時間を計測するRTAモードになります。"
+"GameModeInfo_StandardHAS","<StandardHAS>\n<size=60%>This is a Hide and Seek mode that includes roles assigned in the standard setup.\nPlayer body colors do not change.","＜役職入りかくれんぼ＞\n<size=60%>スタンダードで配役される役職が入ったかくれんぼです。\n体の色は変わりません。"
+"GameModeInfo_SuddenDeath","<SuddenDeath>\n<size=60%>In this mode, all players fight using roles assigned in the standard setup, and the last surviving player wins.\nThere are also team-based battles.","＜サドンデス＞\n<size=60%>スタンダードで配役される役職を使って全員が戦い、最後まで生き残った1人が勝利です。\nチーム戦もあります。"
+"GameModeInfo_MurderMystery","<MurderMystery>\n<size=60%>This is a mode where players are divided into Killers and Crewmates.\nKillers win by eliminating all Crewmates, while Crewmates win by eliminating all Killers.\nWhen Crewmates complete their tasks,\nthey become Sheriffs and gain a long-range kill ability.","＜マーダーミステリー＞\n<size=60%>殺人鬼とクルーで分かれて遊ぶモードです。\n殺人鬼はクルー全滅、クルーは殺人鬼全滅で勝利です。\nクルーはタスクを完了させると\n保安官となり遠距離キル能力を所持します。"
+"GM_Info","A role that is assigned only to the host. It starts in a dead state and does not participate in the game.","ホストのみに配役される役職。最初から死亡状態で、ゲームに関与しません。"
+
 
 "## その他"
-
 "DefaultSystemMessageTitle","【===== System Message =====】","【===== システムメッセージ ======】","【===== 系统信息 ======】","【===== 系統訊息 ======】","【=== Системное сообщение ===】","【===== Mensagem do Sistema ======】",""
 "MessageFromTheHost","【Message From The Host】","【ホストからの伝言】","【房主消息】","【房主訊息】","【Сообщение от Хоста】","【Mensagem do Anfitrião】",""
 "TabGroup.MainSettings","<#00c1ff><b>Main Settings","<#00c1ff><b>TownOfHost-K Setting</color>","<#00c1ff>主要设置</color>","<#00c1ff>主要設定</color>","Основная настройка","Configurações Principais",""

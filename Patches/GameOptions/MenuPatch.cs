@@ -657,7 +657,7 @@ namespace TownOfHost
                                 (option as ObjectOptionitem)?.ClickAction?.Invoke();
                             }));
                         }
-                        if (option.Tooltip is not "")//一旦こういう実装にしているが、？マークをどこかに設置してでもいいかも?
+                        if (option.Tooltip.Invoke() is not "")//一旦こういう実装にしているが、？マークをどこかに設置してでもいいかも?
                         {
                             stringOption.LabelBackground.gameObject.AddComponent<PassiveButton>();
                             stringOption.LabelBackground.gameObject.AddComponent<BoxCollider2D>().autoTiling = true;
@@ -666,7 +666,7 @@ namespace TownOfHost
                             passive.OnMouseOver = new();
                             passive.OnClick = new();
                             passive.OnMouseOut.AddListener((Action)(() => ToolTip.Hide()));
-                            passive.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passive, option.Tooltip, null)));
+                            passive.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passive, option.Tooltip.Invoke(), null)));
                         }
 
                         var transform = stringOption.ValueText.transform;
@@ -893,7 +893,7 @@ namespace TownOfHost
                                 (option as ObjectOptionitem)?.ClickAction?.Invoke();
                             }));
                         }
-                        if (option.Tooltip is not "")
+                        if (option.Tooltip.Invoke() is not "")
                         {
                             stringOption.LabelBackground.gameObject.AddComponent<PassiveButton>();
                             stringOption.LabelBackground.gameObject.AddComponent<BoxCollider2D>().autoTiling = true;
@@ -902,7 +902,7 @@ namespace TownOfHost
                             passive.OnMouseOver = new();
                             passive.OnClick = new();
                             passive.OnMouseOut.AddListener((Action)(() => ToolTip.Hide()));
-                            passive.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passive, option.Tooltip, null)));
+                            passive.OnMouseOver.AddListener((Action)(() => ToolTip.Show(passive, option.Tooltip.Invoke(), null)));
                         }
 
                         var transform = stringOption.ValueText.transform;
