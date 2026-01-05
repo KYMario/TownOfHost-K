@@ -49,14 +49,14 @@ namespace TownOfHost
         public static void Reset()
         {
             DesyncComms.Clear();
-            optTimeLimitCamAndLog = Options.TimeLimitCamAndLog.GetFloat();
             optTimeLimitDevices = Options.TimeLimitDevices.GetBool();
-            optTurnTimeLimitDevice = Options.TurnTimeLimitDevice.GetBool();
             optTimeLimitAdmin = Options.TimeLimitAdmin.GetFloat();
             optTimeLimitVital = Options.TimeLimitVital.GetFloat();
-            optTurnTimeLimitCamAndLog = Options.TurnTimeLimitCamAndLog.GetFloat();
+            optTurnTimeLimitDevice = Options.TurnTimeLimitDevice.GetBool();
+            optTimeLimitCamAndLog = Options.TimeLimitCamAndLog.GetFloat();
             optTurnTimeLimitAdmin = Options.TurnTimeLimitAdmin.GetFloat();
             optTurnTimeLimitVital = Options.TurnTimeLimitVital.GetFloat();
+            optTurnTimeLimitCamAndLog = Options.TurnTimeLimitCamAndLog.GetFloat();
             DisableDevicesIgnoreImpostors = Options.DisableDevicesIgnoreImpostors.GetBool();
             DisableDevicesIgnoreMadmates = Options.DisableDevicesIgnoreMadmates.GetBool();
             DisableDevicesIgnoreNeutrals = Options.DisableDevicesIgnoreNeutrals.GetBool();

@@ -130,20 +130,36 @@ namespace TownOfHost
                     DoubleTrigger.OnFixedUpdate(player);
                     (roleclass as IUsePhantomButton)?.FixedUpdate(player);
 
-                    VentManager.CheckVentLimit();
                     ChatManager.IntaskCheckSendMessage(player);
-                    if (!GameStates.IsMeeting && timer is 7)
+                }
+
+                if (__instance.AmOwner)
+                {
+                    if (GameStates.InGame)
                     {
-                        foreach (var Ldata in ColorLovers.Alldatas.Values)
+                        if (Main.IsActiveSabotage)
                         {
-                            Ldata.LoversSuicide();
+                            Main.SabotageActivetimer += Time.fixedDeltaTime;
                         }
-                        Lovers.MadonnLoversSuicide();
-                        Lovers.OneLoveSuicide();
-                    }
-                    if (DisableDevice.DoDisable)
-                    {
-                        if (timer % 2 is 0)
+
+                        //サドンデスモード
+                        if (SuddenDeathMode.NowSuddenDeathMode)
+                        {
+                            if (SuddenDeathMode.SuddenDeathTimeLimit.GetFloat() > 0) SuddenDeathMode.SuddenDeathReactor();
+                            if (SuddenDeathMode.SuddenPlayerArrow.GetBool()) SuddenDeathMode.ItijohoSend();
+                        }
+                        MurderMystery.OnFixedUpdate();
+
+                        if (!GameStates.IsMeeting && timer is 7)
+                        {
+                            foreach (var Ldata in ColorLovers.Alldatas.Values)
+                            {
+                                Ldata.LoversSuicide();
+                            }
+                            Lovers.MadonnLoversSuicide();
+                            Lovers.OneLoveSuicide();
+                        }
+                        if (DisableDevice.DoDisable)
                         {
                             DisableDevice.FixedUpdate();
                             //情報機器制限
@@ -172,35 +188,21 @@ namespace TownOfHost
                                 }
                             }
                         }
+                        {
+                            RoomTaskAssign.AllRoomTasker.Values.Do(tasker => tasker?.fixupdate());
+                        }
                     }
-                    {
-                        RoomTaskAssign.AllRoomTasker.Values.Do(tasker => tasker?.fixupdate());
-                    }
-                }
 
-                SuddenDeathMode.UpdateTeam();
+                    VentManager.CheckVentLimit();
+                    SuddenDeathMode.UpdateTeam();
+                    StreamerInfo.FixUpdate();
+                }
                 Utils.ApplySuffix(__instance);
-                StreamerInfo.FixUpdate();
             }
             //LocalPlayer専用
             if (__instance.AmOwner)
             {
                 timer = (timer + 1) % 10;
-                if (GameStates.InGame)
-                {
-                    if (__instance.myTasks.ToArray().Any(PlayerTask.TaskIsEmergency))
-                    {
-                        Main.SabotageActivetimer += Time.fixedDeltaTime;
-                    }
-
-                    //サドンデスモード
-                    if (SuddenDeathMode.NowSuddenDeathMode)
-                    {
-                        if (SuddenDeathMode.SuddenDeathTimeLimit.GetFloat() > 0) SuddenDeathMode.SuddenDeathReactor();
-                        if (SuddenDeathMode.SuddenPlayerArrow.GetBool()) SuddenDeathMode.ItijohoSend();
-                    }
-                    MurderMystery.OnFixedUpdate();
-                }
 
                 {
                     var kiruta = GameStates.IsInTask && !GameStates.Intro && ((__instance.Is(CustomRoles.Amnesiac) && !(roleclass as Amnesiac).Realized) || __instance.Is(CustomRoles.OneWolf));
