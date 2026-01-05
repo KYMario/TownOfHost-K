@@ -286,12 +286,15 @@ namespace TownOfHost
     [HarmonyPatch(typeof(Vent), nameof(Vent.Use))]
     class OcCoVentUsePatch
     {
+        public static float timer;
         public static bool Prefix(Vent __instance)
         {
             var user = PlayerControl.LocalPlayer;
             var id = __instance.Id;
 
             if (!AmongUsClient.Instance.AmHost) return true;
+            if (timer <= 0.3f) return false;
+            timer = 0;
 
             if (CoEnterVentPatch.VentPlayers.ContainsKey(user.PlayerId)) return true;
 
