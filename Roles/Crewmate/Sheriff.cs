@@ -30,7 +30,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
             introSound: () => GetIntroSound(RoleTypes.Crewmate),
             from: From.SheriffMod,
             Desc: () => string.Format(GetString("SheriffDesc"), CanKillMadmate.GetBool() ? $"{GetString("Madmate")}、" : "", CanKillNeutrals.GetBool() ? GetString("SheriffDescCanKillNeutralOption") : GetString("Neutral"), CanKillLovers.GetBool() ? $"、{GetString("Lovers")}" : ""
-            , MisfireKillsTarget.GetBool() ? GetString("SheriffDescMisfireKillsTarget") : "", CanKillAllAlive.GetBool() ? GetString("SheriffDescAllAlive") : "", ShotLimitOpt.GetInt())
+            , MisfireKillsTarget.GetBool() ? GetString("SheriffDescMisfireKillsTarget") : "", !CanKillAllAlive.GetBool() ? GetString("SheriffDescAllAlive") : "", ShotLimitOpt.GetInt())
         );
     public Sheriff(PlayerControl player)
     : base(
