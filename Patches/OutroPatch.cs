@@ -45,7 +45,7 @@ namespace TownOfHost
             SummaryText = new();
             foreach (var id in PlayerState.AllPlayerStates.Keys)
                 SummaryText[id] = UtilsGameLog.SummaryTexts(id);
-            if (!AmongUsClient.Instance.AmHost) return;
+            //if (!AmongUsClient.Instance.AmHost) return;
 
             var meg = GetString($"{(CustomRoles)CustomWinnerHolder.WinnerTeam}") + GetString("Team") + GetString("Win");
             var winnerColor = ((CustomRoles)CustomWinnerHolder.WinnerTeam).GetRoleInfo()?.RoleColor ?? UtilsRoleText.GetRoleColor((CustomRoles)CustomWinnerHolder.WinnerTeam);
@@ -68,7 +68,6 @@ namespace TownOfHost
             LastGameSave.CreateIfNotExists();
             Main.Alltask = UtilsTask.AllTaskstext(false, false, false, false, false).RemoveHtmlTags();
 
-            Main.NormalOptions.KillCooldown = Options.DefaultKillCooldown;
             //winnerListリセット
             EndGameResult.CachedWinners = new Il2CppSystem.Collections.Generic.List<CachedPlayerData>();
             var winner = new List<PlayerControl>();
@@ -136,6 +135,7 @@ namespace TownOfHost
             Main.VisibleTasksCount = false;
             if (AmongUsClient.Instance.AmHost)
             {
+                Main.NormalOptions.KillCooldown = Options.DefaultKillCooldown;
                 Main.RealOptionsData.Restore(GameOptionsManager.Instance.CurrentGameOptions);
                 GameOptionsSender.AllSenders.Clear();
                 GameOptionsSender.AllSenders.Add(new NormalGameOptionsSender());
