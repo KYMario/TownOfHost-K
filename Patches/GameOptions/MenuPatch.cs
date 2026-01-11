@@ -103,6 +103,7 @@ namespace TownOfHost
         public static TMPro.TextMeshPro InfoTimer;
         public static TMPro.TextMeshPro InfoCount;
         public static StringOption BaseOption;
+        public static float roletaby;
         public static HashSet<TabGroup> tabGenerated;
 
         public static void Postfix(GameSettingMenu __instance)
@@ -193,9 +194,11 @@ namespace TownOfHost
                 activeonly.gameObject.SetActive(false);
 
                 ModSettingsTab = Object.Instantiate(__instance.RoleSettingsTab, __instance.RoleSettingsTab.transform.parent);
+                ModSettingsTab.name = "ModSettingTab";
                 var backButton = ModSettingsTab.BackButton.Cast<PassiveButton>();
                 backButton.OnClick = new();
                 backButton.OnClick.AddListener((Action)(() => { ModSettingsTab.CloseMenu(); __instance.ChangeTab(3, true); }));
+                roletaby = ModSettingsTab.transform.position.y;
 
                 if (priset == null)
                 {
@@ -249,7 +252,7 @@ namespace TownOfHost
                 Dictionary<CustomRoles, GameObject> crmenus = new();
 
                 __instance?.GameSettingsTab?.gameObject?.SetActive(true);
-                GameObject.Find("Main Camera/PlayerOptionsMenu(Clone)/MainArea/ROLES TAB(Clone)/Gradient")?.SetActive(false);
+                GameObject.Find("Main Camera/PlayerOptionsMenu(Clone)/MainArea/ModSettingTab/Gradient")?.SetActive(false);
 
                 BaseOption = GameObject.Find("Main Camera/PlayerOptionsMenu(Clone)/MainArea/GAME SETTINGS TAB/Scroller/SliderInner/GameOption_String(Clone)")?.GetComponent<StringOption>();
 

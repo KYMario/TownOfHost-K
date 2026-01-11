@@ -83,7 +83,8 @@ namespace TownOfHost
                 {
                     if (buttongameobject is null) continue;
                     bool IsActive = true;
-                    if (buttongameobject.transform.position.y > 4.2f || buttongameobject.transform.position.y < -0.3)
+                    if ((buttongameobject.transform.position.y - roletaby) > 2f ||
+                    (buttongameobject.transform.position.y - roletaby) < -2f)
                     {
                         IsActive = false;
                     }
@@ -374,7 +375,8 @@ namespace TownOfHost
                     var opt = option.OptionBehaviour.LabelBackground;
                     if (isroleoption && rolebutton.TryGetValue(option.CustomRole, out var button))
                     {
-                        button.gameObject.SetActive(!(3.5f < opt.transform.position.y || opt.transform.position.y <= -0.4));
+                        button.gameObject.SetActive(!(2f < (opt.transform.position.y - roletaby) ||
+                        (opt.transform.position.y - roletaby) <= -2));
 
                         if (roleInfobutton.TryGetValue(option.CustomRole, out var infobutton))
                         {
