@@ -1,5 +1,6 @@
 using System;
 using AmongUs.GameOptions;
+using Hazel;
 using TownOfHost.Roles.Core;
 
 namespace TownOfHost.Roles.Crewmate;
@@ -81,6 +82,7 @@ public sealed class Observer : RoleBase
             // 状態リセット＆残回数を減らす
             ObserverTarget = byte.MaxValue;
             RemainingMonitoring = Math.Max(0, RemainingMonitoring - 1);
+            SendRpc();
         }
     }
     public override bool OnCompleteTask(uint taskid)
@@ -95,4 +97,16 @@ public sealed class Observer : RoleBase
 
         return true;
     }
+
+    void SendRpc()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(RemainingMonitoring);
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        RemainingMonitoring = reader.ReadInt32();
+    }
+    public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
+    public override string GetProgressText(bool comms = false, bool GameLog = false) => $"<{RoleInfo.RoleColorCode}>({RemainingMonitoring})</color>";
 }
