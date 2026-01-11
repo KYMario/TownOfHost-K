@@ -394,6 +394,8 @@ namespace TownOfHost
             {
                 var roomtext = "";
                 Teleport(player, true);
+                //ここで次の湧き位置を決定
+                if (Options.CurrentGameMode is CustomGameMode.TaskBattle) return;
                 var pos = GetLocation(ref roomtext, false);
                 if (!NextSporn.ContainsKey(player.PlayerId))
                     NextSporn.Add(player.PlayerId, pos);
@@ -402,6 +404,15 @@ namespace TownOfHost
                 if (!NextSpornName.ContainsKey(player.PlayerId))
                     NextSpornName.Add(player.PlayerId, roomtext);
                 else NextSpornName[player.PlayerId] = roomtext;
+
+                if (player.IsModClient() && player.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+                {
+                    var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None, -1);
+                    sender.Write((int)RPC.ModSystem.SyncNextSpawn);
+                    sender.Write(player.PlayerId);
+                    sender.Write(roomtext);
+                    AmongUsClient.Instance.FinishRpcImmediately(sender);
+                }
             }
             public virtual void FirstTeleport(PlayerControl player)
             {
@@ -421,6 +432,13 @@ namespace TownOfHost
                     location = new Vector2(location.x * -1, location.y);
                 }
                 player.RpcSnapToForced(location);
+
+                if (Options.CurrentGameMode is CustomGameMode.TaskBattle)
+                {
+                    if (!NextSpornName.ContainsKey(player.PlayerId))
+                        NextSpornName.Add(player.PlayerId, roomtext);
+                    else NextSpornName[player.PlayerId] = roomtext;
+                }
             }
 
             public Vector2 GetLocation(ref string roomtext, bool first = false)

@@ -361,7 +361,7 @@ public sealed class Fortuner : RoleBase, IKiller
                 }
             }
             if (role is not CustomRoles.NotAssigned)
-                _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("For<deador>tu<life>ne_Meg".RemoveHtmlTags()), UtilsRoleText.GetRoleColorAndtext(role))), 0.5f, "forsendmeg", null);
+                _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("For<deador>tu<life>ne_Meg".RemoveHtmlTags()), UtilsRoleText.GetRoleColorAndtext(role)), player.PlayerId), 0.5f, "forsendmeg", null);
         }
         giveplayerid.Clear();
     }

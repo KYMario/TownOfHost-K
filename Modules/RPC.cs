@@ -550,7 +550,8 @@ namespace TownOfHost
             SyncDeviceTimer,
             SyncRoomTimer,
             SyncSkinShuffle,
-            SyncMuderMystery
+            SyncMuderMystery,
+            SyncNextSpawn
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -562,25 +563,41 @@ namespace TownOfHost
                     DisableDevice.ReadMessage(reader);
                     break;
                 case ModSystem.SyncRoomTimer:
-                    float lag = AmongUsClient.Instance.Ping / 1000f;
-                    float timer = reader.ReadSingle() - lag;
-                    GameStartManagerPatch.SetTimer(timer);
-                    Logger.Info($"Set: {timer}", "RPC SetTimer");
-                    break;
-                case ModSystem.SyncSkinShuffle:
-                    var count = PlayerControl.AllPlayerControls.Count;
-                    for (; count > 0; --count)
                     {
-                        byte targetId = reader.ReadByte();
-                        var data = PlayerCatch.GetPlayerInfoById(reader.ReadByte());
-                        Main.AllPlayerNames[targetId] = reader.ReadString(); //data.PlayerNameから取得しようとしたら名前がシステムメセになったのでどうしようか悩む
-                        Main.PlayerColors[targetId] = Palette.PlayerColors[data.DefaultOutfit.ColorId];
+                        float lag = AmongUsClient.Instance.Ping / 1000f;
+                        float timer = reader.ReadSingle() - lag;
+                        GameStartManagerPatch.SetTimer(timer);
+                        Logger.Info($"Set: {timer}", "RPC SetTimer");
+                        break;
                     }
-                    break;
+                case ModSystem.SyncSkinShuffle:
+                    {
+                        var count = PlayerControl.AllPlayerControls.Count;
+                        for (; count > 0; --count)
+                        {
+                            byte targetId = reader.ReadByte();
+                            var data = PlayerCatch.GetPlayerInfoById(reader.ReadByte());
+                            Main.AllPlayerNames[targetId] = reader.ReadString(); //data.PlayerNameから取得しようとしたら名前がシステムメセになったのでどうしようか悩む
+                            Main.PlayerColors[targetId] = Palette.PlayerColors[data.DefaultOutfit.ColorId];
+                        }
+                        break;
+                    }
                 case ModSystem.SyncMuderMystery:
-                    var readdata = reader.ReadInt32();
-                    MurderMystery.DeadArcherCount = readdata is -5 ? null : readdata;
-                    break;
+                    {
+                        var readdata = reader.ReadInt32();
+                        MurderMystery.DeadArcherCount = readdata is -5 ? null : readdata;
+                        break;
+                    }
+                case ModSystem.SyncNextSpawn:
+                    {
+                        var playerid = reader.ReadByte();
+                        var NextSpornName = reader.ReadString();
+                        if (!RandomSpawn.SpawnMap.NextSpornName.TryAdd(playerid, NextSpornName))
+                        {
+                            RandomSpawn.SpawnMap.NextSpornName[playerid] = NextSpornName;
+                        }
+                        break;
+                    }
             }
         }
     }
