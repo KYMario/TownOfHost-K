@@ -69,24 +69,6 @@ namespace TownOfHost
                         __instance.ReportDeadBody(info);
                     }
 
-                    if (ReportDeadBodyPatch.DontReport.TryGetValue(__instance.PlayerId, out var data))
-                    {
-                        try
-                        {
-                            var time = data.time + Time.fixedDeltaTime;
-                            if (4f <= time)
-                            {
-                                ReportDeadBodyPatch.DontReport.Remove(__instance.PlayerId);
-                                _ = new LateTask(() =>
-                                {
-                                    if (!GameStates.CalledMeeting) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: __instance);
-                                }, 0.2f, "", true);
-                            }
-                            else
-                                ReportDeadBodyPatch.DontReport[__instance.PlayerId] = (time, data.reason);
-                        }
-                        catch { Logger.Error($"{__instance.PlayerId}でエラー！", "DontReport"); }
-                    }
                     //梯子バグ対応策。
                     if (isAlive && !((roleclass as Jumper)?.Jumping == true) && timer is 5)
                     {
@@ -230,6 +212,25 @@ namespace TownOfHost
                         __instance.Data.DefaultOutfit.VisorId = outfit.VisorId;
                     }
                 }
+            }
+
+            if (ReportDeadBodyPatch.DontReport.TryGetValue(__instance.PlayerId, out var data))
+            {
+                try
+                {
+                    var time = data.time + Time.fixedDeltaTime;
+                    if (4f <= time)
+                    {
+                        ReportDeadBodyPatch.DontReport.Remove(__instance.PlayerId);
+                        _ = new LateTask(() =>
+                        {
+                            if (!GameStates.CalledMeeting && AmongUsClient.Instance.AmHost) UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: __instance);
+                        }, 0.2f, "", true);
+                    }
+                    else
+                        ReportDeadBodyPatch.DontReport[__instance.PlayerId] = (time, data.reason);
+                }
+                catch { Logger.Error($"{__instance.PlayerId}でエラー！", "DontReport"); }
             }
 
             //役職テキストの表示
