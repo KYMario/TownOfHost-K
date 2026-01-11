@@ -174,11 +174,11 @@ namespace TownOfHost
 
                 var diea = age[3];
                 var dieage = diea.Split("&");
-                if ((age[4] ?? "-") != Main.SKey.Value && (Main.SKey.Value is not "141c2e1c"))
+                /*if ((age[4] ?? "-") != Main.SKey.Value && (Main.SKey.Value is not "141c2e1c"))
                 {
                     Statistics.riset = true;
                     return null;
-                }
+                }*/
                 foreach (var text in dieage)
                 {
                     var subage = text.Split("$");

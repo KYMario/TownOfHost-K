@@ -200,7 +200,11 @@ namespace TownOfHost
                     Lovers.MaMadonnaLoversPlayers.Clear();
                     int Macount = reader.ReadInt32();
                     for (int i = 0; i < Macount; i++)
-                        Lovers.MaMadonnaLoversPlayers.Add(PlayerCatch.GetPlayerById(reader.ReadByte()));
+                    {
+                        var targetid = reader.ReadByte();
+                        Lovers.MaMadonnaLoversPlayers.Add(PlayerCatch.GetPlayerById(targetid));
+                        Lovers.HaveLoverDontTaskPlayers.Add(targetid);
+                    }
                     break;
                 case CustomRPC.SetRealKiller:
                     byte targetId = reader.ReadByte();

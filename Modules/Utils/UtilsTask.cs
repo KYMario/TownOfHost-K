@@ -65,7 +65,9 @@ namespace TownOfHost
                     foreach (var subRole in States.SubRoles)
                         switch (subRole)
                         {
-                            case CustomRoles.Amanojaku: hasTasks &= !ForRecompute; break;
+                            case CustomRoles.Amanojaku:
+                            case CustomRoles.OneLove:
+                                hasTasks &= !ForRecompute; break;
                             case CustomRoles.Amnesia:
                                 {
                                     var ch = false;

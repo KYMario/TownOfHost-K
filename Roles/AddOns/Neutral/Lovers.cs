@@ -81,7 +81,9 @@ class Lovers
         {
             for (int i = 0; i < reader.ReadInt32(); i++)
             {
-                data.LoverPlayer.Add(PlayerCatch.GetPlayerById(reader.ReadByte()));
+                var targetid = reader.ReadByte();
+                data.LoverPlayer.Add(targetid.GetPlayerControl());
+                HaveLoverDontTaskPlayers.Add(targetid);
             }
         }
     }
