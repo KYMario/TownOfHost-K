@@ -551,7 +551,8 @@ namespace TownOfHost
             SyncRoomTimer,
             SyncSkinShuffle,
             SyncMuderMystery,
-            SyncNextSpawn
+            SyncNextSpawn,
+            SyncOneLove
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -596,6 +597,14 @@ namespace TownOfHost
                         {
                             RandomSpawn.SpawnMap.NextSpornName[playerid] = NextSpornName;
                         }
+                        break;
+                    }
+                case ModSystem.SyncOneLove:
+                    {
+                        var oneloveid = reader.ReadByte();
+                        var targetid = reader.ReadByte();
+                        var isdoublelove = reader.ReadBoolean();
+                        Lovers.OneLovePlayer = (oneloveid, targetid, isdoublelove);
                         break;
                     }
             }

@@ -167,6 +167,12 @@ class Lovers
                 PlayerState.GetByPlayerId(player.PlayerId).SetSubRole(CustomRoles.OneLove);
                 Logger.Info("役職設定:" + player?.Data?.GetLogPlayerName() + " = " + player.GetCustomRole().ToString() + " + " + CustomRoles.OneLove.ToString(), "AssignLovers");
             }
+            var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None, -1);
+            sender.Write((int)RPC.ModSystem.SyncOneLove);
+            sender.Write(OneLovePlayer.OneLove);
+            sender.Write(OneLovePlayer.BelovedId);
+            sender.Write(OneLovePlayer.doublelove);
+            AmongUsClient.Instance.FinishRpcImmediately(sender);
         }
         else isOneLoveDead = true;
     }
