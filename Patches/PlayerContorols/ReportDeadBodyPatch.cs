@@ -129,6 +129,7 @@ namespace TownOfHost
                 UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[__instance.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
                 RpcSyncMeetingInfo(__instance, target);
             }
+            DisableDevice.SendMessage();
 
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {

@@ -475,7 +475,7 @@ public static class MeetingHudPatch
                             || (team == CustomRoleTypes.Neutral && Options.CanseeNeuTimeLimit.GetBool()) || (team == CustomRoleTypes.Madmate && Options.CanseeMadTimeLimit.GetBool()) || !seer.IsAlive())
                                 if (info != "")
                                 {
-                                    var Name = info.RemoveText() + "\n" + pva.NameText.text + "\n" + info;
+                                    var Name = info.RemoveText() + "\n\n" + pva.NameText.text + "\n" + info;
                                     pva.NameText.text = Name;
                                 }
                         }
