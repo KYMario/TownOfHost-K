@@ -267,7 +267,7 @@ namespace TownOfHost
                         role = !isalive ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate;
 
                     var IDesycImpostor = Player.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor ?? false;
-                    IDesycImpostor |= SuddenDeathMode.NowSuddenDeathMode;
+                    IDesycImpostor |= SuddenDeathMode.NowSuddenDeathMode || Player.Is(CustomRoles.OneWolf) || pc.Is(CustomRoles.OneWolf);
 
                     if (pc.Is(CustomRoles.Amnesia))
                     {
@@ -280,17 +280,19 @@ namespace TownOfHost
                     }
                     var setrole = (IDesycImpostor && Player != pc) ? (!isalive ? RoleTypes.CrewmateGhost : RoleTypes.Crewmate) : role;
 
-                    if (pc.PlayerId == Player.PlayerId && pc.GetRoleClass()?.AfterMeetingRole is not null && pc.IsAlive()
-                        && (!pc.Is(CustomRoles.Amnesia) || !Amnesia.dontcanUseability))
+                    if (pc.PlayerId == Player.PlayerId)
                     {
-                        setrole = pc.GetRoleClass().AfterMeetingRole.Value;
+                        if (pc.GetRoleClass()?.AfterMeetingRole is not null && pc.IsAlive()
+                                && (!pc.Is(CustomRoles.Amnesia) || !Amnesia.dontcanUseability))
+                        {
+                            setrole = pc.GetRoleClass().AfterMeetingRole.Value;
+                        }
+                        if ((pc.GetRoleClass() as IUsePhantomButton)?.IsPhantomRole is false && setrole is RoleTypes.Phantom && pc.IsAlive())
+                        {
+                            //使えないならインポスターに戻す
+                            setrole = RoleTypes.Impostor;
+                        }
                     }
-                    if ((pc.GetRoleClass() as IUsePhantomButton)?.IsPhantomRole is false && setrole is RoleTypes.Phantom && pc.IsAlive())
-                    {
-                        //使えないならインポスターに戻す
-                        setrole = RoleTypes.Impostor;
-                    }
-
                     if (!isalive && pc.IsGhostRole())
                     {
                         setrole = RoleTypes.GuardianAngel;
