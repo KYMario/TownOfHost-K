@@ -9,7 +9,7 @@ namespace TownOfHost.Patches
         public static void Postfix(ChatBubble __instance, ref Color color)
         {
             color = Palette.White;
-            var IsSystemMeg = __instance.NameText.text.RemoveaAlign() != __instance.NameText.text || __instance.NameText.text.Contains("【") || __instance.NameText.text.Contains("=");
+            var IsSystemMeg = __instance.NameText.text.IsSystemMessage();
             if (GameStates.IsInGame)
             {
                 if (!__instance.playerInfo._object) return;

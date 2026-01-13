@@ -56,7 +56,7 @@ namespace TownOfHost.Modules.ChatManager
             if (msg.StartsWith("<size=0>.</size>")) operate = 3;//投票の記録
             else if (CheckCommond(ref msg, "bt", false)) operate = 2;
             else if (CommandCheck(message)) operate = 1;
-            else if (message.RemoveHtmlTags() != message) operate = 5;//tagが含まれてるならシステムメッセ
+            else if (message.IsSystemMessage()) operate = 5;//tagが含まれてるならシステムメッセ
 
             //ワード検知はできるようにはなった。
             /*if (message.Contains("ｱ") && operate == 3)
@@ -267,6 +267,7 @@ namespace TownOfHost.Modules.ChatManager
                 }
             }
         }
+        public static bool IsForceSend;
         public static void SendMessageInGame(ChatController chatController)
         {
             PlayerControl senderplayer = PlayerCatch.AllAlivePlayerControls.OrderBy(x => x.PlayerId).FirstOrDefault();
@@ -281,6 +282,57 @@ namespace TownOfHost.Modules.ChatManager
             {
                 Main.MessagesToSend.RemoveAt(0);
                 Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
+                return;
+            }
+            if (Main.IsCs() is false && PlayerControl.LocalPlayer.IsAlive() is false)
+            {
+                //苦肉の応急手当。一瞬だけホスト復活
+                Main.MessagesToSend.RemoveAt(0);
+                var Ischatopen = HudManager.Instance?.Chat?.IsOpenOrOpening ?? false;
+                senderplayer = PlayerControl.LocalPlayer;
+                // ホスト視点でのチャット送信
+                if (sendTo == byte.MaxValue || sendTo == senderplayer.PlayerId)
+                {
+                    senderplayer.SetName(title);
+                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
+                    senderplayer.SetName(name);
+                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                    if (sendTo == senderplayer.PlayerId) return;
+                }
+                IsForceSend = true;
+                PlayerControl.LocalPlayer.Data.IsDead = false;
+                foreach (var seer in PlayerCatch.AllPlayerControls)
+                {
+                    if (seer.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                    if (seer.PlayerId == sendTo || sendTo is byte.MaxValue)
+                    {
+                        var seerclientid = seer.GetClientId();
+                        GameDataSerializePatch.SerializeMessageCount++;
+                        RPC.RpcSyncAllNetworkedPlayer(seerclientid);
+                        GameDataSerializePatch.SerializeMessageCount--;
+                        var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                        Nwriter.StartMessage(seerclientid);
+                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                        .Write(senderplayer.Data.NetId)
+                        .Write(title)
+                        .EndRpc();
+                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                        .Write(msg)
+                        .EndRpc();
+                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                        .Write(senderplayer.Data.NetId)
+                        .Write(senderplayer.Data.GetLogPlayerName())
+                        .EndRpc();
+                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.Exiled)
+                        .EndRpc();
+                        Nwriter.EndMessage();
+                        Nwriter.SendMessage();
+                    }
+                }
+                PlayerControl.LocalPlayer.Data.IsDead = true;
+                senderplayer.Die(DeathReason.Kill, false);
+                IsForceSend = false;
+                chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
                 return;
             }
 

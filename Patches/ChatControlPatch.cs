@@ -1,5 +1,6 @@
 using AmongUs.Data;
 using HarmonyLib;
+using TownOfHost.Modules.ChatManager;
 using UnityEngine;
 
 namespace TownOfHost
@@ -37,6 +38,15 @@ namespace TownOfHost
                     __instance.freeChatField.textArea.SetText(ChatCommands.ChatHistory[CurrentHistorySelection]);
                 else __instance.freeChatField.textArea.SetText("");
             }
+        }
+    }
+
+    [HarmonyPatch(typeof(ChatController), nameof(ChatController.ForceClosed))]
+    class ChatControllerForceClosedPatch
+    {
+        public static bool Prefix()
+        {
+            return !ChatManager.IsForceSend;
         }
     }
 }

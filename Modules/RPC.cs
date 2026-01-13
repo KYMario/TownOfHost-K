@@ -65,7 +65,7 @@ namespace TownOfHost
                     break;
                 case RpcCalls.SendChat:
                     var text = subReader.ReadString();
-                    bool systemmeg = text != text.RemoveHtmlTags();
+                    bool systemmeg = text.IsSystemMessage();
                     Logger.Info($"{(systemmeg ? "○" : "")}{__instance.GetNameWithRole().RemoveHtmlTags()}:{text.RemoveHtmlTags()}", "ReceiveChat");
                     ChatCommands.OnReceiveChat(__instance, text, out var canceled);
                     if (canceled) return false;

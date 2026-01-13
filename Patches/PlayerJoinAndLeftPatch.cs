@@ -78,6 +78,7 @@ namespace TownOfHost
                 roleData.ProtectionDurationSeconds = 9999999999;
                 foreach (var option in OptionItem.AllOptions)
                 {
+                    if (option.Id == 105002) option.SetValue(0);//秘匿チャット排除
                     if ((Event.OptionLoad.Contains(option.Name) && !Event.Special) &&
                     (Event.CheckRole(option.CustomRole) is false)) option.SetValue(0);
                 }

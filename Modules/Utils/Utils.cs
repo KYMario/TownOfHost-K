@@ -317,11 +317,7 @@ namespace TownOfHost
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
             if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle");// + "</color>";
-            if (title.Contains("<color="))//すぐ</align>すると最終行もあれなので。
-            {
-                title = title.RemoveColorTags();
-                title = $"<{Main.ModColor}>{title}</color>";
-            }
+
             var towsend = "";
             if (checkl && text.Length > 500 && sendTo != PlayerControl.LocalPlayer.PlayerId)
             {
@@ -396,6 +392,7 @@ namespace TownOfHost
                 text = text.RemoveDeltext("7", "７").RemoveDeltext("8", "８").RemoveDeltext("9", "９");
                 text = text.RemoveHtmlTags();
                 title = title.RemoveHtmlTags();
+                if (title.IsSystemMessage() is false) title += "▽";
             }
             Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
@@ -772,6 +769,17 @@ namespace TownOfHost
                 }
             }
             return returns;
+        }
+        static string[] Systemmark =
+        ["★", "◎", "【", "▽", "Φ", "♥", "∈", "Ψ"];
+        public static bool IsSystemMessage(this string text)
+        {
+            if (text.RemoveHtmlTags() != text) return true;
+            foreach (var mark in Systemmark)
+            {
+                if (text.Contains(mark)) return true;
+            }
+            return false;
         }
         #endregion
         public static void FlashColor(Color color, float duration = 1f)

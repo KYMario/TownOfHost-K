@@ -640,7 +640,7 @@ namespace TownOfHost
             ExAftermeetingflash = BooleanOptionItem.Create(105001, "ExAftermeetingflash", false, TabGroup.MainSettings, false).SetParent(ExperimentalMode)
                 .SetTag(CustomOptionTags.Standard);
             ExHideChatCommand = BooleanOptionItem.Create(105002, "ExHideChatCommand", false, TabGroup.MainSettings, false).SetParent(ExperimentalMode)
-                .SetTag(CustomOptionTags.Standard).SetInfo(Translator.GetString("ExHideChatCommandInfo"));
+                .SetTag(CustomOptionTags.Standard).SetInfo(Translator.GetString("ExHideChatCommandInfo")).SetEnabled(() => false);
             TeamHideChat = BooleanOptionItem.Create(105003, "TeamHideChat", false, TabGroup.MainSettings, false)
                 .SetTag(CustomOptionTags.Standard)
                 .SetParent(ExHideChatCommand);

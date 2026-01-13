@@ -82,7 +82,6 @@ namespace TownOfHost.Roles.Ghost
                     //どっちかは知らんが回数とリセットは入れるで～
                     Count++;
                     pc.RpcResetAbilityCooldown(Sync: true);
-                    Logger.Info($"{GetNowCoolDown()}", "aaa");
 
                     if (!Asist.IsAlive()) return;//アシスト対象が死んでるならでしゃばるな。
 
