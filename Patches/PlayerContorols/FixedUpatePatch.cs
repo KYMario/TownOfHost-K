@@ -360,7 +360,7 @@ namespace TownOfHost
                                 || ((seerRole is ProgressKiller) && ProgressKiller.ProgressWorkhorseseen)
                                 || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                 {
-                                    Mark.Append($"<color=blue>♦</color>");
+                                    Mark.Append($"<#0000ff>lue>♦</color>");
                                 }
                             }
                             Suffix.Append(seerRole?.GetSuffix(seer, target));

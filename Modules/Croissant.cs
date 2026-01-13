@@ -15,7 +15,7 @@ class Croissant
     public static bool ChocolateCroissant;
     public static Dictionary<string, ParfaitRecordDiary> diaries = new();
     public static OptionItem jam;
-    public readonly static LogHandler receipt = Logger.Handler("<color=yellow>c<set at pan>h</color>e<br>e<year>se<st>".RemoveHtmlTags());
+    public readonly static LogHandler receipt = Logger.Handler("<#ffff00>ellow>c<set at pan>h</color>e<br>e<year>se<st>".RemoveHtmlTags());
     private static byte creamId = sbyte.MaxValue - 1;
     private static bool applePie = false;
     public static void BaketheDough(PlayerControl bakedough)

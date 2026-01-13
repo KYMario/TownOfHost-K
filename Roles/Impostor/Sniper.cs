@@ -402,7 +402,7 @@ public sealed class Sniper : RoleBase, IImpostor
         foreach (var sniper in Snipers)
         {
             if (sniper.ShowArrowTime > 0 && OpShowArrowTime.GetFloat() != 0)
-                arrow += "<size=90%><color=red>" + GetArrow.GetArrows(seer, sniper.SnipeBasePosition) + "</color></size>";
+                arrow += "<size=90%><#ff1919>" + GetArrow.GetArrows(seer, sniper.SnipeBasePosition) + "</color></size>";
 
             //射撃音が聞こえるプレイヤー
             var snList = sniper.ShotNotify;

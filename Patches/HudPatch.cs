@@ -470,23 +470,23 @@ namespace TownOfHost
                 //プログレスキラー
                 if (seer.Is(CustomRoles.ProgressKiller) && target.Is(CustomRoles.Workhorse) && ProgressKiller.ProgressWorkhorseseen)
                 {
-                    Mark.Append($"<color=blue>♦</color>");
+                    Mark.Append($"<#0000ff>lue>♦</color>");
                 }
                 //エーリアン
                 if ((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<color=blue>♦</color>");
+                        Mark.Append($"<#0000ff>lue>♦</color>");
                     }
                 if ((seerRole as JackalAlien)?.mode == Alien.AlienMode.ProgressKiller == true && JackalAlien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<color=blue>♦</color>");
+                        Mark.Append($"<#0000ff>lue>♦</color>");
                     }
                 if ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<color=blue>♦</color>");
+                        Mark.Append($"<#0000ff>lue>♦</color>");
                     }
                 //seer役職が対象のSuffix
                 Suffix.Append(seerRole?.GetSuffix(seer, target));

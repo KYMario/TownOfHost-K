@@ -129,7 +129,7 @@ class TaskBattle
                                 t2 += PlayerCatch.GetPlayerById(id).GetPlayerTaskState().CompletedTasksCount;
                         }
                     }
-                    Mark.Append($"<color=yellow>({t2}/{t1})</color>");
+                    Mark.Append($"<#ffff00>ellow>({t2}/{t1})</color>");
                 }
                 if (TaskBattleShowFastestPlayer.GetBool())
                 {
@@ -154,7 +154,7 @@ class TaskBattle
         else
         {
             if (TaskBattelCanSeeOtherPlayer.GetBool())
-                Mark.Append($"<color=yellow>({target.GetPlayerTaskState().CompletedTasksCount}/{target.GetPlayerTaskState().AllTasksCount})</color>");
+                Mark.Append($"<#ffff00>ellow>({target.GetPlayerTaskState().CompletedTasksCount}/{target.GetPlayerTaskState().AllTasksCount})</color>");
         }
     }
 

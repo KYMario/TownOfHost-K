@@ -161,7 +161,7 @@ namespace TownOfHost
                         warningMessage = Utils.ColorString(Color.red, string.Format(GetString("Warning.MismatchedVersion"), String.Join(" ", mismatchedPlayerNameList), $"<{Main.ModColor}>{Main.ModName}</color>"));
                     }
 
-                    __instance.GameStartText.text += $"\n<size=2.5><color=red>({GetString("ClicktoCancel")})</size>";
+                    __instance.GameStartText.text += $"\n<size=2.5><#ff1919>({GetString("ClicktoCancel")})</size>";
                 }
                 else
                 {

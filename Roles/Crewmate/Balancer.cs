@@ -351,7 +351,7 @@ public sealed class Balancer : RoleBase, ISelfVoter
         if (Id == byte.MaxValue) return "";
         if (seen.PlayerId == target1 || seen.PlayerId == target2)
         {
-            return "<color=red>Ω</color>";
+            return "<#ff1919>Ω</color>";
         }
         return "";
     }

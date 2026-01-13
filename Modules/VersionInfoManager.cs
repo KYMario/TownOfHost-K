@@ -155,7 +155,7 @@ class VersionInfoManager
     private static IEnumerator UpdateText(TextMeshPro infoText)
     {
         var baseText = $"\n\n\n{(Main.UseingJapanese ? "このAmongUsのバージョンには対応してないよ!!\nアップデートしてね!!" : "This version of Among Us isn't supported!!\nPlease update!!")}";
-        baseText += "\n                                                                                    <size=4><color=white>";
+        baseText += "\n                                                                                    <size=4><#ffffff>hite>";
         string[] omake =
         [
         "（´・ω・｀）",

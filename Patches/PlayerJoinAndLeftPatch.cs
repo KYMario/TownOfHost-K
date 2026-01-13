@@ -283,16 +283,16 @@ namespace TownOfHost
                     {
                         var varsion = Main.PluginShowVersion;
                         var text = $"<size=80%>この部屋では\n<{Main.ModColor}><size=180%><b>{Main.ModName}</color></b></size> v.{varsion}\nを導入しております。<size=40%>\n\n</size>現在AmongUsでは、<#fc8803>公開ルームでのMod利用はできません</color><size=80%>\n";
-                        var text2 = "</size><color=red>公開ルームからMod部屋へ勧誘/誘導をするのは<b>禁止</b>です</color>。<size=40%>\n<color=red>勧誘/誘導行為</color>にあった場合はスクリーンショット等と一緒に開発者にお知らせください。";
+                        var text2 = "</size><#ff1919>公開ルームからMod部屋へ勧誘/誘導をするのは<b>禁止</b>です</color>。<size=40%>\n<#ff1919>勧誘/誘導行為</color>にあった場合はスクリーンショット等と一緒に開発者にお知らせください。";
                         var text3 = "";//"</size>\n<size=60%>\n☆参加型配信を行ったり、SNSで募集するのは?\n<size=50%>→<#352ac9>全然大丈夫です!!やっちゃってください!!</color>\n　<#fc8803>バニラAmongUsの公開ルーム</color>での<red>宣伝/勧誘/誘導</color>がダメなのです!!</size>";
-                        var text4 = "";//"\n☆開発者から許可貰ってるって言ってる?　　\n<size=50%>→<#c9145a>個々で許可を出しておりません</color>!!大噓つきですよ!!</size>\n☆公開ルームに参加し、コード宣伝して「来てね～」って言うのは?\n<size=50%>→<color=red>勧誘/誘導</color>に当たるのでダメです。迷惑考えてくださいよ!!";
+                        var text4 = "";//"\n☆開発者から許可貰ってるって言ってる?　　\n<size=50%>→<#c9145a>個々で許可を出しておりません</color>!!大噓つきですよ!!</size>\n☆公開ルームに参加し、コード宣伝して「来てね～」って言うのは?\n<size=50%>→<#ff1919>勧誘/誘導</color>に当たるのでダメです。迷惑考えてくださいよ!!";
                         Utils.SendMessage($"{text}{text2}{text3}{text4}", client.Character.PlayerId, $"<{Main.ModColor}>【This Room Use \"Town Of Host-K\"】");
                     }
                     else
                     {
                         var varsion = Main.PluginShowVersion;
                         var text = $"<size=80%>This Room Use \n<{Main.ModColor}><size=180%><b>{Main.ModName}</color></b></size> v.{varsion}\n<size=40%>\n\n</size>Mods are currently not available in <#fc8803> public rooms in AmongUs.</color><size=80%>\n";
-                        var text2 = "</size><color=red>Solicitation or inducement from a public room to a mod room is <b>forbidden</b></color>. <size=40%>\nIf you encounter any <color=red>solicitation or inducement</color>, please notify the developer with a screenshot or other information.";
+                        var text2 = "</size><#ff1919>Solicitation or inducement from a public room to a mod room is <b>forbidden</b></color>. <size=40%>\nIf you encounter any <#ff1919>solicitation or inducement</color>, please notify the developer with a screenshot or other information.";
                         Utils.SendMessage($"{text}{text2}", client.Character.PlayerId, $"<{Main.ModColor}>【This Room Use \"Town Of Host-K\"】");
                     }
 
@@ -313,9 +313,9 @@ namespace TownOfHost
                     if (Main.DebugVersion)
                     {
                         if (Main.UseingJapanese)
-                            Utils.SendMessage($"<size=120%>☆これはデバッグ版です☆</size>\n<line-height=80%><size=80%>\n・正式リリース版ではありません。\n・バグが発生する場合があります。\nバグが発生した場合はTOH-KのDiscordで報告すること!", client.Character.PlayerId, "<color=red>【=====　これはデバッグ版です　=====】</color>");
+                            Utils.SendMessage($"<size=120%>☆これはデバッグ版です☆</size>\n<line-height=80%><size=80%>\n・正式リリース版ではありません。\n・バグが発生する場合があります。\nバグが発生した場合はTOH-KのDiscordで報告すること!", client.Character.PlayerId, "<#ff1919>【=====　これはデバッグ版です　=====】</color>");
                         else
-                            Utils.SendMessage($"<size=120%>☆This is a debug version☆</size=120%>\n<line-height=80%><size=80%>This is not an official release version. \n If you encounter a bug, report it on TOH-K Discord!", client.Character.PlayerId, "<color=red>【==　This is Debug version　==】</color>");
+                            Utils.SendMessage($"<size=120%>☆This is a debug version☆</size=120%>\n<line-height=80%><size=80%>This is not an official release version. \n If you encounter a bug, report it on TOH-K Discord!", client.Character.PlayerId, "<#ff1919>【==　This is Debug version　==】</color>");
                     }
                     if (OnPlayerLeftPatch.IsIntroError && client.Character.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                     {

@@ -317,7 +317,11 @@ namespace TownOfHost
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
             if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle");// + "</color>";
-                                                                                                    //すぐ</align>すると最終行もあれなので。
+            if (title.Contains("<color="))//すぐ</align>すると最終行もあれなので。
+            {
+                title = title.RemoveColorTags();
+                title = $"<{Main.ModColor}>{title}</color>";
+            }
             var towsend = "";
             if (checkl && text.Length > 500 && sendTo != PlayerControl.LocalPlayer.PlayerId)
             {
@@ -383,6 +387,16 @@ namespace TownOfHost
             var fir = rob ? "" : "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
+            if (Main.IsCs() is false && GameStates.IsOnlineGame)
+            {
+                fir = "";
+                text = text.RemoveHtmlTags();
+                text = text.RemoveDeltext("0", "０").RemoveDeltext("1", "１").RemoveDeltext("2", "２").RemoveDeltext("3", "３");
+                text = text.RemoveDeltext("4", "４").RemoveDeltext("5", "５").RemoveDeltext("6", "６");
+                text = text.RemoveDeltext("7", "７").RemoveDeltext("8", "８").RemoveDeltext("9", "９");
+                text = text.RemoveHtmlTags();
+                title = title.RemoveHtmlTags();
+            }
             Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
             {
@@ -444,7 +458,7 @@ namespace TownOfHost
                             string Color = "<#00ffff>";
                             if (minutes <= 4) Color = "<#9acd32>";//5分切ったら
                             if (minutes <= 2) Color = "<#ffa500>";//3分切ったら。
-                            if (minutes <= 0) Color = "<color=red>";//1分切ったら。
+                            if (minutes <= 0) Color = "<#ff1919>";//1分切ったら。
                             name += $"<size=75%>({Color}{minutes:00}:{seconds:00}</color>)</size>";
                             RpcTimer = true;
                             break;
