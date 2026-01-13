@@ -1,41 +1,7 @@
 {
     "AllVersion": {
         "Unavailable": false,
-        "NotAvailableOnline": false,
-        "Events": [
-            {
-                "RoleId": 115,
-                "Period": {
-                    "Month": 1,
-                    "StartDay": 1,
-                    "EndDay": 12
-                }
-            },
-            {
-                "RoleId": 34,
-                "Period": {
-                    "Month": 1,
-                    "StartDay": 1,
-                    "EndDay": 12
-                }
-            },
-            {
-                "RoleId": 149,
-                "Period": {
-                    "Month": 1,
-                    "StartDay": 1,
-                    "EndDay": 12
-                }
-            },
-            {
-                "RoleId": 124,
-                "Period": {
-                    "Month": 1,
-                    "StartDay": 1,
-                    "EndDay": 12
-                }
-            }
-        ]
+        "NotAvailableOnline": false
     },
     "51.14.31": {
         "Unavailable": false,
@@ -108,6 +74,10 @@
         "NotAvailableOnline": false
     },
     "51.14.31.24": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
+    },
+    "51.14.31.25": {
         "Unavailable": false,
         "NotAvailableOnline": false
     }
