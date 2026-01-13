@@ -57,5 +57,9 @@
         "Unavailable": false,
         "NotAvailableOnline": false,
         "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
+    },
+    "51.14.31.26": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
     }
 }
