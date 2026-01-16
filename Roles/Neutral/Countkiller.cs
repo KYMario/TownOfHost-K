@@ -87,7 +87,7 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
         KillCount = reader.ReadInt32();
         WinFlag = reader.ReadBoolean();
     }
-    public bool CanUseKillButton() => Player.IsAlive() && VictoryCount > 0;
+    public bool CanUseKillButton() => Player.IsAlive() && VictoryCount > 0 && KillCount < VictoryCount;
     public bool CanUseSabotageButton() => false;
     public bool CanUseImpostorVentButton() => CanVent;
     public void OnMurderPlayerAsKiller(MurderInfo info)
