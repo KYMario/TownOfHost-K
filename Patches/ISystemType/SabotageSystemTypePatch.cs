@@ -47,6 +47,7 @@ public static class SabotageSystemTypeUpdateSystemPatch
                         UtilsGameLog.AddGameLog($"Sabotage", string.Format(Translator.GetString("Log.Sabotage"), UtilsName.GetPlayerColor(player, false), sb));
                     Main.IsActiveSabotage = true;
                     Main.LastSab = player.PlayerId;
+                    Main.SabotageActivetimer = 0;
                 }
             }
             return roleClass.OnInvokeSabotage(nextSabotage);
@@ -73,6 +74,7 @@ public static class SabotageSystemTypeUpdateSystemPatch
                 UtilsGameLog.AddGameLog($"Sabotage", string.Format(Translator.GetString("Log.Sabotage"), UtilsName.GetPlayerColor(player, false), sb));
                 Main.IsActiveSabotage = true;
                 Main.LastSab = player.PlayerId;
+                Main.SabotageActivetimer = 0;
             }
         }
         return true;

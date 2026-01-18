@@ -119,7 +119,8 @@ namespace TownOfHost
                 {
                     if (GameStates.InGame)
                     {
-                        if (Main.IsActiveSabotage)
+                        //サボ発生時に0sになるからイイヨネ..?
+                        //if (Main.IsActiveSabotage)
                         {
                             Main.SabotageActivetimer += Time.fixedDeltaTime;
                         }

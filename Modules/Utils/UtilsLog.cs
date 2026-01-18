@@ -408,6 +408,7 @@ namespace TownOfHost
             day = 1;
             Main.ShowRoleIntro = true;
             Main.IsActiveSabotage = false;
+            Main.SabotageActivetimer = 0;
             Main.ForcedGameEndColl = 0;
             Main.GameCount++;
             Main.CanUseAbility = false;
