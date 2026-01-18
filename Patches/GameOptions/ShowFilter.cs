@@ -75,7 +75,7 @@ class ShowFilter
                         var generalTab = mouseMoveToggle.transform.parent.parent.parent;
                     }
 
-                    var scrollbargameobjecttem = GameObject.Find("Main Camera/PlayerOptionsMenu(Clone)/MainArea/ROLES TAB(Clone)/Scroller");
+                    var scrollbargameobjecttem = GameObject.Find("Main Camera/PlayerOptionsMenu(Clone)/MainArea/ModSettingTab/Scroller");
 
                     Scrollbargameobject = Object.Instantiate(scrollbargameobjecttem, tabtransform.parent);
                     var scrollbar = Scrollbargameobject.GetComponent<Scroller>;
