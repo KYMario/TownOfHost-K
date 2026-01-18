@@ -316,7 +316,7 @@ namespace TownOfHost
         {
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
-            if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle");// + "</color>";
+            if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle") + "</color>";
 
             var towsend = "";
             if (checkl && text.Length > 500 && sendTo != PlayerControl.LocalPlayer.PlayerId)
@@ -383,18 +383,8 @@ namespace TownOfHost
             var fir = rob ? "" : "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
-            if (Main.IsCs() is false && GameStates.IsOnlineGame)
-            {
-                fir = "";
-                text = text.RemoveHtmlTags();
-                text = text.RemoveDeltext("0", "０").RemoveDeltext("1", "１").RemoveDeltext("2", "２").RemoveDeltext("3", "３");
-                text = text.RemoveDeltext("4", "４").RemoveDeltext("5", "５").RemoveDeltext("6", "６");
-                text = text.RemoveDeltext("7", "７").RemoveDeltext("8", "８").RemoveDeltext("9", "９");
-                text = text.RemoveHtmlTags();
-                title = title.RemoveHtmlTags();
-                if (title.IsSystemMessage() is false) title += "▽";
-            }
-            Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
+            if (Main.IsCs() is false && GameStates.IsOnlineGame) Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{text}"));
+            else Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
             {
                 SendMessage(towsend, sendTo, title, rob, true);

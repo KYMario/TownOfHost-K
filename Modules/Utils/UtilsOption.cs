@@ -95,7 +95,7 @@ namespace TownOfHost
                     break;
             }
 
-            sb.AppendFormat("<line-height={0}>", "45%");
+            sb.AppendFormat("<line-height={0}>", "50%");
 
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
             {
