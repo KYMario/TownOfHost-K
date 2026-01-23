@@ -205,8 +205,8 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             case RPC_Types.ErasePlayer:
                 ErasePlayer(); break;
             case RPC_Types.UseAbility:
-                var targetId = reader.ReadByte();
                 UseCount = reader.ReadInt32();
+                var targetId = reader.ReadByte();
                 EraseMarkTargets.Add(targetId);//マークつける用
                 EraseTargets.Add(targetId);//消す予定の人
                 break;
