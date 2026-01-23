@@ -383,7 +383,9 @@ namespace TownOfHost
             var fir = rob ? "" : "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
-            if (Main.IsCs() is false && GameStates.IsOnlineGame) Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{text}"));
+
+            if (rob) Main.MessagesToSend.Add((text.RemoveHtmlTags(), sendTo, title.RemoveHtmlTags()));
+            else if (Main.IsCs() is false && GameStates.IsOnlineGame) Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{text}"));
             else Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
             {
