@@ -83,8 +83,8 @@ namespace TownOfHost
                 {
                     if (buttongameobject is null) continue;
                     bool IsActive = true;
-                    if ((buttongameobject.transform.position.y - roletaby) > 2f ||
-                    (buttongameobject.transform.position.y - roletaby) < -2f)
+                    if ((buttongameobject.transform.position.y - roletaby) > 2.5f ||
+                    (buttongameobject.transform.position.y - roletaby) < -1.5f)
                     {
                         IsActive = false;
                     }
