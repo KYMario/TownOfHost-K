@@ -188,6 +188,10 @@ namespace TownOfHost
                 TaskState.InitialTotalTasks = GameData.Instance.TotalTasks;
             }
             MurderMystery.CheckArcher();
+            if (AmongUsClient.Instance.AmHost is false)
+            {
+                UtilsRoleInfo.SetRoleLists();
+            }
         }
     }
     [HarmonyPatch(typeof(IntroCutscene), nameof(IntroCutscene.BeginCrewmate))]

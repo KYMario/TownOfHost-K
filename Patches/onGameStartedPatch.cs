@@ -556,52 +556,7 @@ namespace TownOfHost
                 PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.Connecting)).ToArray().Do(
                             pc => PlayerState.GetByPlayerId(pc.PlayerId).RemoveSubRole(CustomRoles.Connecting));
             }
-
-            //役職選定後に処理する奴。
-            foreach (var pc in PlayerCatch.AllPlayerControls)
-            {
-                var role = pc.GetCustomRole();
-                var roletype = role.GetCustomRoleTypes();
-                var OneLovespace = pc.Is(CustomRoles.OneLove) ? Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), GetString("OneLove") + " ") : "";
-                var color = Palette.CrewmateBlue;
-                var roleClass = CustomRoleManager.GetByPlayerId(pc.PlayerId);
-                switch (roletype)
-                {
-                    case CustomRoleTypes.Impostor or CustomRoleTypes.Madmate:
-                        color = Palette.ImpostorRed;
-                        break;
-                    case CustomRoleTypes.Neutral:
-                        color = UtilsRoleText.GetRoleColor(role);
-                        break;
-                }
-                UtilsGameLog.LastLog[pc.PlayerId] = "<b>" + Utils.ColorString(Main.PlayerColors[pc.PlayerId], Main.AllPlayerNames[pc.PlayerId] + "</b>");
-                UtilsGameLog.LastLogRole[pc.PlayerId] = $"<b>{OneLovespace}" + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
-                PlayerCatch.AllPlayerFirstTypes.Add(pc.PlayerId, roletype);
-
-                //Addons
-                var state = pc.GetPlayerState();
-                if (pc.Is(CustomRoles.Guarding)) state.HaveGuard[1] += Guarding.HaveGuard;
-                //RoleAddons
-                if (RoleAddAddons.GetRoleAddon(role, out var data, pc, subrole: [CustomRoles.Guarding]))
-                {
-                    if (data.GiveGuarding.GetBool()) state.HaveGuard[1] += data.Guard.GetInt();
-                }
-                if (!Main.AllPlayerKillCooldown.ContainsKey(pc.PlayerId))
-                    Main.AllPlayerKillCooldown.Add(pc.PlayerId, Options.DefaultKillCooldown);
-
-                var rolebasetype = pc.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() ?? RoleTypes.GuardianAngel;
-                if (rolebasetype is RoleTypes.GuardianAngel)
-                {
-                    rolebasetype = pc.Data.Role.Role;
-                }
-                state.NowRoleType = rolebasetype;
-            }
-
-            if (Lovers.OneLovePlayer.BelovedId != byte.MaxValue && GameModeManager.IsStandardClass())
-            {
-                UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.BelovedId] += Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡");
-                if (Lovers.OneLovePlayer.doublelove) UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.OneLove] += Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡");
-            }
+            UtilsRoleInfo.SetRoleLists();
 
             if (GameModeManager.IsStandardClass())
                 StandardIntro.CoResetRoleY();
