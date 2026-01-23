@@ -73,6 +73,7 @@ namespace TownOfHost.Roles.Ghost
                         MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCustomRole, Hazel.SendOption.Reliable, -1);
                         writer.Write(pc.PlayerId);
                         writer.WritePacked((int)role);
+                        writer.Write(2);
                         AmongUsClient.Instance.FinishRpcImmediately(writer);
                     }
 

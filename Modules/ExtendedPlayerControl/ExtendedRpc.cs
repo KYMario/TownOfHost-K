@@ -88,6 +88,7 @@ namespace TownOfHost
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCustomRole, SendOption.Reliable, -1);
                 writer.Write(player.PlayerId);
                 writer.WritePacked((int)role);
+                writer.Write(log is true ? 0 : (log is null ? 1 : 2));
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
 
                 if (role.IsGhostRole() || role < CustomRoles.NotAssigned)
@@ -195,6 +196,7 @@ namespace TownOfHost
                 MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCustomRole, SendOption.Reliable, -1);
                 writer.Write(PlayerId);
                 writer.WritePacked((int)role);
+                writer.Write(0);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
         }

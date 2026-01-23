@@ -181,7 +181,8 @@ namespace TownOfHost
                 case CustomRPC.SetCustomRole:
                     byte CustomRoleTargetId = reader.ReadByte();
                     CustomRoles role = (CustomRoles)reader.ReadPackedInt32();
-                    RPC.SetCustomRole(CustomRoleTargetId, role);
+                    int log = reader.ReadInt32();
+                    RPC.SetCustomRole(CustomRoleTargetId, role, log);
                     break;
                 case CustomRPC.ReplaceSubRole:
                     byte SubRoleTargetId = reader.ReadByte();
@@ -409,7 +410,7 @@ namespace TownOfHost
                         break;
                 }
         }
-        public static void SetCustomRole(byte targetId, CustomRoles role)
+        public static void SetCustomRole(byte targetId, CustomRoles role, int log)
         {
             RoleBase roleClass = CustomRoleManager.GetByPlayerId(targetId);
             if (role < CustomRoles.NotAssigned)
@@ -417,6 +418,10 @@ namespace TownOfHost
                 PlayerState.GetByPlayerId(targetId).SetMainRole(role);
                 if (roleClass != null) roleClass.Dispose();
                 CustomRoleManager.CreateInstance(role, PlayerCatch.GetPlayerById(targetId));
+
+                if (log == 0) UtilsGameLog.LastLogRole[targetId] = "<b> " + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
+                else if (log == 1) UtilsGameLog.LastLogRole[targetId] = $"<size=40%>{UtilsGameLog.LastLogRole[targetId].RemoveSizeTags()}</size><b>=> " + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
+
             }
             else if (role >= CustomRoles.NotAssigned)   //500:NoSubRole 501~:SubRole
             {

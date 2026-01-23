@@ -468,7 +468,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         Room = room is -5 ? null : (SystemTypes)room;
         AddWin = reader.ReadBoolean();
         var id = reader.ReadInt32();
-        ventpos = (ShipStatus.Instance.AllVents[id].transform.position, id);
+        ventpos = (ShipStatus.Instance.AllVents.Where(vent => vent.Id == id).FirstOrDefault().transform.position, id);
     }
 
     public bool CheckWin(ref CustomRoles winnerRole) => AddWin && Player.IsAlive();
