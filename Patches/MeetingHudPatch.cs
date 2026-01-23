@@ -244,7 +244,7 @@ public static class MeetingHudPatch
             }
             if (Oniku != "")
             {
-                Send += "<#001e43>※" + Oniku + "</color>\n";
+                Send += "<#2b62a5>※" + Oniku + "</color>\n";
             }
             var neswmeg = News.SendMessage();
             if (neswmeg != "")
