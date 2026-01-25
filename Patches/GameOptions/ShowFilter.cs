@@ -173,7 +173,7 @@ class ShowFilter
                         buttons.Add(customrole, ToggleButton.gameObject);
                         numItems++;
                     }
-                    Scrollbargameobject.GetComponentInParent<Scroller>().ContentYBounds.max = numItems > 10 ? 0.5f * (numItems / 4 - 10) : 0;
+                    Scrollbargameobject.GetComponentInParent<Scroller>().ContentYBounds.max = numItems > 9 ? 0.5f * (numItems / 4 - 9) : 0;
                     Scrollbargameobject.GetComponentInParent<Scroller>().Inner.localPosition = Vector3.zero;
                 }
                 catch { }
