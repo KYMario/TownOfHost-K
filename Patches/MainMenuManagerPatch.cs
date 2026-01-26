@@ -339,7 +339,8 @@ namespace TownOfHost
         [HarmonyPrefix]
         public static bool ClickFindGame()
         {
-            return false;
+            return !(VersionInfoManager.version == null || VersionInfoManager.allversion.DisableMM
+            || (VersionInfoManager.allversion != null && VersionInfoManager.allversion.DisableMM));
         }
         [HarmonyPatch(nameof(MainMenuManager.OpenEnterCodeMenu))]
         [HarmonyPrefix]
@@ -373,9 +374,13 @@ namespace TownOfHost
             var createbuttongameobject = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/Scaler/Create Lobby Button");
             var createbutton = createbuttongameobject.transform.GetComponent<PassiveButton>();
 
+            var version = VersionInfoManager.version;
+            var allVersion = VersionInfoManager.allversion;
+
             if (Findbuttongo)
             {
-                Findbuttongo.SetActive(false);
+                var disable = version == null || version.DisableMM || (allVersion != null && allVersion.DisableMM);
+                Findbuttongo.SetActive(!disable);
             }
             if (Codebutton && ((VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true) ||
             VersionInfoManager.allversion != null && VersionInfoManager.allversion.DisableRoomJoin == true))

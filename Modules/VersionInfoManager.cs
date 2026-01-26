@@ -310,6 +310,7 @@ class VersionInfoManager
         public string AnnounceText { get; set; }
         public string HighestSupportedVersion { get; set; }
         public bool DisableRoomJoin { get; set; }
+        public bool DisableMM { get; set; }
 
         public UpdateInfo Update { get; set; }
         public List<BugInfo> BugInfos { get; set; }
