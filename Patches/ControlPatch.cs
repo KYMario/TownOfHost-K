@@ -210,21 +210,21 @@ namespace TownOfHost
                             GameSettingMenuStartPatch.search?.submitButton?.OnPressed?.Invoke();
                         }
                         else
-                        if (GameSettingMenuStartPatch.priset?.textArea?.text is not "")
-                        {
-                            var pr = OptionItem.AllOptions.Where(op => op.Id == 0).FirstOrDefault();
-                            switch (pr.CurrentValue)
+                            if (GameSettingMenuStartPatch.priset?.textArea?.text is not "")
                             {
-                                case 0: Main.Preset1.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
-                                case 1: Main.Preset2.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
-                                case 2: Main.Preset3.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
-                                case 3: Main.Preset4.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
-                                case 4: Main.Preset5.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
-                                case 5: Main.Preset6.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
-                                case 6: Main.Preset7.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                var pr = OptionItem.AllOptions.Where(op => op.Id == 0).FirstOrDefault();
+                                switch (pr.CurrentValue)
+                                {
+                                    case 0: Main.Preset1.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                    case 1: Main.Preset2.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                    case 2: Main.Preset3.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                    case 3: Main.Preset4.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                    case 4: Main.Preset5.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                    case 5: Main.Preset6.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                    case 6: Main.Preset7.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                }
+                                GameSettingMenuStartPatch.priset.textArea.Clear();
                             }
-                            GameSettingMenuStartPatch.priset.textArea.Clear();
-                        }
                     }
                 }
             }
@@ -331,7 +331,7 @@ namespace TownOfHost
         {
             if (keys.Any(k => Input.GetKeyDown(k)) && keys.All(k => Input.GetKey(k)))
             {
-                Logger.Info($"KeyDown:{keys.Where(k => Input.GetKeyDown(k)).First()} in [{string.Join(",", keys)}]", "GetKeysDown");
+                Logger.Info($"KeyDown:{keys.First(k => Input.GetKeyDown(k))} in [{string.Join(",", keys)}]", "GetKeysDown");
                 return true;
             }
             return false;

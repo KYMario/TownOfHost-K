@@ -63,9 +63,9 @@ namespace TownOfHost
         private static void CheckAndOpenDoors(ShipStatus __instance, int amount, params int[] DoorIds)
         {
             if (DoorIds.Contains(amount)) foreach (var id in DoorIds)
-                {
-                    __instance.RpcUpdateSystem(SystemTypes.Doors, (byte)id);
-                }
+            {
+                __instance.RpcUpdateSystem(SystemTypes.Doors, (byte)id);
+            }
         }
     }
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.CloseDoorsOfType))]
@@ -95,7 +95,7 @@ namespace TownOfHost
             if (!TaskBattle.IsRTAMode) return;
             _ = new LateTask(() =>
             {
-                var playerRTA = Options.EnableGM.GetBool() ? PlayerCatch.AllAlivePlayerControls.Where(p => p.PlayerId != PlayerControl.LocalPlayer.PlayerId).First() : PlayerControl.LocalPlayer;
+                var playerRTA = Options.EnableGM.GetBool() ? PlayerCatch.AllAlivePlayerControls.First(p => p.PlayerId != PlayerControl.LocalPlayer.PlayerId) : PlayerControl.LocalPlayer;
                 if (playerRTA == null)
                 {
                     Logger.Warn("[TR] プレイヤーがnullです", "TaskBattle RTA");
