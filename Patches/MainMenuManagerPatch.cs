@@ -379,8 +379,9 @@ namespace TownOfHost
 
             if (Findbuttongo)
             {
-                var disable = version == null || version.DisableMM || (allVersion != null && allVersion.DisableMM);
-                Findbuttongo.SetActive(!disable);
+                // var disable = version == null || version.DisableMM || (allVersion != null && allVersion.DisableMM);
+                //Findbuttongo.SetActive(!disable);
+                Findbuttongo.SetActive(false);
             }
             if (Codebutton && ((VersionInfoManager.version != null && VersionInfoManager.version.DisableRoomJoin == true) ||
             VersionInfoManager.allversion != null && VersionInfoManager.allversion.DisableRoomJoin == true))
