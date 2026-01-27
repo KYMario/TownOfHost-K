@@ -1234,7 +1234,7 @@ namespace TownOfHost
             }
             if (AmongUsClient.Instance.AmHost && GameStates.IsLobby && !canceled)
             {
-                SendMessage(text, title: Main.nickName == "" ? DataManager.player.Customization.Name : Main.nickName, rob: true);
+                SendChat(text);
                 __instance.freeChatField.textArea.Clear();
                 return false;
             }

@@ -312,7 +312,7 @@ namespace TownOfHost
 
             SendMessage(text + tpinfo, to);
         }
-        public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool rob = false, bool checkl = false)
+        public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool checkl = false, bool isTowSend = false)
         {
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
@@ -380,7 +380,7 @@ namespace TownOfHost
                     text += t + "\n";
                 });
             }
-            var fir = rob ? "" : "<align=\"left\">";
+            var fir = "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             if (Main.IsCs() is false && GameStates.IsOnlineGame)
@@ -392,9 +392,17 @@ namespace TownOfHost
                 Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
             {
-                SendMessage(towsend, sendTo, title, rob, true);
+                SendMessage(towsend, sendTo, title, true, isTowSend: true);
             }
         }
+
+        /// <summary> ホストがロビーでチャットする時に使用します </summary>
+        public static void SendChat(string text)
+        {
+            var name = Main.nickName == string.Empty ? DataManager.player.Customization.Name : Main.nickName;
+            Main.MessagesToSend.Add((text, byte.MaxValue, name));
+        }
+
         /// <param name="pc">seer</param>
         /// <param name="force">強制かつ全員に送信</param>
         public static void ApplySuffix(PlayerControl pc, bool force = false, bool countdown = false)
@@ -753,14 +761,14 @@ namespace TownOfHost
                         returns += text;
                     else
                         if (text != ">")
-                    {
-                        if (text == "\n")
-                            returns += "\n ";
-                        else if (text == "\r")
-                            returns += "\r";
-                        else
-                            returns += " ";
-                    }
+                        {
+                            if (text == "\n")
+                                returns += "\n ";
+                            else if (text == "\r")
+                                returns += "\r";
+                            else
+                                returns += " ";
+                        }
                 }
             }
             return returns;
