@@ -228,6 +228,15 @@ public class CustomSpawnEditor
             EditorAPI.Init();
             logger.Info("ロード完了!");
             EditorAPI.Loaded = true;
+            GameOptionsManager.Instance.CurrentGameOptions.SetInt(Int32OptionNames.NumImpostors, 1);
+        }
+
+        [HarmonyPatch(typeof(GameOptionsManager), "set_CurrentGameOptions"), HarmonyPrefix]
+        public static bool SetCurrentGameOptionsPatch(ref IGameOptions value)
+        {
+            if (!ActiveEditMode) return true; //フリープレイで設定がリセットされないようにするパッチ
+            if (VersionInfoManager.GetCustomFlag(0)) return true; //何か問題が発生したとき用 (0をtrueにするとパッチを無効化できます)
+            return GameOptionsManager.Instance.currentGameOptions == null; //↑これをリリースした次のアプデぐらいまでフラグ残す
         }
 
         [HarmonyPatch(typeof(ShapeshifterMinigame), nameof(ShapeshifterMinigame.Begin)), HarmonyPrefix]
