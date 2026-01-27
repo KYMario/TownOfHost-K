@@ -387,7 +387,8 @@ namespace TownOfHost
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             if (Main.IsCs() is false && GameStates.IsOnlineGame)
             {
-                text = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
+                if (!VersionInfoManager.GetCustomFlag(1))
+                    text = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
                 Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{text}"));
             }
             else
