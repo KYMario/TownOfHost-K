@@ -112,34 +112,7 @@ namespace TownOfHost
                     {
                         if (option?.OptionHedder is not null)
                         {
-                            var hi = 0;
-                            var henabled = AmongUsClient.Instance.AmHost && !option.IsHiddenOn(Options.CurrentGameMode);
-                            var heparent = option.Parent;
-                            while (option.Parent != null && henabled)
-                            {
-                                hi++;
-                                henabled = heparent.CustomRole is not CustomRoles.NotAssigned || heparent.GetBool() || (heparent.CustomRole.IsAddOn() && option.Name is not "%roleTypes%Maximum" and not "Maximum" and not "FixedRole");
-                                heparent = heparent.Parent;
-                            }
-                            option.OptionHedder.gameObject.SetActive(henabled);
-                            if (henabled)
-                            {
-                                offset -= option.IsHeader ? 0.68f : 0.45f;
-                                option.OptionHedder.transform.localPosition = new Vector3(
-                                    option.OptionHedder.transform.localPosition.x,//0.952f,
-                                    offset - 1.5f,//y,
-                                    option.OptionHedder.transform.localPosition.z);//-120f);
-                                y -= option.IsHeader ? 0.68f : 0.45f;
-
-                                if (option.IsHeader)
-                                {
-                                    numItems += 0.5f;
-                                }
-                            }
-                            else
-                            {
-                                numItems--;
-                            }
+                            SetHedder(option);
                         }
                         continue;
                     }
@@ -205,7 +178,14 @@ namespace TownOfHost
                         enabled = parent.CustomRole is not CustomRoles.NotAssigned || parent.GetBool() || (parent.CustomRole.IsAddOn() && option.Name is not "%roleTypes%Maximum" and not "Maximum" and not "FixedRole");
                         parent = parent.Parent;
                     }
-
+                    if (i > 0 && option.Name != "Maximum")
+                    {
+                        i--;
+                        if (option.NameColor == Color.white || option.NameColorCode == "#ffffff")
+                        {
+                            color = UtilsRoleText.GetRoleColor(NowRoleTab, true).ShadeColor(2f).ShadeColor(-0.25f);
+                        }
+                    }
                     switch (i)
                     {
                         case 0:
@@ -248,6 +228,56 @@ namespace TownOfHost
                             offset - 1.5f,//y,
                             option.OptionBehaviour.transform.localPosition.z);//-120f);
                         y -= option.IsHeader ? 0.68f : 0.45f;
+
+                        if (option.IsHeader)
+                        {
+                            numItems += 0.5f;
+                        }
+                    }
+                    if (option.Name == "Maximum")
+                    {
+                        numItems += 0.5f;
+                        offset -= 0.23f;
+                        y -= 0.23f;
+                        var optionrp = OptionItem.AllOptions.FirstOrDefault(op => op.Name == "RoleOption");
+                        if (optionrp?.OptionHedder is not null)
+                        {
+                            optionrp.OptionHedder.transform.parent = option.OptionBehaviour.transform.parent;
+                            SetHedder(optionrp);
+                        }
+                    }
+                    else
+                    {
+                        numItems--;
+                    }
+                }
+                void SetHedder(OptionItem option)
+                {
+                    var hi = 0;
+                    var henabled = AmongUsClient.Instance.AmHost && !option.IsHiddenOn(Options.CurrentGameMode);
+                    var heparent = option.Parent;
+                    while (heparent != null && henabled)
+                    {
+                        hi++;
+                        henabled = option.Name == "RoleOption" || heparent.CustomRole is not CustomRoles.NotAssigned || heparent.GetBool() || (heparent.CustomRole.IsAddOn() && option.Name is not "%roleTypes%Maximum" and not "Maximum" and not "FixedRole");
+                        heparent = heparent.Parent;
+                    }
+                    if (option.Name == "RoleOption")
+                    {
+                        var chm = option.OptionHedder.GetComponent<CategoryHeaderMasked>();
+                        chm.Background.color = UtilsRoleText.GetRoleColor(NowRoleTab);
+                        if (henabled) offset -= -0.23f;
+                    }
+                    option.OptionHedder.gameObject.SetActive(henabled);
+                    if (henabled)
+                    {
+                        offset -= option.IsHeader ? 0.68f : 0.45f;
+                        option.OptionHedder.transform.localPosition = new Vector3(
+                            option.OptionHedder.transform.localPosition.x,//0.952f,
+                            offset - 1.5f,//y,
+                            option.OptionHedder.transform.localPosition.z);//-120f);
+                        y -= option.IsHeader ? 0.68f : 0.45f;
+                        offset -= 0.23f;
 
                         if (option.IsHeader)
                         {

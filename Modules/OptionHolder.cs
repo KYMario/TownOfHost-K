@@ -157,6 +157,7 @@ namespace TownOfHost
         public static OptionItem ExperimentalMode;
         public static OptionItem ExAftermeetingflash;
         public static OptionItem ExHideChatCommand;
+        public static OptionItem ExCsHideChat;
         public static OptionItem FixSpawnPacketSize;
         public static OptionItem ExRpcWeightR;
         public static OptionItem ExCallMeetingBlackout;
@@ -598,7 +599,7 @@ namespace TownOfHost
 
             RoleAssignManager.SetupOptionItem();
             WinOption.SetupCustomOption();
-
+            ObjectOptionitem.Create(1_000_124, "RoleOption", true, null, TabGroup.MainSettings).SetOptionName(() => "Role Setting").SetTag(CustomOptionTags.Role).SetEnabled(() => GameSettingMenuStartPatch.NowRoleTab is not CustomRoles.NotAssigned);
             //タスクバトル
             TaskBattle.SetupOptionItem();
             //最初のオプションのみここ
@@ -640,7 +641,7 @@ namespace TownOfHost
             ExAftermeetingflash = BooleanOptionItem.Create(105001, "ExAftermeetingflash", false, TabGroup.MainSettings, false).SetParent(ExperimentalMode)
                 .SetTag(CustomOptionTags.Standard);
             ExHideChatCommand = BooleanOptionItem.Create(105002, "ExHideChatCommand", false, TabGroup.MainSettings, false).SetParent(ExperimentalMode)
-                .SetTag(CustomOptionTags.Standard).SetInfo(Translator.GetString("ExHideChatCommandInfo")).SetEnabled(() => false);
+                .SetTag(CustomOptionTags.Standard).SetInfo(Translator.GetString("ExHideChatCommandInfo"));
             TeamHideChat = BooleanOptionItem.Create(105003, "TeamHideChat", false, TabGroup.MainSettings, false)
                 .SetTag(CustomOptionTags.Standard)
                 .SetParent(ExHideChatCommand);

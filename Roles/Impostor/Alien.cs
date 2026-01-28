@@ -1180,10 +1180,15 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         AlienCComebacker,
         AlienUetuke, AlienUetukeCount, AlienUetukeTrun
     }
-    static void SetupOptionItem()//NowMax : 42
+    static void SetupOptionItem()//NowMax : 52
     {
         FirstAbility = BooleanOptionItem.Create(RoleInfo, 7, OptionName.AlienFirstAbility, false, false);
         OptionAlienHideAbility = BooleanOptionItem.Create(RoleInfo, 9, OptionName.AlienHideAbility, false, false);
+        ObjectOptionitem.Create(RoleInfo, 52, "AlienOption", true, null, TabGroup.ImpostorRoles).SetOptionName(() => "Planting Setting");
+        OptUetuke = BooleanOptionItem.Create(RoleInfo, 46, OptionName.AlienUetuke, false, false).SetTooltip(() => GetString("AlienUetukeInfo"));
+        OptUetukeCount = IntegerOptionItem.Create(RoleInfo, 47, OptionName.AlienUetukeCount, new(1, 20, 1), 1, false, OptUetuke);
+        OptUetuketukeTrun = IntegerOptionItem.Create(RoleInfo, 48, OptionName.AlienUetukeTrun, new(1, 20, 1), 2, false, OptUetuke);
+        ObjectOptionitem.Create(RoleInfo, 51, "AlienOption", true, null, TabGroup.ImpostorRoles).SetOptionName(() => "Alien Setting");
         OptionModeVampire = FloatOptionItem.Create(RoleInfo, 10, OptionName.AlienCVampire, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         SpeedDown = BooleanOptionItem.Create(RoleInfo, 40, OptionName.VampireSpeedDown, true, false, OptionModeVampire);
         SpeedDownCount = FloatOptionItem.Create(RoleInfo, 41, OptionName.VampireSpeedDownCount, new(0f, 1000f, 1f), 10f, false, SpeedDown).SetValueFormat(OptionFormat.Seconds);
@@ -1221,9 +1226,6 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
         OptionMeetingKill = BooleanOptionItem.Create(RoleInfo, 45, OptionName.PenguinMeetingKill, false, false, OptionModePenguin);
         OptionModeComebaker = FloatOptionItem.Create(RoleInfo, 49, OptionName.AlienCComebacker, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         OptionModeNomal = FloatOptionItem.Create(RoleInfo, 8, OptionName.AlienCNomal, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
-        OptUetuke = BooleanOptionItem.Create(RoleInfo, 46, OptionName.AlienUetuke, false, false).SetTooltip(() => GetString("AlienUetukeInfo"));
-        OptUetukeCount = IntegerOptionItem.Create(RoleInfo, 47, OptionName.AlienUetukeCount, new(1, 20, 1), 1, false, OptUetuke);
-        OptUetuketukeTrun = IntegerOptionItem.Create(RoleInfo, 48, OptionName.AlienUetukeTrun, new(1, 20, 1), 2, false, OptUetuke);
     }
     #endregion
     #endregion
