@@ -939,7 +939,7 @@
 "BlackOutwokesitobasu","Reset Camera Anti BlackOut","リセットカメラ式暗転対策"
 "BlackOutwokesitobasuInfo","(Cant Spawn AirShip)","(AirShipは会議後スポーン先を選択できなくなります)"
 "ExHideChatCommand","Meeting Can't see ChatCommand","会議時チャットコマンドを非表示にする"
-"ExHideChatCommandInfo","(Can't Use Voice,BetterCrew Room)","(CT卓でのみONにしてください)"
+"ExHideChatCommandInfo","(Can't Use Voice,BetterCrew Room in CustomServer)","(公式鯖使用、または、CT卓でのみON)"
 "FixSpawnPacketSize","Set When Disconnect above 8-9 People","8～9人以上で切断される現象の修正"
 "FixSpawnPacketSizeInfo","<#ff1919>Disconnect Player","<#ff1919>切断者が発生した場合のみ"
 "ExRpcWeightR","Rpc Weight","Rpcの送信頻度を制限する"
@@ -1884,7 +1884,7 @@
 "TaskCount","Task Count","タスク数","","","Количество заданий","Número de Tarefas",""
 
 "## 会議メッセージ"
-"MeetingHelp","The list of commands can be viewed by sending /h","コマンド一覧は /h と送信することで確認できます。"
+"MeetingHelp","The list of commands can be viewed by sending /h","コマンド一覧は/cmd /hと送信することで確認できます。"
 "SkillMode","{0}! \n\n\nvote→{1}\n\n","{0}になりました！\n\n{1}\n\n"
 "VoteSkillMode","SelfVote→yoNomalVote\nSkipVote→Change Vote mode","自投票→自身に投票\n投票スキップ→投票モードに変更","","","",""
 "VoteSkillFin","Change VoteMode","投票モードに変更されました","","","",""

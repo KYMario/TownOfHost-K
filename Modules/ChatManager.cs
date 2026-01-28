@@ -132,117 +132,120 @@ namespace TownOfHost.Modules.ChatManager
 
         public static void SendPreviousMessagesToAll(bool SendDiePlayer = true)
         {
-            var rd = IRandom.Instance;
-            string msg;
-            List<CustomRoles> roles = Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>().Where(role => (role.IsLovers() || role.IsCrewmate() || role.IsImpostorTeam() || role.IsNeutral()) && Event.CheckRole(role)).ToList();
-            string[] specialTexts = new string[] { "bt" };
-            bool IsVannilaserver = !Main.IsCs() && GameStates.IsOnlineGame;
-            bool IsHostRev = IsVannilaserver && !PlayerControl.LocalPlayer.IsAlive();
-
-            if (IsHostRev)
+            if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
             {
-                IsForceSend = true;
-                PlayerControl.LocalPlayer.Data.IsDead = false;
-                GameDataSerializePatch.SerializeMessageCount++;
-                RPC.RpcSyncAllNetworkedPlayer();
-                GameDataSerializePatch.SerializeMessageCount--;
-            }
-            for (int i = chatHistory.Count; i < 30; i++)
-            {
-                msg = "/";
-                msg += specialTexts[rd.Next(0, specialTexts.Length - 1)] + " ";
-                msg += rd.Next(0, 15).ToString() + " ";
-                CustomRoles role = roles[rd.Next(0, roles.Count)];
-                msg += UtilsRoleText.GetRoleName(role) + " ";
+                var rd = IRandom.Instance;
+                string msg;
+                List<CustomRoles> roles = Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>().Where(role => (role.IsLovers() || role.IsCrewmate() || role.IsImpostorTeam() || role.IsNeutral()) && Event.CheckRole(role)).ToList();
+                string[] specialTexts = new string[] { "bt" };
+                bool IsVannilaserver = !Main.IsCs() && GameStates.IsOnlineGame;
+                bool IsHostRev = IsVannilaserver && !PlayerControl.LocalPlayer.IsAlive();
 
-                if (PlayerCatch.AllAlivePlayersCount == 0) break;
-                var player = PlayerCatch.AllAlivePlayerControls.ToArray()[rd.Next(0, PlayerCatch.AllAlivePlayersCount)];
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, msg);
-                var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                writer.StartMessage(-1);
-                writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : player.NetId, (byte)RpcCalls.SendChat)
-                    .Write(msg)
-                    .EndRpc();
-                writer.EndMessage();
-                writer.SendMessage();
-            }
-
-            foreach (var entry in chatHistory)
-            {
-                var entryParts = entry.Split(':');
-                var senderId = entryParts[0].Trim();
-                var senderMessage = entryParts[1].Trim();
-                var isvote = senderMessage.StartsWith("<size=0>.</size>");
-
-                foreach (var senderPlayer in PlayerCatch.AllPlayerControls)
+                if (IsHostRev)
                 {
-                    if (senderPlayer.PlayerId.ToString() == senderId)
+                    IsForceSend = true;
+                    PlayerControl.LocalPlayer.Data.IsDead = false;
+                    GameDataSerializePatch.SerializeMessageCount++;
+                    RPC.RpcSyncAllNetworkedPlayer();
+                    GameDataSerializePatch.SerializeMessageCount--;
+                }
+                for (int i = chatHistory.Count; i < 30; i++)
+                {
+                    msg = "/";
+                    msg += specialTexts[rd.Next(0, specialTexts.Length - 1)] + " ";
+                    msg += rd.Next(0, 15).ToString() + " ";
+                    CustomRoles role = roles[rd.Next(0, roles.Count)];
+                    msg += UtilsRoleText.GetRoleName(role) + " ";
+
+                    if (PlayerCatch.AllAlivePlayersCount == 0) break;
+                    var player = PlayerCatch.AllAlivePlayerControls.ToArray()[rd.Next(0, PlayerCatch.AllAlivePlayersCount)];
+                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, msg);
+                    var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                    writer.StartMessage(-1);
+                    writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : player.NetId, (byte)RpcCalls.SendChat)
+                        .Write(msg)
+                        .EndRpc();
+                    writer.EndMessage();
+                    writer.SendMessage();
+                }
+
+                foreach (var entry in chatHistory)
+                {
+                    var entryParts = entry.Split(':');
+                    var senderId = entryParts[0].Trim();
+                    var senderMessage = entryParts[1].Trim();
+                    var isvote = senderMessage.StartsWith("<size=0>.</size>");
+
+                    foreach (var senderPlayer in PlayerCatch.AllPlayerControls)
                     {
-                        if (!senderPlayer.IsAlive() && SendDiePlayer && !AntiBlackout.IsSet && !AntiBlackout.IsCached)
+                        if (senderPlayer.PlayerId.ToString() == senderId)
                         {
-                            //var deathReason = (PlayerState.DeathReason)senderPlayer.PlayerId;
-                            senderPlayer.Revive();
-                            if (isvote)
+                            if (!senderPlayer.IsAlive() && SendDiePlayer && !AntiBlackout.IsSet && !AntiBlackout.IsCached)
                             {
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChatNote(senderPlayer.Data, ChatNoteTypes.DidVote);
+                                //var deathReason = (PlayerState.DeathReason)senderPlayer.PlayerId;
+                                senderPlayer.Revive();
+                                if (isvote)
+                                {
+                                    DestroyableSingleton<HudManager>.Instance.Chat.AddChatNote(senderPlayer.Data, ChatNoteTypes.DidVote);
 
-                                var wt = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                                wt.StartMessage(-1);
-                                wt.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
-                                .Write(IsVannilaserver ? PlayerControl.LocalPlayer.PlayerId : senderPlayer.PlayerId)
-                                .Write((int)ChatNoteTypes.DidVote)
+                                    var wt = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                                    wt.StartMessage(-1);
+                                    wt.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
+                                    .Write(IsVannilaserver ? PlayerControl.LocalPlayer.PlayerId : senderPlayer.PlayerId)
+                                    .Write((int)ChatNoteTypes.DidVote)
+                                        .EndRpc();
+                                    wt.EndMessage();
+                                    wt.SendMessage();
+                                    senderPlayer.Die(DeathReason.Kill, true);
+                                    continue;
+                                }
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderPlayer, senderMessage);
+
+                                var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                                writer.StartMessage(-1);
+                                writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChat)
+                                    .Write(senderMessage)
                                     .EndRpc();
-                                wt.EndMessage();
-                                wt.SendMessage();
+                                writer.EndMessage();
+                                writer.SendMessage();
                                 senderPlayer.Die(DeathReason.Kill, true);
-                                continue;
+                                //Main.PlayerStates[senderPlayer.PlayerId].deathReason = deathReason;
                             }
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderPlayer, senderMessage);
-
-                            var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                            writer.StartMessage(-1);
-                            writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChat)
-                                .Write(senderMessage)
-                                .EndRpc();
-                            writer.EndMessage();
-                            writer.SendMessage();
-                            senderPlayer.Die(DeathReason.Kill, true);
-                            //Main.PlayerStates[senderPlayer.PlayerId].deathReason = deathReason;
-                        }
-                        else
-                        {
-                            if (isvote)
+                            else
                             {
-                                DestroyableSingleton<HudManager>.Instance.Chat.AddChatNote(senderPlayer.Data, ChatNoteTypes.DidVote);
+                                if (isvote)
+                                {
+                                    DestroyableSingleton<HudManager>.Instance.Chat.AddChatNote(senderPlayer.Data, ChatNoteTypes.DidVote);
 
-                                var wt = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                                wt.StartMessage(-1);
-                                wt.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
-                                .Write(IsVannilaserver ? PlayerControl.LocalPlayer.PlayerId : senderPlayer.PlayerId)
-                                .Write((int)ChatNoteTypes.DidVote)
+                                    var wt = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                                    wt.StartMessage(-1);
+                                    wt.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
+                                    .Write(IsVannilaserver ? PlayerControl.LocalPlayer.PlayerId : senderPlayer.PlayerId)
+                                    .Write((int)ChatNoteTypes.DidVote)
+                                        .EndRpc();
+                                    wt.EndMessage();
+                                    wt.SendMessage();
+                                    continue;
+                                }
+                                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderPlayer, senderMessage);
+                                var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                                writer.StartMessage(-1);
+                                writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChat)
+                                    .Write(senderMessage)
                                     .EndRpc();
-                                wt.EndMessage();
-                                wt.SendMessage();
-                                continue;
+                                writer.EndMessage();
+                                writer.SendMessage();
                             }
-                            DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderPlayer, senderMessage);
-                            var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                            writer.StartMessage(-1);
-                            writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChat)
-                                .Write(senderMessage)
-                                .EndRpc();
-                            writer.EndMessage();
-                            writer.SendMessage();
                         }
                     }
                 }
-            }
-            if (IsHostRev)
-            {
-                IsForceSend = false;
-                PlayerControl.LocalPlayer.Data.IsDead = true;
-                PlayerControl.LocalPlayer.RpcExile();
-                PlayerControl.LocalPlayer.Die(DeathReason.Kill, false);
+                if (IsHostRev)
+                {
+                    IsForceSend = false;
+                    PlayerControl.LocalPlayer.Data.IsDead = true;
+                    PlayerControl.LocalPlayer.RpcExile();
+                    PlayerControl.LocalPlayer.Die(DeathReason.Kill, false);
+                }
             }
         }
         public static void IntaskCheckSendMessage(PlayerControl player)
@@ -526,52 +529,19 @@ namespace TownOfHost.Modules.ChatManager
         }
         public static void OnDisconnectOrDeadPlayer(byte id)
         {
-            if (!AmongUsClient.Instance.AmHost || !Options.ExHideChatCommand.GetBool() || !GameStates.IsMeeting || AntiBlackout.IsSet || Roles.Impostor.Assassin.NowUse) return;
+            if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
+            {
+                if (!AmongUsClient.Instance.AmHost || !Options.ExHideChatCommand.GetBool() || !GameStates.IsMeeting || AntiBlackout.IsSet || Roles.Impostor.Assassin.NowUse) return;
 
-            if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;
-
-            Dictionary<byte, bool> State = new();
-            var deaddata = PlayerCatch.GetPlayerInfoById(id);
-            if (deaddata is not null) deaddata.IsDead = true;
-            foreach (var player in PlayerCatch.AllAlivePlayerControls)
-            {
-                if (player.PlayerId == id) continue;
-                State.TryAdd(player.PlayerId, player.IsAlive());
-            }
-            GameDataSerializePatch.SerializeMessageCount++;
-            foreach (var pc in PlayerCatch.AllAlivePlayerControls)
-            {
-                if (!State.ContainsKey(pc.PlayerId)) continue;
-                if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                if (pc.IsModClient()) continue;
-
-                foreach (PlayerControl tg in PlayerCatch.AllAlivePlayerControls)
-                {
-                    if (tg.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                    if (tg.IsModClient() && tg.PlayerId != id) continue;
-                    tg.Data.IsDead = true;
-                }
-                pc.Data.IsDead = false;
-                RPC.RpcSyncAllNetworkedPlayer(pc.GetClientId());
-            }
-            GameDataSerializePatch.SerializeMessageCount--;
-            foreach (PlayerControl player in PlayerCatch.AllAlivePlayerControls)
-            {
-                var data = State.TryGetValue(player.PlayerId, out var outdata) ? outdata : false;
-                player.Data.IsDead = !data;
-            }
-        }
-        public static void StratMeetingSetDead()
-        {
-            if (!AmongUsClient.Instance.AmHost) return;
-            _ = new LateTask(() =>
-            {
                 if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;
 
                 Dictionary<byte, bool> State = new();
+                var deaddata = PlayerCatch.GetPlayerInfoById(id);
+                if (deaddata is not null) deaddata.IsDead = true;
                 foreach (var player in PlayerCatch.AllAlivePlayerControls)
                 {
-                    State.TryAdd(player.PlayerId, true);
+                    if (player.PlayerId == id) continue;
+                    State.TryAdd(player.PlayerId, player.IsAlive());
                 }
                 GameDataSerializePatch.SerializeMessageCount++;
                 foreach (var pc in PlayerCatch.AllAlivePlayerControls)
@@ -583,7 +553,7 @@ namespace TownOfHost.Modules.ChatManager
                     foreach (PlayerControl tg in PlayerCatch.AllAlivePlayerControls)
                     {
                         if (tg.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                        if (tg.IsModClient()) continue;
+                        if (tg.IsModClient() && tg.PlayerId != id) continue;
                         tg.Data.IsDead = true;
                     }
                     pc.Data.IsDead = false;
@@ -595,7 +565,47 @@ namespace TownOfHost.Modules.ChatManager
                     var data = State.TryGetValue(player.PlayerId, out var outdata) ? outdata : false;
                     player.Data.IsDead = !data;
                 }
-            }, 4f, "SetDie");
+            }
+        }
+        public static void StratMeetingSetDead()
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+
+            if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
+            {
+                _ = new LateTask(() =>
+                {
+                    if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;
+
+                    Dictionary<byte, bool> State = new();
+                    foreach (var player in PlayerCatch.AllAlivePlayerControls)
+                    {
+                        State.TryAdd(player.PlayerId, true);
+                    }
+                    GameDataSerializePatch.SerializeMessageCount++;
+                    foreach (var pc in PlayerCatch.AllAlivePlayerControls)
+                    {
+                        if (!State.ContainsKey(pc.PlayerId)) continue;
+                        if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                        if (pc.IsModClient()) continue;
+
+                        foreach (PlayerControl tg in PlayerCatch.AllAlivePlayerControls)
+                        {
+                            if (tg.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                            if (tg.IsModClient()) continue;
+                            tg.Data.IsDead = true;
+                        }
+                        pc.Data.IsDead = false;
+                        RPC.RpcSyncAllNetworkedPlayer(pc.GetClientId());
+                    }
+                    GameDataSerializePatch.SerializeMessageCount--;
+                    foreach (PlayerControl player in PlayerCatch.AllAlivePlayerControls)
+                    {
+                        var data = State.TryGetValue(player.PlayerId, out var outdata) ? outdata : false;
+                        player.Data.IsDead = !data;
+                    }
+                }, 4f, "SetDie");
+            }
         }
     }
 }

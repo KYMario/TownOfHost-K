@@ -595,6 +595,7 @@ namespace TownOfHost
                         {
                             roleopts.Add(option);
                         }
+                        Logger.Info($"{option.Name}1-{optionsMenu is null}-{defotabtitle is null}-{chm is null}", "aaa");
                         continue;
                     }
                     //役職設定の場合

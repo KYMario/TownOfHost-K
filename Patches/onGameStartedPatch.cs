@@ -229,7 +229,7 @@ namespace TownOfHost
                 else Main.LagTime = 0.23f;
             }
             else Main.LagTime = 0.23f;
-            Logger.Info($"LagTime : {Main.LagTime} ,({AmongUsClient.Instance.Ping}) PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
+            Logger.Info($"region:{ServerManager.Instance?.CurrentRegion?.Name ?? "???"} ,LagTime : {Main.LagTime} ,({AmongUsClient.Instance.Ping}) PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
         }
     }
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
