@@ -22,7 +22,7 @@ namespace TownOfHost
             }
             catch
             {
-                //Logger.Error($"\"{path}\"の読み込みに失敗しました。", "LoadSprite");
+                Logger.Error($"\"{path}\"の読み込みに失敗しました。", "LoadSprite");
             }
             return sprite;
         }

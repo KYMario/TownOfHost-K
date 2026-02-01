@@ -26,6 +26,7 @@ using static TownOfHost.PlayerCatch;
 using TownOfHost.Roles.Core.Descriptions;
 using TownOfHost.Patches;
 using TownOfHost.Roles.AddOns.Common;
+using System.IO;
 
 namespace TownOfHost
 {

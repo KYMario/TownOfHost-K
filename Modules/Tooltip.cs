@@ -54,13 +54,14 @@ class ToolTip
         yield return new WaitForSeconds(delay);
 
         button.Label.text = text;
+        button.Label.alignment = TMPro.TextAlignmentOptions.Center;
         button.Label.ForceMeshUpdate(true);
         var textBounds = button.Label.GetRenderedValues(true);
 
         pos ??= GetMoucePos(new Vector3(0, -(textBounds.y / 2), obj.transform.position.z - 5f));
         button.Button.transform.position = pos.Value;
         button.NormalSprite.size = textBounds + new Vector2(0.1f, 0.1f);
-        button.Label.rectTransform.pivot = new((textBounds.x - 1.1f) / 2, 0.5f);
+        // button.Label.rectTransform.pivot = new((textBounds.x - 1.1f) / 2, 0.5f);
 
         button.Button.gameObject.SetActive(true);
         button.Button.StartCoroutine(CoCheckObject().WrapToIl2Cpp());

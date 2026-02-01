@@ -25,10 +25,16 @@ namespace TownOfHost
     [HarmonyPatch(typeof(GameSettingMenu), nameof(GameSettingMenu.Close))]
     class GameSettingMenuClosePatch
     {
-        public static bool Prefix() => ShowFilter.CallEsc(true) is false;
+        public static bool Prefix()
+        {
+            if (ShowFilter.CallEsc(true)) return false;
+            if (ShowRandomSpawnOption.CallEsc(true)) return false;
+            return true;
+        }
         public static void Postfix()
         {
             if (ShowFilter.CallEsc()) return;
+            if (ShowRandomSpawnOption.CallEsc()) return;
             ModSettingsButton = null;
             ModSettingsTab = null;
             activeonly = null;
@@ -49,6 +55,7 @@ namespace TownOfHost
             timer = -100;
             tabGenerated = null;
             ShowFilter.CloseOptionMenu();
+            ShowRandomSpawnOption.CloseOptionMenu();
             VanillaOptionHolder.SetOptinItem();
             StringOptionStartPatch.all?.Clear();
             NumberOptionStartPatch.all?.Clear();
@@ -595,7 +602,6 @@ namespace TownOfHost
                         {
                             roleopts.Add(option);
                         }
-                        Logger.Info($"{option.Name}1-{optionsMenu is null}-{defotabtitle is null}-{chm is null}", "aaa");
                         continue;
                     }
                     //役職設定の場合
@@ -650,15 +656,14 @@ namespace TownOfHost
                                 }
                             }));
                         }
-                        if ((option as ObjectOptionitem)?.ClickAction is not null)
+                        if ((option as ObjectOptionitem)?.ClickActionkey is not null)
                         {
-                            stringOption.ValueText.transform.localPosition =
-                            stringOption.transform.FindChild("ValueBox").transform.localPosition =
+                            stringOption.MinusBtn.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "<rotate=-20>ρ";
                             stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
                             stringOption.MinusBtn.OnClick = new();
                             stringOption.MinusBtn.OnClick.AddListener((Action)(() =>
                             {
-                                (option as ObjectOptionitem)?.ClickAction?.Invoke();
+                                SetAction((option as ObjectOptionitem)?.ClickActionkey, tabtransfrom);
                             }));
                         }
                         if (option.Tooltip.Invoke() is not "")//一旦こういう実装にしているが、？マークをどこかに設置してでもいいかも?
@@ -886,15 +891,14 @@ namespace TownOfHost
                                 }
                             }
                         }
-                        if ((option as ObjectOptionitem)?.ClickAction is not null)
+                        if ((option as ObjectOptionitem)?.ClickActionkey is not null)
                         {
-                            stringOption.ValueText.transform.localPosition =
-                            stringOption.transform.FindChild("ValueBox").transform.localPosition =
+                            stringOption.MinusBtn.transform.FindChild("Text_TMP").GetComponent<TMPro.TextMeshPro>().text = "<rotate=-20>ρ";
                             stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
                             stringOption.MinusBtn.OnClick = new();
                             stringOption.MinusBtn.OnClick.AddListener((Action)(() =>
                             {
-                                (option as ObjectOptionitem)?.ClickAction?.Invoke();
+                                SetAction((option as ObjectOptionitem)?.ClickActionkey, tabtransfrom);
                             }));
                         }
                         if (option.Tooltip.Invoke() is not "")
@@ -983,6 +987,17 @@ namespace TownOfHost
             }
             template.OnValueChanged = new System.Action<OptionBehaviour>((o) => { });
             return template;
+        }
+        static void SetAction(string actionkey, Transform parent)
+        {
+            switch (actionkey)
+            {
+                case "ShowSleld": ShowRandomSpawnOption.CreateSpawanOptionMenu(parent, MapNames.Skeld); break;
+                case "ShowMira": ShowRandomSpawnOption.CreateSpawanOptionMenu(parent, MapNames.MiraHQ); break;
+                case "ShowPolus": ShowRandomSpawnOption.CreateSpawanOptionMenu(parent, MapNames.Polus); break;
+                case "ShowAirship": ShowRandomSpawnOption.CreateSpawanOptionMenu(parent, MapNames.Airship); break;
+                case "ShowFungle": ShowRandomSpawnOption.CreateSpawanOptionMenu(parent, MapNames.Fungle); break;
+            }
         }
     }
 

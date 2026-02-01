@@ -220,7 +220,7 @@ namespace TownOfHost
                 {
                     LastGameSave.SeveImage();
                 },
-                "保存")
+                Main.UseingJapanese ? "保存" : "Save")
             {
                 Scale = new(0.5f, 0.5f),
                 FontSize = 2f,
