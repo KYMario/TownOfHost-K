@@ -195,7 +195,6 @@ public sealed class Balancer : RoleBase, ISelfVoter
 
                 ExileControllerWrapUpPatch.AntiBlackout_LastExiled = null;
                 Modules.MeetingVoteManager.Instance.ClearAndEndMeeting();
-                MeetingHud.Instance.RpcClose();
                 GameStates.ExiledAnimate = true;
             }
         }

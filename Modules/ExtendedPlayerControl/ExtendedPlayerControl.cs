@@ -220,7 +220,7 @@ namespace TownOfHost
             {
                 pc.RpcDesyncUpdateSystem(systemtypes, 16);
                 if (Main.NormalOptions.MapId == 4) //Airship用
-                    pc.RpcDesyncUpdateSystem(systemtypes, 17);
+                    pc.RpcDesyncUpdateSystem(systemtypes, 17, PlayerCatch.AllAlivePlayerControls.FirstOrDefault(pc => pc.PlayerId != PlayerControl.LocalPlayer.PlayerId));
             }, 0.4f + delay, "Fix Desync Reactor", true);
         }
         public static void ReactorFlash(this PlayerControl pc, float delay = 0f)
@@ -239,10 +239,9 @@ namespace TownOfHost
                 pc.RpcDesyncUpdateSystem(systemtypes, 16);
 
                 if (Main.NormalOptions.MapId == 4) //Airship用
-                    pc.RpcDesyncUpdateSystem(systemtypes, 17);
+                    pc.RpcDesyncUpdateSystem(systemtypes, 17, PlayerCatch.AllAlivePlayerControls.FirstOrDefault(pc => pc.PlayerId != PlayerControl.LocalPlayer.PlayerId));
             }, FlashDuration + delay, "Fix Desync Reactor", true);
             _ = new LateTask(() => Utils.NowKillFlash = false, (FlashDuration + delay) * 2, "", true);
-
         }
 
         public static bool CanUseKillButton(this PlayerControl pc)

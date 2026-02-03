@@ -411,7 +411,7 @@ namespace TownOfHost
                         {
                             sender.AutoStartRpc(ShipStatus.Instance.NetId, RpcCalls.UpdateSystem, pc.GetClientId())
                                     .Write((byte)SystemTypes.Comms)
-                                    .WriteNetObject(pc)
+                                    .WriteNetObject(PlayerControl.LocalPlayer)
                                     .Write((byte)17)
                                     .EndRpc();
                         }

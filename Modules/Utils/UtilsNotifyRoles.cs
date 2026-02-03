@@ -23,7 +23,7 @@ namespace TownOfHost
 {
     public static class UtilsNotifyRoles
     {
-        public const int chengepake = 800;
+        public const int chengepake = 600;
         private static StringBuilder SelfMark = new(20);
         private static StringBuilder SelfSuffix = new(20);
         private static StringBuilder TargetMark = new(20);
@@ -85,6 +85,7 @@ namespace TownOfHost
             var isMushroomMixupActive = IsActive(SystemTypes.MushroomMixupSabotage);
             //seer:ここで行われた変更を見ることができるプレイヤー
             //target:seerが見ることができる変更の対象となるプレイヤー
+            var sendedcount = 0;
             foreach (var seer in seerList)
             {
                 //seerが落ちているときに何もしない
@@ -201,6 +202,7 @@ namespace TownOfHost
                     //適用
                     if (seer.SetNameCheck(SelfName, seer, NoCache))
                     {
+                        sendedcount++;
                         Logger.Info($"{seer?.Data?.GetLogPlayerName()} (Me) => {SelfName}", "NotifyRoles");
                         sender.StartRpc(seer.NetId, (byte)RpcCalls.SetName)
                         .Write(seer.NetId)
@@ -384,8 +386,10 @@ namespace TownOfHost
                                 .Write(TargetName)
                                 .Write(true)
                                 .EndRpc();
-                                if (sender.stream.Length > chengepake)
+                                sendedcount++;
+                                if (sender.stream.Length > chengepake || sendedcount > AmongUsClient.Instance.GetMaxMessagePackingLimit() * 0.8f)
                                 {
+                                    sendedcount = 0;
                                     sender.EndMessage();
                                     sender.SendMessage();
                                     Sended = true;

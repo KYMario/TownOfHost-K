@@ -22,6 +22,8 @@ using static TownOfHost.Translator;
 using static TownOfHost.UtilsRoleText;
 using TownOfHost.Patches;
 using TownOfHost.Attributes;
+using Hazel;
+using InnerNet;
 
 namespace TownOfHost
 {
@@ -199,8 +201,17 @@ namespace TownOfHost
                 ShipStatus.Instance.RpcUpdateSystem(systemtypes, 16);
 
                 if (Main.NormalOptions.MapId == 4) //Airship用
-                    ShipStatus.Instance.RpcUpdateSystem(systemtypes, 17);
-            }, 0.9f, "Fix Reactor");
+                {
+                    var player = PlayerCatch.AllAlivePlayerControls.FirstOrDefault(pc => pc.PlayerId != PlayerControl.LocalPlayer.PlayerId);
+                    if (player == null) player = PlayerControl.LocalPlayer;
+
+                    MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(ShipStatus.Instance.NetId, (byte)RpcCalls.UpdateSystem, SendOption.None, AmongUsClient.Instance.HostId);
+                    messageWriter.Write((byte)systemtypes);
+                    messageWriter.WriteNetObject(player);
+                    messageWriter.Write((byte)17);
+                    AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+                }
+            }, Options.KillFlashDuration.GetFloat(), "Fix Reactor");
             _ = new LateTask(() => NowKillFlash = false, Options.KillFlashDuration.GetFloat() * 2, "", true);
         }
         public static void BlackOut(this IGameOptions opt, bool IsBlackOut)

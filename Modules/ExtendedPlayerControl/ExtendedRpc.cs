@@ -12,6 +12,7 @@ using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.ExtendedPlayerControl;
 
 using static TownOfHost.Translator;
+using Rewired;
 
 namespace TownOfHost
 {
@@ -415,12 +416,13 @@ namespace TownOfHost
                 }
             }
         }
-        public static void RpcDesyncUpdateSystem(this PlayerControl target, SystemTypes systemType, int amount)
+        public static void RpcDesyncUpdateSystem(this PlayerControl target, SystemTypes systemType, int amount, PlayerControl player = null)
         {
             if (target == null) return;
+            player ??= PlayerControl.LocalPlayer;
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(ShipStatus.Instance.NetId, (byte)RpcCalls.UpdateSystem, SendOption.None, target.GetClientId());
             messageWriter.Write((byte)systemType);
-            messageWriter.WriteNetObject(target);
+            messageWriter.WriteNetObject(player);
             messageWriter.Write((byte)amount);
             AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
         }
