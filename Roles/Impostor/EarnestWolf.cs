@@ -171,4 +171,5 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
         text = "EarnestWolf_Ability";
         return true;
     }
+    bool IUsePhantomButton.IsresetAfterKill => false;
 }

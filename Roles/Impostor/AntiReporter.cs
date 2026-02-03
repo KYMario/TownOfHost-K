@@ -108,6 +108,7 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
     }
     public override bool CanUseAbilityButton() => Use > 0;
     bool IUsePhantomButton.IsPhantomRole => Use > 0;
+    bool IUsePhantomButton.IsresetAfterKill => false;
     public override void OnFixedUpdate(PlayerControl _)
     {
         if (!AmongUsClient.Instance.AmHost || AntiReporterResetse == 0) return;

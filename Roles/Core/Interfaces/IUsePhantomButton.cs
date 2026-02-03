@@ -61,4 +61,7 @@ public interface IUsePhantomButton
     public bool UseOneclickButton => true;
     /// <summary>ファントム置き換えにするかどうか</summary>
     public bool IsPhantomRole => true;
+
+    /// <summary>キル後、クールダウンをリセットするか</summary>
+    public bool IsresetAfterKill => true;
 }

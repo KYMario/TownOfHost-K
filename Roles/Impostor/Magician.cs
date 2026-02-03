@@ -107,6 +107,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
     }
 
     bool IUsePhantomButton.IsPhantomRole => MagicCount < Maximum || Maximum is 0;
+    bool IUsePhantomButton.IsresetAfterKill => false;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
         AdjustKillCooldown = true;

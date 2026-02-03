@@ -96,6 +96,7 @@ namespace TownOfHost.Roles.Neutral
         public bool UseOneclickButton => CanSideKick;
         public override bool CanUseAbilityButton() => CanSideKick;
         bool IUsePhantomButton.IsPhantomRole => JackalDoll.GetSideKickCount() > JackalDoll.NowSideKickCount;
+        bool IUsePhantomButton.IsresetAfterKill => false;
         public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
         {
             AdjustKillCooldown = true;

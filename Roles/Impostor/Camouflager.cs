@@ -199,4 +199,5 @@ public sealed class Camouflager : RoleBase, IImpostor, IUsePhantomButton
         if (isForHud) return GetString("PhantomButtonLowertext");
         return $"<size=50%>{GetString("PhantomButtonLowertext")}</size>";
     }
+    bool IUsePhantomButton.IsresetAfterKill => false;
 }

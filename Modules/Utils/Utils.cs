@@ -200,7 +200,7 @@ namespace TownOfHost
 
                 if (Main.NormalOptions.MapId == 4) //Airship用
                     ShipStatus.Instance.RpcUpdateSystem(systemtypes, 17);
-            }, Options.KillFlashDuration.GetFloat(), "Fix Reactor");
+            }, 0.9f, "Fix Reactor");
             _ = new LateTask(() => NowKillFlash = false, Options.KillFlashDuration.GetFloat() * 2, "", true);
         }
         public static void BlackOut(this IGameOptions opt, bool IsBlackOut)

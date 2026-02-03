@@ -43,6 +43,7 @@ public sealed class EvilMaker : RoleBase, IImpostor, IUsePhantomButton
     }
     public float CalculateKillCooldown() => KillCooldown;
     bool IUsePhantomButton.IsPhantomRole => !Used;
+    bool IUsePhantomButton.IsresetAfterKill => false;
     public override void ApplyGameOptions(IGameOptions opt) => AURoleOptions.PhantomCooldown = AbilityCooldown;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {

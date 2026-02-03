@@ -13,6 +13,7 @@ using TownOfHost.Roles.Ghost;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Modules;
+using Rewired;
 
 namespace TownOfHost.Roles.Core;
 
@@ -345,7 +346,11 @@ public static class CustomRoleManager
             if (appearanceKiller != appearanceTarget) UtilsGameLog.AddGameLogsub($"\n\t⇐ {UtilsName.GetPlayerColor(appearanceKiller, true)}({UtilsRoleText.GetTrueRoleName(appearanceKiller.PlayerId, false)})");
         }
         //if (info.AppearanceKiller.PlayerId == info.AttemptKiller.PlayerId)
-        (killerrole as IUsePhantomButton)?.Init(appearanceKiller);
+        if (killerrole is IUsePhantomButton usePhantomButton)
+        {
+            usePhantomButton.Init(appearanceKiller);
+            if (usePhantomButton.IsresetAfterKill) appearanceKiller.RpcResetAbilityCooldown();
+        }
         var roleinfo = appearanceKiller.GetCustomRole().GetRoleInfo();
 
         if (Options.CurrentGameMode is CustomGameMode.HideAndSeek && targetState.MainRole is CustomRoles.HASTroll)

@@ -101,4 +101,6 @@ public sealed class Reloader : RoleBase, IImpostor, IUsePhantomButton
     {
         Count = reader.ReadInt32();
     }
+
+    bool IUsePhantomButton.IsresetAfterKill => false;
 }
