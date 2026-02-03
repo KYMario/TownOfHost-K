@@ -95,7 +95,7 @@ namespace TownOfHost
                     break;
             }
 
-            sb.AppendFormat("<line-height={0}>", "50%");
+            sb.AppendFormat("<line-height={0}>", "75%");
 
             if (Options.CurrentGameMode == CustomGameMode.HideAndSeek)
             {
@@ -119,13 +119,13 @@ namespace TownOfHost
                 var (madcheck, madmax, madmin) = RoleAssignManager.CheckRoleTypeCount(CustomRoleTypes.Madmate);
                 var (crewcheck, crewmax, crewmin) = RoleAssignManager.CheckRoleTypeCount(CustomRoleTypes.Crewmate);
                 var (neucheck, neumax, neumin) = RoleAssignManager.CheckRoleTypeCount(CustomRoleTypes.Neutral);
-                if (nowcount.imp > 0) sb.Append(ColorString(Palette.ImpostorRed, "\n<u>☆Impostors☆" + $"({nowcount.imp})" + (impcheck ? $"　[{impmin}～{impmax}]" : "") + "</u>\n"));
-                if (nowcount.mad > 0) sb.Append(ColorString(ModColors.MadMateOrenge, "\n<u>☆MadMates☆" + $"({nowcount.mad})" + (madcheck ? $"　[{madmin}～{madmax}]" : "") + "</u>\n"));
-                if (nowcount.crew > 0) sb.Append(ColorString(Palette.Blue, "\n<u>☆CrewMates☆" + $"({nowcount.crew})" + (crewcheck ? $"　[{crewmin}～{crewmax}]" : "") + "</u>\n"));
-                if (nowcount.neutral > 0) sb.Append(ColorString(ModColors.Gray, "\n<u>☆Neutrals☆" + $"({nowcount.neutral})" + (neucheck ? $"　[{neumin}～{neumax}]" : "") + "</u>\n"));
-                if (nowcount.lovers > 0) sb.Append(ColorString(ModColors.Pink, "\n<u>☆Lovers☆" + $"({nowcount.lovers})" + "</u>\n"));
-                if (nowcount.ghost > 0) sb.Append(ColorString(ModColors.GhostRoleColor, "\n<u>☆GhostRole☆" + $"({nowcount.ghost})" + "</u>\n"));
-                if (nowcount.addon > 0) sb.Append(ColorString(ModColors.AddonsColor, "\n<u>☆Add-Ons☆" + $"({nowcount.addon})" + "</u>\n"));
+                if (nowcount.imp > 0) sb.Append(ColorString(Palette.ImpostorRed, "\n☆Impostors☆" + $"({nowcount.imp})" + (impcheck ? $"　[{impmin}～{impmax}]" : "") + "\n"));
+                if (nowcount.mad > 0) sb.Append(ColorString(ModColors.MadMateOrenge, "\n☆MadMates☆" + $"({nowcount.mad})" + (madcheck ? $"　[{madmin}～{madmax}]" : "") + "\n"));
+                if (nowcount.crew > 0) sb.Append(ColorString(Palette.Blue, "\n☆CrewMates☆" + $"({nowcount.crew})" + (crewcheck ? $"　[{crewmin}～{crewmax}]" : "") + "\n"));
+                if (nowcount.neutral > 0) sb.Append(ColorString(ModColors.Gray, "\n☆Neutrals☆" + $"({nowcount.neutral})" + (neucheck ? $"　[{neumin}～{neumax}]" : "") + "\n"));
+                if (nowcount.lovers > 0) sb.Append(ColorString(ModColors.Pink, "\n☆Lovers☆" + $"({nowcount.lovers})" + "\n"));
+                if (nowcount.ghost > 0) sb.Append(ColorString(ModColors.GhostRoleColor, "\n☆GhostRole☆" + $"({nowcount.ghost})" + "\n"));
+                if (nowcount.addon > 0) sb.Append(ColorString(ModColors.AddonsColor, "\n☆Add-Ons☆" + $"({nowcount.addon})" + "\n"));
 
                 sb.Append("\n");
                 if (Options.CustomRoleCounts.Where(x => x.Key.IsEnable()).Count() > 30)
@@ -150,7 +150,7 @@ namespace TownOfHost
                         if (role.IsGhostRole()) mark = "Ⓖ";
                         if (role.IsLovers()) mark = "Ⓛ";
 
-                        sb.Append($"\n<{GetRoleColorCode(role, true)}><u>{mark}{UtilsRoleText.GetCombinationName(role, false)}</color></u>×{role.GetCount()}\n\n");
+                        sb.Append($"\n<{GetRoleColorCode(role, true)}>{mark}{UtilsRoleText.GetCombinationName(role, false)}</color>×{role.GetCount()}\n");
                         CheckPageChange(PlayerId, sb);
                         if (!(role is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder)) ShowChildrenSettings(Options.CustomRoleSpawnChances[role], ref sb, 1);
                         CheckPageChange(PlayerId, sb);
@@ -864,7 +864,7 @@ namespace TownOfHost
             return (i, m, c, n, a, l, g);
         }
         private const string ActiveSettingsSize = "60%";
-        private const string ActiveSettingsLineHeight = "60%";
+        private const string ActiveSettingsLineHeight = "85%";
     }
     #endregion
     #region  Option

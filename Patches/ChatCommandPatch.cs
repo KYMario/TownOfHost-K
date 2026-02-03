@@ -64,6 +64,10 @@ namespace TownOfHost
             Logger.Info(text, "SendChat");
             ChatManager.SendMessage(PlayerControl.LocalPlayer, text);
 
+            if (text.StartsWith("/") && !text.Contains("cmd"))
+            {
+                SendMessage(GetString("Error.CommandFailed"), PlayerControl.LocalPlayer.PlayerId);
+            }
             if (text.StartsWith("/cmd")) canceled = true;
 
             if (args[0] != "/cmd" || args.Length <= 1)
@@ -1220,6 +1224,10 @@ namespace TownOfHost
             }
             if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
 
+            if (text.StartsWith("/") && !text.Contains("cmd"))
+            {
+                SendMessage(GetString("Error.CommandFailed"), player.PlayerId);
+            }
             if (args[0] != "/cmd" || args.Length <= 1) return;//cmdが無い場合は処理をしない
             args = args.Skip(1).ToArray();
 

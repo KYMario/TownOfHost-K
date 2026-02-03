@@ -284,7 +284,7 @@ namespace TownOfHost
             if (to == 0)
             {
                 //ホスト限定
-                text += $"<size=80%></line-height>\n【~~~~~~~{GetString("OnlyHost")}~~~~~~~】</size><line-height=1.3pic>"
+                text += $"<size=80%></line-height>\n<#8cffff>【~~~~~~~{GetString("OnlyHost")}~~~~~~~】</color></size><line-height=1.3pic>"
                 + $"\n/cmd /rename(/r) - {GetString("Command.rename")}"
                 + $"\n/cmd /dis - {GetString("Command.dis")}"
                 + $"\n/cmd /sw - {GetString("Command.sw")}"
@@ -293,12 +293,12 @@ namespace TownOfHost
                 + $"\n/cmd /kf - {GetString("Command.kf")}"
                 + $"\n/cmd /addwhite(/aw) - {GetString("Command.addwhite")}";
                 //導入者
-                text += $"<size=80%></line-height>\n【~~~~~~~{GetString("OnlyClient")}~~~~~~~】</size><line-height=1.3pic>"
+                text += $"<size=80%></line-height>\n<#028760>【~~~~~~~{GetString("OnlyClient")}~~~~~~~】</color></size><line-height=1.3pic>"
                 + $"\n/cmd /dump - {GetString("Command.dump")}";
             }
             text
             //全員
-            += $"<size=80%></line-height>\n【~~~~~~~{GetString("Allplayer")}~~~~~~~】</size><line-height=1.3pic>"
+            += $"<size=80%></line-height>\n<#918877>【~~~~~~~{GetString("Allplayer")}~~~~~~~】</color></size><line-height=1.3pic>"
             + $"\n/cmd /now(/n) - {GetString("Command.now")}"
             + $"\n/cmd /now role(/n r) - {GetString("Command.nowrole")}"
             + $"\n/cmd /now set(/n s) - {GetString("Command.nowset")}"
@@ -398,9 +398,10 @@ namespace TownOfHost
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             if (Main.IsCs() is false && GameStates.IsOnlineGame)
             {
+                var sendtext = text;
                 if (!VersionInfoManager.GetCustomFlag(1))
-                    text = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
-                Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{text}"));
+                    sendtext = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
+                Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{sendtext}"));
             }
             else
                 Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
