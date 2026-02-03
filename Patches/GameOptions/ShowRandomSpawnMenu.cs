@@ -148,11 +148,13 @@ class ShowRandomSpawnOption
                         {
                             if (data.button.Background.color == Palette.DisabledGrey)
                             {
-                                data.opt.SetValue(data.opt.CurrentValue + 1);
+                                data.opt.SetValue(data.opt.CurrentValue + 1, false, false);
                                 data.button.Background.color = data.opt.CurrentValue is 0 ? Palette.DisabledGrey : Palette.EnabledColor;
                             }
                         }
-                        OptionItem.AllOptions.First(opt => opt.Id == id).SetValue(1);
+                        OptionItem.AllOptions.First(opt => opt.Id == id).SetValue(1, false, false);
+                        OptionItem.SyncAllOptions();
+                        Modules.OptionSaver.Save();
                     }));
 
                     var alloffbutton = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
@@ -169,11 +171,13 @@ class ShowRandomSpawnOption
                         {
                             if (data.button.Background.color == Palette.EnabledColor)
                             {
-                                data.opt.SetValue(0);
+                                data.opt.SetValue(0, false, false);
                                 data.button.Background.color = data.opt.CurrentValue is 0 ? Palette.DisabledGrey : Palette.EnabledColor;
                             }
                         }
-                        OptionItem.AllOptions.First(opt => opt.Id == id).SetValue(0);
+                        OptionItem.AllOptions.First(opt => opt.Id == id).SetValue(0, false, false);
+                        OptionItem.SyncAllOptions();
+                        Modules.OptionSaver.Save();
                     }));
                 }
                 catch (System.Exception ex) { Logger.Error(ex.ToString(), "eerrre"); }
