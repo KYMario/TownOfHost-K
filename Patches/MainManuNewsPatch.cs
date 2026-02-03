@@ -2001,6 +2001,30 @@ public class ModNewsHistory
                 };
                 AllModNews.Add(news);
             }
+            {
+                var news = new ModNews
+                {
+                    Number = 100074,
+                    Title = "鬼も福も外。",
+                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.28</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31.28</color>",
+                    Text = "<size=80%>2026年はもう始まった。\n"
+                    + "<size=125%>【バグ修正】</size>\n"
+                    + "・ホストのチャットがおかしい問題の修正\n"
+                    + "・いくつかの非ホストクライアントバグの修正\n"
+                    + "・役職選択するタイプの設定が正常に表示されない問題の修正\n"
+                    + "\n<size=125%>【仕様変更】</size>\n"
+                    + "・一部チャットを見やすく変更\n"
+                    + "・ランダムスポーンの設定方法を変更\n"
+                    + "・オプション画面の一部変更\n"
+                    + "・チャットコマンドの変更。\n※このバージョンより、/cmdを先頭に付けないと動作しません。\n"
+                    + "・一部役職を除き、ワンクリック使用役職はキル後、クールダウンが復活するように\n\n"
+                    + "ニュースであけおめを言ってない気がします。\n今年もKをよろしくネ"
+                    ,
+                    Date = "2026-02-03T00:00:00Z"
+                };
+                AllModNews.Add(news);
+            }
             AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
         }
     }
