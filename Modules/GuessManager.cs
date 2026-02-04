@@ -38,27 +38,6 @@ public static class GuessManager
         OneMeetingGuessed.Clear();
     }
 
-    public static bool CheckCommond(ref string msg, string command, bool exact = true)
-    {
-        var comList = command.Split('|');
-        for (int i = 0; i < comList.Length; i++)
-        {
-            if (exact)
-            {
-                if (msg == "/" + comList[i]) return true;
-            }
-            else
-            {
-                if (msg.StartsWith("/" + comList[i]))
-                {
-                    msg = msg.Replace("/" + comList[i], string.Empty);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     private static bool ComfirmIncludeMsg(string msg, string key)
     {
         var keys = key.Split('|');
@@ -68,7 +47,7 @@ public static class GuessManager
         }
         return false;
     }
-    public static bool GuesserMsg(PlayerControl pc, string msg, bool isUI = false)
+    public static bool GuesserMsg(PlayerControl pc, string msg)
     {
         var originMsg = msg;
 
@@ -76,9 +55,14 @@ public static class GuessManager
         if (!GameStates.IsInGame || pc == null) return false;
 
         int operate = 0;
-        msg = msg.ToLower().TrimStart().TrimEnd();
-        if (CheckCommond(ref msg, "bt", false)) operate = 2;
-        else return false;
+        string[] args = msg.Split(' ');
+        if (args[0] != "/cmd" || args.Length <= 1)
+        {
+            return false;
+        }
+        args = args.Skip(1).ToArray();
+        if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
+        if (args[0].StartsWith("/bt")) operate = 2;
 
         if (!pc.IsAlive()) return true;//本当は悪あがきはやめなって処理入れたかった(´・ω・｀)←入れてもいいけどめんどくs(((!(?)
         if (operate == 2)
@@ -95,7 +79,7 @@ public static class GuessManager
                 && !(RoleAddAddons.GetRoleAddon(pc.GetCustomRole(), out var op, pc, subrole: CustomRoles.Guesser) && op.GiveGuesser.GetBool())
                 )
             {
-                Utils.SendMessage(GetString("NoOneMeetingGuessederError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("NoOneMeetingGuessederErrortitle")));
+                Utils.SendMessage(GetString("NotGuesserError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("NotGuesserErrortitle")));
                 return true;
             }
             if (!MsgToPlayerAndRole(msg, out byte targetId, out CustomRoles role, out string error))
@@ -298,10 +282,18 @@ public static class GuessManager
 
     private static bool MsgToPlayerAndRole(string msg, out byte id, out CustomRoles role, out string error)
     {
-        if (msg.StartsWith("/")) msg = msg.Replace("/", string.Empty);
-
         id = byte.MaxValue;
         string[] args = msg.Split(' ');
+
+        if (args[0] != "/cmd" || args.Length <= 1)
+        {
+            role = CustomRoles.NotAssigned;
+            id = byte.MaxValue;
+            error = "";
+            return false;
+        }
+        args = args.Skip(1).ToArray();
+
         var result = args.Length < 2 ? "" : args[1];
         msg = args.Length < 3 ? "" : args[2];
 

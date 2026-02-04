@@ -617,7 +617,7 @@ namespace TownOfHost
             {
                 var RoleTextData = GetRoleColorCode(role);
                 string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
-                string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}";
+                string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}</color>";
                 SendMessage(description.FullFormatHelp, player.PlayerId, title: RoleInfoTitle, checkl: true);
                 GetAddonsHelp(player);
                 return;
@@ -627,7 +627,7 @@ namespace TownOfHost
                 var RoleTextData = GetRoleColorCode(role);
                 //var SendRoleInfo = "";
                 string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
-                string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}";
+                string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}</color>";
                 {
                     SendMessage("<b><line-height=2.0pic><size=150%>" + GetString(role.ToString()).Color(player.GetRoleColor()) + "</b>\n<size=60%><line-height=1.8pic>" + player.GetRoleDesc(true), player.PlayerId, RoleInfoTitle);
                 }

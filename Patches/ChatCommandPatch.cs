@@ -83,6 +83,7 @@ namespace TownOfHost
             args = args.Skip(1).ToArray();
 
             if (GuessManager.GuesserMsg(PlayerControl.LocalPlayer, text)) canceled = true;
+            if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
             switch (args[0])
             {
@@ -1222,7 +1223,6 @@ namespace TownOfHost
             {
                 ChatManager.SendMessage(player, text);
             }
-            if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
 
             if (text.StartsWith("/") && !text.Contains("cmd"))
             {
@@ -1230,6 +1230,9 @@ namespace TownOfHost
             }
             if (args[0] != "/cmd" || args.Length <= 1) return;//cmdが無い場合は処理をしない
             args = args.Skip(1).ToArray();
+
+            if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
+            if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
             canceled = true;
             switch (args[0])

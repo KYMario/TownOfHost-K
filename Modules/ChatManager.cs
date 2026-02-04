@@ -134,6 +134,7 @@ namespace TownOfHost.Modules.ChatManager
         {
             if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
             {
+                ChatUpdatePatch.DoBlockChat = true;
                 var rd = IRandom.Instance;
                 string msg;
                 List<CustomRoles> roles = Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>().Where(role => (role.IsLovers() || role.IsCrewmate() || role.IsImpostorTeam() || role.IsNeutral()) && Event.CheckRole(role)).ToList();
@@ -246,6 +247,7 @@ namespace TownOfHost.Modules.ChatManager
                     PlayerControl.LocalPlayer.RpcExile();
                     PlayerControl.LocalPlayer.Die(DeathReason.Kill, false);
                 }
+                ChatUpdatePatch.DoBlockChat = false;
             }
         }
         public static void IntaskCheckSendMessage(PlayerControl player)
