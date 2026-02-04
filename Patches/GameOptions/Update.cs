@@ -305,8 +305,14 @@ namespace TownOfHost
                 foreach (var option in OptionItem.AllOptions)
                 {
                     if ((TabGroup)tab != option.Tab) continue;
+                    var isroleoption = option.CustomRole is not CustomRoles.NotAssigned;
                     if (option?.OptionBehaviour == null || option.OptionBehaviour.gameObject == null)
                     {
+                        if (!isroleoption && option.ParentRole is not CustomRoles.NotAssigned && option.Name is not "Maximum")
+                        {
+                            option.OptionBehaviour?.gameObject?.SetActive(false);
+                            continue;
+                        }
                         if (option?.OptionHedder is not null)
                         {
                             var hi = 0;
@@ -345,7 +351,6 @@ namespace TownOfHost
 
                     enabled = AmongUsClient.Instance.AmHost && !option.IsHiddenOn(Options.CurrentGameMode);
 
-                    var isroleoption = option.CustomRole is not CustomRoles.NotAssigned;
 
                     if (option.CustomRole is not CustomRoles.NotAssigned)
                     {
