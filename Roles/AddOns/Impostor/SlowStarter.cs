@@ -18,8 +18,9 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.SlowStarter, new(1, 3, 1));
             AddOnsAssignData.Create(Id + 10, CustomRoles.SlowStarter, false, false, true, false);
-            CanKillImpostorCount = IntegerOptionItem.Create(Id + 50, "MafiaCanKillImpostorCount", new(1, 3, 1), 2, TabGroup.Addons, false).SetParentRole(CustomRoles.SlowStarter).SetParent(CustomRoleSpawnChances[CustomRoles.SlowStarter]);
-            CanKillDay = IntegerOptionItem.Create(Id + 51, "MafiaCanKillDay", new(0, 30, 1), 0, TabGroup.Addons, false).SetZeroNotation(OptionZeroNotation.Off).SetParentRole(CustomRoles.SlowStarter).SetParent(CustomRoleSpawnChances[CustomRoles.SlowStarter]).SetValueFormat(OptionFormat.day);
+            ObjectOptionitem.Create(Id + 52, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.SlowStarter);
+            CanKillImpostorCount = IntegerOptionItem.Create(Id + 50, "MafiaCanKillImpostorCount", new(1, 3, 1), 2, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.SlowStarter);
+            CanKillDay = IntegerOptionItem.Create(Id + 51, "MafiaCanKillDay", new(0, 30, 1), 0, TabGroup.Addons, false).SetZeroNotation(OptionZeroNotation.Off).SetSubRoleOptionItem(CustomRoles.SlowStarter).SetValueFormat(OptionFormat.day);
         }
         static int cankillcount;
         public static void Init()

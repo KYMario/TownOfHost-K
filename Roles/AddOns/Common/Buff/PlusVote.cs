@@ -17,8 +17,8 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.PlusVote, fromtext: UtilsOption.GetFrom(From.TownOfHost_Y));
             AddOnsAssignData.Create(Id + 10, CustomRoles.PlusVote, true, true, true, true);
-            AdditionalVote = IntegerOptionItem.Create(Id + 50, "MayorAdditionalVote", new(1, 99, 1), 1, TabGroup.Addons, false).SetValueFormat(OptionFormat.Votes)
-            .SetParent(CustomRoleSpawnChances[CustomRoles.PlusVote]).SetParentRole(CustomRoles.PlusVote);
+            ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.PlusVote);
+            AdditionalVote = IntegerOptionItem.Create(Id + 50, "MayorAdditionalVote", new(1, 99, 1), 1, TabGroup.Addons, false).SetValueFormat(OptionFormat.Votes).SetSubRoleOptionItem(CustomRoles.PlusVote);
         }
 
         public static void Init()

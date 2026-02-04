@@ -16,7 +16,8 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Seeing, fromtext: UtilsOption.GetFrom(From.TownOfHost_Y));
             AddOnsAssignData.Create(Id + 10, CustomRoles.Seeing, true, true, true, true);
-            OptionCanSeeActiveComms = BooleanOptionItem.Create(Id + 50, "CanUseActiveComms", true, TabGroup.Addons, false).SetParent(CustomRoleSpawnChances[CustomRoles.Seeing]).SetParentRole(CustomRoles.Seeing);
+            ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Seeing);
+            OptionCanSeeActiveComms = BooleanOptionItem.Create(Id + 50, "CanUseActiveComms", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Seeing);
         }
         public static void Init()
         {

@@ -17,8 +17,8 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Guarding, fromtext: UtilsOption.GetFrom(From.TownOfHost_Y));
             AddOnsAssignData.Create(Id + 10, CustomRoles.Guarding, true, true, true, true);
-            OptionAddGuard = IntegerOptionItem.Create(Id + 50, "AddGuardCount", new(1, 10, 1), 1, TabGroup.Addons, false).SetParent(CustomRoleSpawnChances[CustomRoles.Guarding])
-            .SetParentRole(CustomRoles.Guarding);
+            ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Guarding);
+            OptionAddGuard = IntegerOptionItem.Create(Id + 50, "AddGuardCount", new(1, 10, 1), 1, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Guarding);
         }
         public static void Init()
         {

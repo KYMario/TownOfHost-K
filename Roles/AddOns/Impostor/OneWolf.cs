@@ -24,6 +24,7 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             var OneWolfAssingOption = SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.OneWolf, new(1, 3, 1));
             AddOnsAssignData.Create(Id + 10, CustomRoles.OneWolf, false, false, true, false);
+            ObjectOptionitem.Create(Id + 22, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.OneWolf);
             OptionImpostorkillMe = StringOptionItem.Create(Id + 20, "OneWolfImpostorKillMe", killmode, 2, TabGroup.Addons, false)
                 .SetParent(OneWolfAssingOption).SetParentRole(CustomRoles.OneWolf);
             OptionMeCanKillImpostor = StringOptionItem.Create(Id + 21, "OneWolfMeCanKillImpostor", killmode, 2, TabGroup.Addons, false)

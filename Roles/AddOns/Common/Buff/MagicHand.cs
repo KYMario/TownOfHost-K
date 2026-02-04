@@ -15,8 +15,9 @@ namespace TownOfHost.Roles.AddOns.Common
         public static void SetupCustomOption()
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.MagicHand);
-            KillDistance = StringOptionItem.Create(Id + 9, "KillRenge", EnumHelper.GetAllNames<OverrideKilldistance.KillDistance>(), 0, TabGroup.Addons, false).SetParentRole(CustomRoles.MagicHand).SetParent(CustomRoleSpawnChances[CustomRoles.MagicHand]);
             AddOnsAssignDataOnlyKiller.Create(Id + 10, CustomRoles.MagicHand, true, true, true, true);
+            ObjectOptionitem.Create(Id + 8, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.MagicHand);
+            KillDistance = StringOptionItem.Create(Id + 9, "KillRenge", EnumHelper.GetAllNames<OverrideKilldistance.KillDistance>(), 0, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.MagicHand);
         }
         public static void Init()
         {

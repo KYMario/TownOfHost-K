@@ -19,16 +19,15 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.News);
             AddOnsAssignData.Create(Id + 10, CustomRoles.News, true, true, true, true);
+            ObjectOptionitem.Create(Id + 24, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.News);
             //OptionSidekickToremove = BooleanOptionItem.Create(Id + 19, "NewsSidekickToremove", false, TabGroup.Addons, false)
-            //.SetParentRole(CustomRoles.News).SetParent(CustomRoleSpawnChances[CustomRoles.News]);
+            //.SetSubRoleOptionItem(CustomRoles.News);
             OptionSendDay = IntegerOptionItem.Create(Id + 20, "NewsSendDay", new(0, 30, 1), 4, TabGroup.Addons, false)
-            .SetParentRole(CustomRoles.News).SetParent(CustomRoleSpawnChances[CustomRoles.News])
-            .SetValueFormat(OptionFormat.day).SetZeroNotation(OptionZeroNotation.Off);
+            .SetSubRoleOptionItem(CustomRoles.News).SetValueFormat(OptionFormat.day).SetZeroNotation(OptionZeroNotation.Off);
             OptionSendDayEveryturn = BooleanOptionItem.Create(Id + 21, "Everyturn", false, TabGroup.Addons, false)
             .SetParentRole(CustomRoles.News).SetParent(OptionSendDay);
             OptionSendPlayerCount = IntegerOptionItem.Create(Id + 22, "NewsSendPlayerCount", new(0, 15, 1), 6, TabGroup.Addons, false)
-            .SetParentRole(CustomRoles.News).SetParent(CustomRoleSpawnChances[CustomRoles.News])
-            .SetValueFormat(OptionFormat.Players).SetZeroNotation(OptionZeroNotation.Off);
+            .SetSubRoleOptionItem(CustomRoles.News).SetValueFormat(OptionFormat.Players).SetZeroNotation(OptionZeroNotation.Off);
             OptionSendPlayerEveryturn = BooleanOptionItem.Create(Id + 23, "Everyturn", false, TabGroup.Addons, false)
             .SetParentRole(CustomRoles.News).SetParent(OptionSendPlayerCount);
         }

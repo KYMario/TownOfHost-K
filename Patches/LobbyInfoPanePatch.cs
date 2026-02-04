@@ -123,9 +123,10 @@ namespace TownOfHost.Patches
             y1 -= 1.05f;
 
             //シングルオプション
-            for (var index = 0; index < OptionItem.AllOptions.Count; ++index)
+            var alloption = OptionItem.AllOptions.Where(o => o is not ObjectOptionitem).ToArray();
+            for (var index = 0; index < alloption.Count(); ++index)
             {
-                var option = OptionItem.AllOptions[index];
+                var option = alloption[index];
                 if (option.Tab != TabGroup.MainSettings || option.IsHiddenOn(Options.CurrentGameMode) || (!option?.Parent?.GetBool() ?? false) || option is ObjectOptionitem) continue;
 
                 bool hasChildren = option.Children.Count > 0;
@@ -134,8 +135,8 @@ namespace TownOfHost.Patches
                 {
                     if (option.IsHeader)
                     {
-                        bool isSingleHeader = index <= 0 || OptionItem.AllOptions[index - 1].IsHeader;
-                        bool isNextSingleHeader = index + 2 < OptionItem.AllOptions.Count && OptionItem.AllOptions[index + 1].IsHeader && OptionItem.AllOptions[index + 2].IsHeader;
+                        bool isSingleHeader = index <= 0 || alloption[index - 1].IsHeader;
+                        bool isNextSingleHeader = index + 2 < alloption.Count() && alloption[index + 1].IsHeader && alloption[index + 2].IsHeader;
                         if (!(isSingleHeader && isNextSingleHeader))
                         {
                             optionIndex = 0;

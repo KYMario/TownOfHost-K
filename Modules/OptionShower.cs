@@ -239,6 +239,7 @@ namespace TownOfHost
             {
                 if (opt.Value.Name is "Maximum" or "FixedRole") continue;
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveFungle || Options.IsActiveAirship || Options.IsActivePolus)) continue;
+                if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true) continue;
 
                 if (!opt.Value.GetBool())
                 {

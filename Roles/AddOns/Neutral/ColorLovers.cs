@@ -41,20 +41,21 @@ class ColorLovers
         LoverRole = role;
         Id = id;
         SetupRoleOptions(id, TabGroup.Combinations, role, assignCountRule: new(2, 2, 2), fromtext: role is CustomRoles.Lovers ? "<color=#000000>From:</color><color=#ff6be4>Love Couple Mod</color></size>" : "");
-        LoverCanSeeRole = BooleanOptionItem.Create(id + 5, "LoversRole", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
-        LoverCanAddWin = BooleanOptionItem.Create(id + 6, "LoversRoleAddwin", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
-        SoloWinOption.Create(id + 7, TabGroup.Combinations, role, () => !LoverCanAddWin.GetBool(), defo: 6);
-        Win3player = BooleanOptionItem.Create(id + 8, "LoverSoloWin3players", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
-        LoverSetRole = BooleanOptionItem.Create(id + 9, "FixedRole", false, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role);
-        LoversRole1 = (AssignOptionItem)AssignOptionItem.Create(id + 10, "FixedRole", 0, TabGroup.Combinations, false, true, true, true, true, false, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
-        AssingImpostor = BooleanOptionItem.Create(id + 11, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
-        AssingMadmate = BooleanOptionItem.Create(id + 12, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
-        AssingCrewmate = BooleanOptionItem.Create(id + 13, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
-        AssingNeutral = BooleanOptionItem.Create(id + 14, "AssingroleType", true, TabGroup.Combinations, false).SetParent(CustomRoleSpawnChances[role]).SetParentRole(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingImpostor = BooleanOptionItem.Create(id + 11, "AssingroleType", true, TabGroup.Combinations, false).SetSubRoleOptionItem(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingMadmate = BooleanOptionItem.Create(id + 12, "AssingroleType", true, TabGroup.Combinations, false).SetSubRoleOptionItem(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingCrewmate = BooleanOptionItem.Create(id + 13, "AssingroleType", true, TabGroup.Combinations, false).SetSubRoleOptionItem(role).SetEnabled(() => !LoversRole1.GetBool());
+        AssingNeutral = BooleanOptionItem.Create(id + 14, "AssingroleType", true, TabGroup.Combinations, false).SetSubRoleOptionItem(role).SetEnabled(() => !LoversRole1.GetBool());
         AssingImpostor.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.ImpostorRed, Translator.GetString("TeamImpostor")) } };
         AssingMadmate.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.ImpostorRed, Translator.GetString("Madmate")) } };
         AssingCrewmate.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.CrewmateBlue, Translator.GetString("TeamCrewmate")) } };
         AssingNeutral.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", Utils.ColorString(Palette.AcceptedGreen, Translator.GetString("Neutral")) } };
+        LoverSetRole = BooleanOptionItem.Create(id + 9, "FixedRole", false, TabGroup.Combinations, false).SetSubRoleOptionItem(role);
+        LoversRole1 = (AssignOptionItem)AssignOptionItem.Create(id + 10, "FixedRole", 0, TabGroup.Combinations, false, true, true, true, true, false, Loverremove).SetParent(LoverSetRole).SetParentRole(role);
+        ObjectOptionitem.Create(id + 15, "AddonOption", true, "", TabGroup.Combinations).SetOptionName(() => "Role Option").SetSubRoleOptionItem(role);
+        LoverCanSeeRole = BooleanOptionItem.Create(id + 5, "LoversRole", false, TabGroup.Combinations, false).SetSubRoleOptionItem(role);
+        LoverCanAddWin = BooleanOptionItem.Create(id + 6, "LoversRoleAddwin", false, TabGroup.Combinations, false).SetSubRoleOptionItem(role);
+        SoloWinOption.Create(id + 7, TabGroup.Combinations, role, () => !LoverCanAddWin.GetBool(), defo: 6);
+        Win3player = BooleanOptionItem.Create(id + 8, "LoverSoloWin3players", false, TabGroup.Combinations, false).SetSubRoleOptionItem(role);
 
         if (!Alldatas.TryAdd(role, this)) Logger.Error($"{role}重複したColorLovers", "ColorLovers");
     }

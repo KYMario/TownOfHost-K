@@ -70,6 +70,7 @@ namespace TownOfHost
                 CustomRoles.LastNeutral or
                 CustomRoles.Workhorse or
                 CustomRoles.OneWolf or
+                CustomRoles.Stack or
                 //バフ
                 CustomRoles.Moon or
                 CustomRoles.Guesser or

@@ -391,7 +391,7 @@ namespace TownOfHost
                     {
                         bool ch = false;
                         List<OptionItem> subopt = new();
-                        foreach (var op in OptionItem.AllOptions)
+                        foreach (var op in OptionItem.AllOptions.Where(o => (o as ObjectOptionitem)?.IsHedderObject is not true))
                         {
                             var name = op.GetName().RemoveHtmlTags();
 

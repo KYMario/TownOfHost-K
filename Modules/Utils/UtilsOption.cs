@@ -264,7 +264,7 @@ namespace TownOfHost
                 sb.Clear().Append(text.RemoveHtmlTags());
             }
             sb.Append($"━━━━━━━━━━━━【{GetString("Settings")}】━━━━━━━━━━━━");
-            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 80000 && !x.IsHiddenOn(Options.CurrentGameMode)))
+            foreach (var opt in OptionItem.AllOptions.Where(x => x.GetBool() && x.Parent == null && x.Id >= 80000 && !x.IsHiddenOn(Options.CurrentGameMode) && (x as ObjectOptionitem)?.IsHedderObject is not true))
             {
                 if (opt.Name == "KillFlashDuration")
                     sb.Append($"\n【{opt.GetName(true)}: {opt.GetString().RemoveSN()}】\n");
@@ -432,6 +432,7 @@ namespace TownOfHost
         {
             foreach (var opt in option.Children.Select((v, i) => new { Value = v, Index = i + 1 }))
             {
+                if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true) continue;
                 if (!opt.Value.IsEnabled()) continue;
                 if (!opt.Value.GetBool())
                 {

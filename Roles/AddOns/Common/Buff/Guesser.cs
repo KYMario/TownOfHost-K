@@ -40,35 +40,38 @@ public static class Guesser
     public static void SetupCustomOption()
     {
         SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Guesser, fromtext: "<color=#000000>From:</color><color=#ff0000>The Other Roles</color></size>");
-        AddOnsAssignData.Create(Id + 10, CustomRoles.Guesser, true, true, true, true);
-        //共通設定
-        CanGuessTime = IntegerOptionItem.Create(Id + 49, "CanGuessTime", new(1, 15, 1), 3, TabGroup.Addons, false).SetParent(CustomRoleSpawnChances[CustomRoles.Guesser])
-                .SetValueFormat(OptionFormat.Players).SetParentRole(CustomRoles.Guesser);
-        OwnCanGuessTime = IntegerOptionItem.Create(Id + 50, "OwnCanGuessTime", new(1, 15, 1), 1, TabGroup.Addons, false).SetParent(CustomRoleSpawnChances[CustomRoles.Guesser])
-                .SetValueFormat(OptionFormat.Players).SetParentRole(CustomRoles.Guesser);
-        //クルーメイト
-        Crewmateset = BooleanOptionItem.Create(Id + 52, "Cremateset", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(CustomRoleSpawnChances[CustomRoles.Guesser]);
-        CCanGuessVanilla = BooleanOptionItem.Create(Id + 53, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Crewmateset);
-        CCanGuessNakama = BooleanOptionItem.Create(Id + 54, "CanGuessNakama", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Crewmateset);
-        CCanWhiteCrew = BooleanOptionItem.Create(Id + 55, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Crewmateset);
-        //imp
-        impset = BooleanOptionItem.Create(Id + 56, "Impset", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(CustomRoleSpawnChances[CustomRoles.Guesser]);
-        ICanGuessVanilla = BooleanOptionItem.Create(Id + 57, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(impset);
-        ICanGuessNakama = BooleanOptionItem.Create(Id + 58, "CanGuessNakama", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(impset);
-        ICanGuessTaskDoneSnitch = BooleanOptionItem.Create(Id + 59, "CanGuessTaskDoneSnitch", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(impset);
-        ICanWhiteCrew = BooleanOptionItem.Create(Id + 60, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(impset);
-        //mad
-        Madset = BooleanOptionItem.Create(Id + 61, "Madset", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(CustomRoleSpawnChances[CustomRoles.Guesser]);
-        MCanGuessVanilla = BooleanOptionItem.Create(Id + 62, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Madset);
-        MCanGuessNakama = BooleanOptionItem.Create(Id + 63, "CanGuessNakama", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Madset);
-        MCanGuessTaskDoneSnitch = BooleanOptionItem.Create(Id + 64, "CanGuessTaskDoneSnitch", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Madset);
-        MCanWhiteCrew = BooleanOptionItem.Create(Id + 65, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Madset);
-        //Neu
-        Neuset = BooleanOptionItem.Create(Id + 66, "Neuset", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(CustomRoleSpawnChances[CustomRoles.Guesser]);
-        NCanGuessVanilla = BooleanOptionItem.Create(Id + 67, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Neuset);
-        NCanGuessTaskDoneSnitch = BooleanOptionItem.Create(Id + 68, "CanGuessTaskDoneSnitch", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Neuset);
-        NCanWhiteCrew = BooleanOptionItem.Create(Id + 69, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetParent(Neuset);
+        var assign = AddOnsAssignData.Create(Id + 10, CustomRoles.Guesser, true, true, true, true);
+        impset = assign.ImpostorMaximum;
+        Crewmateset = assign.CrewmateMaximum;
+        Madset = assign.MadmateMaximum;
+        Neuset = assign.NeutralMaximum;
 
+        ObjectOptionitem.Create(Id + 70, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Guesser);
+        //共通設定
+        CanGuessTime = IntegerOptionItem.Create(Id + 49, "CanGuessTime", new(1, 15, 1), 3, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Guesser).SetValueFormat(OptionFormat.Players);
+        OwnCanGuessTime = IntegerOptionItem.Create(Id + 50, "OwnCanGuessTime", new(1, 15, 1), 1, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Guesser).SetValueFormat(OptionFormat.Players);
+        //クルーメイト
+        ObjectOptionitem.Create(Id + 52, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Crewmate Option").SetSubRoleOptionItem(CustomRoles.Guesser).SetColor(ModColors.CrewMateBlue);
+        CCanGuessVanilla = BooleanOptionItem.Create(Id + 53, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.CrewMateBlue); ;
+        CCanGuessNakama = BooleanOptionItem.Create(Id + 54, "CanGuessNakama", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.CrewMateBlue); ;
+        CCanWhiteCrew = BooleanOptionItem.Create(Id + 55, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.CrewMateBlue); ;
+        //imp
+        ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Imposotr Option").SetSubRoleOptionItem(CustomRoles.Guesser).SetColor(ModColors.ImpostorRed);
+        ICanGuessVanilla = BooleanOptionItem.Create(Id + 57, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.ImpostorRed);
+        ICanGuessNakama = BooleanOptionItem.Create(Id + 58, "CanGuessNakama", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.ImpostorRed);
+        ICanGuessTaskDoneSnitch = BooleanOptionItem.Create(Id + 59, "CanGuessTaskDoneSnitch", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.ImpostorRed);
+        ICanWhiteCrew = BooleanOptionItem.Create(Id + 60, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.ImpostorRed);
+        //mad
+        ObjectOptionitem.Create(Id + 61, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Madmate Option").SetSubRoleOptionItem(CustomRoles.Guesser).SetColor(ModColors.MadMateOrenge);
+        MCanGuessVanilla = BooleanOptionItem.Create(Id + 62, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.MadMateOrenge);
+        MCanGuessNakama = BooleanOptionItem.Create(Id + 63, "CanGuessNakama", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.MadMateOrenge);
+        MCanGuessTaskDoneSnitch = BooleanOptionItem.Create(Id + 64, "CanGuessTaskDoneSnitch", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.MadMateOrenge);
+        MCanWhiteCrew = BooleanOptionItem.Create(Id + 65, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.MadMateOrenge);
+        //Neu
+        ObjectOptionitem.Create(Id + 66, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Neutral Option").SetSubRoleOptionItem(CustomRoles.Guesser).SetColor(ModColors.NeutralGray);
+        NCanGuessVanilla = BooleanOptionItem.Create(Id + 67, "CanGuessVanilla", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.NeutralGray);
+        NCanGuessTaskDoneSnitch = BooleanOptionItem.Create(Id + 68, "CanGuessTaskDoneSnitch", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.NeutralGray);
+        NCanWhiteCrew = BooleanOptionItem.Create(Id + 69, "CanWhiteCrew", false, TabGroup.Addons, false).SetParentRole(CustomRoles.Guesser).SetColor(ModColors.NeutralGray);
     }
     [GameModuleInitializer]
 

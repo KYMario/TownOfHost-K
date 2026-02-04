@@ -12,14 +12,15 @@ class Faction
     public static void SetUpOption()
     {
         Options.SetupRoleOptions(19600, TabGroup.Addons, CustomRoles.Faction, new(1, 1, 1));
-        CanSeeFactionMate = BooleanOptionItem.Create(19611, "CanSeeFactionMate", false, TabGroup.Addons, false).SetParent(Options.CustomRoleSpawnChances[CustomRoles.Faction]).SetParentRole(CustomRoles.Faction);
+        CanSeeFactionMate = BooleanOptionItem.Create(19611, "CanSeeFactionMate", false, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction);
+        ObjectOptionitem.Create(19612, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Assign Option").SetSubRoleOptionItem(CustomRoles.Faction);
 
         var id = 19620;
         foreach (var role in EnumHelper.GetAllValues<CustomRoles>().Where(role => role.IsNeutral()).OrderBy(x => x.GetRoleInfo()?.ConfigId ?? 100000))
         {
             if (SoloWinOption.AllData.ContainsKey(role))
             {
-                var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Faction).SetParent(Options.CustomRoleSpawnChances[CustomRoles.Faction]).SetEnabled(() => role.IsEnable());
+                var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction).SetEnabled(() => role.IsEnable());
                 option.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", UtilsRoleText.GetRoleColorAndtext(role) } };
 
                 if (!OptionRole.TryAdd(role, option))

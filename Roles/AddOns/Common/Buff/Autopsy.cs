@@ -16,7 +16,8 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Autopsy, fromtext: UtilsOption.GetFrom(From.TownOfHost_Y));
             AddOnsAssignData.Create(Id + 10, CustomRoles.Autopsy, true, true, true, true);
-            CanUseActiveComms = BooleanOptionItem.Create(Id + 50, "CanUseActiveComms", true, TabGroup.Addons, false).SetParent(CustomRoleSpawnChances[CustomRoles.Autopsy]).SetParentRole(CustomRoles.Autopsy);
+            ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Autopsy);
+            CanUseActiveComms = BooleanOptionItem.Create(Id + 50, "CanUseActiveComms", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Autopsy);
         }
         public static void Init()
         {

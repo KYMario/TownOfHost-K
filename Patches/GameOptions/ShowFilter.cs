@@ -13,6 +13,7 @@ class ShowFilter
     public static OptionItem NowOption;//現在のオプション
     public static SpriteRenderer CustomBackground { get; private set; }//背景
     public static GameObject Scrollbargameobject;
+    public static float CloseButtonY;
     public static Dictionary<CustomRoles, GameObject> buttons = new();
     public static List<CustomRoles> Activeroles = new();
 
@@ -51,6 +52,7 @@ class ShowFilter
                         {
                             CallEsc();
                         }));
+                        CloseButtonY = closeButton.transform.position.y;
 
                         UiElement[] selectableButtons = menuBehaviour.ControllerSelectable.ToArray();
                         PassiveButton leaveButton = null;

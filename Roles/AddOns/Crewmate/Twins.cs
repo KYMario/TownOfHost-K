@@ -75,13 +75,14 @@ class Twins
     {
         SetupRoleOptions(19200, TabGroup.Combinations, CustomRoles.Twins, new(1, 7, 1));
         OptionCanAssingMadmate = BooleanOptionItem.Create(76110, "CanAssingMadmate", false, TabGroup.Combinations, false)
-            .SetParent(CustomRoleSpawnChances[CustomRoles.Twins]).SetParentRole(CustomRoles.Twins);
+            .SetSubRoleOptionItem(CustomRoles.Twins);
         OptionCanAssingCantKillNeutral = BooleanOptionItem.Create(76111, "CanAssingCantKillNeutral", false, TabGroup.Combinations, false)
-            .SetParent(CustomRoleSpawnChances[CustomRoles.Twins]).SetParentRole(CustomRoles.Twins);
+            .SetSubRoleOptionItem(CustomRoles.Twins);
+        ObjectOptionitem.Create(76123, "AddonOption", true, "", TabGroup.Combinations).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Twins);
         OptionTwinsDiefollow = BooleanOptionItem.Create(76121, "TwinsDiefollow", false, TabGroup.Combinations, false)
-            .SetParent(CustomRoleSpawnChances[CustomRoles.Twins]).SetParentRole(CustomRoles.Twins);
+            .SetSubRoleOptionItem(CustomRoles.Twins);
         OptionTwinsAddWin = BooleanOptionItem.Create(76122, "TwinsAddWin", false, TabGroup.Combinations, false)
-            .SetParent(CustomRoleSpawnChances[CustomRoles.Twins]).SetParentRole(CustomRoles.Twins);
+            .SetSubRoleOptionItem(CustomRoles.Twins);
     }
     #endregion
 

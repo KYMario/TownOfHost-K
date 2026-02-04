@@ -23,8 +23,9 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.NonReport, fromtext: UtilsOption.GetFrom(From.TownOfHost_Y));
             AddOnsAssignData.Create(Id + 10, CustomRoles.NonReport, true, true, true, true);
-            OptionNonReportMode = StringOptionItem.Create(50, "ConverMode", EnumHelper.GetAllNames<NonReportMode>(), 0, TabGroup.Addons, false)
-            .SetParentRole(CustomRoles.NonReport).SetParent(CustomRoleSpawnChances[CustomRoles.NonReport]);
+            ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.NonReport);
+            OptionNonReportMode = StringOptionItem.Create(Id + 50, "ConverMode", EnumHelper.GetAllNames<NonReportMode>(), 0, TabGroup.Addons, false)
+            .SetSubRoleOptionItem(CustomRoles.NonReport);
         }
         public static void Init()
         {

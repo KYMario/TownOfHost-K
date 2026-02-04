@@ -16,8 +16,9 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Amanojaku);
             AmanojakuAssing.Create(Id + 10, CustomRoles.Amanojaku, true, true);
-            AssingDay = IntegerOptionItem.Create(Id + 50, "AmanojakuAssingDay", new(1, 99, 1), 4, TabGroup.Addons, false).SetParent(CustomRoleSpawnChances[CustomRoles.Amanojaku]).SetParentRole(CustomRoles.Amanojaku).SetValueFormat(OptionFormat.day);
-            SurvivetoWin = BooleanOptionItem.Create(Id + 51, "AmanojakuSurvivetoWin", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Amanojaku).SetParent(CustomRoleSpawnChances[CustomRoles.Amanojaku]);
+            ObjectOptionitem.Create(Id + 52, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Amanojaku);
+            AssingDay = IntegerOptionItem.Create(Id + 50, "AmanojakuAssingDay", new(1, 99, 1), 4, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amanojaku).SetValueFormat(OptionFormat.day);
+            SurvivetoWin = BooleanOptionItem.Create(Id + 51, "AmanojakuSurvivetoWin", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amanojaku);
         }
 
         public static void Init()

@@ -164,6 +164,12 @@ namespace TownOfHost
         public OptionItem SetZeroNotation(OptionZeroNotation value) => Do(i => i.ZeroNotation = value);
         public OptionItem SetOptionName(Func<string> value) => Do(i => i.funcOptionName = value);
         public OptionItem SetTooltip(Func<string> value) => Do(i => i.Tooltip = value);
+        public OptionItem SetSubRoleOptionItem(CustomRoles role) =>
+            Do(i =>
+            {
+                SetParent(Options.CustomRoleSpawnChances[role]);
+                SetParentRole(role);
+            });
 
         public OptionItem SetParent(OptionItem parent) => Do(i =>
         {

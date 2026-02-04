@@ -158,7 +158,7 @@ namespace TownOfHost
             int optionid = reader.ReadInt32();
             int presetid = reader.ReadInt32();
             bool Isoverride = reader.ReadBoolean();
-            AssignOptionItem optionItem = AllOptions.Where(x => x.Id == optionid).FirstOrDefault() is AssignOptionItem assignOption ? assignOption : null;
+            AssignOptionItem optionItem = AllOptions.FirstOrDefault(x => x.Id == optionid) is AssignOptionItem assignOption ? assignOption : null;
 
             if (optionItem is null)
             {

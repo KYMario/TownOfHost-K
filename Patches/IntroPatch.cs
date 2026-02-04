@@ -170,7 +170,7 @@ namespace TownOfHost
             var tmp = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(GameData.Instance ? GameData.Instance.PlayerCount : 10).Split("\r\n").Skip(1).SkipLast(10);
             foreach (var t in tmp) logger.Info(t);
             logger.Info("------------詳細設定------------");
-            foreach (var o in OptionItem.AllOptions)
+            foreach (var o in OptionItem.AllOptions.Where(o => o is not ObjectOptionitem))
                 if (!o.IsHiddenOn(Options.CurrentGameMode) && (o.Parent == null ? !o.GetString().Equals("0%") : o.Parent.InfoGetBool()) && o.IsEnabled.Invoke())
                     logger.Info($"{(o.Parent == null ? o.Name.PadRightV2(40) : $"┗ {o.Name}".PadRightV2(41))}:{o.GetTextString().RemoveSN().RemoveHtmlTags()}");
             logger.Info("-------------その他-------------");

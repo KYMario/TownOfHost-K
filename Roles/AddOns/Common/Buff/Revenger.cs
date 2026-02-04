@@ -19,10 +19,11 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Revenger, fromtext: UtilsOption.GetFrom(From.TownOfHost_Y));
             AddOnsAssignData.Create(Id + 10, CustomRoles.Revenger, true, true, true, true);
-            RevengeToImpostor = BooleanOptionItem.Create(Id + 50, "NekoKabochaImpostorsGetRevenged", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Revenger).SetParent(CustomRoleSpawnChances[CustomRoles.Revenger]);
-            RevengeToCrewmate = BooleanOptionItem.Create(Id + 51, "RevengeToCrewmate", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Revenger).SetParent(CustomRoleSpawnChances[CustomRoles.Revenger]);
-            RevengeToMadmate = BooleanOptionItem.Create(Id + 52, "NekoKabochaMadmatesGetRevenged", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Revenger).SetParent(CustomRoleSpawnChances[CustomRoles.Revenger]);
-            RevengeToNeutral = BooleanOptionItem.Create(Id + 53, "RevengeToNeutral", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Revenger).SetParent(CustomRoleSpawnChances[CustomRoles.Revenger]);
+            ObjectOptionitem.Create(Id + 54, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Revenger);
+            RevengeToImpostor = BooleanOptionItem.Create(Id + 50, "NekoKabochaImpostorsGetRevenged", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Revenger);
+            RevengeToCrewmate = BooleanOptionItem.Create(Id + 51, "RevengeToCrewmate", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Revenger);
+            RevengeToMadmate = BooleanOptionItem.Create(Id + 52, "NekoKabochaMadmatesGetRevenged", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Revenger);
+            RevengeToNeutral = BooleanOptionItem.Create(Id + 53, "RevengeToNeutral", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Revenger);
         }
         public static void Init()
         {

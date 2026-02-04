@@ -24,17 +24,18 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Amnesia);
             AddOnsAssignData.Create(Id + 10, CustomRoles.Amnesia, true, true, true, true);
-            OptionDontCanUseAbility = BooleanOptionItem.Create(Id + 40, "AmnesiaDontCanUseAbility", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(CustomRoleSpawnChances[CustomRoles.Amnesia]);
+            ObjectOptionitem.Create(Id + 20, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Amnesia);
+            OptionDontCanUseAbility = BooleanOptionItem.Create(Id + 40, "AmnesiaDontCanUseAbility", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amnesia);
             OptionDefaultKillCool = BooleanOptionItem.Create(Id + 41, "AmnesiaDefaultKillCool", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(OptionDontCanUseAbility);
-            OptionCanRealizeDay = BooleanOptionItem.Create(Id + 50, "AmnesiaCanRealizeDay", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(CustomRoleSpawnChances[CustomRoles.Amnesia]);
+            ObjectOptionitem.Create(Id + 57, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Realize Option").SetSubRoleOptionItem(CustomRoles.Amnesia);
+            OptionCanRealizeDay = BooleanOptionItem.Create(Id + 50, "AmnesiaCanRealizeDay", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amnesia);
             OptionRealizeDayCount = IntegerOptionItem.Create(Id + 51, "AmnesiaRealizeDayCount", new(1, 99, 1), 4, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(OptionCanRealizeDay).SetValueFormat(OptionFormat.day);
-            OptionCanRealizeTask = BooleanOptionItem.Create(Id + 52, "AmnesiaCanRealizeTask", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(CustomRoleSpawnChances[CustomRoles.Amnesia]);
+            OptionCanRealizeTask = BooleanOptionItem.Create(Id + 52, "AmnesiaCanRealizeTask", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amnesia);
             OptionRealizeTaskCount = IntegerOptionItem.Create(Id + 53, "AmnesiaRealizeTaskCount", new(1, 255, 1), 4, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(OptionCanRealizeTask);
-            OptionCanRealizeKill = BooleanOptionItem.Create(Id + 54, "AmnesiaCanRealizeKill", true, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(CustomRoleSpawnChances[CustomRoles.Amnesia]);
+            OptionCanRealizeKill = BooleanOptionItem.Create(Id + 54, "AmnesiaCanRealizeKill", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amnesia);
             OptionRealizeKillcount = IntegerOptionItem.Create(Id + 55, "AmnesiaRealizeKillcount", new(1, 15, 1), 2, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(OptionCanRealizeKill);
-            OptionRealizeImpostorCount = IntegerOptionItem.Create(Id + 56, "AmnesiaRealizeImpostorCount", new(0, 3, 1), 1, TabGroup.Addons, false).SetParentRole(CustomRoles.Amnesia).SetParent(CustomRoleSpawnChances[CustomRoles.Amnesia]).SetZeroNotation(OptionZeroNotation.Off);
+            OptionRealizeImpostorCount = IntegerOptionItem.Create(Id + 56, "AmnesiaRealizeImpostorCount", new(0, 3, 1), 1, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amnesia).SetZeroNotation(OptionZeroNotation.Off);
         }
-
         public static void Init()
         {
             playerIdList = new();

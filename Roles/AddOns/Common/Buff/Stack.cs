@@ -15,9 +15,9 @@ namespace TownOfHost.Roles.AddOns.Common
         {
             SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Stack);
             AddOnsAssignData.Create(Id + 10, CustomRoles.Stack, true, true, true, true);
+            ObjectOptionitem.Create(Id + 21, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Stack);
             AssignAddon = (AssignOptionItem)AssignOptionItem.Create(Id + 20, "AssignAddon", 0, TabGroup.Addons, false, addon: true,
-            notassing: [CustomRoles.LastImpostor, CustomRoles.LastNeutral, CustomRoles.Workhorse, CustomRoles.Amanojaku])
-            .SetParent(CustomRoleSpawnChances[CustomRoles.Stack]).SetParentRole(CustomRoles.Stack); ;
+            notassing: [CustomRoles.LastImpostor, CustomRoles.LastNeutral, CustomRoles.Workhorse, CustomRoles.Amanojaku]).SetSubRoleOptionItem(CustomRoles.Stack); ;
         }
         public static void Init()
         {
