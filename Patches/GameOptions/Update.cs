@@ -83,8 +83,8 @@ namespace TownOfHost
                 {
                     if (buttongameobject is null) continue;
                     bool IsActive = true;
-                    if ((buttongameobject.transform.position.y - roletaby) > 2.5f ||
-                    (buttongameobject.transform.position.y - roletaby) < -1.5f)
+                    if ((buttongameobject.transform.position.y - ShowFilter.CloseButtonY) > -0.2f ||
+                    (buttongameobject.transform.position.y - ShowFilter.CloseButtonY) < -4.2f)
                     {
                         IsActive = false;
                     }
@@ -266,6 +266,8 @@ namespace TownOfHost
                     {
                         var chm = option.OptionHedder.GetComponent<CategoryHeaderMasked>();
                         chm.Background.color = UtilsRoleText.GetRoleColor(NowRoleTab);
+                        chm.Title.text = NowRoleTab.IsBuffAddon() || NowRoleTab.IsDebuffAddon() || NowRoleTab.IsLovers() ||
+                        NowRoleTab is CustomRoles.Amanojaku or CustomRoles.Twins ? "<b>AssignOption</b>" : "<b>RoleOption</b>";
                         if (henabled) offset -= -0.23f;
                     }
                     option.OptionHedder.gameObject.SetActive(henabled);
