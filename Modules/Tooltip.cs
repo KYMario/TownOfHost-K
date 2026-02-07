@@ -12,7 +12,7 @@ class ToolTip
     public static SimpleButton button = null;
     public static MonoBehaviour obj;
     public static Coroutine coTimer;
-    public static float delay = 0.35f;
+    public static float defaultdelay = 0.35f;
 
     public static void Setup()
     {
@@ -40,17 +40,18 @@ class ToolTip
     /// <param name="mono">ツールチップを呼び出したオブジェクト</param>
     /// <param name="text">表示させたいテキスト</param>
     /// <param name="pos">表示させたい場所 / nullでマウスの場所をベースに<c>mono</c>の少し下に召喚されます </param>
-    public static void Show(MonoBehaviour mono, string text, Vector3? pos)
+    public static void Show(MonoBehaviour mono, string text, Vector3? pos, float delay = -1)
     {
         Setup();
         Hide();
 
         obj = mono;
-        coTimer = obj.StartCoroutine(CoShow(text, pos).WrapToIl2Cpp());
+        coTimer = obj.StartCoroutine(CoShow(text, pos, delay).WrapToIl2Cpp());
     }
 
-    private static IEnumerator CoShow(string text, Vector3? pos)
+    private static IEnumerator CoShow(string text, Vector3? pos, float delay)
     {
+        if (delay <= 0) delay = defaultdelay;
         yield return new WaitForSeconds(delay);
 
         button.Label.text = text;

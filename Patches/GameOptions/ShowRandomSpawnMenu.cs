@@ -109,7 +109,7 @@ class ShowRandomSpawnOption
                         passive.OnMouseOver.AddListener(new System.Action(() =>
                         {
                             button.Background.color = Palette.AcceptedGreen;
-                            ToolTip.Show(passive, option.GetName(), null);
+                            ToolTip.Show(passive, option.GetName() + (option.CurrentValue is 0 ? " (Off)" : " (ON)"), null, 0.1f);
                         }));
                         passive.OnMouseOut.AddListener(new System.Action(() =>
                         {
@@ -130,6 +130,8 @@ class ShowRandomSpawnOption
                             {
                                 OptionItem.AllOptions.First(opt => opt.Id == id).SetValue(1);
                             }
+                            ToolTip.Hide();
+                            ToolTip.Show(passive, option.GetName() + (option.CurrentValue is 0 ? " (Off)" : " (ON)"), null, 0.1f);
                         }));
                         buttons.Add((button, option));
                     }
