@@ -1250,7 +1250,7 @@ namespace TownOfHost
                 case "/n":
                 case "/now":
                     canceled = true;
-                    subArgs = args.Length < 3 ? "" : args[2];
+                    subArgs = args.Length < 2 ? "" : args[1];
                     switch (subArgs)
                     {
                         case "r":
@@ -1278,7 +1278,7 @@ namespace TownOfHost
                 case "/h":
                 case "/help":
                     canceled = true;
-                    subArgs = args.Length < 3 ? "" : args[2];
+                    subArgs = args.Length < 2 ? "" : args[1];
                     switch (subArgs)
                     {
                         case "n":
@@ -1287,7 +1287,7 @@ namespace TownOfHost
                             break;
                         case "r":
                         case "roles":
-                            subArgs = args.Length < 4 ? "" : args[3];
+                            subArgs = args.Length < 3 ? "" : args[2];
                             GetRolesInfo(subArgs, player.PlayerId);
                             break;
                         default:
@@ -1297,7 +1297,7 @@ namespace TownOfHost
                     break;
                 case "/hr":
                     canceled = true;
-                    subArgs = args.Length < 3 ? "" : args[2];
+                    subArgs = args.Length < 2 ? "" : args[1];
                     GetRolesInfo(subArgs, player.PlayerId);
                     break;
                 case "/m":
@@ -1337,7 +1337,7 @@ namespace TownOfHost
                 case "/t":
                 case "/template":
                     canceled = true;
-                    if (args.Length > 2) TemplateManager.SendTemplate(args[2], player.PlayerId);
+                    if (args.Length > 1) TemplateManager.SendTemplate(args[1], player.PlayerId);
                     else SendMessage($"{GetString("ForExample")}:\n{args[1]} test", player.PlayerId);
                     break;
                 case "/timer":
@@ -1347,9 +1347,9 @@ namespace TownOfHost
                         ShowTimer(player.PlayerId);
                     break;
                 case "/tp":
-                    if (!GameStates.IsLobby || args.Length < 2 || !Main.IsCs()) break;
+                    if (!GameStates.IsLobby || args.Length < 1 || !Main.IsCs()) break;
                     canceled = true;
-                    subArgs = args[2];
+                    subArgs = args[1];
                     switch (subArgs)
                     {
                         case "o":
