@@ -65,12 +65,13 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
     }
     public static void NueSetUpOptionItem()
     {
-        Fool.FoolSetupOptionItem(RoleInfo);
         OptionNueKillcool = FloatOptionItem.Create(RoleInfo, 20, GeneralOption.KillCooldown, OptionBaseCoolTime, 20, false).SetValueFormat(OptionFormat.Seconds).SetInfo(UtilsRoleText.GetRoleColorAndtext(CustomRoles.Nue));
         OptionNueCanSeeImpostorTaskcount = IntegerOptionItem.Create(RoleInfo, 21, OptionName.MadBetrayerImpostorRevealTaskcount, new(0, 99, 1), 3, false)
             .SetZeroNotation(OptionZeroNotation.Off).SetInfo(UtilsRoleText.GetRoleColorAndtext(CustomRoles.Nue));
         OptionNueCanUseVotecount = IntegerOptionItem.Create(RoleInfo, 22, OptionName.FoolAndNueCanUseVotecount, new(0, 99, 1), 3, false).SetInfo(UtilsRoleText.GetRoleColorAndtext(CustomRoles.Nue));
         OptionSuicidetime = FloatOptionItem.Create(RoleInfo, 23, OptionName.NueSuicidetimer, new(0.5f, 30, 0.5f), 5f, false).SetValueFormat(OptionFormat.Seconds).SetInfo(UtilsRoleText.GetRoleColorAndtext(CustomRoles.Nue));
+        ObjectOptionitem.Create(RoleInfo, 24, "NueSetting", true, null).SetOptionName(() => "Fool Setting").SetColor(RoleInfo.RoleColor);
+        Fool.FoolSetupOptionItem(RoleInfo);
     }
     public override void Add()
     {

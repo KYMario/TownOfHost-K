@@ -1184,11 +1184,11 @@ public sealed class Alien : RoleBase, IMeetingTimeAlterable, IImpostor, INekomat
     {
         FirstAbility = BooleanOptionItem.Create(RoleInfo, 7, OptionName.AlienFirstAbility, false, false);
         OptionAlienHideAbility = BooleanOptionItem.Create(RoleInfo, 9, OptionName.AlienHideAbility, false, false);
-        ObjectOptionitem.Create(RoleInfo, 52, "AlienOption", true, null, TabGroup.ImpostorRoles).SetOptionName(() => "Planting Setting");
+        ObjectOptionitem.Create(RoleInfo, 52, "AlienOption", true, null).SetOptionName(() => "Planting Setting");
         OptUetuke = BooleanOptionItem.Create(RoleInfo, 46, OptionName.AlienUetuke, false, false).SetTooltip(() => GetString("AlienUetukeInfo"));
         OptUetukeCount = IntegerOptionItem.Create(RoleInfo, 47, OptionName.AlienUetukeCount, new(1, 20, 1), 1, false, OptUetuke);
         OptUetuketukeTrun = IntegerOptionItem.Create(RoleInfo, 48, OptionName.AlienUetukeTrun, new(1, 20, 1), 2, false, OptUetuke);
-        ObjectOptionitem.Create(RoleInfo, 51, "AlienOption", true, null, TabGroup.ImpostorRoles).SetOptionName(() => "Alien Setting");
+        ObjectOptionitem.Create(RoleInfo, 51, "AlienOption", true, null).SetOptionName(() => "Alien Setting");
         OptionModeVampire = FloatOptionItem.Create(RoleInfo, 10, OptionName.AlienCVampire, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
         SpeedDown = BooleanOptionItem.Create(RoleInfo, 40, OptionName.VampireSpeedDown, true, false, OptionModeVampire);
         SpeedDownCount = FloatOptionItem.Create(RoleInfo, 41, OptionName.VampireSpeedDownCount, new(0f, 1000f, 1f), 10f, false, SpeedDown).SetValueFormat(OptionFormat.Seconds);

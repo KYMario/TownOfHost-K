@@ -65,6 +65,7 @@ public sealed class Driver : RoleBase, IImpostor, IKillFlashSeeable, IDeathReaso
     public static bool HasGuard;
     public static void SetupOptionItems()
     {
+        OptionDriverCanSeeBraid = BooleanOptionItem.Create(RoleInfo, 21, OptionName.DriverCanSeeBraid, false, false);
         OptionKillCooldown = FloatOptionItem.Create(RoleInfo, 9, OptionName.KillCooldown, new(0f, 180f, 0.5f), 30f, false)
                 .SetValueFormat(OptionFormat.Seconds);
         OptionBraidKillCooldown = FloatOptionItem.Create(RoleInfo, 10, OptionName.BraidKillCooldown, new(0f, 180f, 0.5f), 15f, false)
@@ -77,8 +78,8 @@ public sealed class Driver : RoleBase, IImpostor, IKillFlashSeeable, IDeathReaso
         OptionGiveWatchVotestaskTrigger = IntegerOptionItem.Create(RoleInfo, 16, OptionName.DriverTaskTrigger, new(1, 297, 1), 5, false, OptionGiveWatchVotes);
         OptionGiveGuard = BooleanOptionItem.Create(RoleInfo, 17, OptionName.GiveGuard, false, false);
         OptionGiveGuardtaskTrigger = IntegerOptionItem.Create(RoleInfo, 18, OptionName.DriverTaskTrigger, new(1, 297, 1), 5, false, OptionGiveGuard);
+        ObjectOptionitem.Create(RoleInfo, 33, "BraidSetting", true, null).SetOptionName(() => "Braid Setting");
         OptionBraidCanSeeDriver = BooleanOptionItem.Create(RoleInfo, 19, OptionName.BraidCanSeeDriver, false, false);
-        OptionDriverCanSeeBraid = BooleanOptionItem.Create(RoleInfo, 21, OptionName.DriverCanSeeBraid, false, false);
         OptionBraidCanUseVent = BooleanOptionItem.Create(RoleInfo, 22, OptionName.BraidCanVent, true, false);
         Braid.Tasks = OverrideTasksData.Create(RoleInfo, 50, CustomRoles.Braid);
     }

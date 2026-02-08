@@ -95,11 +95,13 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
 
     private static void SetupOptionItem()
     {
-        OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, OptionBaseCoolTime, 20f, false).SetValueFormat(OptionFormat.Seconds);
+        SoloWinOption.Create(RoleInfo, 21);
         OptionWinAssignmentPoint = IntegerOptionItem.Create(RoleInfo, 11, OptionName.MissioneerWinAssignmntPoint, new(0, 300, 1), 30, false).SetZeroNotation(OptionZeroNotation.Off);
         OptionAddWinAssignmentPoint = IntegerOptionItem.Create(RoleInfo, 20, OptionName.MissioneerAddWinAssignmntPoint, new(0, 300, 1), 20, false).SetZeroNotation(OptionZeroNotation.Off);
-        SoloWinOption.Create(RoleInfo, 21);
         OptionMeetingAssignmentCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.MissioneerMeetingAssignmentcount, new(0, 5, 1), 3, false);
+        OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, OptionBaseCoolTime, 20f, false).SetValueFormat(OptionFormat.Seconds);
+        OverrideTasksData.Create(RoleInfo, 22, tasks: (true, 0, 1, 2));
+        ObjectOptionitem.Create(RoleInfo, 26, "MissoneerPointSetting", true, null).SetOptionName(() => "Point Setting");
         Option1LvPoint = IntegerOptionItem.Create(RoleInfo, 13, OptionName.Missioneerlv1point, new(0, 25, 1), 0, false);
         Option2lvpoint = IntegerOptionItem.Create(RoleInfo, 14, OptionName.Missioneerlv2point, new(0, 25, 1), 1, false);
         Option3lvpoint = IntegerOptionItem.Create(RoleInfo, 15, OptionName.Missioneerlv3point, new(0, 25, 1), 3, false);
@@ -107,7 +109,6 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         OptionKillpoint = IntegerOptionItem.Create(RoleInfo, 17, OptionName.MissioneerKillpoint, new(0, 25, 1), 5, false);
         Optionmovepoint = IntegerOptionItem.Create(RoleInfo, 18, OptionName.MissioneerMovepoint, new(0, 25, 1), 2, false);
         OptionTaskpoint = IntegerOptionItem.Create(RoleInfo, 19, OptionName.MissioneerTaskpoint, new(0, 25, 1), 1, false);
-        OverrideTasksData.Create(RoleInfo, 22, tasks: (true, 0, 1, 2));
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {

@@ -7,6 +7,7 @@ using TownOfHost.Modules;
 using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using TownOfHost.Roles.Crewmate;
 using UnityEngine;
 
 namespace TownOfHost.Roles.Impostor;
@@ -112,6 +113,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, () => InvalidRoles());
         OptionAssassinMeetingTime = IntegerOptionItem.Create(RoleInfo, 25, OptionName.AssassinMeetingTime, new(10, 180, 1), 35, false).SetValueFormat(OptionFormat.Seconds);
 
+        ObjectOptionitem.Create(RoleInfo, 26, "AssassinMerlin", true, null).SetOptionName(() => "Merlin Setting").SetColor(Merlin.RoleInfo.RoleColor);
         OptionMerlinHasTask = BooleanOptionItem.Create(RoleInfo, 24, OptionName.MerlinHasTask, false, false);
         OptionMerlinNomalTask = OverrideTasksData.Create(RoleInfo, 16, rolename: CustomRoles.Merlin, tasks: (true, 2, 0, 0), OptionMerlinHasTask);
         OptionMerlinWorkTask = IntegerOptionItem.Create(RoleInfo, 15, OptionName.WalkerWalkTaskCount, (0, 99, 1), 6, false, OptionMerlinWorkTask);

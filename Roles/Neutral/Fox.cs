@@ -85,16 +85,17 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
     private static void SetupOptionItem()
     {
         SoloWinOption.Create(RoleInfo, 9, defo: 15);
+        OptWinTaskCount = IntegerOptionItem.Create(RoleInfo, 20, OptionName.Foxwintaskcount, new(1, 99, 1), 6, false);
+        OptCanWin3players = BooleanOptionItem.Create(RoleInfo, 21, OptionName.Fox3playersCanwin, false, false);
+        ObjectOptionitem.Create(RoleInfo, 30, "FoxAbilitySetting", true, null).SetOptionName(() => "Ability Setting");
         OptEngVentCoolDown = FloatOptionItem.Create(RoleInfo, 10, StringNames.EngineerCooldown, OptionBaseCoolTime, 10, false).SetValueFormat(OptionFormat.Seconds);
         OptEngVentInmaxtime = FloatOptionItem.Create(RoleInfo, 11, StringNames.EngineerInVentCooldown, new(0.5f, 30, 0.5f), 3, false).SetValueFormat(OptionFormat.Seconds);
+        OptTellDie = BooleanOptionItem.Create(RoleInfo, 16, OptionName.FoxTellDie, false, false);
+        OverrideTasksData.Create(RoleInfo, 25);
+        ObjectOptionitem.Create(RoleInfo, 29, "FoxGuardSetting", true, null).SetOptionName(() => "Guard Setting");
         OptGiveGuardTaskCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.FoxGiveGuardTaskcount, new(1, 99, 1), 3, false);
         OptGiveGuardMax = IntegerOptionItem.Create(RoleInfo, 13, OptionName.FoxGiveGuardMax, new(0, 99, 1), 2, false);
         OptCanseeGuardCount = BooleanOptionItem.Create(RoleInfo, 14, OptionName.FoxCanseeGuardCount, false, false);
-        OptTellDie = BooleanOptionItem.Create(RoleInfo, 16, OptionName.FoxTellDie, false, false);
-        OptWinTaskCount = IntegerOptionItem.Create(RoleInfo, 20, OptionName.Foxwintaskcount, new(1, 99, 1), 6, false);
-        OptCanWin3players = BooleanOptionItem.Create(RoleInfo, 21, OptionName.Fox3playersCanwin, false, false);
-
-        OverrideTasksData.Create(RoleInfo, 25);
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {

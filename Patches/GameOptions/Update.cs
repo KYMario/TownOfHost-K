@@ -267,8 +267,14 @@ namespace TownOfHost
                         var chm = option.OptionHedder.GetComponent<CategoryHeaderMasked>();
                         chm.Background.color = UtilsRoleText.GetRoleColor(NowRoleTab);
                         chm.Title.text = NowRoleTab.IsBuffAddon() || NowRoleTab.IsDebuffAddon() || NowRoleTab.IsLovers() ||
-                        NowRoleTab is CustomRoles.Amanojaku or CustomRoles.Twins ? "<b>Assign Option</b>" : "<b>Role Option</b>";
+                        NowRoleTab is CustomRoles.Amanojaku or CustomRoles.Twins ? "<b>Assign Setting</b>" : "<b>Role Setting</b>";
+                        if (NowRoleTab.IsCombinationRole()) chm.Title.text = $"<b>{NowRoleTab} Setting</b>";
                         if (henabled) offset -= -0.23f;
+                    }
+                    else
+                    {
+                        var chm = option.OptionHedder.GetComponent<CategoryHeaderMasked>();
+                        chm.Background.color = UtilsRoleText.GetRoleColor(NowRoleTab);
                     }
                     option.OptionHedder.gameObject.SetActive(henabled);
                     if (henabled)

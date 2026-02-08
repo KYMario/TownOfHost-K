@@ -82,13 +82,13 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
     private static void SetupOptionItem()
     {
         SoloWinOption.Create(RoleInfo, 9, defo: 15);
+        OptionSoloWin = BooleanOptionItem.Create(RoleInfo, 12, OptionName.PhantomThiefSoloWin, false, false);
         OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 10, OptionName.PhantomThiefFarstCoolDown, new(0f, 180f, 0.5f), 20f, false)
                 .SetValueFormat(OptionFormat.Seconds);
         OptionCantSetCount = IntegerOptionItem.Create(RoleInfo, 11, OptionName.PhantomThiefCantSetCount, new(1, 15, 1), 8, false).SetValueFormat(OptionFormat.Players);
         OptionNotice = BooleanOptionItem.Create(RoleInfo, 13, OptionName.PhantomThiefNotice, true, false);
         OptionNoticetype = StringOptionItem.Create(RoleInfo, 14, OptionName.PhantomThiefNoticeType, EnumHelper.GetAllNames<Notice>(), 1, false, OptionNotice);
         OptionRoomTask = BooleanOptionItem.Create(RoleInfo, 15, OptionName.PhantomThiefRoomTask, true, false);
-        OptionSoloWin = BooleanOptionItem.Create(RoleInfo, 12, OptionName.PhantomThiefSoloWin, false, false);
     }
     public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
     public bool? CheckKillFlash(MurderInfo info)

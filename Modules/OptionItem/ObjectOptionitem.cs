@@ -21,7 +21,7 @@ namespace TownOfHost
                 id, name, IsHeader, ClickAction, tab
             );
         }
-        public static ObjectOptionitem Create(SimpleRoleInfo roleInfo, int idOffset, Enum name, bool IsHeader, string ClickAction, TabGroup tab, OptionItem parent = null)
+        public static ObjectOptionitem Create(SimpleRoleInfo roleInfo, int idOffset, Enum name, bool IsHeader, string ClickAction, OptionItem parent = null)
         {
             var opt = new ObjectOptionitem(
                 roleInfo.ConfigId + idOffset, name.ToString(), IsHeader, ClickAction, roleInfo.Tab
@@ -30,7 +30,7 @@ namespace TownOfHost
             opt.SetParentRole(roleInfo.RoleName);
             return opt;
         }
-        public static ObjectOptionitem Create(SimpleRoleInfo roleInfo, int idOffset, string name, bool IsHeader, string ClickAction, TabGroup tab, OptionItem parent = null)
+        public static ObjectOptionitem Create(SimpleRoleInfo roleInfo, int idOffset, string name, bool IsHeader, string ClickAction, OptionItem parent = null)
         {
             var opt = new ObjectOptionitem(
                 roleInfo.ConfigId + idOffset, name.ToString(), IsHeader, ClickAction, roleInfo.Tab

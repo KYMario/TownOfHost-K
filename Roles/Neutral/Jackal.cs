@@ -75,6 +75,8 @@ namespace TownOfHost.Roles.Neutral
             OptionCanVent = BooleanOptionItem.Create(RoleInfo, 11, GeneralOption.CanVent, true, false);
             OptionCanUseSabotage = BooleanOptionItem.Create(RoleInfo, 12, GeneralOption.CanUseSabotage, false, false);
             OptionHasImpostorVision = BooleanOptionItem.Create(RoleInfo, 13, GeneralOption.ImpostorVision, true, false);
+
+            ObjectOptionitem.Create(RoleInfo, 9, "SideKickOption", true, null).SetOptionName(() => "Sidekick Setting");
             OptionCanMakeSidekick = BooleanOptionItem.Create(RoleInfo, 14, GeneralOption.CanCreateSideKick, true, false);
             OptionImpostorCanSidekick = BooleanOptionItem.Create(RoleInfo, 15, OptionName.JackalImpostorCanSidekick, false, false, OptionCanMakeSidekick);
             OptionSidekickCanSeeOldImpostorTeammates = BooleanOptionItem.Create(RoleInfo, 16, OptionName.JackalbeforeImpCanSeeImp, false, false, OptionImpostorCanSidekick);

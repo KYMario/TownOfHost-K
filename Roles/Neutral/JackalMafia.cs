@@ -91,6 +91,7 @@ namespace TownOfHost.Roles.Neutral
             OptionJJackalCanKillMafia = BooleanOptionItem.Create(RoleInfo, 14, JackalOption.JackalCanKillMafia, false, false);
             OptionJJackalMafiaCanAlsoBeExposedToJackal = BooleanOptionItem.Create(RoleInfo, 16, JackalOption.JackalMafiaCanAlsoBeExposedToJackal, false, false);
             OptionJackalCanAlsoBeExposedToJMafia = BooleanOptionItem.Create(RoleInfo, 17, JackalOption.JackalCanAlsoBeExposedToJMafia, true, false);
+            ObjectOptionitem.Create(RoleInfo, 9, "SideKickOption", true, null).SetOptionName(() => "Sidekick Setting");
             OptionCanMakeSidekick = BooleanOptionItem.Create(RoleInfo, 18, GeneralOption.CanCreateSideKick, true, false);
             OptionImpostorCanSidekick = BooleanOptionItem.Create(RoleInfo, 19, JackalOption.JackalImpostorCanSidekick, false, false, OptionCanMakeSidekick);
             OptionSidekickCanSeeOldImpostorTeammates = BooleanOptionItem.Create(RoleInfo, 20, JackalOption.JackalbeforeImpCanSeeImp, false, false, OptionImpostorCanSidekick);

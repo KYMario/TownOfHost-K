@@ -1253,6 +1253,8 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         OptionJJackalCanKillMafia = BooleanOptionItem.Create(RoleInfo, 9, JackalMafia.JackalOption.JackalCanKillMafia, false, false);
         OptionJJackalMafiaCanAlsoBeExposedToJackal = BooleanOptionItem.Create(RoleInfo, 10, JackalMafia.JackalOption.JackalMafiaCanAlsoBeExposedToJackal, false, false);
         OptionJackalCanAlsoBeExposedToJMafia = BooleanOptionItem.Create(RoleInfo, 11, JackalMafia.JackalOption.JackalCanAlsoBeExposedToJMafia, true, false);
+
+        ObjectOptionitem.Create(RoleInfo, 56, "SideKickOption", true, null).SetOptionName(() => "Sidekick Setting");
         OptionCanMakeSidekick = BooleanOptionItem.Create(RoleInfo, 12, GeneralOption.CanCreateSideKick, true, false);
         OptionImpostorCanSidekick = BooleanOptionItem.Create(RoleInfo, 13, JackalMafia.JackalOption.JackalImpostorCanSidekick, false, false, OptionCanMakeSidekick);
         OptionSidekickCanSeeOldImpostorTeammates = BooleanOptionItem.Create(RoleInfo, 14, JackalMafia.JackalOption.JackalbeforeImpCanSeeImp, false, false, OptionImpostorCanSidekick);
@@ -1260,6 +1262,7 @@ public sealed class JackalAlien : RoleBase, IMeetingTimeAlterable, ILNKiller, IS
         OptionCooldown = FloatOptionItem.Create(RoleInfo, 16, GeneralOption.Cooldown, new(0f, 180f, 0.5f), 30f, false, OptionCanMakeSidekick)
         .SetValueFormat(OptionFormat.Seconds);
         OptionSidekickPromotion = BooleanOptionItem.Create(RoleInfo, 17, JackalMafia.JackalOption.JackalSidekickPromotion, false, false, OptionCanMakeSidekick);
+        ObjectOptionitem.Create(RoleInfo, 57, "AlienOption", true, null).SetOptionName(() => "Alien Setting");
         FirstAbility = BooleanOptionItem.Create(RoleInfo, 4, OptionName.AlienFirstAbility, false, false);
         OptionAlienHideAbility = BooleanOptionItem.Create(RoleInfo, 18, OptionName.AlienHideAbility, false, false);
         OptionModeVampire = FloatOptionItem.Create(RoleInfo, 19, OptionName.AlienCVampire, new(0, 100, 5), 100, false).SetValueFormat(OptionFormat.Percent);
