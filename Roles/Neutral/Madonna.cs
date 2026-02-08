@@ -37,21 +37,23 @@ public sealed class Madonna : RoleBase, ISelfVoter
         () => HasTask.False
     )
     {
-        limit = Optionlimit.GetFloat();
+        limit = Optionlimit.GetInt();
         LoverChenge = ChangeRoles[OptionLoverChenge.GetValue()];
         IsNonLover = true;
         Vindictive = false;
         Breakup = false;
+        IsAmnesia = false;
     }
     private static OptionItem Optionlimit;
     private static OptionItem OptionLoverChenge;
     public static CustomRoles LoverChenge;
     public static OptionItem MadonnaLoverAddwin;
     public static OptionItem MaLoversSolowin3players;
-    public static float limit;
+    public static int limit;
     bool IsNonLover;
     bool Vindictive;
     bool Breakup;
+    bool IsAmnesia;
     enum Option
     {
         Madonnalimit,
@@ -68,7 +70,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
     }
     public static readonly CustomRoles[] ChangeRoles =
     {
-            CustomRoles.Crewmate, CustomRoles.Jester, CustomRoles.Opportunist,CustomRoles.Madmate,CustomRoles.Monochromer
+        CustomRoles.Crewmate, CustomRoles.Jester, CustomRoles.Opportunist,CustomRoles.Madmate,CustomRoles.Monochromer
     };
     private static void SetupOptionItem()
     {
@@ -170,6 +172,13 @@ public sealed class Madonna : RoleBase, ISelfVoter
     }
     public override void AfterMeetingTasks()
     {
+        //アムネシアなら制限時間を伸ばす。
+        if (Player.Is(CustomRoles.Amnesia) || IsAmnesia)
+        {
+            IsAmnesia = Player.Is(CustomRoles.Amnesia);
+            limit++;
+            return;
+        }
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
         if (Player.Is(CustomRoles.MadonnaLovers))
         {
@@ -183,13 +192,14 @@ public sealed class Madonna : RoleBase, ISelfVoter
             if (!Utils.RoleSendList.Contains(Player.PlayerId)) Utils.RoleSendList.Add(Player.PlayerId);
             Player.RpcSetCustomRole(LoverChenge, true, log: true);
         }
+
         if (Vindictive)
         {
             Vindictive = false;
             Player.RpcSetCustomRole(LoverChenge, true, log: true);
         }
         else
-        if (limit <= (UtilsGameLog.day - 1) && IsNonLover && Player.IsAlive())
+        if (limit <= UtilsGameLog.day && IsNonLover && Player.IsAlive())
         {
             Player.RpcExileV2();
             MyState.SetDead();
