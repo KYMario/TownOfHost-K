@@ -351,7 +351,7 @@ namespace TownOfHost
             {
                 var role = pc.GetCustomRole();
                 var roletype = role.GetCustomRoleTypes();
-                var OneLovespace = pc.Is(CustomRoles.OneLove) ? Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), GetString("OneLove") + " ") : "";
+                var OneLovespace = pc.Is(CustomRoles.OneLove) ? ColorString(GetRoleColor(CustomRoles.OneLove), GetString("OneLove") + " ") : "";
                 var color = Palette.CrewmateBlue;
                 var roleClass = CustomRoleManager.GetByPlayerId(pc.PlayerId);
                 switch (roletype)
@@ -360,11 +360,11 @@ namespace TownOfHost
                         color = Palette.ImpostorRed;
                         break;
                     case CustomRoleTypes.Neutral:
-                        color = UtilsRoleText.GetRoleColor(role);
+                        color = GetRoleColor(role);
                         break;
                 }
-                UtilsGameLog.LastLog[pc.PlayerId] = "<b>" + Utils.ColorString(Main.PlayerColors[pc.PlayerId], Main.AllPlayerNames[pc.PlayerId] + "</b>");
-                UtilsGameLog.LastLogRole[pc.PlayerId] = $"<b>{OneLovespace}" + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
+                UtilsGameLog.LastLog[pc.PlayerId] = "<b>" + ColorString(Main.PlayerColors[pc.PlayerId], Main.AllPlayerNames[pc.PlayerId] + "</b>");
+                UtilsGameLog.LastLogRole[pc.PlayerId] = $"<b>{OneLovespace}" + ColorString(GetRoleColor(role), GetString($"{role}")) + "</b>";
                 PlayerCatch.AllPlayerFirstTypes.Add(pc.PlayerId, roletype);
 
                 //Addons
@@ -388,8 +388,8 @@ namespace TownOfHost
 
             if (Lovers.OneLovePlayer.BelovedId != byte.MaxValue && GameModeManager.IsStandardClass())
             {
-                UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.BelovedId] += Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡");
-                if (Lovers.OneLovePlayer.doublelove) UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.OneLove] += Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡");
+                UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.BelovedId] += ColorString(GetRoleColor(CustomRoles.OneLove), "♡");
+                if (Lovers.OneLovePlayer.doublelove) UtilsGameLog.LastLogRole[Lovers.OneLovePlayer.OneLove] += ColorString(GetRoleColor(CustomRoles.OneLove), "♡");
             }
         }
     }

@@ -74,6 +74,10 @@ namespace TownOfHost
     #region  GameLog
     public static class UtilsGameLog
     {
+        /// <summary>
+        /// AfterMeetingTaskが呼ばれた時に更新される。<br/>
+        /// ゲーム開始時は1。
+        /// </summary>
         public static int day;
         public static Dictionary<byte, string> LastLog = new();
         public static Dictionary<byte, string> LastLogRole = new();

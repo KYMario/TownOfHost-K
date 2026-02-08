@@ -669,8 +669,8 @@ namespace TownOfHost
             {
                 if (!Options.firstturnmeeting || !MeetingStates.First)
                 {
-                    if (Amanojaku.AssingDay.GetFloat() == UtilsGameLog.day) AmanojakuAssing.AssignAddOnsFromList();
-                    if (Amnesia.OptionRealizeDayCount.GetFloat() <= UtilsGameLog.day && Amnesia.OptionCanRealizeDay.GetBool())
+                    Amanojaku.Assign();
+                    if (Amnesia.OptionCanRealizeDay.GetBool() && Amnesia.OptionRealizeDayCount.GetInt() <= UtilsGameLog.day)
                     {
                         foreach (var pc in PlayerCatch.AllPlayerControls)
                         {

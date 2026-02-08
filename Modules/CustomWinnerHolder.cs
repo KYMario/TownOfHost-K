@@ -33,6 +33,10 @@ namespace TownOfHost
         // この数値より大きい(同値除く)と勝利を上書きします
         public static int WinPriority;
 
+        // 勝利優先順位の影響で勝利した陣営の勝利含め、単独勝利判定の陣営が格納されます。
+        // ※ホストしか正常な値になりません。
+        public static HashSet<CustomWinner> winners;
+
         [GameModuleInitializer, PluginModuleInitializer]
         public static void Reset()
         {
@@ -42,6 +46,7 @@ namespace TownOfHost
             WinnerIds = new();
             NeutralWinnerIds = new();
             CantWinPlayerIds = new();
+            winners = new();
             WinPriority = -1;
             GameStates.CalledMeeting = false;
         }
@@ -51,13 +56,18 @@ namespace TownOfHost
             WinnerRoles.Clear();
             WinnerIds.Clear();
             NeutralWinnerIds.Clear();
+            winners.Clear();
             WinPriority = -1;
         }
         /// <summary><para>WinnerTeamに値を代入します。</para><para>すでに代入されている場合、AdditionalWinnerRolesに追加します。</para></summary>
         public static void SetWinnerOrAdditonalWinner(CustomWinner winner)
         {
             GameStates.CalledMeeting = false;
-            if (WinnerTeam == CustomWinner.Default) WinnerTeam = winner;
+            if (WinnerTeam == CustomWinner.Default)
+            {
+                winners.Add(winner);
+                WinnerTeam = winner;
+            }
             else AdditionalWinnerRoles.Add((CustomRoles)winner);
         }
         /// <summary><para>WinnerTeamに値を代入します。</para><para>すでに代入されている場合、既存の値をAdditionalWinnerRolesに追加してから代入します。</para></summary>
@@ -66,6 +76,7 @@ namespace TownOfHost
             if (WinnerTeam != CustomWinner.Default)
                 AdditionalWinnerRoles.Add((CustomRoles)WinnerTeam);
             WinnerTeam = winner;
+            winners.Add(winner);
         }
         /// <summary><para>既存の値をすべて削除してから、WinnerTeamに値を代入します。</para></summary>
         public static void ResetAndSetWinner(CustomWinner winner)
@@ -78,6 +89,7 @@ namespace TownOfHost
                 WinPriority = data.OptionWin.GetInt();
             }
             WinnerTeam = winner;
+            winners.Add(winner);
         }
 
         /// <summary>
@@ -109,6 +121,7 @@ namespace TownOfHost
                     Reset();
                     WinPriority = data.OptionWin.GetInt();
                     WinnerTeam = winner;
+                    winners.Add(winner);
                     Logger.Info($"{WinPriority} < {data.OptionWin.GetInt()}", "CustomWinner");
                     if (playerId is byte.MaxValue) return true;
                     WinnerIds.Add(playerId);
@@ -120,6 +133,7 @@ namespace TownOfHost
                     //追加勝利
                     UtilsGameLog.AddGameLog("AddWinner", $"AddWin:{UtilsRoleText.GetRoleColorAndtext(winnerRole)}");
                     AdditionalWinnerRoles.Add((CustomRoles)winner);
+                    winners.Add(winner);
                     Logger.Info($"{WinPriority} == {data.OptionWin.GetInt()}", "CustomWinner");
                     if (playerId is byte.MaxValue) return true;
                     WinnerIds.Add(playerId);

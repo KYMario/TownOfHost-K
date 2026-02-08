@@ -2538,7 +2538,7 @@
 "Format.Multiplier","{0}x","{0}x","{0}x","{0}x","{0}x","{0}x",""
 "Format.Votes","{0}","{0}票","{0}票","{0}票","{0}","{0}",""
 "Format.Pieces","{0}","{0}個","{0}个","{0}個","{0}","{0}",""
-"Format.day","Day.{0}","{0}日目"
+"Format.day","Day.{0}","{0}日"
 "Format.Set","{0}Set","{0}組"
 "KillButtonText","Kill","キル","击杀","殺死","Убить","Matar",""
 "DefaultShapeshiftText","Shift","変身","变形","變身","Превращение","Mutar",""

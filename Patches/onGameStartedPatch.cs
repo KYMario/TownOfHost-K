@@ -501,6 +501,7 @@ namespace TownOfHost
                 AddOnsAssignData.AssignAddOnsFromList();
                 Twins.AssingAndReset();
                 Faction.AssingFaction();
+                if (Amanojaku.AssingDay.GetInt() == 0) AmanojakuAssing.AssignAddOnsFromList();
 
                 foreach (var pair in PlayerState.AllPlayerStates)
                 {

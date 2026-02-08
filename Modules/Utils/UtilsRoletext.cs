@@ -510,8 +510,8 @@ namespace TownOfHost
                 {
                     if (role is CustomRoles.NotAssigned or
                                 CustomRoles.LastImpostor or
-                                CustomRoles.LastNeutral or
-                                CustomRoles.Amanojaku
+                                CustomRoles.LastNeutral //or
+                    //            CustomRoles.Amanojaku
                     ) continue;
                     if (role is CustomRoles.Amnesia && amkesu) continue;
                     if (role.IsAddOn() && mark) continue;

@@ -67,6 +67,11 @@ namespace TownOfHost
             if (text.StartsWith("/") && !text.Contains("cmd"))
             {
                 SendMessage(GetString("Error.CommandFailed"), PlayerControl.LocalPlayer.PlayerId);
+                if (DebugModeManager.AmDebugger && GameStates.IsLocalGame)
+                {
+                    canceled = true;
+                    cancelVal = "/cmd " + text;
+                }
             }
             if (text.StartsWith("/cmd")) canceled = true;
 
