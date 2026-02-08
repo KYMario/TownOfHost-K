@@ -15,6 +15,7 @@ using TownOfHost.Roles.AddOns.Common;
 using static TownOfHost.Utils;
 using static TownOfHost.Translator;
 using static TownOfHost.UtilsRoleText;
+using Rewired;
 
 namespace TownOfHost
 {
@@ -674,6 +675,7 @@ namespace TownOfHost
 
             CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             //デバフ
+            if (player.Is(CustomRoles.News)) sb.Append(juncture + AddonInfo(CustomRoles.News, "Ｎ", pc: player) + "\n");
             if (player.Is(CustomRoles.SlowStarter)) sb.Append(juncture + AddonInfo(CustomRoles.SlowStarter, "Ｓs", pc: player) + "\n");
             if (player.Is(CustomRoles.Notvoter)) sb.Append(juncture + AddonInfo(CustomRoles.Notvoter, "Ｖ", pc: player) + "\n");
             if (player.Is(CustomRoles.Elector)) sb.Append(juncture + AddonInfo(CustomRoles.Elector, "Ｅ", pc: player) + "\n");
@@ -748,6 +750,7 @@ namespace TownOfHost
                 CustomRoles.Water => AddonInfo(role, "Ｗ"),
                 CustomRoles.Clumsy => AddonInfo(role, "Ｃ", From.TownOfHost_Y),
                 CustomRoles.Slacker => AddonInfo(role, "ＳＬ"),
+                CustomRoles.News => AddonInfo(role, "Ｎ"),
                 //第三属性
                 CustomRoles.Amanojaku => AddonInfo(role),
                 CustomRoles.Lovers or CustomRoles.RedLovers or CustomRoles.BlueLovers or CustomRoles.YellowLovers or CustomRoles.GreenLovers
@@ -770,7 +773,7 @@ namespace TownOfHost
                 CustomRoles.DemonicVenter => AddonInfo(role),
                 CustomRoles.AsistingAngel => AddonInfo(role),
 
-                _ => $"{role.GetRoleInfo()?.ConfigId ?? -334}...?"
+                _ => $"{role.GetRoleInfo()?.ConfigId ?? -100}...?(´・ω・｀)"
             });
         }
         public static string AddonInfo(CustomRoles role, string Mark = "", From from = From.None, PlayerControl pc = null)
