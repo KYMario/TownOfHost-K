@@ -23,7 +23,7 @@ namespace TownOfHost.Roles.AddOns.Common
             AddOnsAssignData.Create(Id + 10, CustomRoles.Management, true, true, true, true);
             ObjectOptionitem.Create(Id + 57, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Management);
             OptionPercentGage = BooleanOptionItem.Create(Id + 50, "PercentGage", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Management);
-            OptionRoughPercentage = BooleanOptionItem.Create(Id + 51, "RoughPercentage", true, TabGroup.Addons, false).SetParent(OptionPercentGage).SetSubRoleOptionItem(CustomRoles.Management);
+            OptionRoughPercentage = BooleanOptionItem.Create(Id + 51, "RoughPercentage", true, TabGroup.Addons, false).SetParent(OptionPercentGage).SetParentRole(CustomRoles.Management);
             OptionCanSeeActivecomms = BooleanOptionItem.Create(Id + 55, "CanUseActiveComms", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Management);
             Meeting = BooleanOptionItem.Create(Id + 56, "CanseeMeeting", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Management);
         }

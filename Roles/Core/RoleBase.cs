@@ -281,7 +281,8 @@ public abstract class RoleBase : IDisposable
     { }
 
     /// <summary>
-    /// タスクターンが始まる直前に毎回呼ばれる関数
+    /// タスクターンが始まる直前に毎回呼ばれる関数<br/>
+    /// 日数更新直前に呼ばれる。<br/>
     /// [全クライアント]
     /// </summary>
     public virtual void AfterMeetingTasks()

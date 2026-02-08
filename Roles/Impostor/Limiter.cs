@@ -163,7 +163,7 @@ namespace TownOfHost.Roles.Impostor
             if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
             if (LimiterTurnLimit == 0) return;
 
-            if (UtilsGameLog.day >= LimiterTurnLimit && Player.IsAlive())
+            if (LimiterTurnLimit <= UtilsGameLog.day && Player.IsAlive())
             {
                 Limit = true;
                 _ = new LateTask(() => Player.SetKillCooldown(OptionLastTurnKillcool.GetFloat()), 5f, "Limiter Limit Kill cool");

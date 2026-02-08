@@ -64,10 +64,10 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
     }
     public override void OnStartMeeting()
     {
-        if (CanKillDay.GetFloat() == 0) return;
+        if (CanKillDay.GetInt() == 0) return;
         if (!Player.IsAlive()) return;
 
-        if (CanKillDay.GetFloat() <= UtilsGameLog.day) canusekill = true;
+        if (CanKillDay.GetInt() <= UtilsGameLog.day) canusekill = true;
     }
     bool IUsePhantomButton.IsPhantomRole => SKMad && Options.CanMakeMadmateCount.GetInt() > PlayerCatch.SKMadmateNowCount;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
