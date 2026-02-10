@@ -305,7 +305,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 AntiBlackout.SendGameData();
                 GameDataSerializePatch.SerializeMessageCount--;
 
-                if (Options.ExHideChatCommand.GetBool())
+                if (Options.ExHideChatCommand.GetBool() && (Main.IsCs() || GameStates.IsLocalGame))
                 {
                     _ = new LateTask(() =>
                     {
@@ -385,19 +385,19 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
             return true;
         }
         else
-        if (NowState is AssassinMeeting.WaitMeeting)
-        {
-            if (Exiled?.PlayerId == Player.PlayerId)
+            if (NowState is AssassinMeeting.WaitMeeting)
             {
-                NowState = AssassinMeeting.CallMetting;
-                SendStateRPC();
-                Logger.Info("追放されちゃった！", "Assassin");
-                Exiled = null;
-                IsTie = false;
-                ClearAndExile = true;
-                return true;
+                if (Exiled?.PlayerId == Player.PlayerId)
+                {
+                    NowState = AssassinMeeting.CallMetting;
+                    SendStateRPC();
+                    Logger.Info("追放されちゃった！", "Assassin");
+                    Exiled = null;
+                    IsTie = false;
+                    ClearAndExile = true;
+                    return true;
+                }
             }
-        }
 
 
         return AddRole?.VotingResults(ref Exiled, ref IsTie, vote, mostVotedPlayers, ClearAndExile) ?? false;

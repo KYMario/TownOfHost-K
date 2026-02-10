@@ -306,56 +306,99 @@ namespace TownOfHost.Modules.ChatManager
                 Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
                 return;
             }
-            if (Main.IsCs() is false && PlayerControl.LocalPlayer.IsAlive() is false)
+            // バニラ鯖使用下の状況
+            if (Main.IsCs() is false && GameStates.IsOnlineGame)
             {
-                //苦肉の応急手当。一瞬だけホスト復活
-                Main.MessagesToSend.RemoveAt(0);
-                var Ischatopen = HudManager.Instance?.Chat?.IsOpenOrOpening ?? false;
-                senderplayer = PlayerControl.LocalPlayer;
-                // ホスト視点でのチャット送信
-                if (sendTo == byte.MaxValue || sendTo == senderplayer.PlayerId)
+                //ホスト死亡時
+                if (PlayerControl.LocalPlayer.IsAlive() is false)
                 {
-                    senderplayer.SetName(title);
-                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
-                    senderplayer.SetName(name);
-                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
-                    if (sendTo == senderplayer.PlayerId) return;
-                }
-                IsForceSend = true;
-                PlayerControl.LocalPlayer.Data.IsDead = false;
-                foreach (var seer in PlayerCatch.AllPlayerControls)
-                {
-                    if (seer.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
-                    if (seer.PlayerId == sendTo || sendTo is byte.MaxValue)
+                    //苦肉の応急手当。一瞬だけホスト復活
+                    Main.MessagesToSend.RemoveAt(0);
+                    var Ischatopen = HudManager.Instance?.Chat?.IsOpenOrOpening ?? false;
+                    senderplayer = PlayerControl.LocalPlayer;
+                    // ホスト視点でのチャット送信
+                    if (sendTo == byte.MaxValue || sendTo == senderplayer.PlayerId)
                     {
-                        var seerclientid = seer.GetClientId();
-                        GameDataSerializePatch.SerializeMessageCount++;
-                        RPC.RpcSyncAllNetworkedPlayer(seerclientid);
-                        GameDataSerializePatch.SerializeMessageCount--;
-                        var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                        Nwriter.StartMessage(seerclientid);
-                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
-                        .Write(senderplayer.Data.NetId)
-                        .Write(title)
-                        .EndRpc();
-                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
-                        .Write(msg)
-                        .EndRpc();
-                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
-                        .Write(senderplayer.Data.NetId)
-                        .Write(senderplayer.Data.GetLogPlayerName())
-                        .EndRpc();
-                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.Exiled)
-                        .EndRpc();
-                        Nwriter.EndMessage();
-                        Nwriter.SendMessage();
+                        senderplayer.SetName(title);
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
+                        senderplayer.SetName(name);
+                        chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                        if (sendTo == senderplayer.PlayerId) return;
                     }
+                    IsForceSend = true;
+                    PlayerControl.LocalPlayer.Data.IsDead = false;
+                    foreach (var seer in PlayerCatch.AllPlayerControls)
+                    {
+                        if (seer.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
+                        if (seer.PlayerId == sendTo || sendTo is byte.MaxValue)
+                        {
+                            var seerclientid = seer.GetClientId();
+                            GameDataSerializePatch.SerializeMessageCount++;
+                            RPC.RpcSyncAllNetworkedPlayer(seerclientid);
+                            GameDataSerializePatch.SerializeMessageCount--;
+                            var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                            Nwriter.StartMessage(seerclientid);
+                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                            .Write(senderplayer.Data.NetId)
+                            .Write(title)
+                            .EndRpc();
+                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                            .Write(msg)
+                            .EndRpc();
+                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                            .Write(senderplayer.Data.NetId)
+                            .Write(senderplayer.Data.GetLogPlayerName())
+                            .EndRpc();
+                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.Exiled)
+                            .EndRpc();
+                            Nwriter.EndMessage();
+                            Nwriter.SendMessage();
+                        }
+                    }
+                    PlayerControl.LocalPlayer.Data.IsDead = true;
+                    senderplayer.Die(DeathReason.Kill, false);
+                    IsForceSend = false;
+                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                    return;
                 }
-                PlayerControl.LocalPlayer.Data.IsDead = true;
-                senderplayer.Die(DeathReason.Kill, false);
-                IsForceSend = false;
-                chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
-                return;
+                else//ホスト生存時はホストに喋らせる
+                {
+                    senderplayer = PlayerControl.LocalPlayer;
+                    Main.MessagesToSend.RemoveAt(0);
+                    // ホスト視点でのチャット送信
+                    if (sendTo == byte.MaxValue)
+                    {
+                        senderplayer.SetName(title);
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
+                        senderplayer.SetName(name);
+                        chatController.timeSinceLastMessage = 0;
+                    }
+                    var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                    Nwriter.StartMessage(clientId);
+                    Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                    .Write(senderplayer.Data.NetId)
+                    .Write(title)
+                    .EndRpc();
+                    Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                    .Write(msg)
+                    .EndRpc();
+                    Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                    .Write(senderplayer.Data.NetId)
+                    .Write(senderplayer.Data.GetLogPlayerName())
+                    .EndRpc();
+                    Nwriter.EndMessage();
+                    Nwriter.SendMessage();
+                    if (GameStates.CalledMeeting && Main.MessagesToSend.Count < 1)
+                    {
+                        _ = new LateTask(() =>
+                        {
+                            NameColorManager.RpcMeetingColorName(senderplayer);
+                            ChatUpdatePatch.DoBlockChat = false;
+                        }, Main.LagTime, "Setname", true);
+                    }
+                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                    return;
+                }
             }
 
             // タスク中で送信者が生きてて全員に表示 => 個別送信に切り替え、名前をその人視点の者に戻す

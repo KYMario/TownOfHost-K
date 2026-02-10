@@ -1328,14 +1328,14 @@ namespace TownOfHost
                         }
                         else
                             if (role.GetRoleInfo()?.Description is { } description)
-                        {
-                            SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
-                        }
-                        // roleInfoがない役職
-                        else
-                        {
-                            SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
-                        }
+                            {
+                                SendMessage(description.FullFormatHelp, player.PlayerId, RoleInfoTitle, checkl: true);
+                            }
+                            // roleInfoがない役職
+                            else
+                            {
+                                SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
+                            }
                         GetAddonsHelp(player);
                     }
                     break;
