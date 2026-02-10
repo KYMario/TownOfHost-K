@@ -8,6 +8,7 @@ using static TownOfHost.Translator;
 using static TownOfHost.PlayerCatch;
 using static TownOfHost.UtilsRoleText;
 using System;
+using Epic.OnlineServices.RTC;
 
 namespace TownOfHost
 {
@@ -244,24 +245,59 @@ namespace TownOfHost
 
             var role = "";
             var wincount = 0;
-            foreach (var roledata in Statistics.NowStatistics.Rolecount.OrderBy(x => x.Key.GetRoleInfo().ConfigId))
+            var i = 0;
+            Dictionary<CustomRoleTypes, (int all, int win)> typecount = new();
+            foreach (var roledata in Statistics.NowStatistics.Rolecount.OrderBy(x => x.Key))
             {
                 if (roledata.Value.Item1 == roledata.Value.Item2 && roledata.Value.Item2 == 0) continue;
                 if (roledata.Key.IsE()) continue;
                 if (!Event.CheckRole(roledata.Key)) continue;
 
-                role += $"\n{GetRoleColorAndtext(roledata.Key)}：{roledata.Value.Item2}/{roledata.Value.Item1}";
+                role += i % 2 == 0 ? $"\n{GetRoleColorAndtext(roledata.Key)}：{roledata.Value.Item2}/{roledata.Value.Item1}<size=30%>({Getpercent(roledata.Value.Item2, roledata.Value.Item1)})</size>"
+                : $"<pos=70%>{GetRoleColorAndtext(roledata.Key)}：{roledata.Value.Item2}/{roledata.Value.Item1}<size=30%>({Getpercent(roledata.Value.Item2, roledata.Value.Item1)})</size></pos>";
+                i++;
                 wincount += roledata.Value.Item2;
+                var roleTypes = roledata.Key.GetCustomRoleTypes();
+                if (typecount.TryAdd(roleTypes, (roledata.Value.Item1, roledata.Value.Item2)) is false)
+                {
+                    typecount[roleTypes] = (typecount[roleTypes].all + roledata.Value.Item1, typecount[roleTypes].win + roledata.Value.Item2);
+                }
             }
-            text += $"\n{GetString("Statistics.WinCount")}{wincount}";
+            text += $"<pos=60%>★{GetString("Statistics.WinCount")}{wincount}</pos>";
             var modetext = "";
             foreach (var gamemodedata in Statistics.NowStatistics.gamemodecount)
             {
+                if (gamemodedata.Value.Item1 == gamemodedata.Value.Item2 && gamemodedata.Value.Item2 == 0) continue;
                 if (gamemodedata.Key is CustomGameMode.All) continue;
-                modetext += $"\n{GetString(gamemodedata.Key.ToString())} ： {gamemodedata.Value.win}/{gamemodedata.Value.count}";
+                var colorcode = "#ffffff";
+                switch (gamemodedata.Key)
+                {
+                    case CustomGameMode.Standard: colorcode = Main.ModColor; break;
+                    case CustomGameMode.HideAndSeek: colorcode = "#ff1919"; break;
+                    case CustomGameMode.StandardHAS: colorcode = "#ffff00"; break;
+                    case CustomGameMode.SuddenDeath: colorcode = "#ff9966"; break;
+                    case CustomGameMode.TaskBattle: colorcode = "#8cb8ff"; break;
+                    case CustomGameMode.MurderMystery: colorcode = "#1a389c"; break;
+                }
+                modetext += $"\n<{colorcode}>{GetString(gamemodedata.Key.ToString())}</color> ： {gamemodedata.Value.win}/{gamemodedata.Value.count}<size=30%>({Getpercent(gamemodedata.Value.win, gamemodedata.Value.count)})</size>";
             }
-            if (modetext != "") text += $"\n★{GetString("Statistics.Modecount")}<size=50%>{modetext}</size>";
-            if (role != "") text += $"\n★{GetString("Statistics.RoleWinCount")}<size=50%>{role}</size>";
+            var typetext = "";
+            foreach (var data in typecount)
+            {
+                if (data.Value.Item1 == data.Value.Item2 && data.Value.Item2 == 0) continue;
+
+                var colorcode = "#8cffff";
+                switch (data.Key)
+                {
+                    case CustomRoleTypes.Madmate: colorcode = "#ff7f50"; break;
+                    case CustomRoleTypes.Impostor: colorcode = "#ff1919"; break;
+                    case CustomRoleTypes.Neutral: colorcode = "#cccccc"; break;
+                }
+                typetext += $"\n<{colorcode}>{GetString($"{data.Key}")}</color> ： {data.Value.win}/{data.Value.all}<size=30%>({Getpercent(data.Value.win, data.Value.all)})</size>";
+            }
+            if (typetext != "") text += $"\n<u>★{GetString("Statistics.Typecount")}</u><size=50%>{typetext}</size>";
+            if (modetext != "") text += $"\n<u>★{GetString("Statistics.Modecount")}</u><size=50%>{modetext}</size>";
+            if (role != "") text += $"\n<u>★{GetString("Statistics.RoleWinCount")}</u><size=50%>{role}</size>";
 
             var kill = "";
             foreach (var killdata in Statistics.NowStatistics.Killcount)
@@ -269,7 +305,7 @@ namespace TownOfHost
                 if (killdata.Value == 0) continue;
                 kill += $"\n{GetString($"DeathReason.{killdata.Key}")} : {killdata.Value}";
             }
-            if (kill != "") text += $"\n★{GetString("Statistics.Killcount")}<size=50%>{kill}</size>";
+            if (kill != "") text += $"\n<u>★{GetString("Statistics.Killcount")}</u><size=50%>{kill}</size>";
 
             var die = "";
             foreach (var diedata in Statistics.NowStatistics.diecount)
@@ -277,13 +313,21 @@ namespace TownOfHost
                 if (diedata.Value == 0) continue;
                 die += $"\n{GetString($"DeathReason.{diedata.Key}")} : {diedata.Value}";
             }
-            if (die != "") text += $"\n★{GetString("Statistics.deadcount")}<size=50%>{die}</size>";
+            if (die != "") text += $"\n<u>★{GetString("Statistics.deadcount")}</u><size=50%>{die}</size>";
 
             var task = "";
             task = $"\n・{GetString("Statistics.taskcount")}：{Statistics.NowStatistics.task.Item1}"
             + $"\n・{GetString("Statistics.completetaskcount")}：{Statistics.NowStatistics.task.Item2}";
 
             return text + task;
+
+            string Getpercent(float a, float b)
+            {
+                if (a == 0 && b == 0) return "--";
+                float value = a / b;
+                double ret = Math.Round(value * 100);
+                return $"{ret}%";
+            }
         }
     }
     public class Statistics
@@ -345,6 +389,9 @@ namespace TownOfHost
             {
                 Iswinner = true;
             }
+
+            if (Options.CurrentGameMode is not CustomGameMode.Standard) goto pyoon;
+
             {
                 if (!rc.TryGetValue(role, out var data)) goto pyoon;
                 var i1 = data.Item1;
@@ -358,24 +405,27 @@ namespace TownOfHost
             goto pyoon;
 
         pyoon:
-            if (!pc.IsAlive())
-            {
-                if (dc.TryGetValue(mystate.DeathReason, out var count))
-                {
-                    dc[mystate.DeathReason] = count + 1;
-                }
-            }
-            foreach (var diedata in Main.HostKill)
-            {
-                kc[diedata.Value] = kc[diedata.Value] + 1;
-            }
-
             var task = NowStatistics.task;
-            if (pc.Is(CustomRoleTypes.Crewmate) && role.GetRoleInfo()?.IsDesyncImpostor == false)
+            if (Options.CurrentGameMode is CustomGameMode.Standard)
             {
-                var state = pc.GetPlayerTaskState();
+                if (!pc.IsAlive())
+                {
+                    if (dc.TryGetValue(mystate.DeathReason, out var count))
+                    {
+                        dc[mystate.DeathReason] = count + 1;
+                    }
+                }
+                foreach (var diedata in Main.HostKill)
+                {
+                    kc[diedata.Value] = kc[diedata.Value] + 1;
+                }
 
-                task = (task.Item1 + state.CompletedTasksCount, task.Item2 + (state.IsTaskFinished ? 1 : 0));
+                if (pc.Is(CustomRoleTypes.Crewmate) && role.GetRoleInfo()?.IsDesyncImpostor == false)
+                {
+                    var state = pc.GetPlayerTaskState();
+
+                    task = (task.Item1 + state.CompletedTasksCount, task.Item2 + (state.IsTaskFinished ? 1 : 0));
+                }
             }
             var newgamemodecount = NowStatistics.gamemodecount;
             var modecount = NowStatistics.gamemodecount.TryGetValue(Options.CurrentGameMode, out var gamedata) ? gamedata : (0, 0);

@@ -11,6 +11,7 @@ using Assets.InnerNet;
 using TownOfHost.Templates;
 using Object = UnityEngine.Object;
 using TownOfHost.Modules;
+using System.Linq;
 
 namespace TownOfHost
 {
@@ -19,10 +20,7 @@ namespace TownOfHost
     {
         private static SimpleButton discordButton;
         private static SimpleButton StatisticsButton;
-        private static SimpleButton BackButton;
-        private static SimpleButton NextButton;
-        static Dictionary<byte, string> Pages;
-        static byte now;
+        private static GameObject Statistics_ScrollStuff;
         public static SimpleButton UpdateButton { get; private set; }
         public static SimpleButton UpdateButton2;
         private static SimpleButton gitHubButton;
@@ -30,7 +28,7 @@ namespace TownOfHost
         private static SimpleButton TOHkBOTButton;
         //private static SimpleButton VersionChangeButton;
         private static SimpleButton betaversionchange;
-        public static TextMeshPro Statistisc;
+        public static TextMeshPro Statistics_TMP;
         public static GameObject VersionMenu;
         public static GameObject betaVersionMenu;
         public static AnnouncementPopUp updatea;
@@ -39,8 +37,6 @@ namespace TownOfHost
         public static void StartPostfix(MainMenuManager __instance)
         {
             SimpleButton.SetBase(__instance.quitButton);
-            Pages = new();
-            now = byte.MaxValue;
             //Discordボタンを生成
             if (SimpleButton.IsNullOrDestroyed(discordButton))
             {
@@ -97,81 +93,34 @@ namespace TownOfHost
                     new(255, 248, 173, byte.MaxValue),
                     () =>
                     {
-                        var ages = SaveStatistics.ShowText().RemoveSizeTags().Split("\n");
-                        var Page = "<size=60%>";
-                        var index = 0;
-                        byte count = 0;
-                        foreach (var text in ages)
-                        {
-                            index++;
-                            Page += $"{text}\n";
-                            if (16 <= index)
-                            {
-                                Pages.TryAdd(count, Page);
-                                count++;
-                                index = 0;
-                                Page = "<size=60%>";
-                            }
-                        }
-                        if (Page.RemoveHtmlTags() != "")
-                            Pages.TryAdd(count, Page);
-
                         CredentialsPatch.TohkLogo.gameObject.SetActive(false);
                         __instance.screenTint.enabled = true;
-                        Statistisc.gameObject.SetActive(true);
-                        now = 0;
-                        Statistisc.text = Pages.TryGetValue(now, out var t) ? t : "???";
-                        NextButton.Button.gameObject.SetActive(true);
-                        BackButton.Button.gameObject.SetActive(true);
+                        Statistics_TMP.gameObject.SetActive(true);
+                        Statistics_TMP.text = $"<size=60%>{SaveStatistics.ShowText()}";
+                        Statistics_ScrollStuff.gameObject.SetActive(true);
+                        var St_Scroller = Statistics_ScrollStuff.transform.GetChild(0);
+                        Statistics_TMP.transform.parent = St_Scroller.GetChild(3).transform;
+                        St_Scroller.GetChild(1).gameObject.SetActive(false);
+                        St_Scroller.GetChild(2).gameObject.SetActive(false);
+                        St_Scroller.localPosition = new(3.18f, -5.45f, 0.1473f);
+                        St_Scroller.GetChild(0).localPosition = new(2.1f, 2.6f, 2f);
+                        St_Scroller.GetChild(0).localScale = new Vector3(0.7f, 1, 0);
+                        St_Scroller.GetChild(3).SetLocalY(0);
+                        var ages = Statistics_TMP.text.Split("\n").Count();
+                        St_Scroller.GetComponentInParent<Scroller>().ContentYBounds.max = ages > 16 ? (ages - 16) * 0.25f : 0;
                     },
                     Translator.GetString("Statistics")
                     );
             }
 
-            if (SimpleButton.IsNullOrDestroyed(NextButton))
+            if (Statistics_ScrollStuff == null || Statistics_ScrollStuff.gameObject == null)
             {
-                NextButton = CreateButton(
-                    "NextButton",
-                    new(3.1f, -2.2f, -6f),
-                    new(255, 242, 104, byte.MaxValue),
-                    new(255, 248, 173, byte.MaxValue),
-                    () =>
-                    {
-                        now++;
-                        if (Pages.TryGetValue(now, out var t))
-                        {
-                            Statistisc.text = t;
-                        }
-                        else now--;
-                    },
-                    "▷",
-                    new Vector2(0.5f, 0.5f),
-                    false,
-                    __instance.screenTint.transform
-                    );
-            }
-
-            if (SimpleButton.IsNullOrDestroyed(BackButton))
-            {
-                BackButton = CreateButton(
-                    "BackButton",
-                    new(2.5f, -2.2f, -6),
-                    new(255, 242, 104, byte.MaxValue),
-                    new(255, 248, 173, byte.MaxValue),
-                    () =>
-                    {
-                        now--;
-                        if (Pages.TryGetValue(now, out var t))
-                        {
-                            Statistisc.text = t;
-                        }
-                        else now++;
-                    },
-                    "◁",
-                    new Vector2(0.5f, 0.5f),
-                    false,
-                    __instance.screenTint.transform
-                    );
+                var sc = GameObject.Find("StoreMenu/Background/Scroll Stuff");
+                Statistics_ScrollStuff = Object.Instantiate(sc, __instance.transform);
+                Statistics_ScrollStuff.gameObject.name = "stscroll";
+                var Scroller = Statistics_ScrollStuff.transform.GetChild(0);
+                Scroller.GetChild(3).DestroyChildren();//inner全削除
+                Statistics_ScrollStuff.gameObject.SetActive(false);
             }
 
             //Updateボタンを生成
@@ -402,12 +351,10 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
-            if (Statistisc.gameObject != null)
-                Statistisc.gameObject.SetActive(false);
-            if (NextButton.Button.gameObject != null)
-                NextButton.Button.gameObject.SetActive(false);
-            if (NextButton.Button.gameObject != null)
-                BackButton.Button.gameObject.SetActive(false);
+            if (Statistics_TMP.gameObject != null)
+                Statistics_TMP.gameObject.SetActive(false);
+            if (Statistics_ScrollStuff?.gameObject != null)
+                Statistics_ScrollStuff?.gameObject.SetActive(false);
 
             {
                 var warning = GameObject.Find("MainMenuManager/MainUI/AspectScaler/RightPanel/MaskedBlackScreen/OnlineButtons/AspectSize/CrossplayWarning");

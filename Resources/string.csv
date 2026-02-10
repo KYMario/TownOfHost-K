@@ -2653,6 +2653,7 @@
 "Statistics.taskcount","taskcount","合計完了タスク数"
 "Statistics.completetaskcount","Completed Count","タスクを全て完了した回数"
 "Statistics.Modecount","PlayerModecount (win/all)","モード別の勝利数(勝/計)"
+"Statistics.Typecount","RoleType (win/all)","陣営事の勝利数(勝/計)"
 "SoundOptions","SoundOptions","サウンド設定"
 "Reset","Reset","リセット"
 "Ambience","Ambience","環境"

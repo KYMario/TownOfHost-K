@@ -93,10 +93,10 @@ namespace TownOfHost
                         buttongameobject.SetActive(true);
                     }
                     else
-                    if (buttongameobject.active && !IsActive)
-                    {
-                        buttongameobject.SetActive(false);
-                    }
+                        if (buttongameobject.active && !IsActive)
+                        {
+                            buttongameobject.SetActive(false);
+                        }
                 }
             }
 

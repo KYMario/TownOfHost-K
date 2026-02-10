@@ -179,7 +179,7 @@ namespace TownOfHost
                     SpecialEventText.text = $"何とは言いませんが、特別な日ですね。\n<size=15%>\n\n末永く爆発しろ</size>";
                     SpecialEventText.color = UtilsRoleText.GetRoleColor(CustomRoles.Lovers);
                 }
-                MainMenuManagerPatch.Statistisc = TMPTemplate.Create(
+                MainMenuManagerPatch.Statistics_TMP = TMPTemplate.Create(
                 "Statistisc",
                 "",
                 Color.white,
@@ -189,7 +189,7 @@ namespace TownOfHost
                 null
                 );
                 {
-                    MainMenuManagerPatch.Statistisc.transform.localPosition = new Vector3(0.8f, 1.7f);
+                    MainMenuManagerPatch.Statistics_TMP.transform.localPosition = new Vector3(0.8f, 1.7f);
                 }
                 CreateStreameMenu.CreateText();
             }
@@ -269,17 +269,17 @@ namespace TownOfHost
                     }
                 }
                 else
-                if (Main.MegCount == oldcount)
-                {
-                    olddeltimer += Time.deltaTime;
-
-                    if (olddeltimer > 1.3f)
+                    if (Main.MegCount == oldcount)
                     {
-                        timer = 0;
-                        olddeltimer = 0;
-                        Main.MegCount = 0;
+                        olddeltimer += Time.deltaTime;
+
+                        if (olddeltimer > 1.3f)
+                        {
+                            timer = 0;
+                            olddeltimer = 0;
+                            Main.MegCount = 0;
+                        }
                     }
-                }
 
                 oldcount = Main.MegCount;
             }
