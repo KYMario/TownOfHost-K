@@ -64,9 +64,9 @@ public static class GuessManager
         if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
         if (args[0].StartsWith("/bt")) operate = 2;
 
-        if (!pc.IsAlive()) return true;//本当は悪あがきはやめなって処理入れたかった(´・ω・｀)←入れてもいいけどめんどくs(((!(?)
         if (operate == 2)
         {
+            if (!pc.IsAlive()) return true;//本当は悪あがきはやめなって処理入れたかった(´・ω・｀)←入れてもいいけどめんどくs(((!(?)
             var RoleTypes = pc.GetCustomRole().GetCustomRoleTypes();
             if (!Options.ExHideChatCommand.GetBool())
             {
@@ -166,10 +166,10 @@ public static class GuessManager
                     guesserSuicide = false;
                 }
                 else
-                if (targetroleclass?.CheckGuess(pc) == false)
-                {
-                    guesserSuicide = true;
-                }
+                    if (targetroleclass?.CheckGuess(pc) == false)
+                    {
+                        guesserSuicide = true;
+                    }
 
                 //自殺が決まってないなら処理
                 if (CheckTargetRoles(target, role) && !guesserSuicide)
@@ -236,7 +236,7 @@ public static class GuessManager
                 }, 2.0f, "Reikai Guess Msg");
             }
         }
-        return true;
+        return false;
     }
 
     private static bool CheckTargetRoles(PlayerControl target, CustomRoles role)
@@ -536,12 +536,12 @@ public static class GuessManager
             return true;
         }
         else
-        if (OneMeetingGuessed[pc.PlayerId] >= OneMeetingShotLimit)
-        {
-            Utils.SendMessage(GetString("GuesserMTGcountError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("GuesserMTGcountErrorT")));
-            return true;
-        }
-        else return false;
+            if (OneMeetingGuessed[pc.PlayerId] >= OneMeetingShotLimit)
+            {
+                Utils.SendMessage(GetString("GuesserMTGcountError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("GuesserMTGcountErrorT")));
+                return true;
+            }
+            else return false;
     }
     public static bool GuessCountNeu(PlayerControl pc)
     {
@@ -573,12 +573,12 @@ public static class GuessManager
             return true;
         }
         else
-        if (OneMeetingGuessed[pc.PlayerId] >= OneMeetingShotLimit)
-        {
-            Utils.SendMessage(GetString("GuesserMTGcountError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("GuesserMTGcountErrorT")));
-            return true;
-        }
-        else return false;
+            if (OneMeetingGuessed[pc.PlayerId] >= OneMeetingShotLimit)
+            {
+                Utils.SendMessage(GetString("GuesserMTGcountError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("GuesserMTGcountErrorT")));
+                return true;
+            }
+            else return false;
     }
     public static bool GuessCountCrewandMad(PlayerControl pc)
     {
@@ -607,12 +607,12 @@ public static class GuessManager
             return true;
         }
         else
-        if (OneMeetingGuessed[pc.PlayerId] >= OneMeetingShotLimit)
-        {
-            Utils.SendMessage(GetString("GuesserMTGcountError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("GuesserMTGcountErrorT")));
-            return true;
-        }
-        else return false;
+            if (OneMeetingGuessed[pc.PlayerId] >= OneMeetingShotLimit)
+            {
+                Utils.SendMessage(GetString("GuesserMTGcountError"), pc.PlayerId, Utils.ColorString(Palette.AcceptedGreen, GetString("GuesserMTGcountErrorT")));
+                return true;
+            }
+            else return false;
     }
 
     public static bool GetImpostorGuessResult(PlayerControl pc, PlayerControl target, CustomRoles guessrole)

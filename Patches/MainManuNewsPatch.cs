@@ -2025,6 +2025,29 @@ public class ModNewsHistory
                 };
                 AllModNews.Add(news);
             }
+            {
+                var news = new ModNews
+                {
+                    Number = 100075,
+                    Title = "雪やこんこん。",
+                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.29</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31.29</color>",
+                    Text = "<size=80%>v51.14.31.26以前のバージョンは利用不可になります。\n"
+                    + "<size=125%>【バグ修正】</size>\n"
+                    + "・ゲッサーコマンド、通常コマンドが正常に動作しない問題の修正\n"
+                    + "・ニュースの役職説明が正常に表示されない問題の修正\n"
+                    + "・フィルターオプションが正常に表示されない問題の対応\n"
+                    + "・マドンナが死亡時、ホストが暗転する問題の修正\n"
+                    + "\n<size=125%>【仕様変更】</size>\n"
+                    + "・コマンド使用時、/cmd以外にスラッシュを使用しなくても動作するように「/cmd n」\n"
+                    + "・アムネシアマドンナは、アムネシア解除時に死亡することが少なくなります。\n"
+                    + "\n<size=125%>【新設定】</size>\n"
+                    + "・天邪鬼に勝利できる陣営設定や最初からアサインされる仕様を追加\n"
+                    ,
+                    Date = "2026-02-10T00:00:00Z"
+                };
+                AllModNews.Add(news);
+            }
             AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
         }
     }

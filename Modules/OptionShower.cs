@@ -237,6 +237,7 @@ namespace TownOfHost
         {
             foreach (var opt in option.Children.Select((v, i) => new { Value = v, Index = i + 1 }))
             {
+                if (opt.Value.IsEnabled?.Invoke() == false) continue;
                 if (opt.Value.Name is "Maximum" or "FixedRole") continue;
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveFungle || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true) continue;
