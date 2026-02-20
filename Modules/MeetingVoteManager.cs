@@ -237,6 +237,15 @@ public class MeetingVoteManager
         {
             MeetingHudPatch.CheckForDeathOnExile(CustomDeathReason.Vote, result.Exiled.PlayerId);
         }
+        if (AmongUsClient.Instance.AmHost)
+        {
+            var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, Hazel.SendOption.None, -1);
+            sender.Write((int)RPC.ModSystem.SyncVoteResult);
+            sender.Write(result.Exiled?.PlayerId ?? byte.MaxValue);
+            sender.Write(result.IsTie);
+            sender.Write(resulttext);
+            AmongUsClient.Instance.FinishRpcImmediately(sender);
+        }
         Destroy();
     }
     /// <summary>
@@ -533,6 +542,17 @@ public class MeetingVoteManager
                         break;
                 }
             }
+        }
+        /// <summary>
+        /// Rpc受け取った側用のVoteResult。
+        /// Dictionaryが正常値にならない。
+        /// </summary>
+        /// <param name="exileId"></param>
+        /// <param name="Istie"></param>
+        public VoteResult(byte exileId, bool Istie)
+        {
+            this.Exiled = exileId is byte.MaxValue ? null : PlayerCatch.GetPlayerInfoById(exileId);
+            this.IsTie = Istie;
         }
     }
 

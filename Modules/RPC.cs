@@ -558,7 +558,8 @@ namespace TownOfHost
             SyncSkinShuffle,
             SyncMuderMystery,
             SyncNextSpawn,
-            SyncOneLove
+            SyncOneLove,
+            SyncVoteResult
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -613,6 +614,15 @@ namespace TownOfHost
                         Lovers.OneLovePlayer = (oneloveid, targetid, isdoublelove);
                         break;
                     }
+                case ModSystem.SyncVoteResult:
+                    {
+                        var exileId = reader.ReadByte();
+                        var Istie = reader.ReadBoolean();
+                        var result = new MeetingVoteManager.VoteResult(exileId, Istie);
+                        AntiBlackout.voteresult = result;
+                        MeetingVoteManager.Voteresult = reader.ReadString();
+                    }
+                    break;
             }
         }
     }
