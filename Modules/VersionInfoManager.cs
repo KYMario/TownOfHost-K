@@ -25,6 +25,7 @@ class VersionInfoManager
     public static VersionInfo version { get; protected set; }
     public static VersionInfo allversion { get; protected set; }
     public static bool isChecked = false;
+    public static bool BlockVanillaSaver = false;
     private static bool IsSupported = true;
     private static int totalSeconds = 0;
     private static TextMeshPro ModInfoText;
@@ -78,6 +79,11 @@ class VersionInfoManager
         || allversion.BlockPublicRoom.HasValue)
         {
             ModUpdater.BlockPublicRoom = version.BlockPublicRoom.Value || allversion.BlockPublicRoom.Value;
+        }
+        if (version.BlockVanillaSaver.HasValue
+        || allversion.BlockVanillaSaver.HasValue)
+        {
+            BlockVanillaSaver = version.BlockVanillaSaver.Value || allversion.BlockVanillaSaver.Value;
         }
 
         if (!version.AnnounceText.IsNullOrWhiteSpace())//allversion使用不可
@@ -311,6 +317,7 @@ class VersionInfoManager
         public string HighestSupportedVersion { get; set; }
         public bool DisableRoomJoin { get; set; }
         public bool DisableMM { get; set; }
+        public bool? BlockVanillaSaver { get; set; }
 
         public UpdateInfo Update { get; set; }
         public List<BugInfo> BugInfos { get; set; }
