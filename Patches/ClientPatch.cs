@@ -98,17 +98,23 @@ namespace TownOfHost
         }
     }
 
+    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Start))]
+    class CreateGameOptionsStartPatch
+    {
+        public static void Prefix() => CreateGameOptionsUpdateServerText.Prefix();
+    }
     [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.UpdateServerText))]
     class CreateGameOptionsUpdateServerText
     {
-        public static void Prefix(CreateGameOptions __instance)
+        public static void Prefix()
         {
             var obj = GameObject.Find("MainMenuManager/MainUI/AspectScaler/CreateGameScreen/ParentContent/Content/CreateGame");
             if (obj == null) return;
             if (ServerManager.Instance?.CurrentRegion?.Name == null) return;
 
             var nowserver = ServerManager.Instance.CurrentRegion.Name;
-            if ((Main.IsAndroid() && !Main.IsCs()) || nowserver is "ExROfficialTokyo" || nowserver.Contains("Nebula on the Ship JP") || nowserver.Contains("<color=#ffa500>Super</color>"))
+            if ((Main.IsAndroid() && !Main.IsCs()) || nowserver is "ExROfficialTokyo" || nowserver.Contains("Nebula on the Ship JP") || nowserver.Contains("<color=#ffa500>Super</color>")
+            || (VersionInfoManager.BlockVanillaSaver && !Main.IsCs()))
             {
                 obj.transform.localPosition = new Vector3(100f, 100f, 100f);
             }

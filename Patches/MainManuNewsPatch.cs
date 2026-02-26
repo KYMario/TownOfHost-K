@@ -2048,6 +2048,25 @@ public class ModNewsHistory
                 };
                 AllModNews.Add(news);
             }
+            {
+                var news = new ModNews
+                {
+                    Number = 100076,
+                    Title = "雪は溶け、ふきのとうが姿を...",
+                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.31</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31.31</color>",
+                    Text = "<size=80%>やぁ。新要素の開発をやろうと思っていたのに対応でおじゃんになったぜ。\n"
+                    + "<size=125%>【バグ修正】</size>\n"
+                    + "・非クライアントバグの修正/対応\n"
+                    + "・秘匿チャットがONの時、ホストが生きているとkickされる問題の修正\n"
+                    + "\n<size=125%>【仕様変更】</size>\n"
+                    + "・バニラサーバーでもある程度正常に動作するように対応\n"
+                    + "\nチョコ??渡してもないし貰っても無いです。\nYr."
+                    ,
+                    Date = "2026-02-26T00:00:00Z"
+                };
+                AllModNews.Add(news);
+            }
             AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
         }
     }

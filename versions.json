@@ -64,13 +64,20 @@
     },
     "51.14.31.27": {
         "Unavailable": false,
-        "NotAvailableOnline": false
+        "NotAvailableOnline": false,
+        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
     },
     "51.14.31.28": {
         "Unavailable": false,
-        "NotAvailableOnline": false
+        "NotAvailableOnline": false,
+        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
     },
     "51.14.31.29": {
+        "Unavailable": false,
+        "NotAvailableOnline": false,
+        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
+    },
+    "51.14.31.31": {
         "Unavailable": false,
         "NotAvailableOnline": false
     }
