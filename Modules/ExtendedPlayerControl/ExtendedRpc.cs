@@ -288,11 +288,11 @@ namespace TownOfHost
                 player.GetPlayerState().NowRoleType = role;
             }
         }
-        public static void RpcMeetingKill(this PlayerControl killer, PlayerControl target = null)
+        public static void RpcMeetingKill(this PlayerControl killer, PlayerControl target = null, bool SendtoClient = false)
         {
             if (!GameStates.InGame) return;
             if (target == null) target = killer;
-            if (target.IsModClient()) return;
+            if (target.IsModClient() && SendtoClient is false) return;
 
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)RpcCalls.MurderPlayer, SendOption.None, target.GetClientId());
             messageWriter.WriteNetObject(target);
@@ -440,9 +440,20 @@ namespace TownOfHost
         public static void RpcExileV3(this PlayerControl player)
         {
             if (player == null) return;
+            if (player.IsAlive() && player.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+            {//道連れ、マジシャン等で死んでいないのにIsDeadを変更する場合はモーションを入れる。
+                if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                {
+                    DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(player.Data, player.Data);
+                }
+                else
+                {
+                    player.RpcMeetingKill(SendtoClient: true);
+                }
+            }
             player.Exiled();
-            player.GetPlayerState().SetDead();
             player.Data.IsDead = true;
+            player.GetPlayerState().SetDead();
             Patches.GameDataSerializePatch.SerializeMessageCount++;
             RPC.RpcSyncAllNetworkedPlayer();
             Patches.GameDataSerializePatch.SerializeMessageCount--;
