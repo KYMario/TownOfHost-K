@@ -317,12 +317,6 @@ namespace TownOfHost
             writer.Write((byte)sound);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
-        public static void ExileAsync(PlayerControl player)
-        {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)RpcCalls.Exiled, SendOption.Reliable, -1);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-            player.Exiled();
-        }
         public static IEnumerator CoRpcVersionCheck() //たぶんなおせました
         {
             while (PlayerControl.LocalPlayer == null) yield return new UnityEngine.WaitForSeconds(0.5f);

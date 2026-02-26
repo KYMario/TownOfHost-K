@@ -75,7 +75,7 @@ class TaskBattle
                     if (team.Contains(pc.PlayerId)) continue;
                     team.Do(playerId =>
                     {
-                        PlayerCatch.GetPlayerById(playerId).RpcExileV2();
+                        PlayerCatch.GetPlayerById(playerId).RpcExileV3();
                         var playerState = PlayerState.GetByPlayerId(playerId);
                         playerState.SetDead();
                     });
@@ -86,7 +86,7 @@ class TaskBattle
                 foreach (var otherPlayer in PlayerCatch.AllAlivePlayerControls)
                 {
                     if (otherPlayer == pc || otherPlayer.AllTasksCompleted()) continue;
-                    otherPlayer.RpcExileV2();
+                    otherPlayer.RpcExileV3();
                     var playerState = PlayerState.GetByPlayerId(otherPlayer.PlayerId);
                     playerState.SetDead();
                 }

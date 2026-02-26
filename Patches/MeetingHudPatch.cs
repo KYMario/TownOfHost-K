@@ -105,8 +105,6 @@ public static class MeetingHudPatch
             InnerNetClientPatch.DontTouch = false;
             GameStates.AlreadyDied |= !PlayerCatch.IsAllAlive;
             PlayerCatch.OldAlivePlayerControles.Clear();
-            var Sender = CustomRpcSender.Create("MeetingSet", Hazel.SendOption.Reliable);
-            Sender.StartMessage();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 pc.GetPlayerState().IsBlackOut = false;
@@ -119,7 +117,7 @@ public static class MeetingHudPatch
                 }
                 if (!pc.IsAlive() && !Assassin.NowUse)
                 {
-                    if (AmongUsClient.Instance.AmHost) pc.RpcExileV2();
+                    //if (AmongUsClient.Instance.AmHost) pc.RpcExileV3();
                 }//  会議時に生きてたぜリスト追加
                 else
                 {
@@ -505,7 +503,7 @@ public static class MeetingHudPatch
                         __instance.CheckForEndVoting();
                         return;
                     }
-                    player.RpcExileV2();
+                    player.RpcExileV3();
                     Utils.SendMessage(string.Format(GetString("Message.Executed"), UtilsName.GetPlayerColor(player, true)));
                     UtilsGameLog.AddGameLog("Executed", string.Format(GetString("Message.Executed"), UtilsName.GetPlayerColor(player, true)));
                     Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を処刑しました", "Execution");

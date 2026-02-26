@@ -247,7 +247,7 @@ public sealed class JackalDoll : RoleBase
                 case Diemode.FollowingSuicide:
                     //ガードなどは無視
                     PlayerState.GetByPlayerId(Jd.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
-                    Jd.RpcExileV2();
+                    Jd.RpcExileV3();
                     PlayerState.GetByPlayerId(Jd.PlayerId).SetDead();
                     break;
                 case Diemode.ChangeRole:

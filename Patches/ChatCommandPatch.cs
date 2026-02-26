@@ -764,7 +764,7 @@ namespace TownOfHost
                         canceled = true;
                         if (GameStates.IsLobby) break;
                         if (args.Length < 2 || !int.TryParse(args[1], out int id)) break;
-                        GetPlayerById(id)?.RpcExileV2();
+                        GetPlayerById(id)?.RpcExileV3();
                         break;
 
                     case "/kill":

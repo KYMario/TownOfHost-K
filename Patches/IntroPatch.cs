@@ -58,12 +58,12 @@ namespace TownOfHost
                     }
                 }
                 else
-                if (role.IsVanilla())
-                {
-                    __instance.YouAreText.color = UtilsRoleText.GetRoleColor(role);
-                    __instance.RoleText.color = UtilsRoleText.GetRoleColor(role);
-                    __instance.RoleBlurbText.color = UtilsRoleText.GetRoleColor(role);
-                }
+                    if (role.IsVanilla())
+                    {
+                        __instance.YouAreText.color = UtilsRoleText.GetRoleColor(role);
+                        __instance.RoleText.color = UtilsRoleText.GetRoleColor(role);
+                        __instance.RoleBlurbText.color = UtilsRoleText.GetRoleColor(role);
+                    }
 
                 foreach (var subRole in PlayerState.GetByPlayerId(PlayerControl.LocalPlayer.PlayerId).SubRoles)
                 {
@@ -437,7 +437,7 @@ namespace TownOfHost
 
                 if (PlayerControl.LocalPlayer.Is(CustomRoles.GM))
                 {
-                    PlayerControl.LocalPlayer.RpcExile();
+                    PlayerControl.LocalPlayer.RpcExileV3();
                     PlayerState.GetByPlayerId(PlayerControl.LocalPlayer.PlayerId).SetDead();
                 }
 

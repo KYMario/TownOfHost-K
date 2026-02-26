@@ -139,7 +139,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
         //ぽんこつ占い師のぽんこつ占い師で死ぬのはかわいそう('ω')
         if (AmongUsClient.Instance.AmHost && TellDie && player.IsAlive() && player != null)
         {
-            Player.RpcExileV2();
+            Player.RpcExileV3();
             MyState.DeathReason = CustomDeathReason.Spell;
             MyState.SetDead();
 

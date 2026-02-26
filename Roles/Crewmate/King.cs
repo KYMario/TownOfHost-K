@@ -193,7 +193,7 @@ public sealed class King : RoleBase
 
                     PlayerState state = PlayerState.GetByPlayerId(pc.PlayerId);
                     state.DeathReason = deathReasons[OptDeathReason.GetValue()];
-                    Player.RpcExileV2();
+                    Player.RpcExileV3();
                     state.SetDead();
                     ReportDeadBodyPatch.IgnoreBodyids[Player.PlayerId] = false;
 

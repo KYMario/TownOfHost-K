@@ -137,7 +137,7 @@ class Twins
                     PlayerState.GetByPlayerId(twins.Key).DeathReason = CustomDeathReason.FollowingSuicide;
                     if (isExiled)
                     {
-                        twin.RpcExileV2();
+                        twin.RpcExileV3();
                     }
                     else
                     {

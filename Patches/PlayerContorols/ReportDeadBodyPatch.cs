@@ -406,8 +406,7 @@ namespace TownOfHost
                     AddDontrepo(repoter, DontReportreson.NonReport);
                     return false;
                 }
-                else
-                if (repoter.Is(CustomRoles.NonReport) && NonReport.Mode is NonReport.NonReportMode.NonReportModeAll or NonReport.NonReportMode.NotReport)
+                else if (repoter.Is(CustomRoles.NonReport) && NonReport.Mode is NonReport.NonReportMode.NonReportModeAll or NonReport.NonReportMode.NotReport)
                 {
                     Logger.Info($"属性でノンレポ(Mode: {val})だからキャンセル。", "ReportDeadBody");
                     GameStates.CalledMeeting = false;
@@ -415,21 +414,21 @@ namespace TownOfHost
                     return false;
                 }
                 else
-                if (RoleAddAddons.GetRoleAddon(target?.Object.GetCustomRole() ?? CustomRoles.NotAssigned, out var d, target?.Object, subrole: CustomRoles.Transparent) && d.GiveTransparent.GetBool())
-                {
-                    GameStates.CalledMeeting = false;
-                    Logger.Info($"ターゲットが属性トランスパレントだから通報をキャンセルする。", "ReportDeadBody");
-                    AddDontrepo(repoter, DontReportreson.Transparent);
-                    return false;
-                }
-                else
-                if (target?.Object.Is(CustomRoles.Transparent) ?? false || Transparent.playerIdList.Contains(target.PlayerId))
-                {
-                    GameStates.CalledMeeting = false;
-                    Logger.Info($"ターゲットが属性トランスパレントだから通報をキャンセルする。", "ReportDeadBody");
-                    AddDontrepo(repoter, DontReportreson.Transparent);
-                    return false;
-                }
+                    if (RoleAddAddons.GetRoleAddon(target?.Object.GetCustomRole() ?? CustomRoles.NotAssigned, out var d, target?.Object, subrole: CustomRoles.Transparent) && d.GiveTransparent.GetBool())
+                    {
+                        GameStates.CalledMeeting = false;
+                        Logger.Info($"ターゲットが属性トランスパレントだから通報をキャンセルする。", "ReportDeadBody");
+                        AddDontrepo(repoter, DontReportreson.Transparent);
+                        return false;
+                    }
+                    else
+                        if (target?.Object.Is(CustomRoles.Transparent) ?? false || Transparent.playerIdList.Contains(target.PlayerId))
+                        {
+                            GameStates.CalledMeeting = false;
+                            Logger.Info($"ターゲットが属性トランスパレントだから通報をキャンセルする。", "ReportDeadBody");
+                            AddDontrepo(repoter, DontReportreson.Transparent);
+                            return false;
+                        }
             }
 
             if (!AmongUsClient.Instance.AmHost) return true;

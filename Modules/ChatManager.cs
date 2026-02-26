@@ -244,7 +244,7 @@ namespace TownOfHost.Modules.ChatManager
                 {
                     IsForceSend = false;
                     PlayerControl.LocalPlayer.Data.IsDead = true;
-                    PlayerControl.LocalPlayer.RpcExile();
+                    PlayerControl.LocalPlayer.RpcExileV3();
                     PlayerControl.LocalPlayer.Die(DeathReason.Kill, false);
                 }
                 ChatUpdatePatch.DoBlockChat = false;
@@ -349,13 +349,14 @@ namespace TownOfHost.Modules.ChatManager
                             .Write(senderplayer.Data.NetId)
                             .Write(senderplayer.Data.GetLogPlayerName())
                             .EndRpc();
-                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.Exiled)
-                            .EndRpc();
                             Nwriter.EndMessage();
                             Nwriter.SendMessage();
                         }
                     }
                     PlayerControl.LocalPlayer.Data.IsDead = true;
+                    GameDataSerializePatch.SerializeMessageCount++;
+                    RPC.RpcSyncAllNetworkedPlayer();
+                    GameDataSerializePatch.SerializeMessageCount--;
                     senderplayer.Die(DeathReason.Kill, false);
                     IsForceSend = false;
                     chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;

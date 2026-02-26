@@ -243,9 +243,9 @@ namespace TownOfHost
             //自分自身を追放
             if (GetKeysDown(KeyCode.Return, KeyCode.E, KeyCode.LeftShift) && GameStates.IsInGame && PlayerControl.LocalPlayer.IsAlive())
             {
-                PlayerControl.LocalPlayer.RpcExile();
+                PlayerControl.LocalPlayer.RpcExileV3();
                 PlayerControl.LocalPlayer.Data.IsDead = true;
-                PlayerControl.LocalPlayer.RpcExileV2();
+                PlayerControl.LocalPlayer.RpcExileV3();
                 var state = PlayerState.GetByPlayerId(PlayerControl.LocalPlayer.PlayerId);
                 state.DeathReason = CustomDeathReason.etc;
                 state.SetDead();

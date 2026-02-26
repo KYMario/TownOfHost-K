@@ -228,7 +228,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         {
             NowState = AssassinMeeting.EndMeeting;
             SendStateRPC();
-            Player.RpcExile();
+            Player.RpcExileV3();
             MyState.SetDead();
             return;
         }

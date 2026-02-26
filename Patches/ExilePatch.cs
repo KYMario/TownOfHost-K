@@ -162,7 +162,7 @@ namespace TownOfHost
                         exiled.Object != null && //exiled.Objectがnullでない
                     !Iscallassasin)
                     {
-                        exiled.Object.RpcExileV2();
+                        exiled.Object.RpcExileV3();
                     }
 
                     if (Options.ExAftermeetingflash.GetBool())
@@ -191,7 +191,7 @@ namespace TownOfHost
                             Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を{x.Value}で死亡させました", "AfterMeetingDeath");
                             state.DeathReason = x.Value;
                             state.SetDead();
-                            player?.RpcExileV2();
+                            player?.RpcExileV3();
                             if (x.Value == CustomDeathReason.Suicide)
                                 player?.SetRealKiller(player, true);
                             if (requireResetCam)
@@ -310,10 +310,10 @@ namespace TownOfHost
                     }
                 }
                 else
-                if (result.Value.Exiled.Object?.GetRoleClass() is Assassin && Assassin.NowUse)
-                {
-                    __instance.completeString = MeetingVoteManager.Voteresult + "<size=0>";
-                }
+                    if (result.Value.Exiled.Object?.GetRoleClass() is Assassin && Assassin.NowUse)
+                    {
+                        __instance.completeString = MeetingVoteManager.Voteresult + "<size=0>";
+                    }
             }
             SecondBegin = false;
         }

@@ -571,7 +571,7 @@ public class MeetingVoteManager
             if (PlayerCatch.AnyModClient()) RPC.RpcShowMeetingKill(killtargetid);
 
             pc.Data.IsDead = true;
-            pc.RpcExileV2();
+            pc.RpcExileV3();
         }
         PlayerState.GetByPlayerId(killtargetid).SetDead();
         PlayerState.AllPlayerStates[killtargetid].SetDead();

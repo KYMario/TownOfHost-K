@@ -128,47 +128,47 @@ public sealed class Madonna : RoleBase, ISelfVoter
             target.RpcProtectedMurderPlayer();
         }
         else
-        if (Lovers.OneLovePlayer.BelovedId == target.PlayerId)
-        {
-            IsNonLover = false;
-            Vindictive = true;
-            SendRPC();
-            Logger.Info($"Player: {Player.name},Target: {target.name}　視線が凄いからやめといた{LoverChenge}に役職変更。", "Madonna");
-            Utils.SendMessage(string.Format(GetString("Skill.MadonnnaOneLovertarget"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
+            if (Lovers.OneLovePlayer.BelovedId == target.PlayerId)
+            {
+                IsNonLover = false;
+                Vindictive = true;
+                SendRPC();
+                Logger.Info($"Player: {Player.name},Target: {target.name}　視線が凄いからやめといた{LoverChenge}に役職変更。", "Madonna");
+                Utils.SendMessage(string.Format(GetString("Skill.MadonnnaOneLovertarget"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
 
-            UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadoonaFa"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
-        }
-        else
-        if (!target.IsLovers() && !target.Is(CustomRoles.Vega) && !target.Is(CustomRoles.Altair))
-        {
-            IsNonLover = false;
-            SendRPC();
-            Logger.Info($"Player: {Player.name},Target: {target.name}", "Madonna");
-            Utils.SendMessage(string.Format(GetString("Skill.MadoonnaMyCollect"), UtilsName.GetPlayerColor(target, true)) + GetString("VoteSkillFin"), Player.PlayerId);
-            Utils.SendMessage(string.Format(GetString("Skill.MadoonnaCollect"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
-            target.RpcSetCustomRole(CustomRoles.MadonnaLovers);
-            Player.RpcSetCustomRole(CustomRoles.MadonnaLovers);
-            Lovers.MaMadonnaLoversPlayers.Add(Player);
-            Lovers.MaMadonnaLoversPlayers.Add(target);
-            Lovers.HaveLoverDontTaskPlayers.Add(Player.PlayerId);
-            Lovers.HaveLoverDontTaskPlayers.Add(target.PlayerId);
-            RPC.SyncMadonnaLoversPlayers();
-            UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadonnaCo"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
+                UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadoonaFa"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
+            }
+            else
+                if (!target.IsLovers() && !target.Is(CustomRoles.Vega) && !target.Is(CustomRoles.Altair))
+                {
+                    IsNonLover = false;
+                    SendRPC();
+                    Logger.Info($"Player: {Player.name},Target: {target.name}", "Madonna");
+                    Utils.SendMessage(string.Format(GetString("Skill.MadoonnaMyCollect"), UtilsName.GetPlayerColor(target, true)) + GetString("VoteSkillFin"), Player.PlayerId);
+                    Utils.SendMessage(string.Format(GetString("Skill.MadoonnaCollect"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
+                    target.RpcSetCustomRole(CustomRoles.MadonnaLovers);
+                    Player.RpcSetCustomRole(CustomRoles.MadonnaLovers);
+                    Lovers.MaMadonnaLoversPlayers.Add(Player);
+                    Lovers.MaMadonnaLoversPlayers.Add(target);
+                    Lovers.HaveLoverDontTaskPlayers.Add(Player.PlayerId);
+                    Lovers.HaveLoverDontTaskPlayers.Add(target.PlayerId);
+                    RPC.SyncMadonnaLoversPlayers();
+                    UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadonnaCo"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
 
-            target.RpcProtectedMurderPlayer();
-        }
-        else
-        {
-            IsNonLover = false;
-            Vindictive = true;
-            SendRPC();
-            Logger.Info($"Player: {Player.name},Target: {target.name}　相手がラバーズなので断わられた{LoverChenge}に役職変更。", "Madonna");
-            Utils.SendMessage(string.Format(GetString("Skill.MadoonnaMynotcollect"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
-            Utils.SendMessage(string.Format(GetString("Skill.MadonnaOneLoverNo"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
+                    target.RpcProtectedMurderPlayer();
+                }
+                else
+                {
+                    IsNonLover = false;
+                    Vindictive = true;
+                    SendRPC();
+                    Logger.Info($"Player: {Player.name},Target: {target.name}　相手がラバーズなので断わられた{LoverChenge}に役職変更。", "Madonna");
+                    Utils.SendMessage(string.Format(GetString("Skill.MadoonnaMynotcollect"), UtilsName.GetPlayerColor(target, true), GetString($"{LoverChenge}")) + GetString("VoteSkillFin"), Player.PlayerId);
+                    Utils.SendMessage(string.Format(GetString("Skill.MadonnaOneLoverNo"), UtilsName.GetPlayerColor(Player, true)), target.PlayerId);
 
-            UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadoonaFa"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
-            target.RpcProtectedMurderPlayer();
-        }
+                    UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadoonaFa"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
+                    target.RpcProtectedMurderPlayer();
+                }
     }
     public override void AfterMeetingTasks()
     {
@@ -185,13 +185,13 @@ public sealed class Madonna : RoleBase, ISelfVoter
             Breakup = true;//リア充ならバクハフラグを立てる
         }
         else
-        if (Player.IsAlive() && !Player.Is(CustomRoles.MadonnaLovers) && Breakup)
-        {//生きててラバーズ状態が解消されててる状態なら実行
-            Utils.SendMessage(string.Format(GetString("Skill.MadoonnaHAMETU"), GetString($"{LoverChenge}")), Player.PlayerId);
-            Breakup = false;
-            if (!Utils.RoleSendList.Contains(Player.PlayerId)) Utils.RoleSendList.Add(Player.PlayerId);
-            Player.RpcSetCustomRole(LoverChenge, true, log: true);
-        }
+            if (Player.IsAlive() && !Player.Is(CustomRoles.MadonnaLovers) && Breakup)
+            {//生きててラバーズ状態が解消されててる状態なら実行
+                Utils.SendMessage(string.Format(GetString("Skill.MadoonnaHAMETU"), GetString($"{LoverChenge}")), Player.PlayerId);
+                Breakup = false;
+                if (!Utils.RoleSendList.Contains(Player.PlayerId)) Utils.RoleSendList.Add(Player.PlayerId);
+                Player.RpcSetCustomRole(LoverChenge, true, log: true);
+            }
 
         if (Vindictive)
         {
@@ -199,15 +199,15 @@ public sealed class Madonna : RoleBase, ISelfVoter
             Player.RpcSetCustomRole(LoverChenge, true, log: true);
         }
         else
-        if (limit <= UtilsGameLog.day && IsNonLover && Player.IsAlive())
-        {
-            Player.RpcExileV2();
-            MyState.SetDead();
-            MyState.DeathReason = CustomDeathReason.Suicide;
-            ReportDeadBodyPatch.IgnoreBodyids[Player.PlayerId] = false;
-            UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("log.AM"), UtilsName.GetPlayerColor(PlayerCatch.GetPlayerById(Player.PlayerId))));
-            Logger.Info($"{Player.GetNameWithRole().RemoveHtmlTags()}は指定ターン経過したため自殺。", "Madonna");
-        }
+            if (limit <= UtilsGameLog.day && IsNonLover && Player.IsAlive())
+            {
+                Player.RpcExileV3();
+                MyState.SetDead();
+                MyState.DeathReason = CustomDeathReason.Suicide;
+                ReportDeadBodyPatch.IgnoreBodyids[Player.PlayerId] = false;
+                UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("log.AM"), UtilsName.GetPlayerColor(PlayerCatch.GetPlayerById(Player.PlayerId))));
+                Logger.Info($"{Player.GetNameWithRole().RemoveHtmlTags()}は指定ターン経過したため自殺。", "Madonna");
+            }
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false)
     {

@@ -171,7 +171,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             }
             else
             {
-                target.RpcExileV2();
+                target.RpcExileV3();
             }
             state.DeathReason = CustomDeathReason.Magic;
             state.SetDead();

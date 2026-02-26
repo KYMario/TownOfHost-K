@@ -124,7 +124,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
     {
         var target = PlayerCatch.GetPlayerById(targetId);
         var state = PlayerState.GetByPlayerId(targetId);
-        target.RpcExileV2();
+        target.RpcExileV3();
         state.DeathReason = targetId == Player.PlayerId ? CustomDeathReason.Misfire : CustomDeathReason.Kill;
         state.SetDead();
 

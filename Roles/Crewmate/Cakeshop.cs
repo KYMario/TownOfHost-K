@@ -46,6 +46,7 @@ public sealed class Cakeshop : RoleBase, INekomata
         {
             Logger.Info($"真っ黒こげのケーキ", "CakeShop");
             Player.RpcSetCustomRole(CustomRoles.Emptiness);
+            Options.CustomRoleSpawnChances[CustomRoles.Cakeshop].SetValue(0, true, false);
             return;
         }
         _ = new LateTask(() =>

@@ -12,7 +12,6 @@ using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.ExtendedPlayerControl;
 
 using static TownOfHost.Translator;
-using Rewired;
 
 namespace TownOfHost
 {
@@ -186,7 +185,7 @@ namespace TownOfHost
                     if (pc == null) continue;
                     if (pc.IsAlive()) continue;
 
-                    pc.RpcExileV2();
+                    pc.RpcExileV3();
                 }
             }
         }
@@ -231,10 +230,6 @@ namespace TownOfHost
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
 
-        public static void RpcExile(this PlayerControl player)
-        {
-            RPC.ExileAsync(player);
-        }
         public static void RpcSetNameEx(this PlayerControl player, string name)
         {
             foreach (var seer in PlayerCatch.AllPlayerControls)
@@ -441,6 +436,16 @@ namespace TownOfHost
             player.Exiled();
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(player.NetId, (byte)RpcCalls.Exiled, SendOption.None, -1);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+        public static void RpcExileV3(this PlayerControl player)
+        {
+            if (player == null) return;
+            player.Exiled();
+            player.GetPlayerState().SetDead();
+            player.Data.IsDead = true;
+            Patches.GameDataSerializePatch.SerializeMessageCount++;
+            RPC.RpcSyncAllNetworkedPlayer();
+            Patches.GameDataSerializePatch.SerializeMessageCount--;
         }
         public static void MurderPlayer(this PlayerControl killer, PlayerControl target)
         {

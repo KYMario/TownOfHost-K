@@ -144,7 +144,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
         if ((CanBeKilledBy(target.GetCustomRole()) && !AlienTairo) || (target.IsLovers() && OptionMeetingSheriffCanKillLovers.GetBool()) || (target.Is(CustomRoles.Amanojaku) && OptionMeetingSheriffCanKillNeutrals.GetBool()))
         {
             state = PlayerState.GetByPlayerId(target.PlayerId);
-            target.RpcExileV2();
+            target.RpcExileV3();
             state.DeathReason = CustomDeathReason.Kill;
             state.SetDead();
 
@@ -166,7 +166,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
             Player.RpcMeetingKill(target);
             return;
         }
-        Player.RpcExileV2();
+        Player.RpcExileV3();
         MyState.DeathReason = target.Is(CustomRoles.Tairou) && Tairou.TairoDeathReason ? CustomDeathReason.Counter :
                             target.Is(CustomRoles.Alien) && Alien.TairoDeathReason ? CustomDeathReason.Counter :
                             (target.Is(CustomRoles.JackalAlien) && JackalAlien.TairoDeathReason ? CustomDeathReason.Counter :
