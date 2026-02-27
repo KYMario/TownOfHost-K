@@ -364,6 +364,8 @@ namespace TownOfHost.Modules.ChatManager
                 }
                 else//ホスト生存時はホストに喋らせる
                 {
+                    /* タスクターン中にDesyncで送るとキック!!多分死んだら大丈夫なんだろうけド...s */
+                    if (!GameStates.IsMeeting) return;
                     senderplayer = PlayerControl.LocalPlayer;
                     Main.MessagesToSend.RemoveAt(0);
                     // ホスト視点でのチャット送信
