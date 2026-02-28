@@ -12,6 +12,7 @@ using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.ExtendedPlayerControl;
 
 using static TownOfHost.Translator;
+using Rewired;
 
 namespace TownOfHost
 {
@@ -439,8 +440,15 @@ namespace TownOfHost
         }
         public static void RpcExileV3(this PlayerControl player)
         {
+            //自視点以外当たり判定が変わらないから霊界だと挙動不審になる。
             if (player == null) return;
-            if (player.IsAlive() && player.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+            if (AntiBlackout.IsSet)
+            {
+                Logger.Warn("Antiblack set Cancel..", "RpcExileV3");
+                if (player.IsAlive()) player.GetPlayerState().SetDead();
+                return;
+            }
+            if (player.IsAlive() || !(player.Data.Role.Role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost or RoleTypes.GuardianAngel))
             {//道連れ、マジシャン等で死んでいないのにIsDeadを変更する場合はモーションを入れる。
                 if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                 {
@@ -453,9 +461,11 @@ namespace TownOfHost
             }
             player.Exiled();
             player.Data.IsDead = true;
-            player.GetPlayerState().SetDead();
+            if (player.IsAlive()) player.GetPlayerState().SetDead();
             Patches.GameDataSerializePatch.SerializeMessageCount++;
             RPC.RpcSyncAllNetworkedPlayer();
+            player.RpcSetRole(player.IsGhostRole() ? RoleTypes.GuardianAngel :
+            (player.CanUseSabotageButton() ? RoleTypes.CrewmateGhost : RoleTypes.ImpostorGhost));
             Patches.GameDataSerializePatch.SerializeMessageCount--;
         }
         public static void MurderPlayer(this PlayerControl killer, PlayerControl target)

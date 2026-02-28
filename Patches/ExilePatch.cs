@@ -190,8 +190,8 @@ namespace TownOfHost
                             var state = PlayerState.GetByPlayerId(x.Key);
                             Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を{x.Value}で死亡させました", "AfterMeetingDeath");
                             state.DeathReason = x.Value;
-                            state.SetDead();
                             player?.RpcExileV3();
+                            state.SetDead();
                             if (x.Value == CustomDeathReason.Suicide)
                                 player?.SetRealKiller(player, true);
                             if (requireResetCam)
