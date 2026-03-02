@@ -131,7 +131,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
         UtilsGameLog.AddGameLog($"Nue", $"{UtilsName.GetPlayerColor(target, true)}(<b>{UtilsRoleText.GetTrueRoleName(target.PlayerId, false)}</b>) [{Utils.GetVitalText(target.PlayerId, true)}]");
         UtilsGameLog.AddGameLogsub($"\n\t⇐ {UtilsName.GetPlayerColor(Player, true)}(<b>{UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)}</b>)");
 
-        if (Options.ExHideChatCommand.GetBool() && (Main.IsCs() || GameStates.IsLocalGame))
+        if (Options.ExHideChatCommand.GetBool() && !Utils.IsRestriction())
         {
             ChatManager.OnDisconnectOrDeadPlayer(target.PlayerId);
         }

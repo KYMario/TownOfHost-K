@@ -25,7 +25,7 @@ namespace TownOfHost
             GameStates.Intro = true;
             Main.NormalOptions.roleOptions.SetRoleRate(RoleTypes.GuardianAngel, 0, 0);
 
-            if (GameStates.IsOnlineGame && !Main.IsCs())
+            if (Utils.IsRestriction())
             {
                 var op = Main.NormalOptions;
                 if (op.NumCommonTasks + op.NumLongTasks + op.NumShortTasks > 255)

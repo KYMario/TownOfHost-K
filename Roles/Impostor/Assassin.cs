@@ -305,7 +305,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 AntiBlackout.SendGameData();
                 GameDataSerializePatch.SerializeMessageCount--;
 
-                if (Options.ExHideChatCommand.GetBool() && (Main.IsCs() || GameStates.IsLocalGame))
+                if (Options.ExHideChatCommand.GetBool() && !Utils.IsRestriction())
                 {
                     _ = new LateTask(() =>
                     {

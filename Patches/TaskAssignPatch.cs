@@ -102,7 +102,7 @@ namespace TownOfHost
 
             if (taskTypeIds.Count == 0) hasCommonTasks = false; //タスク再配布時はコモンを0に
 
-            if (GameStates.IsOnlineGame && !Main.IsCs())
+            if (Utils.IsRestriction())
             {
                 if (NumCommonTasks + NumLongTasks + NumShortTasks > 255)
                 {

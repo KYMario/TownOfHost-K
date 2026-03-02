@@ -1576,7 +1576,7 @@ namespace TownOfHost
                     .SendMessage();
                     break;
                 default:
-                    if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
+                    if (IsRestriction() is false)
                     {//バニラ鯖以外のチャット秘匿の処理
                         if (!Options.ExHideChatCommand.GetBool()) break;
                         if (player.IsModClient()) return;
@@ -1639,7 +1639,7 @@ namespace TownOfHost
                     }
                     break;
             }
-            if (Main.IsCs() || GameStates.IsLocalGame)
+            if (IsRestriction() is false)
             {
                 if (AntiBlackout.IsCached && !player.IsAlive() && GameStates.InGame)
                 {

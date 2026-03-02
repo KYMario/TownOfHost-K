@@ -133,24 +133,14 @@ namespace TownOfHost.Modules.ChatManager
 
         public static void SendPreviousMessagesToAll(bool SendDiePlayer = true)
         {
-            if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
+            if (Utils.IsRestriction() is false)
             {
                 ChatUpdatePatch.DoBlockChat = true;
                 var rd = IRandom.Instance;
                 string msg;
                 List<CustomRoles> roles = Enum.GetValues(typeof(CustomRoles)).Cast<CustomRoles>().Where(role => (role.IsLovers() || role.IsCrewmate() || role.IsImpostorTeam() || role.IsNeutral()) && Event.CheckRole(role)).ToList();
                 string[] specialTexts = new string[] { "bt" };
-                bool IsVannilaserver = !Main.IsCs() && GameStates.IsOnlineGame;
-                bool IsHostRev = IsVannilaserver && !PlayerControl.LocalPlayer.IsAlive();
 
-                if (IsHostRev)
-                {
-                    IsForceSend = true;
-                    PlayerControl.LocalPlayer.Data.IsDead = false;
-                    GameDataSerializePatch.SerializeMessageCount++;
-                    RPC.RpcSyncAllNetworkedPlayer();
-                    GameDataSerializePatch.SerializeMessageCount--;
-                }
                 for (int i = chatHistory.Count; i < 30; i++)
                 {
                     msg = "/";
@@ -164,7 +154,7 @@ namespace TownOfHost.Modules.ChatManager
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(player, msg);
                     var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                     writer.StartMessage(-1);
-                    writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : player.NetId, (byte)RpcCalls.SendChat)
+                    writer.StartRpc(player.NetId, (byte)RpcCalls.SendChat)
                         .Write(msg)
                         .EndRpc();
                     writer.EndMessage();
@@ -192,8 +182,8 @@ namespace TownOfHost.Modules.ChatManager
 
                                     var wt = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                                     wt.StartMessage(-1);
-                                    wt.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
-                                    .Write(IsVannilaserver ? PlayerControl.LocalPlayer.PlayerId : senderPlayer.PlayerId)
+                                    wt.StartRpc(senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
+                                    .Write(senderPlayer.PlayerId)
                                     .Write((int)ChatNoteTypes.DidVote)
                                         .EndRpc();
                                     wt.EndMessage();
@@ -205,7 +195,7 @@ namespace TownOfHost.Modules.ChatManager
 
                                 var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                                 writer.StartMessage(-1);
-                                writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChat)
+                                writer.StartRpc(senderPlayer.NetId, (byte)RpcCalls.SendChat)
                                     .Write(senderMessage)
                                     .EndRpc();
                                 writer.EndMessage();
@@ -221,8 +211,8 @@ namespace TownOfHost.Modules.ChatManager
 
                                     var wt = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                                     wt.StartMessage(-1);
-                                    wt.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
-                                    .Write(IsVannilaserver ? PlayerControl.LocalPlayer.PlayerId : senderPlayer.PlayerId)
+                                    wt.StartRpc(senderPlayer.NetId, (byte)RpcCalls.SendChatNote)
+                                    .Write(senderPlayer.PlayerId)
                                     .Write((int)ChatNoteTypes.DidVote)
                                         .EndRpc();
                                     wt.EndMessage();
@@ -232,7 +222,7 @@ namespace TownOfHost.Modules.ChatManager
                                 DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderPlayer, senderMessage);
                                 var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                                 writer.StartMessage(-1);
-                                writer.StartRpc(IsVannilaserver ? PlayerControl.LocalPlayer.NetId : senderPlayer.NetId, (byte)RpcCalls.SendChat)
+                                writer.StartRpc(senderPlayer.NetId, (byte)RpcCalls.SendChat)
                                     .Write(senderMessage)
                                     .EndRpc();
                                 writer.EndMessage();
@@ -241,13 +231,6 @@ namespace TownOfHost.Modules.ChatManager
                         }
                     }
                 }
-                if (IsHostRev)
-                {
-                    IsForceSend = false;
-                    PlayerControl.LocalPlayer.Data.IsDead = true;
-                    PlayerControl.LocalPlayer.RpcExileV3();
-                    PlayerControl.LocalPlayer.Die(DeathReason.Kill, false);
-                }
                 ChatUpdatePatch.DoBlockChat = false;
             }
         }
@@ -255,7 +238,7 @@ namespace TownOfHost.Modules.ChatManager
         {
             if (PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
             {
-                if (!Main.IsCs() && GameStates.IsOnlineGame)
+                if (Utils.IsRestriction())
                 {
                     SendMessageInGame(null);
                     return;
@@ -313,7 +296,7 @@ namespace TownOfHost.Modules.ChatManager
                 return;
             }
             // バニラ鯖使用下の状況
-            if (Main.IsCs() is false && GameStates.IsOnlineGame)
+            if (Utils.IsRestriction())
             {
                 //ホスト死亡時
                 if (PlayerControl.LocalPlayer.IsAlive() is false)
@@ -627,7 +610,7 @@ namespace TownOfHost.Modules.ChatManager
         }
         public static void OnDisconnectOrDeadPlayer(byte id)
         {
-            if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
+            if (Utils.IsRestriction() is false)
             {
                 if (!AmongUsClient.Instance.AmHost || !Options.ExHideChatCommand.GetBool() || !GameStates.IsMeeting || AntiBlackout.IsSet || Roles.Impostor.Assassin.NowUse) return;
 
@@ -669,7 +652,7 @@ namespace TownOfHost.Modules.ChatManager
         {
             if (!AmongUsClient.Instance.AmHost) return;
 
-            if ((GameStates.IsOnlineGame && Main.IsCs()) || GameStates.IsLocalGame)
+            if (Utils.IsRestriction() is false)
             {
                 _ = new LateTask(() =>
                 {

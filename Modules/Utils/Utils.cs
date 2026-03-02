@@ -396,7 +396,7 @@ namespace TownOfHost
             var fir = "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
-            if (Main.IsCs() is false && GameStates.IsOnlineGame)
+            if (Utils.IsRestriction())
             {
                 var sendtext = text;
                 if (!VersionInfoManager.GetCustomFlag(1))
@@ -898,6 +898,19 @@ namespace TownOfHost
             // 例: 各プレイヤーの設定をサーバーと同期する
             Logger.Info("Syncing all settings...", "Utils");
             // 実際の同期処理をここに実装
+        }
+        /// <summary>
+        /// バニラサーバーの処理を行うか
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsRestriction()
+        {
+            //デバッグならカスタム・ローカル問わずバニラと同処理。
+            if (DebugModeManager.AmDebugger && DebugModeManager.EnableTOHkDebugMode.GetBool()) return true;
+            //カスタムサーバー か ローカルゲームならfalseを返す
+            if (Main.IsCs() || GameStates.IsLocalGame) return false;
+
+            return true;
         }
         [GameModuleInitializer]
         public static void Init()

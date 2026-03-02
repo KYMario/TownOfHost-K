@@ -129,7 +129,7 @@ public static class MeetingHudPatch
             MeetingStates.MeetingCalled = true;
             GameStates.ExiledAnimate = false;
 
-            if (Options.ExHideChatCommand.GetBool() && !Assassin.NowUse && (Main.IsCs() || GameStates.IsLocalGame))
+            if (Options.ExHideChatCommand.GetBool() && !Assassin.NowUse && Utils.IsRestriction() is false)
             {
                 ChatManager.StratMeetingSetDead();
             }
@@ -509,7 +509,7 @@ public static class MeetingHudPatch
                     Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を処刑しました", "Execution");
                     __instance.CheckForEndVoting();
 
-                    if (Options.ExHideChatCommand.GetBool() && !AntiBlackout.IsCached && (Main.IsCs() || GameStates.IsLocalGame))
+                    if (Options.ExHideChatCommand.GetBool() && !AntiBlackout.IsCached && !Utils.IsRestriction())
                     {
                         GameDataSerializePatch.SerializeMessageCount++;
                         foreach (var pc in PlayerCatch.AllAlivePlayerControls)

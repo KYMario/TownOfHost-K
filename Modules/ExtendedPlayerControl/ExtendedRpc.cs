@@ -294,6 +294,8 @@ namespace TownOfHost
             if (!GameStates.InGame) return;
             if (target == null) target = killer;
             if (target.IsModClient() && SendtoClient is false) return;
+            // 二重に死ぬ問題があるからこれは通さない
+            if (SendtoClient is false && Utils.IsRestriction()) return;
 
             MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(killer.NetId, (byte)RpcCalls.MurderPlayer, SendOption.None, target.GetClientId());
             messageWriter.WriteNetObject(target);
@@ -443,7 +445,7 @@ namespace TownOfHost
             //自視点以外当たり判定が変わらないから霊界だと挙動不審になる。
             if (player == null) return;
 
-            if (Main.IsCs() || GameStates.IsLocalGame)
+            if (!Utils.IsRestriction())
             {
                 player.RpcExileV2();
                 return;
