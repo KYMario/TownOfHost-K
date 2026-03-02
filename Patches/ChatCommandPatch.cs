@@ -547,7 +547,7 @@ namespace TownOfHost
                             {
                                 SendMessage(send.Mark(ModColors.ImpostorRed), sendplayer.PlayerId,
                                 ColorString(ModColors.ImpostorRed,
-                                $"<line-height=-18%>\n★{PlayerControl.LocalPlayer.GetPlayerColor()}★"));
+                                $"\n★{PlayerControl.LocalPlayer.GetPlayerColor()}★"));
                             }
                         }
                         break;
@@ -573,7 +573,7 @@ namespace TownOfHost
                                 {
                                     SendMessage(send.Mark(ModColors.JackalColor), jac.PlayerId,
                                     ColorString(ModColors.JackalColor,
-                                    $"<line-height=-18%>\nΦ{PlayerControl.LocalPlayer.GetPlayerColor()}Φ"));
+                                    $"\nΦ{PlayerControl.LocalPlayer.GetPlayerColor()}Φ"));
                                 }
                             }
                         }
@@ -606,7 +606,7 @@ namespace TownOfHost
                                     if (clientid == -1) continue;
                                     SendMessage(send.Mark(GetRoleColor(loverrole)), lover.PlayerId,
                                     ColorString(GetRoleColor(loverrole),
-                                    $"<line-height=-18%>\n♥{PlayerControl.LocalPlayer.GetPlayerColor()}♥"));
+                                    $"\n♥{PlayerControl.LocalPlayer.GetPlayerColor()}♥"));
                                 }
                             }
                         }
@@ -641,7 +641,7 @@ namespace TownOfHost
                                         if (clientid == -1) continue;
                                         SendMessage(send.Mark(GetRoleColor(CustomRoles.Twins)), twins.PlayerId,
                                         ColorString(GetRoleColor(CustomRoles.Twins),
-                                        $"<line-height=-18%>\n∈{PlayerControl.LocalPlayer.GetPlayerColor()}∈"));
+                                        $"\n∈{PlayerControl.LocalPlayer.GetPlayerColor()}∈"));
                                     }
                                 }
                             }
@@ -677,7 +677,7 @@ namespace TownOfHost
                                         if (clientid == -1) continue;
                                         SendMessage(send.Mark(GetRoleColor(CustomRoles.Connecting)), connect.PlayerId,
                                         ColorString(GetRoleColor(CustomRoles.Connecting),
-                                        $"<line-height=-18%>\nΨ{PlayerControl.LocalPlayer.GetPlayerColor()}Ψ"));
+                                        $"\nΨ{PlayerControl.LocalPlayer.GetPlayerColor()}Ψ"));
                                     }
                                 }
                             }
@@ -1440,7 +1440,7 @@ namespace TownOfHost
                             {
                                 var clientid = sendplayer.GetClientId();
                                 if (clientid == -1) continue;
-                                string title = $"<line-height=-18%>\n<#ff1919>☆{player.GetPlayerColor()}☆</line-height>";
+                                string title = $"\n<#ff1919>☆{player.GetPlayerColor()}☆</line-height>";
                                 string sendtext = send.Mark(Palette.ImpostorRed);
                                 SendMessage(sendtext, sendplayer.PlayerId, title);
                             }
@@ -1466,7 +1466,7 @@ namespace TownOfHost
                                 {
                                     var clientid = jac.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = $"<line-height=-18%>\n<#00b4eb>Φ{player.GetPlayerColor()}Φ</line-height>";
+                                    string title = $"\n<#00b4eb>Φ{player.GetPlayerColor()}Φ</line-height>";
                                     string sendtext = send.Mark(ModColors.JackalColor);
                                     SendMessage(sendtext, jac.PlayerId, title);
                                 }
@@ -1504,7 +1504,7 @@ namespace TownOfHost
                                 {
                                     var clientid = lover.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = ColorString(GetRoleColor(loverrole), $"<line-height=-18%>\n♥{player.GetPlayerColor()}♥</line-height>");
+                                    string title = ColorString(GetRoleColor(loverrole), $"\n♥{player.GetPlayerColor()}♥</line-height>");
                                     string sendtext = send.Mark(GetRoleColor(loverrole));
                                     SendMessage(sendtext, lover.PlayerId, title);
                                 }
@@ -1531,7 +1531,7 @@ namespace TownOfHost
                                 {
                                     var clientid = twins.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = ColorString(GetRoleColor(CustomRoles.Twins), $"<line-height=-18%>\n∈{player.GetPlayerColor()}∋</line-height>");
+                                    string title = ColorString(GetRoleColor(CustomRoles.Twins), $"\n∈{player.GetPlayerColor()}∋</line-height>");
                                     string sendtext = send.Mark(GetRoleColor(CustomRoles.Twins));
                                     SendMessage(sendtext, twins.PlayerId, title);
                                 }
@@ -1557,7 +1557,7 @@ namespace TownOfHost
                                 {
                                     var clientid = connect.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = ColorString(GetRoleColor(CustomRoles.Connecting), $"<line-height=-18%>\nΨ{player.GetPlayerColor()}Ψ</line-height>");
+                                    string title = ColorString(GetRoleColor(CustomRoles.Connecting), $"\nΨ{player.GetPlayerColor()}Ψ</line-height>");
                                     string sendtext = send.Mark(GetRoleColor(CustomRoles.Connecting));
                                     SendMessage(sendtext, connect.PlayerId, title);
                                 }
