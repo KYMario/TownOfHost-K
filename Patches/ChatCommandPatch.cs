@@ -9,7 +9,6 @@ using InnerNet;
 using HarmonyLib;
 using UnityEngine;
 using Assets.CoreScripts;
-using AmongUs.Data;
 using AmongUs.GameOptions;
 
 using TownOfHost.Modules;
@@ -26,7 +25,6 @@ using static TownOfHost.PlayerCatch;
 using TownOfHost.Roles.Core.Descriptions;
 using TownOfHost.Patches;
 using TownOfHost.Roles.AddOns.Common;
-using System.IO;
 
 namespace TownOfHost
 {
@@ -38,6 +36,7 @@ namespace TownOfHost
         public static bool Prefix(ChatController __instance)
         {
             __instance.timeSinceLastMessage = 3f;
+            if (ChatManager.IsForceSend) return false;
 
             // クイックチャットなら横流し
             if (__instance.quickChatField.Visible) return true;
