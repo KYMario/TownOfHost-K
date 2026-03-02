@@ -4,6 +4,7 @@ using Hazel;
 using System;
 using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
+using AmongUs.QuickChat;
 
 namespace TownOfHost.Modules.ChatManager
 {
@@ -254,6 +255,11 @@ namespace TownOfHost.Modules.ChatManager
         {
             if (PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
             {
+                if (!Main.IsCs() && GameStates.IsOnlineGame)
+                {
+                    SendMessageInGame(null);
+                    return;
+                }
                 if (Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).Count() > 0)
                 {
                     (string msg, byte sendTo, string title) = Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).FirstOrDefault();
@@ -322,7 +328,8 @@ namespace TownOfHost.Modules.ChatManager
                         senderplayer.SetName(title);
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
                         senderplayer.SetName(name);
-                        chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                        if (chatController is not null)
+                            chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
                         if (sendTo == senderplayer.PlayerId) return;
                     }
                     IsForceSend = true;
@@ -334,23 +341,41 @@ namespace TownOfHost.Modules.ChatManager
                         {
                             var seerclientid = seer.GetClientId();
                             GameDataSerializePatch.SerializeMessageCount++;
-                            RPC.RpcSyncAllNetworkedPlayer(seerclientid);
-                            GameDataSerializePatch.SerializeMessageCount--;
                             var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                             Nwriter.StartMessage(seerclientid);
+                            Nwriter.Write((writer) =>
+                            {
+                                writer.StartMessage(1); //0x01 Data
+                                {
+                                    writer.WritePacked(senderplayer.NetId);
+                                    senderplayer.Serialize(writer, false);
+                                }
+                                writer.EndMessage();
+                            });
                             Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
                             .Write(senderplayer.Data.NetId)
                             .Write(title)
                             .EndRpc();
-                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
-                            .Write(msg)
-                            .EndRpc();
+                            if (ChatControllerUpdatePatch.IsQuickChatOnly)
+                            {
+                                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendQuickChat)
+                                .Write((byte)QuickChatPhraseType.SimplePhrase)
+                                .Write((uint)StringNames.QCGG)
+                                .EndRpc();
+                            }
+                            else
+                            {
+                                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                                .Write(msg)
+                                .EndRpc();
+                            }
                             Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
                             .Write(senderplayer.Data.NetId)
                             .Write(senderplayer.Data.GetLogPlayerName())
                             .EndRpc();
                             Nwriter.EndMessage();
                             Nwriter.SendMessage();
+                            GameDataSerializePatch.SerializeMessageCount--;
                         }
                     }
                     PlayerControl.LocalPlayer.Data.IsDead = true;
@@ -359,13 +384,12 @@ namespace TownOfHost.Modules.ChatManager
                     GameDataSerializePatch.SerializeMessageCount--;
                     senderplayer.Die(DeathReason.Kill, false);
                     IsForceSend = false;
-                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                    if (chatController is not null)
+                        chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
                     return;
                 }
                 else//ホスト生存時はホストに喋らせる
                 {
-                    /* タスクターン中にDesyncで送るとキック!!多分死んだら大丈夫なんだろうけド...s */
-                    if (!GameStates.IsMeeting) return;
                     senderplayer = PlayerControl.LocalPlayer;
                     Main.MessagesToSend.RemoveAt(0);
                     // ホスト視点でのチャット送信
@@ -374,7 +398,8 @@ namespace TownOfHost.Modules.ChatManager
                         senderplayer.SetName(title);
                         DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
                         senderplayer.SetName(name);
-                        chatController.timeSinceLastMessage = 0;
+                        if (chatController is not null)
+                            chatController.timeSinceLastMessage = 0;
                     }
                     var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                     Nwriter.StartMessage(clientId);
@@ -382,9 +407,19 @@ namespace TownOfHost.Modules.ChatManager
                     .Write(senderplayer.Data.NetId)
                     .Write(title)
                     .EndRpc();
-                    Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
-                    .Write(msg)
-                    .EndRpc();
+                    if (ChatControllerUpdatePatch.IsQuickChatOnly)
+                    {
+                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendQuickChat)
+                        .Write((byte)QuickChatPhraseType.SimplePhrase)
+                        .Write((uint)StringNames.QCGG)
+                        .EndRpc();
+                    }
+                    else
+                    {
+                        Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                        .Write(msg)
+                        .EndRpc();
+                    }
                     Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
                     .Write(senderplayer.Data.NetId)
                     .Write(senderplayer.Data.GetLogPlayerName())
@@ -399,7 +434,8 @@ namespace TownOfHost.Modules.ChatManager
                             ChatUpdatePatch.DoBlockChat = false;
                         }, Main.LagTime, "Setname", true);
                     }
-                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                    if (chatController is not null)
+                        chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
                     return;
                 }
             }
@@ -436,7 +472,8 @@ namespace TownOfHost.Modules.ChatManager
                     Nwriter.SendMessage();
                     UtilsNotifyRoles.NotifyRoles();
                 }
-                chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                if (chatController is not null)
+                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
                 return;
             }
 
@@ -450,7 +487,8 @@ namespace TownOfHost.Modules.ChatManager
                     senderplayer.SetName(title);
                     DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
                     senderplayer.SetName(name);
-                    chatController.timeSinceLastMessage = 0;
+                    if (chatController is not null)
+                        chatController.timeSinceLastMessage = 0;
                 }
                 var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                 Nwriter.StartMessage(clientId);
@@ -475,7 +513,8 @@ namespace TownOfHost.Modules.ChatManager
                         ChatUpdatePatch.DoBlockChat = false;
                     }, Main.LagTime, "Setname", true);
                 }
-                chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                if (chatController is not null)
+                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
                 return;
             }
             if (Options.ExHideChatCommand.GetBool())
@@ -510,7 +549,8 @@ namespace TownOfHost.Modules.ChatManager
                     Nwriter.SendMessage();
 
                 }
-                chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
+                if (chatController is not null)
+                    chatController.timeSinceLastMessage = sendTo is byte.MaxValue ? 0 : Main.MessageWait.Value - 0.2f;
             }
         }
         public static void SendmessageInLobby(ChatController chatController)
@@ -553,9 +593,19 @@ namespace TownOfHost.Modules.ChatManager
             .Write(senderplayer.Data.NetId)
             .Write(title)
             .EndRpc();
-            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
-            .Write(msg)
-            .EndRpc();
+            if (ChatControllerUpdatePatch.IsQuickChatOnly)
+            {
+                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendQuickChat)
+                .Write((byte)QuickChatPhraseType.SimplePhrase)
+                .Write((uint)StringNames.QCGG)
+                .EndRpc();
+            }
+            else
+            {
+                Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SendChat)
+                .Write(msg)
+                .EndRpc();
+            }
             Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
             .Write(senderplayer.Data.NetId)
             .Write(name)

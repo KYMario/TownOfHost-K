@@ -25,6 +25,7 @@ namespace TownOfHost
 
             Logger.Info($"{__instance.GameId}に参加", "OnGameJoined");
             SelectRolesPatch.Disconnected.Clear();
+            ChatControllerUpdatePatch.IsQuickChatOnly = false;
             GameStates.IsOutro = false;
             GameStates.Intro = false;
             Main.playerVersion = new Dictionary<byte, PlayerVersion>();

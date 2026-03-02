@@ -82,6 +82,19 @@ namespace TownOfHost
                     __instance.freeChatField.textArea.Clear();
                     __instance.freeChatField.textArea.SetText(cancelVal);
                 }
+                if (ChatControllerUpdatePatch.IsQuickChatOnly)
+                {
+                    canceled = true;
+                    __instance.freeChatField.textArea.Clear();
+                    __instance.freeChatField.textArea.SetText(cancelVal);
+                    return false;
+                }
+                if (AmongUsClient.Instance.AmHost && GameStates.IsLobby && !canceled)
+                {
+                    SendChat(text);
+                    __instance.freeChatField.textArea.Clear();
+                    return false;
+                }
                 return !canceled;//cmdが無い場合は処理をしない
             }
             args = args.Skip(1).ToArray();
@@ -1192,6 +1205,13 @@ namespace TownOfHost
                 Logger.Info("Command Canceled", "ChatCommand");
                 __instance.freeChatField.textArea.Clear();
                 __instance.freeChatField.textArea.SetText(cancelVal);
+            }
+            if (ChatControllerUpdatePatch.IsQuickChatOnly)
+            {
+                canceled = true;
+                __instance.freeChatField.textArea.Clear();
+                __instance.freeChatField.textArea.SetText(cancelVal);
+                return false;
             }
             if (AmongUsClient.Instance.AmHost && GameStates.IsLobby && !canceled)
             {
