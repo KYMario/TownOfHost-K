@@ -442,6 +442,12 @@ namespace TownOfHost
         {
             //自視点以外当たり判定が変わらないから霊界だと挙動不審になる。
             if (player == null) return;
+
+            if (Main.IsCs() || GameStates.IsLocalGame)
+            {
+                player.RpcExileV2();
+                return;
+            }
             if (AntiBlackout.IsSet)
             {
                 Logger.Warn("Antiblack set Cancel..", "RpcExileV3");
@@ -465,7 +471,7 @@ namespace TownOfHost
             Patches.GameDataSerializePatch.SerializeMessageCount++;
             RPC.RpcSyncAllNetworkedPlayer();
             player.RpcSetRole(player.IsGhostRole() ? RoleTypes.GuardianAngel :
-            (player.CanUseSabotageButton() ? RoleTypes.CrewmateGhost : RoleTypes.ImpostorGhost));
+            (player.CanUseSabotageButton() ? RoleTypes.ImpostorGhost : RoleTypes.CrewmateGhost));
             Patches.GameDataSerializePatch.SerializeMessageCount--;
         }
         public static void MurderPlayer(this PlayerControl killer, PlayerControl target)

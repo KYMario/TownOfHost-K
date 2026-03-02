@@ -329,7 +329,7 @@ namespace TownOfHost
                     }
                     else
                     {
-                        Player.RpcExileV3();
+                        //Player.RpcExileV3();
                         if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.IsGhostRole())
                         {
                             Player.RpcSetRole(RoleTypes.GuardianAngel, true);
