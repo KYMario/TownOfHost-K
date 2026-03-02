@@ -1,5 +1,6 @@
 using HarmonyLib;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Neutral;
 
 namespace TownOfHost;
 
@@ -10,7 +11,7 @@ public static class OneWayShadowsIsIgnoredPatch
     {
         var roleInfo = PlayerControl.LocalPlayer.GetCustomRole().GetRoleInfo();
         var amDesyncImpostor = roleInfo?.IsDesyncImpostor == true;
-        if (__instance.IgnoreImpostor && amDesyncImpostor)
+        if (__instance.IgnoreImpostor && amDesyncImpostor && ((PlayerControl.LocalPlayer?.GetRoleClass() as BakeCat)?.CanKill is null or true))
         {
             __result = true;
             return false;
