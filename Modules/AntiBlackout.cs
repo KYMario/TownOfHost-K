@@ -329,6 +329,7 @@ namespace TownOfHost
                     }
                     else
                     {
+                        Player.Exiled();
                         //Player.RpcExileV3();
                         if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Player.IsGhostRole())
                         {

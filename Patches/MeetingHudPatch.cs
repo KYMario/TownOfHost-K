@@ -503,10 +503,10 @@ public static class MeetingHudPatch
                         __instance.CheckForEndVoting();
                         return;
                     }
-                    player.RpcExileV3();
                     Utils.SendMessage(string.Format(GetString("Message.Executed"), UtilsName.GetPlayerColor(player, true)));
                     UtilsGameLog.AddGameLog("Executed", string.Format(GetString("Message.Executed"), UtilsName.GetPlayerColor(player, true)));
                     Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を処刑しました", "Execution");
+                    player.RpcExileV3();
                     __instance.CheckForEndVoting();
 
                     if (Options.ExHideChatCommand.GetBool() && !AntiBlackout.IsCached && !Utils.IsRestriction())

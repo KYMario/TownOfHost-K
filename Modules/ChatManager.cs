@@ -238,13 +238,13 @@ namespace TownOfHost.Modules.ChatManager
         {
             if (PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
             {
-                if (Utils.IsRestriction())
-                {
-                    SendMessageInGame(null);
-                    return;
-                }
                 if (Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).Count() > 0)
                 {
+                    if (Utils.IsRestriction())
+                    {
+                        SendMessageInGame(null);
+                        return;
+                    }
                     (string msg, byte sendTo, string title) = Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).FirstOrDefault();
                     if (sendTo is not byte.MaxValue && Main.MegCount < 50)
                     {
@@ -316,7 +316,6 @@ namespace TownOfHost.Modules.ChatManager
                         if (sendTo == senderplayer.PlayerId) return;
                     }
                     IsForceSend = true;
-                    PlayerControl.LocalPlayer.Data.IsDead = false;
                     foreach (var seer in PlayerCatch.AllPlayerControls)
                     {
                         if (seer.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
@@ -326,15 +325,19 @@ namespace TownOfHost.Modules.ChatManager
                             GameDataSerializePatch.SerializeMessageCount++;
                             var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                             Nwriter.StartMessage(seerclientid);
-                            Nwriter.Write((writer) =>
+                            if (seer.IsAlive())
                             {
-                                writer.StartMessage(1); //0x01 Data
+                                senderplayer.Data.IsDead = false;
+                                Nwriter.Write((writer) =>
                                 {
-                                    writer.WritePacked(senderplayer.NetId);
-                                    senderplayer.Serialize(writer, false);
-                                }
-                                writer.EndMessage();
-                            });
+                                    writer.StartMessage(1); //0x01 Data
+                                    {
+                                        writer.WritePacked(senderplayer.Data.NetId);
+                                        senderplayer.Data.Serialize(writer, false);
+                                    }
+                                    writer.EndMessage();
+                                }, true);
+                            }
                             Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
                             .Write(senderplayer.Data.NetId)
                             .Write(title)
@@ -352,19 +355,28 @@ namespace TownOfHost.Modules.ChatManager
                                 .Write(msg)
                                 .EndRpc();
                             }
-                            Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
+                            Nwriter.StartRpc(senderplayer.Data.NetId, (byte)RpcCalls.SetName)
                             .Write(senderplayer.Data.NetId)
                             .Write(senderplayer.Data.GetLogPlayerName())
                             .EndRpc();
+                            if (seer.IsAlive())
+                            {
+                                senderplayer.Data.IsDead = true;
+                                Nwriter.Write((writer) =>
+                                {
+                                    writer.StartMessage(1); //0x01 Data
+                                    {
+                                        writer.WritePacked(senderplayer.Data.NetId);
+                                        senderplayer.Data.Serialize(writer, false);
+                                    }
+                                    writer.EndMessage();
+                                }, true);
+                            }
                             Nwriter.EndMessage();
                             Nwriter.SendMessage();
                             GameDataSerializePatch.SerializeMessageCount--;
                         }
                     }
-                    PlayerControl.LocalPlayer.Data.IsDead = true;
-                    GameDataSerializePatch.SerializeMessageCount++;
-                    RPC.RpcSyncAllNetworkedPlayer();
-                    GameDataSerializePatch.SerializeMessageCount--;
                     senderplayer.Die(DeathReason.Kill, false);
                     IsForceSend = false;
                     if (chatController is not null)
