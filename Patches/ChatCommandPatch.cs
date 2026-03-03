@@ -454,7 +454,7 @@ namespace TownOfHost
                             }
                             var hRoleTextData = GetRoleColorCode(role);
                             string hRoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
-                            string hRoleInfoTitle = $"<{hRoleTextData}>{hRoleInfoTitleString}";
+                            string hRoleInfoTitle = $"<{hRoleTextData}>{hRoleInfoTitleString}</color>";
                             if (role is CustomRoles.Crewmate or CustomRoles.Impostor)//バーニラならこっちで
                             {
                                 SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(PlayerControl.LocalPlayer.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{PlayerControl.LocalPlayer.GetRoleDesc(true)}", PlayerControl.LocalPlayer.PlayerId, hRoleInfoTitle);
@@ -485,7 +485,7 @@ namespace TownOfHost
 
                                         var RoleTextData = GetRoleColorCode(role);
                                         string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
-                                        string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}";
+                                        string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}</color>";
 
                                         if (role is CustomRoles.Crewmate or CustomRoles.Impostor)
                                         {
@@ -1340,7 +1340,7 @@ namespace TownOfHost
                         }
                         var RoleTextData = GetRoleColorCode(role);
                         string RoleInfoTitleString = $"{GetString("RoleInfoTitle")}";
-                        string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}";
+                        string RoleInfoTitle = $"<{RoleTextData}>{RoleInfoTitleString}</color>";
                         if (role is CustomRoles.Crewmate or CustomRoles.Impostor)
                         {
                             SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
