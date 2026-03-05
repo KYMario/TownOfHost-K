@@ -28,6 +28,7 @@ public sealed class ToiletFan : RoleBase
     )
     {
         Cooldown = OptionCooldown.GetFloat();
+        flug = 0;
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
@@ -40,6 +41,7 @@ public sealed class ToiletFan : RoleBase
         Cooldown
     }
     private static float Cooldown;
+    int flug;
     private static void SetupOptionItem()
     {
         OptionCooldown = FloatOptionItem.Create(RoleInfo, 10, OptionName.Cooldown, new(0f, 10f, 1f), 5f, false)
@@ -47,6 +49,7 @@ public sealed class ToiletFan : RoleBase
     }
     public override bool OnEnterVent(PlayerPhysics physics, int ventId)
     {
+        flug = Main.NormalOptions.MapId is 4 ? 1 : 2;
         ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Doors, 79);
         ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Doors, 80);
         ShipStatus.Instance.RpcUpdateSystem(SystemTypes.Doors, 81);
@@ -58,5 +61,27 @@ public sealed class ToiletFan : RoleBase
     {
         text = "ToiletFan_Ability";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        switch (flug)
+        {
+            case 1:
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                break;
+            case 2:
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+                break;
+            default: break;
+        }
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var n2 = new Achievement(RoleInfo, 1, 1, 0, 0);
+        achievements.Add(0, n1);
+        achievements.Add(1, n2);
     }
 }

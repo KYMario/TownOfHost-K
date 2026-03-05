@@ -25,6 +25,7 @@ public sealed class Lighter : RoleBase
         player
     )
     {
+        N1flug = false;
         MaxVision = OptionMaxVision.GetFloat();
         TaskCompletedDisableLightOut = OptionTaskCompletedDisableLightOut.GetBool();
         TaskTrigger = OptionLighterTaskTrigger.GetInt();
@@ -62,6 +63,7 @@ public sealed class Lighter : RoleBase
     private static bool TaskCompletedDisableLightOut;
     private static int TaskTrigger;
     private float CurrentVision;
+    bool N1flug;
 
     private static void SetupOptionItem()
     {
@@ -86,6 +88,7 @@ public sealed class Lighter : RoleBase
         if (TaskCompletedDisableLightOut && Utils.IsActive(SystemTypes.Electrical) && MyTaskState.IsTaskFinished)
         {
             opt.SetFloat(crewLightMod, CurrentVision * AURoleOptions.ElectricalCrewVision);
+            N1flug = true;
         }
     }
     public override bool OnCompleteTask(uint taskid)
@@ -120,5 +123,16 @@ public sealed class Lighter : RoleBase
     public void AddCurrentVision(float addVision)
     {
         CurrentVision += addVision;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (N1flug) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

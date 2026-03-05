@@ -40,10 +40,18 @@ public sealed class TaskStar : RoleBase
     {
         if (IsTaskFinished)
         {
-            Player.MarkDirtySettings();
+            //Player.MarkDirtySettings();
             UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         }
 
         return true;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

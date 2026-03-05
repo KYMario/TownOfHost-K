@@ -30,12 +30,16 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
         DelayMode = OptionDelay.GetBool();
         Maxdelay = OptionMaxdelay.GetFloat();
         MinDelay = OptionMindelay.GetFloat();
+
+        Receivedcount = 0;
     }
     private static bool ActiveComms;
     private static OptionItem OptionActiveComms;
     static OptionItem OptionDelay; static bool DelayMode;
     static OptionItem OptionMindelay; static float MinDelay;
     static OptionItem OptionMaxdelay; static float Maxdelay;
+    int Receivedcount;
+
     enum OptionName
     {
         SeerDelayMode,
@@ -70,10 +74,28 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
                     Logger.Info($"{info?.AppearanceTarget?.Data?.GetLogPlayerName() ?? "???"}のフラッシュを受け取ろうとしたけどなんかし防いだぜ", "seer");
                     return;
                 }
+                Receivedcount++;
                 Player.KillFlash();
             }, tien + MinDelay, "SeerDelayKillFlash", null);
             return null;
         }
         return canseekillflash;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], Receivedcount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], Receivedcount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[2], Receivedcount);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 15, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 50, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

@@ -69,6 +69,7 @@ public sealed class SpeedBooster : RoleBase
                 BoostTarget = target.PlayerId;
                 Main.AllPlayerSpeed[BoostTarget] *= UpSpeed;
                 target.MarkDirtySettings();
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
             }
             else //ターゲットが0ならアップ先をプレイヤーをnullに
             {
@@ -79,5 +80,12 @@ public sealed class SpeedBooster : RoleBase
         }
 
         return true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

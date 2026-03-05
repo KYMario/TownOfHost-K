@@ -6,7 +6,6 @@ using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
-using Sentry.Unity.NativeUtils;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -39,6 +38,7 @@ public sealed class VentHunter : RoleBase
         Isinfinity = count is 0;
         TrapVents = new();
         Vent = new();
+        turnkillcount = 0;
         CustomRoleManager.OnEnterVentOthers.Add(OnEnterVentOthers);
     }
 
@@ -51,6 +51,7 @@ public sealed class VentHunter : RoleBase
     static float task;
     static bool Isinfinity;
     int count;
+    int turnkillcount;
 
     Dictionary<int, float> TrapVents;
     static Dictionary<byte, int> Vent;
@@ -142,11 +143,16 @@ public sealed class VentHunter : RoleBase
     public void TrapKill(PlayerControl pc)
     {
         if (!pc.IsAlive()) return;
-        CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, false, deathReason: CustomDeathReason.Trap);
+        if (CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, false, deathReason: CustomDeathReason.Trap))
+            turnkillcount++;
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        if (turnkillcount is 2)
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
     }
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
+        turnkillcount = 0;
         TrapVents.Clear();
         Vent.Clear();
     }
@@ -171,5 +177,14 @@ public sealed class VentHunter : RoleBase
     {
         text = "VentHunter_Ability";
         return true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

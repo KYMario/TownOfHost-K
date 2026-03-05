@@ -1,3 +1,4 @@
+using System.Linq;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
@@ -43,6 +44,8 @@ public sealed class Mayor : RoleBase
         AwakeningCount = OptionAwakeningCount.GetInt();
         KadditionaVote = OptionKadditionaVote.GetInt();
 
+        votefor = byte.MaxValue;
+        sp1flug = 0;
         LeftButtonCount = NumOfUseButton;
     }
 
@@ -68,6 +71,8 @@ public sealed class Mayor : RoleBase
     public static int NumOfUseButton;
 
     public int LeftButtonCount;
+    byte votefor;
+    int sp1flug;
     private static void SetupOptionItem()
     {
         OptionAdditionalVote = IntegerOptionItem.Create(RoleInfo, 10, OptionName.MayorAdditionalVote, new(0, 99, 1), 1, false)
@@ -116,13 +121,45 @@ public sealed class Mayor : RoleBase
         if (voterId == Player.PlayerId && PlayerCatch.AllAlivePlayersCount <= AwakeningCount && Awakening)
         {
             numVotes = AdditionalVote + KadditionaVote + 1;
+            votefor = votedForId.HasValue ? votedForId.Value : byte.MaxValue;
+            if (sp1flug == 0 && PlayerCatch.AllAlivePlayerControls.Count(pc => !pc.GetCustomRole().IsCrewmate()) > PlayerCatch.AllAlivePlayerControls.Count(pc => pc.GetCustomRole().IsCrewmate()))
+            {
+                sp1flug = 1;
+            }
         }
-        else
-        if (voterId == Player.PlayerId)
+        else if (voterId == Player.PlayerId)
         {
             numVotes = AdditionalVote + 1;
+            votefor = votedForId.HasValue ? votedForId.Value : byte.MaxValue;
+            if (sp1flug == 0 && PlayerCatch.AllAlivePlayerControls.Count(pc => !pc.GetCustomRole().IsCrewmate()) > PlayerCatch.AllAlivePlayerControls.Count(pc => pc.GetCustomRole().IsCrewmate()))
+            {
+                sp1flug = 1;
+            }
         }
         return (votedForId, numVotes, doVote);
+    }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if (exiled is null || exiled?.PlayerId == byte.MaxValue)
+        {
+            sp1flug = 0;
+            return;
+        }
+        if (votefor == exiled.PlayerId)
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (sp1flug == 1 && exiled.Object.GetCustomRole().IsCrewmate() is false)
+            {
+                sp1flug = 2;
+            }
+        }
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (sp1flug == 2 && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate))
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+        }
     }
     public override string GetAbilityButtonText()
     {
@@ -133,5 +170,14 @@ public sealed class Mayor : RoleBase
     {
         text = "Mayor_Ability";
         return HasPortableButton;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

@@ -6,6 +6,7 @@ using TownOfHost.Roles.Core;
 using System;
 using static TownOfHost.Modules.SelfVoteManager;
 using TownOfHost.Roles.Core.Interfaces;
+using System.Linq;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -51,6 +52,8 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             onemeetingmaximum = FortuneTeller.Option1MeetingMaximum.GetFloat();
             Awakened = !FortuneTeller.OptAwakening.GetBool();
             Max = FortuneTeller.OptionMaximum.GetFloat();
+
+            spflug = 0;
         }
         GameTell = new();
     }//fix
@@ -78,6 +81,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
     Dictionary<byte, CustomRoles> Divination = new();
     Dictionary<byte, CustomRoles> GameTell = new();
 
+    int spflug = 0;
     enum Option
     {
         TellerCollectRect,
@@ -186,6 +190,9 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             var lasttext = GetString("Skill.Tellerfin") + (role.IsCrewmate() ? "!" : "...");
             if (MeisFT.GetBool()) Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
             else Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + $"..?" + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
+
+            if (0 <= spflug && !target.GetCustomRole().IsCrewmate())
+                spflug++;
         }
         else
         {
@@ -201,6 +208,13 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             SendRPC(votedForId, role);
             if (MeisFT.GetBool()) Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
             else Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + $"..?" + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
+
+            bool Iscrewmate = target.GetCustomRole().IsCrewmate();
+            if (Iscrewmate != role.IsCrewmate())
+            {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            }
+            spflug = -100;
         }
     }
     public override CustomRoles Misidentify() => Awakened ? (MeisFT.GetBool() ? CustomRoles.FortuneTeller : CustomRoles.NotAssigned) : CustomRoles.Crewmate;
@@ -224,5 +238,19 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             else return GetString(role.GetCustomRoleTypes().ToString());
         }
         return "";
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (2 <= spflug && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate) && Optioncollect.GetInt() <= 50)
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

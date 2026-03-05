@@ -54,7 +54,11 @@ public sealed class WolfBoy : RoleBase, IKiller, ISchrodingerCatOwner
     bool HasImpV;
 
     public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => Shurenekodotti.GetBool() ? ISchrodingerCatOwner.TeamType.Mad : ISchrodingerCatOwner.TeamType.Crew;
-    public override CustomRoles TellResults(PlayerControl player) => CustomRoles.Impostor;
+    public override CustomRoles TellResults(PlayerControl player)
+    {
+        if (player != null) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+        return CustomRoles.Impostor;
+    }
     private static void SetupOptionItem()
     {
         KillCooldown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, new(0f, 180f, 0.5f), 30f, false)
@@ -126,6 +130,7 @@ public sealed class WolfBoy : RoleBase, IKiller, ISchrodingerCatOwner
                 info.DoKill = false;
                 return;
             }
+            if (target.Is(CustomRoleTypes.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
 
             killer.ResetKillCooldown();
         }
@@ -155,5 +160,14 @@ public sealed class WolfBoy : RoleBase, IKiller, ISchrodingerCatOwner
     {
         text = "WolfBoy_Kill";
         return true;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

@@ -30,6 +30,7 @@ public sealed class Psychic : RoleBase
     {
         callrate = OptionCallRate.GetFloat();
         taskaddrate = OptionTaskAddRate.GetBool();
+        Receivedcount = 0;
     }
     public override void Add()
     {
@@ -45,6 +46,8 @@ public sealed class Psychic : RoleBase
     static bool taskaddrate;
     bool Awakened;
     static HashSet<Psychic> Psychics = new();
+
+    int Receivedcount;
     enum OptionName
     {
         PsychicCallRate,
@@ -96,13 +99,28 @@ public sealed class Psychic : RoleBase
                 else
                     target.RpcSetRoleDesync(RoleTypes.Noisemaker, ps.Player.GetClientId());
                 target.SyncSettings();
+                ps.Receivedcount++;
             }
         }
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], Receivedcount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], Receivedcount);
     }
     public override string GetProgressText(bool comms = false, bool GameLog = false)
     {
         if (!GameLog && comms) return "<color=#cccccc> (??)</color>";
 
         return $"<color={RoleInfo.RoleColorCode}>({GetChance()}%)</color>";
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 50, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

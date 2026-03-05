@@ -45,6 +45,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
         TargetPlayerId = byte.MaxValue;
         Isdie = false;
         deadtimer = 0;
+        killer = byte.MaxValue;
     }
     bool Awakened;
     static OptionItem OptionMaximum;
@@ -64,6 +65,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
     byte TargetPlayerId;
     float deadtimer;
     bool Isdie;
+    byte killer;
 
     enum OptionName
     {
@@ -136,10 +138,14 @@ public sealed class Inspector : RoleBase, ISelfVoter
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(Max <= count ? Color.gray : Color.cyan, $"({Max - count})");
     public override void OnStartMeeting()
     {
+        if (Balancer.Id != byte.MaxValue)
+            killer = byte.MaxValue;
+
         if (AmongUsClient.Instance.AmHost && Isdie)
         {
             PlayerState targetstate = TargetPlayerId.GetPlayerState();
             StringBuilder sb = new();
+            killer = targetstate.GetRealKiller();
             //for (var i = 0; i == 1; i++) 
             {
                 var type = (Infom)IRandom.Instance.Next(EnumHelper.GetAllValues<Infom>().Count());
@@ -216,6 +222,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
                     Utils.SendMessage(sb.ToString(), Player.PlayerId, $"<{RoleInfo.RoleColorCode}>{GetString("Inspector.Title")}</color>")
                     , 3, "InspectorSend", true);
             }
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         }
         deadtimer = 0;
         Isdie = false;
@@ -272,5 +279,19 @@ public sealed class Inspector : RoleBase, ISelfVoter
     public override void ReceiveRPC(MessageReader reader)
     {
         count = reader.ReadInt32();
+    }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if (exiled is null || exiled?.PlayerId == byte.MaxValue) return;
+        if (exiled.PlayerId == killer) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l2 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l2);
     }
 }
