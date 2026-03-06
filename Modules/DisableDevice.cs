@@ -31,6 +31,10 @@ namespace TownOfHost
         //カメラ検知用
         public static int UseCount;
 
+        //制限時間の追加
+        public static int addplayercount;
+        public static bool IsAdded;
+
         //設定
         public static bool optTimeLimitDevices;
         public static bool optTurnTimeLimitDevice;
@@ -62,6 +66,7 @@ namespace TownOfHost
             DisableDevicesIgnoreNeutrals = Options.DisableDevicesIgnoreNeutrals.GetBool();
             DisableDevicesIgnoreCrewmates = Options.DisableDevicesIgnoreCrewmates.GetBool();
             DisableDevicesIgnoreAfterAnyoneDied = Options.DisableDevicesIgnoreAfterAnyoneDied.GetBool();
+            addplayercount = Options.ReviveTimelimitplayercount.GetInt();
             CloseVitals.Ability = false;
             AdminPoss.Clear();
             LogPoss.Clear();
@@ -73,6 +78,7 @@ namespace TownOfHost
             TurnLogAndCamTimer = 0;
             TurnVitalTimer = 0;
             UseCount = 0;
+            IsAdded = false;
         }
         public static void StartMeeting()
         {
@@ -97,6 +103,17 @@ namespace TownOfHost
             TurnAdminTimer = 0;
             TurnLogAndCamTimer = 0;
             TurnVitalTimer = 0;
+        }
+        public static void CheckAddtime()
+        {
+            //生存人数が設定数以下
+            if (!IsAdded && PlayerCatch.AllAlivePlayersCount <= addplayercount)
+            {
+                IsAdded = false;
+                GameAdminTimer -= Options.ReviveAddAdmin.GetFloat();
+                GameLogAndCamTimer -= Options.ReviveAddCamAndLog.GetFloat();
+                GameVitalTimer -= Options.ReviveAddVital.GetFloat();
+            }
         }
         public static string GetAddminTimer(bool showmark = true)
         {

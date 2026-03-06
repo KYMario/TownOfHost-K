@@ -1120,6 +1120,11 @@
 "CanseeMadTimeLimit","Can See Madmate","マッドメイトが見れる"
 "CanseeCrewTimeLimit","Can See CrewMate","クルーが見れる"
 "CanseeNeuTimeLimit","Can see Nuetral","ニュートラルが見れる"
+"ReviveTimelimitplayercount","Add based on the number of people","一定人数以下になると制限時間が増加する"
+"ReviveTimelimitplayercount_Info","Changes will take effect starting from the next turn after the number of players falls below the set limit.","設定人数以下になった次のターンから反映されます。\n増加する時間が負の値の場合、制限時間は減少します。"
+"ReviveAddAdmin","Add Admin","追加するアドミンの制限時間"
+"ReviveAddCamAndLog","Add Camera/DoorLog","追加するカメラ/ドアログの制限時間"
+"ReviveAddVital","AddVital","追加するバイタルの制限時間"
 
 "### 便利機能"
 "ConvenientOptions","Convenient Options","便利機能"

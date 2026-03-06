@@ -247,6 +247,10 @@ namespace TownOfHost
         public static OptionItem CanseeMadTimeLimit;
         public static OptionItem CanseeCrewTimeLimit;
         public static OptionItem CanseeNeuTimeLimit;
+        public static OptionItem ReviveTimelimitplayercount;
+        public static OptionItem ReviveAddAdmin;
+        public static OptionItem ReviveAddCamAndLog;
+        public static OptionItem ReviveAddVital;
 
         public static OptionItem TurnTimeLimitDevice;
         public static OptionItem TurnTimeLimitAdmin;
@@ -880,11 +884,11 @@ namespace TownOfHost
             TimeLimitDevices = BooleanOptionItem.Create(104200, "TimeLimitDevices", false, TabGroup.MainSettings, false)
                 .SetColorcode("#948e50")
                 .SetParent(DevicesOption);
-            TimeLimitAdmin = FloatOptionItem.Create(104201, "TimeLimitAdmin", new(0f, 300f, 1), 20f, TabGroup.MainSettings, false)
+            TimeLimitAdmin = FloatOptionItem.Create(104201, "TimeLimitAdmin", new(-1f, 300f, 1), 20f, TabGroup.MainSettings, false)
                 .SetColorcode("#00ff99").SetValueFormat(OptionFormat.Seconds).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(TimeLimitDevices);
-            TimeLimitCamAndLog = FloatOptionItem.Create(104202, "TimeLimitCamAndLog", new(0f, 300f, 1), 20f, TabGroup.MainSettings, false)
+            TimeLimitCamAndLog = FloatOptionItem.Create(104202, "TimeLimitCamAndLog", new(-1f, 300f, 1), 20f, TabGroup.MainSettings, false)
                 .SetColorcode("#cccccc").SetValueFormat(OptionFormat.Seconds).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(TimeLimitDevices);
-            TimeLimitVital = FloatOptionItem.Create(104203, "TimeLimitVital", new(0f, 300f, 1), 20f, TabGroup.MainSettings, false)
+            TimeLimitVital = FloatOptionItem.Create(104203, "TimeLimitVital", new(-1f, 300f, 1), 20f, TabGroup.MainSettings, false)
                 .SetColorcode("#33ccff").SetValueFormat(OptionFormat.Seconds).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(TimeLimitDevices);
             CanSeeTimeLimit = BooleanOptionItem.Create(104204, "CanSeeTimeLimit", false, TabGroup.MainSettings, false)
                 .SetColorcode("#cc8b60").SetParent(TimeLimitDevices);
@@ -896,6 +900,11 @@ namespace TownOfHost
             .SetColor(ModColors.CrewMateBlue).SetParent(CanSeeTimeLimit);
             CanseeNeuTimeLimit = BooleanOptionItem.Create(104208, "CanseeNeuTimeLimit", false, TabGroup.MainSettings, false)
             .SetColor(Palette.DisabledGrey).SetParent(CanSeeTimeLimit);
+            ReviveTimelimitplayercount = IntegerOptionItem.Create(104210, "ReviveTimelimitplayercount", new(0, 15, 1), 0, TabGroup.MainSettings, false)
+                .SetParent(TimeLimitDevices).SetValueFormat(OptionFormat.Players).SetZeroNotation(OptionZeroNotation.Off).SetColor(ModColors.Tan).SetTooltip(() => Translator.GetString("ReviveTimelimitplayercount_Info"));
+            ReviveAddAdmin = FloatOptionItem.Create(104211, "ReviveAddAdmin", new(-100, 100, 1), 20, TabGroup.MainSettings, false).SetColorcode("#00ff99").SetValueFormat(OptionFormat.Seconds).SetParent(ReviveTimelimitplayercount);
+            ReviveAddCamAndLog = FloatOptionItem.Create(104212, "ReviveAddCamAndLog", new(-100, 100, 1), 20, TabGroup.MainSettings, false).SetColorcode("#cccccc").SetValueFormat(OptionFormat.Seconds).SetParent(ReviveTimelimitplayercount);
+            ReviveAddVital = FloatOptionItem.Create(104213, "ReviveAddVital", new(-100, 100, 1), 20, TabGroup.MainSettings, false).SetColorcode("#33ccff").SetValueFormat(OptionFormat.Seconds).SetParent(ReviveTimelimitplayercount);
 
             TurnTimeLimitDevice = BooleanOptionItem.Create(104300, "TurnTimeLimitDevice", false, TabGroup.MainSettings, false)
                 .SetColorcode("#b06927")
