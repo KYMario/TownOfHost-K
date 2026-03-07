@@ -237,6 +237,8 @@ namespace TownOfHost
         public static OptionItem DisableDevicesIgnoreNeutrals;
         public static OptionItem DisableDevicesIgnoreCrewmates;
         public static OptionItem DisableDevicesIgnoreAfterAnyoneDied;
+        public static OptionItem DisableDevicesIgnoreCompleteTask;
+        public static OptionItem DisableForceRecordsAdomin;
 
         public static OptionItem TimeLimitDevices;
         public static OptionItem TimeLimitAdmin;
@@ -873,13 +875,17 @@ namespace TownOfHost
             DisableDevicesIgnoreImpostors = BooleanOptionItem.Create(104101, "IgnoreImpostors", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#ff1919");
             DisableDevicesIgnoreMadmates = BooleanOptionItem.Create(104102, "IgnoreMadmates", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
-                .SetColorcode("#ff1919");
+                .SetColorcode("#ff7f50");
             DisableDevicesIgnoreNeutrals = BooleanOptionItem.Create(104103, "IgnoreNeutrals", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#808080");
             DisableDevicesIgnoreCrewmates = BooleanOptionItem.Create(104104, "IgnoreCrewmates", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#8cffff");
+            DisableDevicesIgnoreCompleteTask = BooleanOptionItem.Create(104106, "DisableDevicesIgnoreComleteTask", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreCrewmates)
+                .SetColorcode("#00ffff");
             DisableDevicesIgnoreAfterAnyoneDied = BooleanOptionItem.Create(104105, "IgnoreAfterAnyoneDied", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#666699");
+            DisableForceRecordsAdomin = BooleanOptionItem.Create(104107, "DisableForceRecordsAdomin", true, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
+                .SetColorcode("#00ff99");
 
             TimeLimitDevices = BooleanOptionItem.Create(104200, "TimeLimitDevices", false, TabGroup.MainSettings, false)
                 .SetColorcode("#948e50")

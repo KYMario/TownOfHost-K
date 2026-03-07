@@ -1125,6 +1125,8 @@
 "ReviveAddAdmin","Add Admin","追加するアドミンの制限時間"
 "ReviveAddCamAndLog","Add Camera/DoorLog","追加するカメラ/ドアログの制限時間"
 "ReviveAddVital","AddVital","追加するバイタルの制限時間"
+"DisableForceRecordsAdomin","Records admin is unavailable","除外者でもｱｰｶｲﾌﾞｱﾄﾞﾐﾝを無効化"
+"DisableDevicesIgnoreComleteTask","Ignore TaskComplete Crewmate","タスクを完了させないと使用できない"
 
 "### 便利機能"
 "ConvenientOptions","Convenient Options","便利機能"
