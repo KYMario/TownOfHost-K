@@ -143,6 +143,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
 
             if (AmongUsClient.Instance.AmHost)
             {
+                if (Player.IsAlive() is false) return false;
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
                     Player.RpcSetRoleDesync(pc == Player && TaskMode ? RoleTypes.Impostor : RoleTypes.Engineer, pc.GetClientId());

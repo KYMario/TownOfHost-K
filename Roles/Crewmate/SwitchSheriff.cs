@@ -354,6 +354,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
         //ロール変更
         if (!Is(PlayerControl.LocalPlayer))
         {
+            if (Player.IsAlive() is false) return true;
             foreach (var pc in PlayerCatch.AllAlivePlayerControls)
             {
                 var role = pc.GetCustomRole();
