@@ -1347,6 +1347,8 @@
 "InsiderCanSeeAllGhostsRoles","Can See All Ghost's Roles","幽霊全員の役職が分かる","","","Может видеть все роли Призраков","Pode Ver Todas As Classes dos Fantasmas",""
 "InsiderCanSeeMadmates","Can See Madmates","マッドメイトが分かる","","","Может видеть Безумцев","Pode Ver Tripulantes Loucos",""
 "InsiderKillCountToSeeMadmates","Kill Count To See Madmates","必要なキル数","","","Количество убийств при котором будет виден Безумец","Quantas Kills Para Ver Tripulante Louco",""
+"InsiderSetCanSeeRoles","is SeeRoleSet","視認できる役職を指定する"
+"InsiderCanSeeRoles","SetRole","視認できる役職"
 "TairoDeathReason","ChangeDeathReason","シェリフ誤爆の死因を返り打ちにする"
 "TairouNotify","Alive Message","生存時の専用メッセージ表示させる"
 "Evillgamblergamblecollect","SuccessRate","ギャンブルの成功率"
@@ -2712,3 +2714,4 @@
 "Weight_2","Super Split","すごく分割する"
 "MM_Unknow","Cannot join: Host does not have the required mods.","ホストがMODを導入していないため、参加できません。"
 "MM_MismatchedForkId","Cannot join because the host’s mods do not match yours","ホストとMODが一致しないため、参加できません。"
+"Unknown","Unknown","不明"
