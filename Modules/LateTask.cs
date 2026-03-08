@@ -9,6 +9,8 @@ namespace TownOfHost
         public float timer;
         public Action action;
         public bool? NoLog;
+        public bool IsStop;
+        public bool Isruned;
         public static List<LateTask> Tasks = new();
         public bool Run(float deltaTime)
         {
@@ -17,6 +19,7 @@ namespace TownOfHost
             {
                 try
                 {
+                    Isruned = true;
                     action();
                 }
                 catch (Exception ex)
@@ -27,12 +30,17 @@ namespace TownOfHost
             }
             return false;
         }
+        public void CallStop()
+        {
+            this.IsStop = true;
+        }
         public LateTask(Action action, float time, [CallerMemberName] string name = "", bool? NoLog = false)
         {
             this.action = action;
             this.timer = time;
             this.name = name;
             this.NoLog = NoLog;
+            this.IsStop = false;
             if (time <= 0)//0s以下ならその場で処理したまえ。
             {
                 try { action(); }
@@ -55,6 +63,13 @@ namespace TownOfHost
                     {
                         if (task.name != "" && task.NoLog is false or null)
                             Logger.Info($"\"{task.name}\"{(task.NoLog is null ? "is end" : "is finished")}", "LateTask");
+                        TasksToRemove.Add(task);
+                        continue;
+                    }
+                    if (task.IsStop)
+                    {
+                        if (task.name != "" && task.NoLog is not true)
+                            Logger.Info($"\"{task.name}\"isStoped.", "LateTask");
                         TasksToRemove.Add(task);
                     }
                 }
