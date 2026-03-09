@@ -195,9 +195,10 @@ namespace TownOfHost
                     string SelfDeathReason = ((TemporaryName ?? false) && nomarker) ? "" : seer.KnowDeathReason(seer) ? $"<size=75%>({ColorString(GetRoleColor(CustomRoles.Doctor), GetVitalText(seer.PlayerId, seer.PlayerId.CanDeathReasonKillerColor()))})</size>" : "";
                     string SelfName = $"{colorName}{SelfDeathReason}{(((TemporaryName ?? false) && nomarker) ? "" : SelfMark)}";
                     SelfName = SelfRoleName + "\r\n" + SelfName;
-                    SelfName += SelfSuffix.ToString() == "" ? "" : ("<line-height=85%>\r\n " + SelfSuffix.ToString() + "</line-height>");
+                    SelfName = SelfSuffix.ToString() == "" ? SelfName : ($"\n{SelfName}" + "<line-height=85%>\r\n " + SelfSuffix.ToString() + "</line-height>");
                     SelfName = "<line-height=85%>" + SelfName + "\r\n";
                     SelfName = SelfName.RemoveDeltext("color=#", "#");
+                    //SelfName = $"\n\n\n\n\n\n{SelfName}{(SelfSuffix.ToString() == "" ? "\n\n\n\n\n\n" : "\n\n\n\n")}<{Main.ModColor}55>TOH-K</color>";
 
                     //適用
                     if (seer.SetNameCheck(SelfName, seer, NoCache))
@@ -785,4 +786,4 @@ namespace TownOfHost
         public static string ExtendedMeetingText;
     }
 }
-#endregion
+        #endregion

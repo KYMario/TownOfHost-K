@@ -355,10 +355,6 @@ namespace TownOfHost.Modules.ChatManager
                                 .Write(msg)
                                 .EndRpc();
                             }
-                            Nwriter.StartRpc(senderplayer.Data.NetId, (byte)RpcCalls.SetName)
-                            .Write(senderplayer.Data.NetId)
-                            .Write(senderplayer.Data.GetLogPlayerName())
-                            .EndRpc();
                             if (seer.IsAlive())
                             {
                                 senderplayer.Data.IsDead = true;
@@ -372,6 +368,10 @@ namespace TownOfHost.Modules.ChatManager
                                     writer.EndMessage();
                                 }, true);
                             }
+                            Nwriter.StartRpc(senderplayer.Data.NetId, (byte)RpcCalls.SetName)
+                            .Write(senderplayer.Data.NetId)
+                            .Write(senderplayer.Data.GetLogPlayerName())
+                            .EndRpc();
                             Nwriter.EndMessage();
                             Nwriter.SendMessage();
                             GameDataSerializePatch.SerializeMessageCount--;

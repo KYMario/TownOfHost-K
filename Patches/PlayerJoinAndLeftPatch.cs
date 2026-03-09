@@ -11,7 +11,6 @@ using TownOfHost.Modules.ChatManager;
 using TownOfHost.Roles;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Neutral;
-using UnityEngine;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
