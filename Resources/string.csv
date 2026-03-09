@@ -1520,6 +1520,8 @@
 "BalancerCanUseAllAlive","The ability cannot be activated while everyone is alive.","全員生存している間は能力を発動できない"
 "BalancerCanUseMeetingAbility","ability use to target","天秤会議中は対象者以外に効果を発揮できない"
 "WolfBoySchrodingerCatTime","SchrodingerCat Chenge Role Mad","シュレ猫の変化先をマッドにする"
+"Wolfboycanwinkillcount","Can win killcount","特定の陣営を一定数キルしないと勝利不可"
+"WolfBoyCountteam","%role% is count","%role%を勝利までのキル数にカウント"
 "TellMaximum","Fortune-telling times","占い可能回数"
 "AbilityVotemode","Fortune telling method","占い方法"
 "TellerCollectRect","Rect","占い成功率"
@@ -2173,6 +2175,7 @@
 "ArcherLower_SetBow","Phantom → Move to Snipe","ファントムボタン → 移動した反対側に矢を放つ"
 "ArcherLower_Phantom","Phantom → SetBow","ファントムボタン → 弓を取り出す"
 "ArcherLower_ArrowActive","ShootNow","発射中..."
+"WolfBoy_LowerText","","合計{0}回{1}をキルせよ"
 
 "## かくれんぼ設定"
 "HideAndSeekOptions","Hide and Seek Settings","かくれんぼの設定","躲猫猫设置","躲貓貓設定","Настройки Пряток","Configurações do Esconde-Esconde",""
