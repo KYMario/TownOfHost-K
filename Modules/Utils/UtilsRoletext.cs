@@ -52,7 +52,9 @@ namespace TownOfHost
                         || seen.Is(CustomRoles.GM)
                         || (Main.VisibleTasksCount && !seer.Is(CustomRoles.AsistingAngel) && !seer.IsAlive() && (!seer.IsGhostRole() || Options.GhostRoleCanSeeOtherRoles.GetBool()) && (Options.GhostCanSeeOtherRoles.GetBool() || !Options.GhostOptions.GetBool()))
                         || (Options.InsiderMode.GetBool() && seerrole.IsImpostor())
-                        || (Options.CanSeeImpostorRole.GetBool() && seerrole.IsImpostor() && seen.GetCustomRole().IsImpostor());
+                        || (Options.CanSeeImpostorRole.GetBool() && seerrole.IsImpostor() && seen.GetCustomRole().IsImpostor())
+                        || seen.Is(CustomRoles.MadonnaLovers) && seer.Is(CustomRoles.MadonnaLovers) && Madonna.IsKnowRole
+                        ;
 
             foreach (var data in ColorLovers.Alldatas.Values)
             {
@@ -447,17 +449,17 @@ namespace TownOfHost
                 //ラスニュの処理
                 else if (pc.Is(CustomRoles.LastNeutral) && LastNeutral.GiveManagement.GetBool()) return AllTaskstext(LastNeutral.PercentGage.GetBool(), LastNeutral.RoughPercentage.GetBool(), LastNeutral.ManagementCanSeeMeeting.GetBool(), comms, LastNeutral.ManagementCanSeeComms.GetBool());
                 else//書く役職の処理
-                if (RoleAddAddons.GetRoleAddon(cr, out var data, pc, subrole: CustomRoles.Management) && data.GiveManagement.GetBool())
-                {
-                    if (isHasntTask) return AllTaskstext(data.PercentGage.GetBool(), data.RoughPercentage.GetBool(), data.ManagementCanSeeMeeting.GetBool(), comms, data.ManagementCanSeeComms.GetBool());
-                    else return ColorString(TextColor, $"({Completed}/{state.taskState.GetNeedCountOrAll()})") + AllTaskstext(data.PercentGage.GetBool(), data.RoughPercentage.GetBool(), data.ManagementCanSeeMeeting.GetBool(), comms, data.ManagementCanSeeComms.GetBool());
-                }
-                //マネジメントの処理
-                else if (pc.Is(CustomRoles.Management))
-                {
-                    if (isHasntTask) return AllTaskstext(Management.PercentGage, Management.OptionRoughPercentage.GetBool(), Management.Meeting.GetBool(), comms, Management.CanSeeActiveComms);
-                    else return ColorString(TextColor, $"({Completed}/{state.taskState.GetNeedCountOrAll()})") + AllTaskstext(Management.PercentGage, Management.OptionRoughPercentage.GetBool(), Management.Meeting.GetBool(), comms, Management.CanSeeActiveComms);
-                }
+                    if (RoleAddAddons.GetRoleAddon(cr, out var data, pc, subrole: CustomRoles.Management) && data.GiveManagement.GetBool())
+                    {
+                        if (isHasntTask) return AllTaskstext(data.PercentGage.GetBool(), data.RoughPercentage.GetBool(), data.ManagementCanSeeMeeting.GetBool(), comms, data.ManagementCanSeeComms.GetBool());
+                        else return ColorString(TextColor, $"({Completed}/{state.taskState.GetNeedCountOrAll()})") + AllTaskstext(data.PercentGage.GetBool(), data.RoughPercentage.GetBool(), data.ManagementCanSeeMeeting.GetBool(), comms, data.ManagementCanSeeComms.GetBool());
+                    }
+                    //マネジメントの処理
+                    else if (pc.Is(CustomRoles.Management))
+                    {
+                        if (isHasntTask) return AllTaskstext(Management.PercentGage, Management.OptionRoughPercentage.GetBool(), Management.Meeting.GetBool(), comms, Management.CanSeeActiveComms);
+                        else return ColorString(TextColor, $"({Completed}/{state.taskState.GetNeedCountOrAll()})") + AllTaskstext(Management.PercentGage, Management.OptionRoughPercentage.GetBool(), Management.Meeting.GetBool(), comms, Management.CanSeeActiveComms);
+                    }
                 if (isHasntTask) return "";
                 else return ColorString(TextColor, $"({Completed}/{state.taskState.GetNeedCountOrAll()})");
             }

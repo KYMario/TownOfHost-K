@@ -39,6 +39,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
     {
         limit = Optionlimit.GetInt();
         LoverChenge = ChangeRoles[OptionLoverChenge.GetValue()];
+        IsKnowRole = MaLoversKnowRole.GetBool();
         IsNonLover = true;
         Vindictive = false;
         Breakup = false;
@@ -49,7 +50,9 @@ public sealed class Madonna : RoleBase, ISelfVoter
     public static CustomRoles LoverChenge;
     public static OptionItem MadonnaLoverAddwin;
     public static OptionItem MaLoversSolowin3players;
+    static OptionItem MaLoversKnowRole;
     public static int limit;
+    public static bool IsKnowRole;
     bool IsNonLover;
     bool Vindictive;
     bool Breakup;
@@ -78,6 +81,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         var cRolesString = ChangeRoles.Select(x => x.ToString()).ToArray();
         Optionlimit = IntegerOptionItem.Create(RoleInfo, 10, Option.Madonnalimit, new(1, 10, 1), 3, false).SetValueFormat(OptionFormat.day);
         OptionLoverChenge = StringOptionItem.Create(RoleInfo, 11, Option.MadonnaFallChenge, cRolesString, 4, false);
+        MaLoversKnowRole = BooleanOptionItem.Create(RoleInfo, 14, "LoversRole", false, false);
         MadonnaLoverAddwin = BooleanOptionItem.Create(RoleInfo, 12, Option.LoversRoleAddwin, false, false);
         MaLoversSolowin3players = BooleanOptionItem.Create(RoleInfo, 13, Option.LoverSoloWin3players, false, false);
     }
