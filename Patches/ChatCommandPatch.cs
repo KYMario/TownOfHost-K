@@ -866,6 +866,10 @@ namespace TownOfHost
                         if (GameStates.InGame)
                         {
                             SendMessage(MeetingHudPatch.Send, title: MeetingHudPatch.Title);
+                            foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                            {
+                                SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                            }
                         }
                         break;
 
@@ -1397,6 +1401,11 @@ namespace TownOfHost
                     if (GameStates.InGame)
                     {
                         SendMessage(MeetingHudPatch.Send, player.PlayerId, title: MeetingHudPatch.Title);
+                        foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                        {
+                            if (messagedata.sentto is byte.MaxValue || messagedata.sentto == player.PlayerId)
+                                SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                        }
                     }
                     break;
                 case "/voice":

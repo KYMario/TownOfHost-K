@@ -95,6 +95,7 @@ public static class MeetingHudPatch
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class StartPatch
     {
+        public static ICollection<(byte sentto, string title, string text)> meetingsends = [];
         public static void Prefix()
         {
             Logger.Info($"------------会議開始　day:{UtilsGameLog.day}------------", "Phase");
@@ -292,6 +293,7 @@ public static class MeetingHudPatch
                     if (Options.CanseeCrewTimeLimit.GetBool() && Options.CanseeImpTimeLimit.GetBool()
                     && Options.CanseeMadTimeLimit.GetBool() && Options.CanseeNeuTimeLimit.GetBool())
                     {
+                        meetingsends.Add((byte.MaxValue, "", limittext));
                         Utils.SendMessage(limittext + lt);
                     }
                     else
@@ -302,6 +304,7 @@ public static class MeetingHudPatch
                             if ((team == CustomRoleTypes.Impostor && Options.CanseeImpTimeLimit.GetBool()) || (team == CustomRoleTypes.Crewmate && Options.CanseeCrewTimeLimit.GetBool())
                                     || (team == CustomRoleTypes.Neutral && Options.CanseeNeuTimeLimit.GetBool()) || (team == CustomRoleTypes.Madmate && Options.CanseeMadTimeLimit.GetBool()))
                             {
+                                meetingsends.Add((pc.PlayerId, "", limittext));
                                 Utils.SendMessage(limittext + lt + $"\n{GetString("LimitSendInfo")}", pc.PlayerId);
                             }
                         }
@@ -542,6 +545,7 @@ public static class MeetingHudPatch
     {
         public static void Postfix()
         {
+            StartPatch.meetingsends = [];
             MeetingStates.FirstMeeting = false;
             Logger.Info("------------会議終了------------", "Phase");
             if (AmongUsClient.Instance.AmHost)

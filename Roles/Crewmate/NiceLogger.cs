@@ -134,6 +134,7 @@ namespace TownOfHost.Roles.Crewmate
                 else Send += string.Format(GetString("NiceLoggerAbility2"), SetRoom);
 
                 _ = new LateTask(() => Utils.SendMessage(Send, Player.PlayerId, Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.NiceLogger), GetString("NiceLoggerTitle"))), 4f, "NiceLoggerSned");
+                MeetingHudPatch.StartPatch.meetingsends.Add((Player.PlayerId, Send, Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.NiceLogger), GetString("NiceLoggerTitle"))));
             }
         }
         public override void AfterMeetingTasks()
