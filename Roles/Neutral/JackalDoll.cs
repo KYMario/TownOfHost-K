@@ -263,6 +263,7 @@ public sealed class JackalDoll : RoleBase
     {
         if (!player.IsAlive()) return;
         if (!AmongUsClient.Instance.AmHost) return;
+        if (GameStates.ExiledAnimate || AntiBlackout.IsSet) return;
 
         if (BossAndSidekicks.TryGetValue(player.PlayerId, out var data))
         {
