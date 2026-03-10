@@ -313,6 +313,7 @@ namespace TownOfHost
                     {CustomRoles.SlowStarter,"#ff00ff"},
                     {CustomRoles.InfoPoor ,"#555647"},
                     {CustomRoles.News, "#828282"},
+                    {CustomRoles.Sunglasses , "#2e103d"},
 
                     //第三属性
                     { CustomRoles.Amanojaku,"#005243"},

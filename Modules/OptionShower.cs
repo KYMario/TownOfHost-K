@@ -269,6 +269,7 @@ namespace TownOfHost
                         case "GiveGuarding": continue;
                         case "GiveClumsy": continue;
                         case "GiveSlacker": continue;
+                        case "GiveSunglasses": continue;
                     }
                 }
                 if (!Options.IsActiveSkeld)
@@ -362,6 +363,7 @@ namespace TownOfHost
                     case "GiveGuarding": return false;
                     case "GiveClumsy": return false;
                     case "GiveSlacker": return false;
+                    case "GiveSunglasses": return false;
                 }
             }
             if (!Options.IsActiveSkeld)

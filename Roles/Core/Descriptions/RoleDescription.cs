@@ -185,30 +185,31 @@ public abstract class RoleDescription
         {
             switch (opt.Value.Name)
             {
-                case "Maximum": continue;
-                case "GiveGuesser": continue;
-                case "GiveWatching": continue;
-                case "GiveManagement": continue;
-                case "GiveSeeing": continue;
-                case "GiveAutopsy": continue;
-                case "GiveTiebreaker": continue;
-                case "GiveMagicHand": continue;
-                case "GivePlusVote": continue;
-                case "GiveRevenger": continue;
-                case "GiveOpener": continue;
-                case "GiveAntiTeleporter": continue;
-                case "GiveLighting": continue;
-                case "GiveMoon": continue;
-                case "GiveElector": continue;
-                case "GiveInfoPoor": continue;
-                case "GiveNonReport": continue;
-                case "GiveTransparent": continue;
-                case "GiveNotvoter": continue;
-                case "GiveWater": continue;
-                case "GiveSpeeding": continue;
-                case "GiveGuarding": continue;
-                case "GiveClumsy": continue;
-                case "GiveSlacker": continue;
+                case "Maximum":
+                case "GiveGuesser":
+                case "GiveWatching":
+                case "GiveManagement":
+                case "GiveSeeing":
+                case "GiveAutopsy":
+                case "GiveTiebreaker":
+                case "GiveMagicHand":
+                case "GivePlusVote":
+                case "GiveRevenger":
+                case "GiveOpener":
+                case "GiveAntiTeleporter":
+                case "GiveLighting":
+                case "GiveMoon":
+                case "GiveElector":
+                case "GiveInfoPoor":
+                case "GiveNonReport":
+                case "GiveTransparent":
+                case "GiveNotvoter":
+                case "GiveWater":
+                case "GiveSpeeding":
+                case "GiveGuarding":
+                case "GiveClumsy":
+                case "GiveSlacker":
+                case "GiveSunglasses": continue;
             }
 
             sb.Append("|");

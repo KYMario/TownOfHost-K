@@ -462,6 +462,7 @@ namespace TownOfHost
                         case "GiveGuarding": continue;
                         case "GiveClumsy": continue;
                         case "GiveSlacker": continue;
+                        case "GiveSunglasses": continue;
                         default: if (getbool) continue; break;
                     }
                 }
@@ -685,6 +686,7 @@ namespace TownOfHost
             if (player.Is(CustomRoles.Water)) sb.Append(juncture + AddonInfo(CustomRoles.Water, "Ｗ", pc: player) + "\n");
             if (player.Is(CustomRoles.Clumsy)) sb.Append(juncture + AddonInfo(CustomRoles.Clumsy, "Ｃ", From.TownOfHost_Y, pc: player) + "\n");
             if (player.Is(CustomRoles.Slacker)) sb.Append(juncture + AddonInfo(CustomRoles.Slacker, "ＳＬ", pc: player) + "\n");
+            if (player.Is(CustomRoles.Sunglasses)) sb.Append(juncture + AddonInfo(CustomRoles.Sunglasses, "Ｓ", From.TownOfHost_Y, pc: player) + "\n");
 
             CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             //第三
@@ -751,6 +753,7 @@ namespace TownOfHost
                 CustomRoles.Clumsy => AddonInfo(role, "Ｃ", From.TownOfHost_Y),
                 CustomRoles.Slacker => AddonInfo(role, "ＳＬ"),
                 CustomRoles.News => AddonInfo(role, "Ｎ"),
+                CustomRoles.Sunglasses => AddonInfo(role, "Ｓ", From.TownOfHost_Y),
                 //第三属性
                 CustomRoles.Amanojaku => AddonInfo(role),
                 CustomRoles.Lovers or CustomRoles.RedLovers or CustomRoles.BlueLovers or CustomRoles.YellowLovers or CustomRoles.GreenLovers

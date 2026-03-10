@@ -95,6 +95,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.Elector, "El");
                 roleCommands.Add(CustomRoles.Amnesia, "am");
                 roleCommands.Add(CustomRoles.InfoPoor, "IP");
+                roleCommands.Add(CustomRoles.Sunglasses, "Sun");
                 //第三
                 roleCommands.Add(CustomRoles.Lovers, "lo");
                 roleCommands.Add(CustomRoles.OneLove, "ol");

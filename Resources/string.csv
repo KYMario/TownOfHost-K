@@ -285,6 +285,7 @@
 "Amnesia","Loss of memory","アムネシア"
 "InfoPoor","InfoPoor","インフォプアー"
 "News","News","ニュース"
+"Sunglasses","Sunglasses","サングラス"
 
 "# その他"
 "Team","Team","陣営"
@@ -552,6 +553,7 @@
 "AmnesiaInfo","Where am I? Who am I?","ここはどこ..わたしはだれ...?"
 "InfoPoorInfo","What!?","何もしてないのに壊れたんだけど！"
 "NewsInfo","","臨時ニュースです..."
+"SunglassesInfo","The thing that obstructed my view","我の視界を遮りしモノ"
 
 "## 役職説明ロング"
 
@@ -848,6 +850,7 @@
 "AmnesiaInfoLong","Add-ons:\nHe is not aware that he is Amnesia.\n Also, his position is not known until the end of the first meeting of the set number of days.\n Only the camp can know. (Madmate is judged neutral.) \n\nWhen the awakening is ON in a task and he is not an Imposter, he remembers his position after completing a certain number of tasks.\n\n If the setting is ON, the position ability is not demonstrated.","(属性):\n自身がアムネシアだと自覚できない。\nまた、自身の役職が設定日数目の会議が終了するまで分からない。\n陣営のみ知ることができる。(マッドメイトはニュートラル判定)\nタスクで覚醒がONかつ自身がインポスターではない時、一定数タスクを終わらせると自身の役職を思い出す。\n設定がONの場合、役職能力が発揮されない。"
 "InfoPoorInfoLong","Add-ons:\nCant Use Devices.","(属性):\n情報機器が使用できない。\nファングルの望遠鏡への効果はない。"
 "NewsInfoLong","","設定された条件を満たし、生存していると、会議で貴方の役職が生存していることが通知されてしまう。"
+"SunglassesInfoLong","Vision is slightly reduced","視界が一定倍率低下する。"
 
 "# ニュートラル属性"
 "LoversInfoLong","Lovers is an additional Neutrals role assigned to 2 random players on top of their defined roles.\nIf you and your lover both survive til the end, you both will win.\nIf one of you dies, the other will also die. If crewmates get a task victory, you both will lose.","全プレイヤーの中からランダムで2人に他の役職と重複して配役されるニュートラル。\nラバーズが2人とも生き残っている状態で試合終了すれば勝利。\nまた、生存者がラバーズの2人のみの場合、追加勝利設定でも単独勝利となる。\nラバーズの片方が死んだときにもう片方も死ぬ。クルーのタスクが完了すると敗北。\n追加勝利ではないラバーズが複数組生き残っている場合、設定された勝利優先順位に応じる。","恋人为两名玩家的组合。\n恋人存活到游戏结束则恋人独自获胜。\n船员阵营的恋人玩家没有任务。\n从恋人阵营玩家可以看到两名恋人玩家昵称旁有心形标志。\n恋人一同赴死。\n恋人中的一方在会议中被放逐时，另一方将死亡并变为不可以被报告的尸体。","(中立),\n遊戲開始系統會隨機抽取兩人當戀人,該職業可以和其他職業屬於同一個玩家身上\n戀人將獲勝在遊戲結束時如果兩個戀人都活著.\n但是當一個戀人死去,另一個戀人也會跟著死去\n如果船員完成所有任務,戀人即宣告失敗。","(Нейтралы):\nДополнительно с какой-либо ролью Любовники назначаются 2 случайным игрокам. \nЕсли оба Любовника останутся живы, то они выиграют. \nКогда умрёт хотя бы один Любовник, то моментально умрёт и второй. Они проиграют когда Члены Экипажа выполнят все задания.","(Neutros): \nOs Amantes, é um papel dado a 2 jogadores aleatórios, somado a sua classe já definida. \nSe você e seu amante sobreviverem até o final, vocês ganharão. \nCaso um dos dois morra, o outro também morre. Se os Tripulantes ganharem por tarefas, os dois perdem.",""
@@ -1767,6 +1770,7 @@
 "GiveGuarding","Give <#7b68ee>Guarding</color>","<#7b68ee>ガーディング</color>を付与する"
 "GiveClumsy","Give <#942343>Clumsy</color>","<#942343>クラムシー</color>を付与する"
 "GiveSlacker","Give <#980098>Slacker</color>","<#980098>スラッカー</color>を付与する"
+"GiveSunglasses","Give<#2e103d>Sunglasses</color>","<#2e103d>サングラス</color>を付与する"
 "GiveGuesserInfo","Guess the position and make the kill.","役職を推測してキルを行う"
 "GiveWatchingInfo","Anonymous voting is turned off.","匿名投票がOFFになる"
 "GiveManagementInfo","You can see the progress of tasks.","タスク進捗が分かる"
@@ -1788,6 +1792,7 @@
 "GiveGuardingInfo","Prevent a certain number of kills","一定数キルを防ぐ"
 "GiveClumsyInfo","Unable to repair communication interference","通信妨害を修復できない"
 "GiveSlackerInfo","Unable to repair emergency sabo","緊急サボを修復できない"
+"GiveSunglassesInfo","Vision is slightly reduced","視界が少し減少する"
 "GiveOpportunist","Give Opportunist","生存していると追加勝利できる"
 "LastNeutralCantaskWin","Crew task wins can also win.","クルーのタスク勝利でも勝利できる"
 "LastNeutralCanCrewWin","Crew victories outside of the task can also win.","タスク以外のクルー勝利でも勝利できる"
@@ -1842,6 +1847,8 @@
 "NewsSendDay","Send Day","報道される日"
 "NewsSendPlayerCount","Send PlayerCount","報道される生存人数"
 "Everyturn","Send for Everyturn","条件達成後、毎ターン送る"
+"SunglassesVisionmagnification","VisionMagnification","視界の倍率"
+"SunglassesVisionmagnification_Info","SunglassesCrewVision:{0} => {1}\nSunglassesImposotrVision:{2} => {3}","サングラスクルー視界:{0} => {1}\nサングラスインポスター視界:{2} => {3}"
 
 "## 幽霊役職設定"
 "GhostRoleOptions","GhostRole Options","幽霊役職の設定"

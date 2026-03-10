@@ -59,6 +59,7 @@ class GhostRoleCore
         OneWolf.Init();
         Twins.Init();
         Stack.Init();
+        Sunglasses.Init();
     }
     public static void SetupCustomOptionAddonAndIsGhostRole()
     {
@@ -100,6 +101,7 @@ class GhostRoleCore
         Elector.SetupCustomOption();
         InfoPoor.SetupCustomOption();
         NonReport.SetupCustomOption();
+        Sunglasses.SetupCustomOption();
         Transparent.SetupCustomOption();
         Water.SetupCustomOption();
         Clumsy.SetupCustomOption();

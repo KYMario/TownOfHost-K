@@ -2,6 +2,7 @@ using AmongUs.GameOptions;
 using UnityEngine;
 using System;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.AddOns.Common;
 namespace TownOfHost.Roles.Crewmate;
 
 public sealed class Shyboy : RoleBase
@@ -63,7 +64,18 @@ public sealed class Shyboy : RoleBase
         AURoleOptions.EngineerCooldown = (float)Coold;
         AURoleOptions.EngineerInVentMaxTime = 0;
     }
-    public override void StartGameTasks() => Shydeathdi = MathF.Min(Player.Is(CustomRoles.Lighting) ? 4.5f * Main.DefaultImpostorVision : 4.5f * Main.DefaultCrewmateVision, 4);
+    public override void StartGameTasks()
+    {
+        Shydeathdi = Player.Is(CustomRoles.Lighting) ? Main.DefaultImpostorVision : Main.DefaultCrewmateVision;
+        if (Player.Is(CustomRoles.Sunglasses))
+        {
+            Shydeathdi *= Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f;
+        }
+
+
+        Shydeathdi *= 4.5f;
+        Shydeathdi = Mathf.Min(Shydeathdi, 4);
+    }
     public override void OnStartMeeting()
     {
         Notify = true;

@@ -261,7 +261,8 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         CustomRoles.Transparent,//なんでデバグがあるのかって?悪いサンタもおるやろ。
         CustomRoles.InfoPoor,//   というか天邪鬼付与させたいとても(?)
         CustomRoles.Water,
-        CustomRoles.Clumsy
+        CustomRoles.Clumsy,
+        CustomRoles.Sunglasses
     };
     void GiftPresent()
     {

@@ -510,6 +510,7 @@ public static class CustomRoleManager
                 case CustomRoles.Elector: Elector.Add(pc.PlayerId); break;
                 case CustomRoles.Amnesia: Amnesia.Add(pc.PlayerId); break;
                 case CustomRoles.News: News.Add(pc.PlayerId); break;
+                case CustomRoles.Sunglasses: Sunglasses.Add(pc.PlayerId); break;
 
                 case CustomRoles.Amanojaku: Amanojaku.Add(pc.PlayerId); break;
                 case CustomRoles.OneWolf: OneWolf.Add(pc.PlayerId); break;
@@ -976,6 +977,7 @@ public enum CustomRoles
     SlowStarter,
     InfoPoor,
     News,
+    Sunglasses,
 
     //GhostRoles
 

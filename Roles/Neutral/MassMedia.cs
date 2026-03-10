@@ -8,6 +8,7 @@ using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
+using TownOfHost.Roles.AddOns.Common;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -100,9 +101,12 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
 
         //範囲
         Vector2 GSpos = player.transform.position;
-        var Mieruhani = 6.5f * Main.DefaultCrewmateVision;
-        if (player.Is(CustomRoles.Lighting)) Mieruhani = 6.5f * Main.DefaultImpostorVision;
+        var Mieruhani = Main.DefaultCrewmateVision;
+        if (player.Is(CustomRoles.Lighting)) Mieruhani = Main.DefaultImpostorVision;
+        if (player.Is(CustomRoles.Sunglasses)) Mieruhani *= Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f;
 
+
+        Mieruhani *= 6.5f;
         //position
         float HitoDistance = Vector2.Distance(GSpos, target.transform.position);
         if (!target.IsAlive())

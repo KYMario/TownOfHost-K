@@ -166,7 +166,7 @@ namespace TownOfHost.Modules
             }
 
             CustomRoles role = player.GetCustomRole();
-            var HasRoleAddon = RoleAddAddons.GetRoleAddon(role, out var data, player, subrole: [CustomRoles.Lighting, CustomRoles.Moon, CustomRoles.Watching, CustomRoles.Speeding]);
+            var HasRoleAddon = RoleAddAddons.GetRoleAddon(role, out var data, player, subrole: [CustomRoles.Lighting, CustomRoles.Moon, CustomRoles.Sunglasses, CustomRoles.Watching, CustomRoles.Speeding]);
 
             if (player.IsAlive())
             {
@@ -176,6 +176,7 @@ namespace TownOfHost.Modules
 
                 var HasLithing = player.Is(CustomRoles.Lighting);
                 var HasMoon = player.Is(CustomRoles.Moon);
+                var HasSunglasses = player.Is(CustomRoles.Sunglasses);
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
                 opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
 
@@ -269,16 +270,16 @@ namespace TownOfHost.Modules
                         opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
                     }
                     else//停電時はクルー視界
-                    if (isElectrical)
-                    {
-                        opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
-                        opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultCrewmateVision);
-                    }
-                    else
-                    {
-                        opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultImpostorVision);
-                        opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
-                    }
+                        if (isElectrical)
+                        {
+                            opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
+                            opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultCrewmateVision);
+                        }
+                        else
+                        {
+                            opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultImpostorVision);
+                            opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
+                        }
                 }
 
                 //キルクール0に設定+修正する設定をONにした時だけ呼び出す。
@@ -304,6 +305,16 @@ namespace TownOfHost.Modules
                 {
                     opt.SetFloat(FloatOptionNames.ImpostorLightMod, role.IsImpostor() ? MurderMystery.ImpostorVision : MurderMystery.Crewvision);
                     opt.SetFloat(FloatOptionNames.CrewLightMod, role.IsImpostor() ? MurderMystery.ImpostorVision : MurderMystery.Crewvision);
+                }
+                if (data.GiveSunglasses.GetBool())
+                {
+                    opt.SetFloat(FloatOptionNames.ImpostorLightMod, opt.GetFloat(FloatOptionNames.ImpostorLightMod) * data.SunglassesVisionmagnification.GetFloat() * 0.01f);
+                    opt.SetFloat(FloatOptionNames.CrewLightMod, opt.GetFloat(FloatOptionNames.CrewLightMod) * data.SunglassesVisionmagnification.GetFloat() * 0.01f);
+                }
+                else if (HasSunglasses)
+                {
+                    opt.SetFloat(FloatOptionNames.ImpostorLightMod, opt.GetFloat(FloatOptionNames.ImpostorLightMod) * Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f);
+                    opt.SetFloat(FloatOptionNames.CrewLightMod, opt.GetFloat(FloatOptionNames.CrewLightMod) * Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f);
                 }
                 opt.BlackOut(state.IsBlackOut);
             }

@@ -179,6 +179,7 @@ namespace TownOfHost
                         case CustomRoles.Elector: sb.Append(Elector.SubRoleMark); break;
                         case CustomRoles.InfoPoor: sb.Append(InfoPoor.SubRoleMark); break;
                         case CustomRoles.News: sb.Append(News.SubRoleMark); break;
+                        case CustomRoles.Sunglasses: sb.Append(Sunglasses.SubRoleMark); break;
                     }
                 }
             }
@@ -230,6 +231,7 @@ namespace TownOfHost
                         if (data.GiveWater.GetBool()) Subrole.Add(CustomRoles.Water);
                         if (data.GiveClumsy.GetBool()) Subrole.Add(CustomRoles.Clumsy);
                         if (data.GiveSlacker.GetBool()) Subrole.Add(CustomRoles.Slacker);
+                        if (data.GiveSunglasses.GetBool()) Subrole.Add(CustomRoles.Sunglasses);
                     }
                     if (state.SubRoles.Any(x => x is CustomRoles.LastImpostor))
                     {
@@ -569,6 +571,7 @@ namespace TownOfHost
                             if (data.GiveWater.GetBool()) Subrole.Add(CustomRoles.Water);
                             if (data.GiveClumsy.GetBool()) Subrole.Add(CustomRoles.Clumsy);
                             if (data.GiveSlacker.GetBool()) Subrole.Add(CustomRoles.Slacker);
+                            if (data.GiveSunglasses.GetBool()) Subrole.Add(CustomRoles.Sunglasses);
                         }
                         if (state.SubRoles.Any(x => x is CustomRoles.LastImpostor))
                         {

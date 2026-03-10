@@ -83,7 +83,7 @@ namespace TownOfHost
             return PlayerState.GetByPlayerId(player.PlayerId)?.CountType ?? CountTypes.None;
         }
 
-        public static void SetKillCooldown(this PlayerControl player, float time = -1f, PlayerControl target = null, bool force = false, bool delay = false)
+        public static void SetKillCooldown(this PlayerControl player, float time = -1f, PlayerControl target = null, bool force = true, bool delay = false)
         {
             if (player == null) return;
             if (target == null) target = player;
