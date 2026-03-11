@@ -536,6 +536,8 @@ namespace TownOfHost
         public static OptionItem KickPlayerFriendCodeNotExist;
         public static OptionItem ApplyBanList;
         public static OptionItem KiclHotNotFriend;
+        public static OptionItem KickInitialName;
+        public static OptionItem BANKickjoinplayer;
 
         public static readonly string[] suffixModes =
         {
@@ -1194,6 +1196,12 @@ namespace TownOfHost
             KiclHotNotFriend = BooleanOptionItem.Create(1_000_111, "KiclHotNotFriend", false, TabGroup.MainSettings, true)
                 .SetInfo(Translator.GetString("KickBanOptionWhiteList"))
                 .SetColor(Color.red);
+            KickInitialName = BooleanOptionItem.Create(1_000_125, "KickInitialName", false, TabGroup.MainSettings, true)
+                .SetColor(Color.red)
+                .SetInfo(Translator.GetString("KickBanOptionWhiteList"));
+            BANKickjoinplayer = BooleanOptionItem.Create(1_000_126, "BanKickjoinplayer", false, TabGroup.MainSettings, true)
+                .SetColor(Color.red)
+                .SetInfo(Translator.GetString("BanKickjoinplayerInfo"));
 
             VanillaOptionHolder.Initialize();
             DebugModeManager.SetupCustomOption();

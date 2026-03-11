@@ -15,7 +15,7 @@ namespace TownOfHost.Roles.AddOns.Common
 
         public static void SetupCustomOption()
         {
-            SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Sunglasses);
+            SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.Sunglasses, fromtext: UtilsOption.GetFrom(From.TheOtherRoles));
             AddOnsAssignData.Create(Id + 10, CustomRoles.Sunglasses, true, true, true, true);
             ObjectOptionitem.Create(Id + 51, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Sunglasses);
             SunglassesVisionmagnification = FloatOptionItem.Create(Id + 50, "SunglassesVisionmagnification", new(1f, 100f, 1f), 75, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Sunglasses).SetValueFormat(OptionFormat.Percent)
