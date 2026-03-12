@@ -178,7 +178,6 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         if (UseingId != Player.PlayerId) return;
 
         ICollection<byte> dellist = [];
-        bool IsLimit = false;
         foreach (var data in PlayerRooms)
         {
             var pc = PlayerCatch.GetPlayerById(data.Key);
@@ -204,26 +203,29 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
             }
             if (SabotageLimittime < limittimer)//時間切れ
             {
-                IsLimit = true;
                 if (pc.inVent) pc.MyPhysics.RpcBootFromVent(VentilationSystemUpdateSystemPatch.NowVentId.TryGetValue(pc.PlayerId, out var ventid) ? ventid : 0);
                 CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 10, CustomDeathReason.Suffocation);
                 continue;
             }
         }
         dellist.Do(id => PlayerRooms.Remove(id));
-        limittimer += Time.fixedDeltaTime;
-        sendtimer += Time.fixedDeltaTime;
-        flashtimer += Time.fixedDeltaTime;
 
-        if (IsLimit)
+        if (SabotageLimittime < limittimer)
         {
             UseingId = byte.MaxValue;
             PlayerRooms.Clear();
             limittimer = 0;
+            Main.IsActiveSabotage = false;
+            Main.LastSab = byte.MaxValue;
+            Main.SabotageActivetimer = 0;
             UtilsNotifyRoles.NotifyRoles();
             PlayerCatch.AllPlayerControls.DoIf(p => p.IsModClient(), p => SendPublicRpc(p.PlayerId, 0, null));
             return;
         }
+
+        limittimer += Time.fixedDeltaTime;
+        sendtimer += Time.fixedDeltaTime;
+        flashtimer += Time.fixedDeltaTime;
         if (1 < sendtimer)
         {
             UtilsNotifyRoles.NotifyRoles();
