@@ -401,7 +401,7 @@ namespace TownOfHost
                 var sendtext = text;
                 if (!VersionInfoManager.GetCustomFlag(1))
                     sendtext = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
-                Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n<size=70%>{sendtext}"));
+                Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}<#ffffff>\n<size=70%>{sendtext}"));
             }
             else
                 Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));

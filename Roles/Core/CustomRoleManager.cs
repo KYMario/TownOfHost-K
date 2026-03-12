@@ -807,6 +807,7 @@ public enum CustomRoles
     ShapeKiller,
     Archer,
     Assassin,
+    EvilBlender,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,

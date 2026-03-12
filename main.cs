@@ -440,6 +440,7 @@ namespace TownOfHost
         Trap,
         NotGather,
         Hit,
+        Suffocation,
         etc = -1
     }
     //WinData

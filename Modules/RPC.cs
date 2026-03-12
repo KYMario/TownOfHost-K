@@ -10,6 +10,7 @@ using TownOfHost.Modules;
 using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Crewmate;
+using TownOfHost.Roles.Impostor;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -268,6 +269,9 @@ namespace TownOfHost
                             {
                                 case CustomRoles.Cakeshop:
                                     Cakeshop.ReceivePublickRPC(reader);
+                                    break;
+                                case CustomRoles.EvilBlender:
+                                    EvilBlender.ReceivePublickRpc(reader);
                                     break;
                             }
                         }

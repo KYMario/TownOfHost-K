@@ -338,7 +338,22 @@ namespace TownOfHost
         public static void Postfix()
         {
             //Logger.Warn("!!!2", "SR");
-            if (!AmongUsClient.Instance.AmHost) return;
+            if (!AmongUsClient.Instance.AmHost)
+            {
+                if (PlayerCatch.AllPlayerControls.All(pc => pc.IsModClient()))
+                {
+                    new LateTask(() =>
+                    {
+                        PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc => PlayerNameColor.Set(pc)));
+                        PlayerControl.LocalPlayer.StopAllCoroutines();
+                        HudManagerCoShowIntroPatch.Cancel = false;
+                        DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
+                        DestroyableSingleton<HudManager>.Instance.HideGameLoader();
+                        UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+                    }, 0.2f, "", true);
+                }
+                return;
+            }
             RpcSetRoleReplacer.Release(); //保存していたSetRoleRpcを一気に書く
             RpcSetRoleReplacer.senders.Do(kvp => kvp.Value.SendMessage());
 
