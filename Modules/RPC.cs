@@ -9,6 +9,7 @@ using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Crewmate;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -37,6 +38,8 @@ namespace TownOfHost
         ClientSendHideMessage,
         SyncModSystem,
         SyncAssassinState,
+        GetAchievement,
+        PublicRoleSync
     }
     public enum Sounds
     {
@@ -248,6 +251,27 @@ namespace TownOfHost
                     byte assassinId = reader.ReadByte();
                     if (CustomRoleManager.GetByPlayerId(assassinId) is not Roles.Impostor.Assassin assassinRole) break;
                     assassinRole.ReceiveStateRPC(reader);
+                    break;
+                case CustomRPC.GetAchievement:
+                    byte id = reader.ReadByte();
+                    int flug = reader.ReadInt32();
+                    int achiid = reader.ReadInt32();
+                    Achievements.RpcCompleteAchievement(id, flug, achiid);
+                    break;
+                case CustomRPC.PublicRoleSync:
+                    {
+                        byte playerid = reader.ReadByte();
+                        if (playerid == PlayerControl.LocalPlayer.PlayerId)
+                        {
+                            var recrole = (CustomRoles)reader.ReadPackedInt32();
+                            switch (recrole)
+                            {
+                                case CustomRoles.Cakeshop:
+                                    Cakeshop.ReceivePublickRPC(reader);
+                                    break;
+                            }
+                        }
+                    }
                     break;
             }
         }
@@ -492,6 +516,13 @@ namespace TownOfHost
             writer.Write(targetId);
             writer.Write(killerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+        public static MessageWriter RpcPublicRoleSync(byte playerid, CustomRoles role)
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PublicRoleSync, SendOption.None, -1);
+            writer.Write(playerid);
+            writer.WritePacked((int)role);
+            return writer;
         }
         //参考元→SuperNewRoles様
         public static void RpcSyncAllNetworkedPlayer(int TargetClientId = -1, SendOption sendOption = SendOption.None)

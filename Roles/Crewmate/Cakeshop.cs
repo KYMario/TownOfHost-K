@@ -7,6 +7,7 @@ using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.AddOns.Common;
+using Hazel;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -33,11 +34,12 @@ public sealed class Cakeshop : RoleBase, INekomata
     )
     {
         Addedaddons.Clear();
+        MyAddAddons = [];
         CustomRoleManager.LowerOthers.Add(GetLowerTextOthers);
     }
 
     public Dictionary<byte, CustomRoles> Addedaddons = new();
-
+    static ICollection<CustomRoles> MyAddAddons;//非ホスト導入者用
 
     public override void AfterMeetingTasks()
     {
@@ -62,6 +64,14 @@ public sealed class Cakeshop : RoleBase, INekomata
                 x => Addedaddons.ContainsKey(x.Key),
                 state => PlayerCatch.GetPlayerById(state.Key).RpcReplaceSubRole(Addedaddons[state.Key], true));
 
+            if (0 < Addedaddons.Count)
+            {
+                PlayerCatch.AllPlayerControls.Do(pc =>
+                {
+                    if (pc.IsModClient())
+                        SendRpc(pc.PlayerId, CustomRoles.NotAssigned);
+                });
+            }
             if (!Player.IsAlive())
             {
                 Addedaddons.Clear();
@@ -84,6 +94,10 @@ public sealed class Cakeshop : RoleBase, INekomata
                     state.HaveGuard[1] += Guarding.HaveGuard;
                 }
                 pc.RpcSetCustomRole(addon);
+                if (pc.IsModClient())
+                {
+                    SendRpc(pc.PlayerId, addon);
+                }
             });
             UtilsNotifyRoles.NotifyRoles();
         }, 5f, "CakeshopAssign", true);
@@ -107,6 +121,15 @@ public sealed class Cakeshop : RoleBase, INekomata
         if (!Player.IsAlive()) return "";
         if (seen != seer) return "";
         if (isForMeeting) return "";
+        if (seer.IsModClient() && 0 < MyAddAddons.Count)
+        {
+            var text = "";
+            foreach (var addon in MyAddAddons)
+            {
+                text += Utils.ColorString(UtilsRoleText.GetRoleColor(addon), GetString($"{addon}Info"));
+            }
+            return text is "" ? "" : $"<size=50%>{text}</size>";
+        }
         return Addedaddons.TryGetValue(seen.PlayerId, out var role) ? $"<size=50%>{Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}Info"))}</size>" : "";
     }
 
@@ -121,5 +144,24 @@ public sealed class Cakeshop : RoleBase, INekomata
         if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
 
         AfterMeetingTasks();
+    }
+
+    void SendRpc(byte playerid, CustomRoles addon)
+    {
+        var sender = RPC.RpcPublicRoleSync(playerid, RoleInfo.RoleName);
+        sender.WritePacked((int)addon);
+        AmongUsClient.Instance.FinishRpcImmediately(sender);
+    }
+    public static void ReceivePublickRPC(MessageReader reader)
+    {
+        var role = (CustomRoles)reader.ReadPackedInt32();
+        if (role is CustomRoles.NotAssigned)
+        {
+            MyAddAddons = [];
+        }
+        else
+        {
+            MyAddAddons.Add(role);
+        }
     }
 }
