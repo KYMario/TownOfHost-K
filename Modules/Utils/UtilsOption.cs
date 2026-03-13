@@ -429,7 +429,7 @@ namespace TownOfHost
             SendMessage(sb.ToString(), PlayerId);
         }
 
-        public static void ShowChildrenSettings(OptionItem option, ref StringBuilder sb, int deep = 0, bool Askesu = false, PlayerControl pc = null, bool getbool = false)
+        public static void ShowChildrenSettings(OptionItem option, ref StringBuilder sb, int deep = 0, bool Askesu = false, PlayerControl pc = null, bool getbool = false, bool IsOmitted = true)
         {
             foreach (var opt in option.Children.Select((v, i) => new { Value = v, Index = i + 1 }))
             {
@@ -521,7 +521,7 @@ namespace TownOfHost
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveFungle || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveSkeld || Options.IsActiveMiraHQ || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if (Askesu && opt.Value.Name == "%roleTypes%Maximum") continue;
-                if (opt.Value.ParentRole is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder)
+                if (opt.Value.ParentRole is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder && IsOmitted)
                 {
                     if (opt.Value.GetBool() is false) continue;
                 }

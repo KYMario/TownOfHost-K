@@ -96,11 +96,11 @@ namespace TownOfHost
         };
 
         // MapActive
-        public static bool IsActiveSkeld => AddedTheSkeld.GetBool() || Main.NormalOptions.MapId == 0;
-        public static bool IsActiveMiraHQ => AddedMiraHQ.GetBool() || Main.NormalOptions.MapId == 1;
-        public static bool IsActivePolus => AddedPolus.GetBool() || Main.NormalOptions.MapId == 2;
-        public static bool IsActiveAirship => AddedTheAirShip.GetBool() || Main.NormalOptions.MapId == 4;
-        public static bool IsActiveFungle => AddedTheFungle.GetBool() || Main.NormalOptions.MapId == 5;
+        public static bool IsActiveSkeld => AddedTheSkeld.GetBool() || Main.NormalOptions?.MapId is 0 or null;
+        public static bool IsActiveMiraHQ => AddedMiraHQ.GetBool() || Main.NormalOptions?.MapId is 1 or null;
+        public static bool IsActivePolus => AddedPolus.GetBool() || Main.NormalOptions?.MapId is 2 or null;
+        public static bool IsActiveAirship => AddedTheAirShip.GetBool() || Main.NormalOptions?.MapId is 4 or null;
+        public static bool IsActiveFungle => AddedTheFungle.GetBool() || Main.NormalOptions?.MapId is 5 or null;
 
         // 役職数・確率
         public static Dictionary<CustomRoles, OptionItem> CustomRoleCounts;
