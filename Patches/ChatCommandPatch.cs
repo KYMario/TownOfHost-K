@@ -56,7 +56,7 @@ namespace TownOfHost
             var text = __instance.freeChatField.textArea.text;
             if (ChatHistory.Count == 0 || ChatHistory[^1] != text) ChatHistory.Add(text);
             ChatControllerUpdatePatch.CurrentHistorySelection = ChatHistory.Count;
-            string[] args = text.Split(' ');
+            string[] args = text.ToLower().Split(' ');
             string subArgs = "";
             var canceled = false;
             var cancelVal = "";
@@ -233,7 +233,10 @@ namespace TownOfHost
                         canceled = true;
                         ShowKillLog();
                         break;
-
+                    case "/ach":
+                    case "/achievements":
+                        ShowAchievement(PlayerControl.LocalPlayer.PlayerId);
+                        break;
                     case "/r":
                     case "/rename":
                         canceled = true;
@@ -1257,6 +1260,7 @@ namespace TownOfHost
             if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
+            args = text.ToLower().Split(' ');
             canceled = true;
             switch (args[0])
             {
@@ -1269,6 +1273,11 @@ namespace TownOfHost
                 case "/killlog":
                     canceled = true;
                     ShowKillLog(player.PlayerId);
+                    break;
+                case "/ach":
+                case "/achievement":
+                    canceled = true;
+                    ShowAchievement(player.PlayerId);
                     break;
                 case "/n":
                 case "/now":
