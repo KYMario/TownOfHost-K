@@ -372,6 +372,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 Player.RpcSetName(string.Format(GetString("AssassinGuessCollect"), tage) + "<size=0>");
                 MeetingVoteManager.Voteresult = string.Format(GetString("AssassinGuessCollect"), tage);
                 Logger.Info($"{GuessId}マーリンだ!", "Assassin");
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
             }
             else
             {
@@ -556,5 +557,12 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         {
             iusephantom.OnClick(ref AdjustKillCooldown, ref ResetCooldown);
         }
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, l1);
     }
 }

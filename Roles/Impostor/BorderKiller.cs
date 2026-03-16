@@ -1,3 +1,4 @@
+using System.Linq;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
@@ -49,10 +50,29 @@ public sealed class BorderKiller : RoleBase, IImpostor
     public override void CheckWinner()
     {
         //目標キルカウント ＞ 現在のキルカウント
-        if (OptionMissionKillcount.GetInt() > MyState.GetKillCount(false) && CustomWinnerHolder.WinnerTeam is CustomWinner.Impostor)
+        if (OptionMissionKillcount.GetInt() > MyState.GetKillCount(false) && CustomWinnerHolder.winners.Contains(CustomWinner.Impostor))
         {
             CustomWinnerHolder.CantWinPlayerIds.Add(Player.PlayerId);
             CustomWinnerHolder.WinnerIds.Remove(Player.PlayerId);
         }
+        else if (OptionMissionKillcount.GetInt() <= MyState.GetKillCount(false))
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (CustomWinnerHolder.winners.Contains(CustomWinner.Impostor))
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+        }
+        if (5 <= MyState.GetKillCount())
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var l2 = new Achievement(RoleInfo, 2, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, l2);
     }
 }

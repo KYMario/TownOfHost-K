@@ -171,7 +171,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
             }
 
             MeetingVoteManager.ResetVoteManager(target.PlayerId);
-            Player.RpcMeetingKill(target);
+            if (target != PlayerControl.LocalPlayer) Player.RpcMeetingKill(target);
             Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
             onemeetingkill++;
             return;
@@ -198,7 +198,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
         }
 
         MeetingVoteManager.ResetVoteManager(Player.PlayerId);
-        Player.RpcMeetingKill(Player);
+        if (Player != PlayerControl.LocalPlayer) Player.RpcMeetingKill(Player);
     }
     bool CanBeKilledBy(CustomRoles role)
     {

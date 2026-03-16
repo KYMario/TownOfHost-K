@@ -6,6 +6,8 @@ using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
+using TownOfHost.Roles.Neutral;
+using System.Linq;
 
 namespace TownOfHost.Roles.Impostor
 {
@@ -230,6 +232,27 @@ namespace TownOfHost.Roles.Impostor
         {
             Limit = reader.ReadBoolean();
             killcount = reader.ReadInt32();
+        }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (Limit) return;
+            if (CustomWinnerHolder.winners.Contains(CustomWinner.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+            if ((CustomWinnerHolder.winners.Contains(CustomWinner.MadonnaLovers) || CustomWinnerHolder.AdditionalWinnerRoles.Contains(CustomRoles.MadonnaLovers))
+                && Lovers.MaMadonnaLoversPlayers.Any(lov => lov.PlayerId == Player.PlayerId))
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[3]);
+        }
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+            var n2 = new Achievement(RoleInfo, 1, 1, 0, 0);
+            var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2, true);
+            var sp2 = new Achievement(RoleInfo, 3, 1, 0, 3, true);
+            achievements.Add(0, n1);
+            achievements.Add(1, n2);
+            achievements.Add(2, sp1);
+            achievements.Add(3, sp2);
         }
     }
 }

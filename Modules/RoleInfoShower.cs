@@ -73,11 +73,12 @@ class RoleInfoShower
                         RoleSprite.gameObject.SetActive(false);
                         var achievementtext = TMPTemplate.Create("achievement"
                         , "", Color.white, 2, TextAlignmentOptions.TopLeft, true, CustomBackground.transform);
-                        achievementtext.transform.localPosition = new(0f, 2.55f, -50);
+                        achievementtext.transform.localPosition = new(-0.4f, 2.55f, -50);
                         achievementtext.transform.localScale = new(0.5f, 1f, 1);
                         (int comp, int all) nomal = (0, 0);
                         (int comp, int all) Rare = (0, 0);
                         (int comp, int all) SRare = (0, 0);
+                        (int comp, int all) URare = (0, 0);
                         (int comp, int all) All = (0, 0);
                         foreach (var achi in Achievement.AllAchievements.Values)
                         {
@@ -95,12 +96,16 @@ class RoleInfoShower
                                     SRare.comp += achi.IsCompleted ? 1 : 0;
                                     SRare.all++;
                                     break;
+                                case 3:
+                                    URare.comp += achi.IsCompleted ? 1 : 0;
+                                    URare.all++;
+                                    break;
                             }
                             All.all++;
                             All.comp += achi.IsCompleted ? 1 : 0;
                         }
                         achievementtext.text = $"{GetString("Achievement")}:<#674020>◎</color>{nomal.comp}/{nomal.all} <#aacbf7>◆</color>{Rare.comp}/{Rare.all} "
-                        + $"<#ffea4e>★</color>{SRare.comp}/{SRare.all}  All:{All.comp}/{All.all}";
+                        + $"<#ffea4e>★</color>{SRare.comp}/{SRare.all}  <#17f7aa>ф</color>{URare.comp}/{URare.all}  All:{All.comp}/{All.all}";
 
                         var pilldown = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
                         pilldown.transform.localPosition = new(1.6f, 2.5f, -100f);
@@ -112,11 +117,16 @@ class RoleInfoShower
                         pilldownButton.OnClick = new();
                         pilldownButton.OnClick.AddListener(new System.Action(() =>
                         {
+                            if (tabbuttons.All(button => button.gameObject.active))
+                            {
+                                tabbuttons.Do(button => button.gameObject.SetActive(false));
+                                return;
+                            }
                             tabbuttons.Do(button => button.gameObject.SetActive(true));
                         }));
 
                         var closeButton = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
-                        closeButton.transform.localPosition = new(-1.6f, 2.5f, -100f);
+                        closeButton.transform.localPosition = new(-2f, 2.5f, -100f);
                         closeButton.transform.localScale = new(0.5f, 0.9f, 1f);
                         closeButton.name = "Close";
                         closeButton.Text.text = GetString("Close");
@@ -128,6 +138,7 @@ class RoleInfoShower
                             if (IsShowRoleInfo)
                             {
                                 pilldown.gameObject.SetActive(true);
+                                achievementtext.gameObject.SetActive(true);
                                 try
                                 {
                                     if (AchievementPassiveButton is not null)
@@ -221,6 +232,7 @@ class RoleInfoShower
                             passiveButton.OnClick = new();
                             passiveButton.OnClick.AddListener(new System.Action(() =>
                             {
+                                achievementtext.gameObject.SetActive(false);
                                 pilldown.gameObject.SetActive(false);
                                 tabbuttons.Do(button => button.gameObject.SetActive(false));
                                 var marksprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.{customrole}.png");
@@ -239,6 +251,7 @@ class RoleInfoShower
                                     RoleInfo.transform.localScale = new(0.5f, 1f, 1);
                                 }
                                 RoleInfo.text = "<size=160%><b>" + UtilsRoleText.GetRoleColorAndtext(customrole).RemoveDeltext("</color>");
+                                if (customrole.IsAddOn()) RoleInfo.text += " " + UtilsRoleText.GetSubRoleMarks([customrole], CustomRoles.NotAssigned);
                                 RoleInfo.text += "\n<size=100%>" + (customrole.IsVanilla() ? customrole.GetRoleInfo().Description.Blurb : GetString($"{customrole}Info"))
                                 + "</color></b>";
                                 if (customrole.GetRoleInfo() is not null)
@@ -290,24 +303,32 @@ class RoleInfoShower
                                     RoleInfo.text += $"\n\n<size=50%>{GetString($"{customrole}InfoLong")}\n";
                                 }
                                 {
-                                    var sb = new StringBuilder();
-                                    if (Options.CustomRoleSpawnChances.TryGetValue(customrole, out var op)) UtilsShowOption.ShowChildrenSettings(op, ref sb, IsOmitted: false);
-                                    else if (customrole is CustomRoles.Braid) UtilsShowOption.ShowChildrenSettings(Options.CustomRoleSpawnChances[CustomRoles.Driver], ref sb, IsOmitted: false);
-                                    else if (customrole is CustomRoles.Altair) UtilsShowOption.ShowChildrenSettings(Options.CustomRoleSpawnChances[CustomRoles.Vega], ref sb, IsOmitted: false);
-                                    else if (customrole is CustomRoles.Nue) UtilsShowOption.ShowChildrenSettings(Options.CustomRoleSpawnChances[CustomRoles.Nue], ref sb, IsOmitted: false);
-
-                                    if (sb.ToString() != "")
+                                    try
                                     {
-                                        RoleInfo.text += $"\n<size=70%>{GetString("Settings")}</size>";
-                                        var i = 0;
-                                        foreach (var _text in sb.ToString().Split("\n"))
+                                        var sb = new StringBuilder();
+                                        if (Options.CustomRoleSpawnChances.TryGetValue(customrole, out var op)) UtilsShowOption.ShowChildrenSettings(op, ref sb, IsOmitted: false);
+                                        else if (customrole is CustomRoles.Braid) UtilsShowOption.ShowChildrenSettings(Options.CustomRoleSpawnChances[CustomRoles.Driver], ref sb, IsOmitted: false);
+                                        else if (customrole is CustomRoles.Altair) UtilsShowOption.ShowChildrenSettings(Options.CustomRoleSpawnChances[CustomRoles.Vega], ref sb, IsOmitted: false);
+                                        else if (customrole is CustomRoles.Nue) UtilsShowOption.ShowChildrenSettings(Options.CustomRoleSpawnChances[CustomRoles.Nue], ref sb, IsOmitted: false);
+
+                                        if (sb.ToString() != "")
                                         {
-                                            var text = _text;
-                                            if (text == "") continue;
-                                            text = text.RemoveDeltext("┗ ", "").RemoveDeltext("┣ ", "").RemoveDeltext("×", GetString("ColoredOff").RemoveDeltext("○", "ColoredOn"));
-                                            RoleInfo.text += (i % 2 == 0) ? $"\n・{text}" : $"<pos=120%>・{text}";
-                                            i++;
+                                            RoleInfo.text += $"\n<size=70%>{GetString("Settings")}</size>";
+                                            var i = 0;
+                                            foreach (var _text in sb.ToString().Split("\n"))
+                                            {
+                                                var text = _text;
+                                                if (text == "") continue;
+                                                text = text.RemoveDeltext("┗ ", "").RemoveDeltext("┣ ", "").RemoveDeltext("×", GetString("ColoredOff")).RemoveDeltext("○", GetString("ColoredOn"));
+                                                RoleInfo.text += (i % 2 == 0) ? $"\n・{text}" : $"<pos=120%>・{text}";
+                                                i++;
+                                            }
                                         }
+                                    }
+                                    catch (System.Exception ex)
+                                    {
+                                        RoleInfo.text += $"\n<size=70%>{GetString("Settings")}</size>\n???";
+                                        Logger.Error($"{ex}", "RoleInfoShower_Option");
                                     }
                                 }
                                 {
@@ -339,9 +360,10 @@ class RoleInfoShower
                                             case 0: mark += "◎"; color = "<#674020>"; break;
                                             case 1: mark += "◆"; color = "<#aacbf7>"; break;
                                             case 2: mark += "★"; color = "<#ffea4e>"; break;
+                                            case 3: mark += "ф"; color = "<#17f7aa>"; break;
                                         }
-                                        if (achievement.IsHidden) mark = achievement.IsCompleted ? $"?-{mark}" : "？";
-                                        text += $"{(achievement.IsCompleted ? $"{color}{mark}" : $"<#555555>-")}" + "  ";
+                                        if (achievement.IsHidden) mark = $"?{mark}";
+                                        text += $"{(achievement.IsCompleted ? $"{color}{mark}" : $"<#888888>-{mark}")}" + "  ";
 
                                         if (achievement.IsHidden is false || achievement.IsCompleted)
                                         {
@@ -357,7 +379,7 @@ class RoleInfoShower
                                             if (infotext != "")
                                                 title += $"{infotext}</color>";
                                             if (constraint != "")
-                                                title += $"<size=50%>\n<#cccccc>{constraint}</color></size>";
+                                                title += $"<size=60%>\n<#cccccc>{constraint}</color></size>";
                                         }
                                         else
                                         {
@@ -372,7 +394,7 @@ class RoleInfoShower
                                     if (text.RemoveHtmlTags() != "")
                                     {
                                         var achievementButton = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
-                                        achievementButton.transform.localPosition = new(-2.4f, 2.5f, -100f);
+                                        achievementButton.transform.localPosition = new(-1.0f, 2.5f, -100f);
                                         achievementButton.transform.localScale = new(0.2f, 0.9f, 1f);
                                         achievementButton.name = "Achievement";
                                         achievementButton.Text.text = " ";
@@ -485,6 +507,6 @@ class MainMenuManagerUpdatePatch
                 }
         }
         if (RoleInfoShower.Scrollbargameobject is null) return;
-        RoleInfoShower.Scrollbargameobject.GetComponentInParent<Scroller>().ContentYBounds.max = numItems > 9 ? 0.5f * (numItems / 4 - 9) : 0;
+        RoleInfoShower.Scrollbargameobject.GetComponentInParent<Scroller>().ContentYBounds.max = numItems > 9 ? 0.5f * (numItems / 4 - 10) : 0;
     }
 }

@@ -426,6 +426,7 @@ namespace TownOfHost
                         case 0: mark += "◎"; color = "<#674020>"; break;
                         case 1: mark += "◆"; color = "<#aacbf7>"; break;
                         case 2: mark += "★"; color = "<#ffea4e>"; break;
+                        case 3: mark += "ф"; color = "<#17f7aa>"; break;
                     }
                     text += $"\n{color}{mark}" + "  ";
                     text += $"～{Achievements.GetAchievementNames(achievement, "Title")}～</color>" + $"<size=60%>({GetRoleColorAndtext(achievement.role)})</size>";

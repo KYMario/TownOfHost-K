@@ -66,6 +66,37 @@ namespace TownOfHost
                     LoadCustomTranslation($"{lang}.dat", lang);
             }
         }
+        public static void LoadAchievementLangs()
+        {
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var stream = assembly.GetManifestResourceStream("TownOfHost.Resources.achievements.csv");
+            achievementMaps = new Dictionary<string, Dictionary<int, string>>();
+
+            var options = new CsvOptions()
+            {
+                HeaderMode = HeaderMode.HeaderPresent,
+                AllowNewLineInEnclosedFieldValues = false,
+            };
+            foreach (var line in CsvReader.ReadFromStream(stream, options))
+            {
+                if (line.Values[0][0] == '#') continue;
+                try
+                {
+                    Dictionary<int, string> dic = new();
+                    for (int i = 1; i < line.ColumnCount; i++)
+                    {
+                        int id = int.Parse(line.Headers[i]);
+                        dic[id] = line.Values[i].Replace("\\n", "\n").Replace("\\r", "\r");
+                    }
+                    if (!achievementMaps.TryAdd(line.Values[0], dic))
+                        Logger.Warn($"実績用CSVに重複があります。{line.Index}行目: \"{line.Values[0]}\"", "Translator");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex.ToString(), "Translator");
+                }
+            }
+        }
 
         public static string GetString(string s, Dictionary<string, string> replacementDic = null)
         {

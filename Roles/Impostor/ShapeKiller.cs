@@ -30,6 +30,7 @@ public sealed class ShapeKiller : RoleBase, IImpostor, ISidekickable
         canDeadReport = optionCanDeadReport.GetBool();
 
         shapeTarget = null;
+        l1reprter = byte.MaxValue;
     }
 
     private static OptionItem optionCanDeadReport;
@@ -79,7 +80,25 @@ public sealed class ShapeKiller : RoleBase, IImpostor, ISidekickable
         {
             // 通報者書き換え
             reporter = shapeKiller.shapeTarget;
+            shapeKiller.l1reprter = reporter.PlayerId;
+            if (target.PlayerId.GetPlayerState().MainRole is CustomRoles.Bait or CustomRoles.Insider)
+                Achievements.RpcCompleteAchievement(shapeKiller.Player.PlayerId, 0, achievements[0]);
             Logger.Info($"ShapeKillerの偽装通報 player: {shapeKiller.shapeTarget?.name}, target: {target?.PlayerName}", "ShepeKillerReport");
         }
+    }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if ((exiled?.PlayerId ?? byte.MaxValue) == l1reprter)
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    byte l1reprter;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

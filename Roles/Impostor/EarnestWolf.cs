@@ -92,6 +92,10 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
             OverKillList.Add(target.PlayerId);
 
             SendRPC();
+            if (count is 1) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (3 <= count && OptionOverKillCanCount.GetInt() - count == 0) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+            if (target.GetCustomRole() is CustomRoles.Bait or CustomRoles.InSender or CustomRoles.Gasp or CustomRoles.Trapper or CustomRoles.King)
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
 
             _ = new LateTask(() =>
             {
@@ -172,4 +176,15 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
         return true;
     }
     bool IUsePhantomButton.IsresetAfterKill => false;
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var l2 = new Achievement(RoleInfo, 2, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, l2);
+    }
 }

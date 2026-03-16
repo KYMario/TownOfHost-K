@@ -41,6 +41,7 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
         EraseTargets.Clear();
         EraseMarkTargets.Clear();
         TryedEraseds.Clear();
+        Erasedtargets.Clear();
     }
     static OptionItem OptionKillCoolDown; static float KillCooldown;
     static OptionItem OptionAbilityCoolDown; static float AbilityCoolDown;
@@ -56,6 +57,7 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
     List<byte> EraseTargets = new();//消す用。
     List<byte> EraseMarkTargets = new();//消す予定の人のマーク
     List<byte> TryedEraseds = new();//消したと思ってる人のマーク
+    public static List<byte> Erasedtargets = new();
 
     static List<CustomRoles> IsSheriffRole =
     [CustomRoles.Sheriff, CustomRoles.SwitchSheriff, CustomRoles.MeetingSheriff, CustomRoles.WolfBoy];
@@ -141,7 +143,10 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             //ホストのみ実行
             if (AmongUsClient.Instance.AmHost)
             {
+                Erasedtargets.Add(player.PlayerId);
                 player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (role.IsNeutral()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
         }
         EraseTargets.Clear();
@@ -217,5 +222,14 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
     {
         ErasePlayer,
         UseAbility,
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

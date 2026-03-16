@@ -34,6 +34,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         PlayerRooms = new();
         IsUsed = false;
         UseingId = byte.MaxValue;
+        IsLeft = false;
         sendtimer = 0;
         limittimer = 0;
         CustomRoleManager.LowerOthers.Add(GetLowerTextOthers);
@@ -43,9 +44,11 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         SabotageCooldown = OptionSabotageCoolDown.GetFloat();
         SabotageLimittime = OptionSabotageLimittime.GetFloat();
         flashtimer = 0;
+        evilBlender = null;
     }
     static byte UseingId;//誰かが仕様中か(全員/Id)
     bool IsUsed;//使用済みか否か(個人)
+    static bool IsLeft; static EvilBlender evilBlender;//途中で落ちたか 
     float limittimer; float sendtimer; float flashtimer;
     static Dictionary<byte, SystemTypes?> PlayerRooms = new();
     static OptionItem OptionKillCoolDown; static float KillCooldown;
@@ -88,6 +91,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         UseingId = byte.MaxValue;
         PlayerRooms.Clear();
         limittimer = 0;
+        IsLeft = false;
     }
     public override bool OnSabotage(PlayerControl player, SystemTypes systemType) => UseingId is byte.MaxValue;
     public override void AfterSabotage(SystemTypes systemType) => Player.RpcResetAbilityCooldown();
@@ -160,14 +164,29 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
     }
     public static void OtherFixUpdates(PlayerControl player)
     {
-        if (AmongUsClient.Instance.AmHost) return;
         if (UseingId == byte.MaxValue) return;
+        if (AmongUsClient.Instance.AmHost)
+        {
+            if (IsLeft && player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+            {
+                evilBlender?.SabotageCheck();
+            }
+            return;
+        }
         if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
         {
             if (UseingId.GetPlayerControl().GetRoleClass() is EvilBlender EvilBlender)
             {
                 EvilBlender.limittimer += Time.fixedDeltaTime;
             }
+        }
+    }
+    public override void OnLeftPlayer(PlayerControl player)
+    {
+        if (player.PlayerId == Player.PlayerId && UseingId == player.PlayerId)
+        {
+            IsLeft = true;
+            evilBlender = this;
         }
     }
     public override void OnFixedUpdate(PlayerControl player)
@@ -177,6 +196,11 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         //自視点が使用中
         if (UseingId != Player.PlayerId) return;
 
+        SabotageCheck();
+    }
+    void SabotageCheck()
+    {
+        var i = 0;
         ICollection<byte> dellist = [];
         foreach (var data in PlayerRooms)
         {
@@ -196,7 +220,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
                 {
                     dellist.Add(data.Key);
 
-                    Logger.Info($"Complete:{player.Data.GetLogPlayerName()}", "EvilBlender");
+                    Logger.Info($"Complete:{pc.Data.GetLogPlayerName()}", "EvilBlender");
                     if (pc.IsModClient()) SendPublicRpc(pc.PlayerId, 2, null);
                     continue;
                 }
@@ -205,6 +229,9 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
             {
                 if (pc.inVent) pc.MyPhysics.RpcBootFromVent(VentilationSystemUpdateSystemPatch.NowVentId.TryGetValue(pc.PlayerId, out var ventid) ? ventid : 0);
                 CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 10, CustomDeathReason.Suffocation);
+                i++;
+                if (i == 3) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (pc.PlayerId == Player.PlayerId) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
                 continue;
             }
         }
@@ -215,6 +242,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
             UseingId = byte.MaxValue;
             PlayerRooms.Clear();
             limittimer = 0;
+            IsLeft = false;
             Main.IsActiveSabotage = false;
             Main.LastSab = byte.MaxValue;
             Main.SabotageActivetimer = 0;
@@ -291,5 +319,20 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
                 PlayerRooms.Remove(PlayerControl.LocalPlayer.PlayerId);
                 break;
         }
+    }
+    void IKiller.OnMurderPlayerAsKiller(MurderInfo info)
+    {
+        if (UseingId == Player.PlayerId) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var n2 = new Achievement(RoleInfo, 1, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 2, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, n2);
+        achievements.Add(2, l1);
     }
 }

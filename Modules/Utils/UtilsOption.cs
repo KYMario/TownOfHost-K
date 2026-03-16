@@ -521,9 +521,10 @@ namespace TownOfHost
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveFungle || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveSkeld || Options.IsActiveMiraHQ || Options.IsActiveAirship || Options.IsActivePolus)) continue;
                 if (Askesu && opt.Value.Name == "%roleTypes%Maximum") continue;
-                if (opt.Value.ParentRole is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder && IsOmitted)
+                if (opt.Value.ParentRole is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder)
                 {
-                    if (opt.Value.GetBool() is false) continue;
+                    if (IsOmitted && opt.Value.GetBool() is false) continue;
+                    if (deep > 0) continue;
                 }
 
                 if (pc != null)

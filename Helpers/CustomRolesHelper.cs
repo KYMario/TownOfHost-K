@@ -282,7 +282,8 @@ namespace TownOfHost
         {
             if (role.IsVanilla())
             {
-                var roleOpt = Main.NormalOptions.RoleOptions;
+                var roleOpt = Main.NormalOptions?.RoleOptions;
+                if (roleOpt is null) return 0;
                 return role switch
                 {
                     CustomRoles.GuardianAngel => roleOpt.GetNumPerGame(RoleTypes.GuardianAngel),

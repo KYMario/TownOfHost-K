@@ -30,6 +30,7 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
         player
     )
     {
+        Brokens = [];
         ReportCrashTimers.Clear();
         Cooldown = OptionColldown.GetFloat();
         Use = OptionMax.GetInt();
@@ -83,8 +84,9 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
         ReportCrashTimers.Add(target.PlayerId, 0f);
         Use--;
         Player.RpcProtectedMurderPlayer(target);
-        Logger.Info($"{target.name}のメガホンワンクリックだから間違えて壊しちゃった☆ ﾃﾍｯ", "AntiReporter");
+        Logger.Info($"{target.Data.GetLogPlayerName()}のメガホンワンクリックだから間違えて壊しちゃった☆ ﾃﾍｯ", "AntiReporter");
         SendRPC();
+        Brokens.Add(target.PlayerId);
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(Use > 0 ? Color.red : Color.gray, $"({Use})");
@@ -141,5 +143,31 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
 
         if (isForHud) return GetString("PhantomButtonKilltargetLowertext");
         return $"<size=50%>{GetString("PhantomButtonKilltargetLowertext")}</size>";
+    }
+    ICollection<byte> Brokens = [];
+    public override void CheckWinner(GameOverReason reason)
+    {
+        var count = OptionMax.GetInt() - Use;
+        if (0 < count)
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], count);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], count);
+        }
+        if (Brokens.Any(x => 3 <= Brokens.Count(b => b == x)))
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+        }
+    }
+
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 3, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 15, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

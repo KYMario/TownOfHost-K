@@ -33,6 +33,8 @@ namespace TownOfHost.Roles.Impostor
             TimeLimit = OptionTimeLimit.GetFloat();
 
             SuicideTimer = null;
+
+            alivetimer = 0;
         }
         private static OptionItem OptionKillCooldown;
         private static OptionItem OptionTimeLimit;
@@ -96,7 +98,10 @@ namespace TownOfHost.Roles.Impostor
                     SuicideTimer = null;
                 }
                 else
+                {
                     SuicideTimer += Time.fixedDeltaTime;//時間をカウント
+                    alivetimer += Time.fixedDeltaTime;
+                }
             }
         }
         public override bool CanUseAbilityButton() => HasKilled();
@@ -121,6 +126,25 @@ namespace TownOfHost.Roles.Impostor
         public void OnBakeCatKill(BakeCat bakeneko)
         {
             SuicideTimer = null;
+        }
+        float alivetimer;
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (120 <= alivetimer)
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (5 < MyState.GetKillCount(true)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+            if ((TimeLimit * 6) < alivetimer) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+        }
+        public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+            var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+            var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
+            achievements.Add(2, sp1);
         }
     }
 }

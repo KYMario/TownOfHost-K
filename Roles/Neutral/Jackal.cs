@@ -164,5 +164,28 @@ namespace TownOfHost.Roles.Neutral
         {
             CanSideKick = reader.ReadBoolean();
         }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (3 <= MyState.GetKillCount()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (CustomWinnerHolder.winners.Contains(CustomWinner.Jackal))
+            {
+                foreach (var j in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CountTypes.Jackal)))
+                {
+                    if (j.GetPlayerState().GetKillCount() > 0) return;
+                }
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+            }
+        }
+        public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+            var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+            var sp1 = new Achievement(RoleInfo, 2, 1, 0, 3, true);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
+            achievements.Add(2, sp1);
+        }
     }
 }

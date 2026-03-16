@@ -53,6 +53,11 @@ class ShowFilter
                         pilldownButton.OnClick = new();
                         pilldownButton.OnClick.AddListener(new System.Action(() =>
                         {
+                            if (tabbuttons.All(button => button.gameObject.active))
+                            {
+                                tabbuttons.Do(button => button.gameObject.SetActive(false));
+                                return;
+                            }
                             tabbuttons.Do(button => button.gameObject.SetActive(true));
                         }));
 

@@ -6,7 +6,6 @@ using TownOfHost.Roles.Core;
 using System;
 using static TownOfHost.Modules.SelfVoteManager;
 using TownOfHost.Roles.Core.Interfaces;
-using System.Linq;
 
 namespace TownOfHost.Roles.Crewmate;
 

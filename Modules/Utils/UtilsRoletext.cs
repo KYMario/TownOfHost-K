@@ -630,7 +630,7 @@ namespace TownOfHost
             }
             return sb.ToString();
         }
-        public static string GetRoleColorAndtext(CustomRoles role) => ColorString(GetRoleColor(role), GetString($"{role}"));
+        public static string GetRoleColorAndtext(CustomRoles role) => role is CustomRoles.NotAssigned ? "" : ColorString(GetRoleColor(role), GetString($"{role}"));
 
         public static string GetExpelledText(byte expelledid, bool istie, bool isskip)
         {

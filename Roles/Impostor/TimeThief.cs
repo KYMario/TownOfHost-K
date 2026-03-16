@@ -64,5 +64,24 @@ namespace TownOfHost.Roles.Impostor
             var time = CalculateMeetingTimeDelta();
             return time < 0 ? Utils.ColorString(Palette.ImpostorRed.ShadeColor(0.5f), $"{time}s") : "";
         }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            var sec = DecreaseMeetingTime * MyState.GetKillCount(true);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], sec);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], sec);
+            if ((Main.NormalOptions.DiscussionTime + Main.NormalOptions.VotingTime - Options.LowerLimitVotingTime.GetFloat()) <= sec)
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+        }
+        public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 60, 0, 0);
+            var l1 = new Achievement(RoleInfo, 1, 300, 0, 1);
+            var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
+            achievements.Add(2, sp1);
+        }
     }
 }

@@ -121,6 +121,7 @@ class Achievements
                 case 0: mark += "◎"; color = "<#674020>"; break;
                 case 1: mark += "◆"; color = "<#aacbf7>"; break;
                 case 2: mark += "★"; color = "<#ffea4e>"; break;
+                case 3: mark += "ф"; color = "<#262750>"; break;
             }
             text += $"{color}{mark}" + "  ";
             text += $"～{GetAchievementNames(achi, "Title")}～</color>" + $"<size=60%>({UtilsRoleText.GetRoleColorAndtext(achi.role)})</size>";

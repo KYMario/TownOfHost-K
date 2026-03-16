@@ -68,6 +68,7 @@ public sealed class QuickKiller : RoleBase, IImpostor
             player.ResetKillCooldown();
             player.SetKillCooldown(force: true);
             player.RpcResetAbilityCooldown();
+            quickmodekillcount = 0;
         }
     }
     void IKiller.OnMurderPlayerAsKiller(MurderInfo info)
@@ -82,9 +83,17 @@ public sealed class QuickKiller : RoleBase, IImpostor
 
         if (timer.HasValue)
         {
+            quickmodekillcount++;
+            switch (quickmodekillcount)
+            {
+                case 1: Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]); break;
+                case 2: Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]); break;
+                case 4: Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]); break;
+            }
             killer.SyncSettings();
             return;
         }
+        quickmodekillcount = 0;
         timer = OptionQuickKillTimer.GetFloat();
         killer.SyncSettings();
         killer.RpcResetAbilityCooldown();
@@ -97,5 +106,17 @@ public sealed class QuickKiller : RoleBase, IImpostor
     {
         text = "QuickKiller_Ability";
         return true;
+    }
+    int quickmodekillcount;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

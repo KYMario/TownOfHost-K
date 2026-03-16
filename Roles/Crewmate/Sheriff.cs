@@ -241,3 +241,18 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
         return true;
     }
 }
+
+class SheriffAchievement
+{
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(Sheriff.RoleInfo, 0, 1, 0, 0);
+        var l2 = new Achievement(Sheriff.RoleInfo, 1, 10, 0, 1);
+        var sp3 = new Achievement(Sheriff.RoleInfo, 2, 1, 0, 3, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l2);
+        achievements.Add(2, sp3);
+    }
+}
