@@ -258,6 +258,18 @@ namespace TownOfHost
             roleSummary.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
             roleSummary.gameObject.SetActive(!Main.AssignSameRoles);
 
+            var modtext = TMPTemplate.Create(
+                "ModText",
+                $"<b><{Main.ModColor}>{Main.ModName}</color><size=80%>v{Main.PluginShowVersion}</b>",
+                Color.white,
+                1.25f,
+                TextAlignmentOptions.TopLeft,
+                setActive: true,
+                parent: __instance.transform);
+            modtext.transform.localPosition = new(5.8f, 2.7f, -20);
+            modtext.transform.localScale = new Vector3(1.7f, 1.7f, 1f);
+            modtext.gameObject.SetActive(true);
+
             //if (Main.UseWebHook.Value) UtilsWebHook.WH_ShowLastResult();
             if (Main.IsAndroid()) return;
             if (Main.AutoSaveScreenShot.Value || Main.UseWebHook.Value)
