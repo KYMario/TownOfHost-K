@@ -316,6 +316,7 @@ namespace TownOfHost.Modules
                     opt.SetFloat(FloatOptionNames.ImpostorLightMod, opt.GetFloat(FloatOptionNames.ImpostorLightMod) * Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f);
                     opt.SetFloat(FloatOptionNames.CrewLightMod, opt.GetFloat(FloatOptionNames.CrewLightMod) * Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f);
                 }
+                AURoleOptions.EngineerCooldown = Mathf.Max(1.2f, AURoleOptions.EngineerCooldown);
                 opt.BlackOut(state.IsBlackOut);
             }
             else

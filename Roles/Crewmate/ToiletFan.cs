@@ -44,7 +44,7 @@ public sealed class ToiletFan : RoleBase
     int flug;
     private static void SetupOptionItem()
     {
-        OptionCooldown = FloatOptionItem.Create(RoleInfo, 10, OptionName.Cooldown, new(0f, 10f, 1f), 5f, false)
+        OptionCooldown = FloatOptionItem.Create(RoleInfo, 10, OptionName.Cooldown, new(1f, 30f, 1f), 5f, false)
             .SetValueFormat(OptionFormat.Seconds);
     }
     public override bool OnEnterVent(PlayerPhysics physics, int ventId)

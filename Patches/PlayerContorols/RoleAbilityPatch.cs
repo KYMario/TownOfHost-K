@@ -431,19 +431,18 @@ namespace TownOfHost
                         AmongUsClient.Instance.FinishRpcImmediately(writer);*/
 
                         int clientId = user.GetClientId();
-                        //_ = new LateTask(() =>
-                        //{
-                        MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.BootFromVent, SendOption.None, clientId);
-                        writer2.Write(id);
-                        AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                        //}, 0.1f, "Vent- BootFromVent", true);
-                        _ = new LateTask(() =>
                         {
-                            MessageWriter writer2 = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.EnterVent, SendOption.None, clientId);
-                            writer2.Write(id);
-                            AmongUsClient.Instance.FinishRpcImmediately(writer2);
-                            user.RpcResetAbilityCooldown(false, false);//最低でも1sクールあればベントぱかりできない。
-                        }, 0.2f, "Vent- EnterVent", true);
+                            var sender = CustomRpcSender.Create("BootFromVent", SendOption.None);
+                            sender.AutoStartRpc(__instance.NetId, RpcCalls.BootFromVent, clientId)
+                                .Write(id).EndRpc();
+                            sender.AutoStartRpc(__instance.NetId, RpcCalls.EnterVent, clientId)
+                                .Write(id).EndRpc();
+                            sender.AutoStartRpc(user.NetId, RpcCalls.ProtectPlayer, clientId)
+                                .WriteNetObject(user)
+                                .Write(0).EndRpc();
+                            sender.EndMessage();
+                            sender.SendMessage();
+                        }
 
                         _ = new LateTask(() =>
                         {
@@ -461,7 +460,7 @@ namespace TownOfHost
                             __instance.myPlayer.walkingToVent = false;
                             __instance.myPlayer.moveable = true;
                             __instance.myPlayer.Visible = true;
-                        }, 1f, "FixVentState", true);
+                        }, 1.5f, "FixVentState", true);
                         return false;
                     }
                 }
@@ -586,14 +585,14 @@ namespace TownOfHost
             {
                 if (VentilationSystemUpdateSystemPatch.NowVentId.TryGetValue(player.PlayerId, out var id))
                 {
-                    var vent = ShipStatus.Instance.AllVents.Where(x => x.Id == id).FirstOrDefault();
+                    var vent = ShipStatus.Instance.AllVents.FirstOrDefault(x => x.Id == id);
                     if (vent is null)
                     {
-                        player.RpcSnapToForced(new UnityEngine.Vector2(100f, 100f));
+                        player.RpcSnapToForced(new Vector2(100f, 100f));
                         Logger.Error($"無効なベントid{id}。", "Vent");
                         return;
                     }
-                    player.RpcSnapToForced(vent.transform.position + new UnityEngine.Vector3(0f, 0.1f));
+                    player.RpcSnapToForced(vent.transform.position + new Vector3(0f, 0.1f));
                 }
             }
         }
