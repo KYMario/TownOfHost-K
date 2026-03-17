@@ -176,7 +176,7 @@ namespace TownOfHost
             // 処理は全てCustomRoleManager側で行う
             CustomRoleManager.OnMurderPlayer(__instance, target);
         }
-    }
+    }/*
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ProtectPlayer))]
     class PlayerControlProtectPlayerPatch
     {
@@ -193,5 +193,5 @@ namespace TownOfHost
         {
             Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()}", "RemoveProtection");
         }
-    }
+    }*/
 }

@@ -83,7 +83,7 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
         ResetCooldown = true;
         ReportCrashTimers.Add(target.PlayerId, 0f);
         Use--;
-        Player.RpcProtectedMurderPlayer(target);
+        Player.SetKillCooldown(target: target);
         Logger.Info($"{target.Data.GetLogPlayerName()}のメガホンワンクリックだから間違えて壊しちゃった☆ ﾃﾍｯ", "AntiReporter");
         SendRPC();
         Brokens.Add(target.PlayerId);

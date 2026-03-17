@@ -137,7 +137,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             SendRPC();
             check = (Maximum <= MagicCount && Maximum > 0) || MagicCooldown != DefaultCooldown;
             MagicTarget.Add(target.PlayerId);
-            Player.RpcProtectedMurderPlayer(target);
+            Player.SetKillCooldown(target: target);
             MagicCooldown = (Maximum <= MagicCount && Maximum > 0) ? 999 : DefaultCooldown;
             _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 0.1f);
         }
@@ -162,7 +162,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             var target = PlayerCatch.GetPlayerById(id);
             if (!target.IsAlive()) continue;
             var state = PlayerState.GetByPlayerId(target.PlayerId);
-            Player.RpcProtectedMurderPlayer(target);
+            Player.SetKillCooldown(target: target);
             if (ShowDeadbody)
             {
                 var position = target.transform.position;
