@@ -640,6 +640,7 @@ public static class MeetingHudPatch
                     {
                         // ここにINekomata未適用の道連れ役職を追加
                         default:
+                            bool IsAddRoleAddon = false;
                             if (RoleAddAddons.GetRoleAddon(role, out var data, exiledplayer, subrole: CustomRoles.Revenger))
                             {
                                 if (deathReason == CustomDeathReason.Vote && data.GiveRevenger.GetBool())
@@ -649,35 +650,39 @@ public static class MeetingHudPatch
                                         (candidate.Is(CustomRoleTypes.Crewmate) && data.RevengeToCrewmate.GetBool()) ||
                                         (candidate.Is(CustomRoleTypes.Madmate) && data.RevengeToMadmate.GetBool()))
                                         TargetList.Add(candidate);
+                                    IsAddRoleAddon = true;
                                 }
                             }
-                            else
-                                if (isMadmate && deathReason == CustomDeathReason.Vote && Options.MadmateRevengePlayer.GetBool())
+
+                            if (isMadmate && !IsAddRoleAddon && deathReason == CustomDeathReason.Vote && Options.MadmateRevengePlayer.GetBool())
+                            {
+                                if ((candidate.Is(CustomRoleTypes.Impostor) && Options.MadmateRevengeCanImpostor.GetBool()) ||
+                                (candidate.Is(CustomRoleTypes.Neutral) && Options.MadmateRevengeNeutral.GetBool()) ||
+                                (candidate.Is(CustomRoleTypes.Crewmate) && Options.MadmateRevengeCrewmate.GetBool()) ||
+                                (candidate.Is(CustomRoleTypes.Madmate) && Options.MadmateRevengeMadmate.GetBool()))
+                                    TargetList.Add(candidate);
+                                IsAddRoleAddon = true;
+                            }
+                            if (!IsAddRoleAddon)
+                            {
+                                foreach (var subRole in exiledplayer.GetCustomSubRoles())
                                 {
-                                    if ((candidate.Is(CustomRoleTypes.Impostor) && Options.MadmateRevengeCanImpostor.GetBool()) ||
-                                    (candidate.Is(CustomRoleTypes.Neutral) && Options.MadmateRevengeNeutral.GetBool()) ||
-                                    (candidate.Is(CustomRoleTypes.Crewmate) && Options.MadmateRevengeCrewmate.GetBool()) ||
-                                    (candidate.Is(CustomRoleTypes.Madmate) && Options.MadmateRevengeMadmate.GetBool()))
-                                        TargetList.Add(candidate);
-                                }
-                                else
-                                    foreach (var subRole in exiledplayer.GetCustomSubRoles())
+                                    switch (subRole)
                                     {
-                                        switch (subRole)
-                                        {
-                                            case CustomRoles.Revenger:
-                                                if (exiledplayer.Is(CustomRoles.Revenger) && deathReason == CustomDeathReason.Vote)
-                                                {
-                                                    if (
-                                                    (candidate.Is(CustomRoleTypes.Impostor) && Revenger.RevengeToImpostor.GetBool()) ||
-                                                    (candidate.Is(CustomRoleTypes.Neutral) && Revenger.RevengeToNeutral.GetBool()) ||
-                                                    (candidate.Is(CustomRoleTypes.Crewmate) && Revenger.RevengeToCrewmate.GetBool()) ||
-                                                    (candidate.Is(CustomRoleTypes.Madmate) && Revenger.RevengeToMadmate.GetBool()))
-                                                        TargetList.Add(candidate);
-                                                }
-                                                break;
-                                        }
+                                        case CustomRoles.Revenger:
+                                            if (exiledplayer.Is(CustomRoles.Revenger) && deathReason == CustomDeathReason.Vote)
+                                            {
+                                                if (
+                                                (candidate.Is(CustomRoleTypes.Impostor) && Revenger.RevengeToImpostor.GetBool()) ||
+                                                (candidate.Is(CustomRoleTypes.Neutral) && Revenger.RevengeToNeutral.GetBool()) ||
+                                                (candidate.Is(CustomRoleTypes.Crewmate) && Revenger.RevengeToCrewmate.GetBool()) ||
+                                                (candidate.Is(CustomRoleTypes.Madmate) && Revenger.RevengeToMadmate.GetBool()))
+                                                    TargetList.Add(candidate);
+                                            }
+                                            break;
                                     }
+                                }
+                            }
                             break;
                     }
                 }
