@@ -641,7 +641,7 @@ namespace TownOfHost
                                 if (option is FilterOptionItem filterOptionItem)
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
-                                    (imp, mad, crew, neu) = filterOptionItem.roles;
+                                    (imp, mad, crew, neu, addon) = filterOptionItem.roles;
                                     ShowFilter.NowOption = option;
                                     ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu, addon));
                                     return;
@@ -741,7 +741,7 @@ namespace TownOfHost
                                 if (option is FilterOptionItem filterOptionItem)
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
-                                    (imp, mad, crew, neu) = filterOptionItem.roles;
+                                    (imp, mad, crew, neu, addon) = filterOptionItem.roles;
                                 }
                                 if (option is AssignOptionItem assignoptionitem)
                                 {

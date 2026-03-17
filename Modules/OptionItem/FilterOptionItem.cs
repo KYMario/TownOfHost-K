@@ -14,10 +14,10 @@ namespace TownOfHost
         public List<CustomRoles> Sele;
         public static Dictionary<CustomRoles, int> Selection;
         public Func<CustomRoles[]> NotAssin;
-        public (bool impostor, bool madmate, bool crewmate, bool neutral) roles;
+        public (bool impostor, bool madmate, bool crewmate, bool neutral, bool addon) roles;
 
         // コンストラクタ
-        public FilterOptionItem(int id, string name, int defaultValue, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null)
+        public FilterOptionItem(int id, string name, int defaultValue, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, Func<CustomRoles[]> notassing = null)
         : base(id, name, defaultValue, tab, isSingleValue)
         {
             Selections = new Dictionary<CustomRoles, int>
@@ -36,42 +36,42 @@ namespace TownOfHost
                 Selection = Selections;
             }
             NotAssin = notassing;
-            roles = (imp, mad, crew, neu);
+            roles = (imp, mad, crew, neu, addon);
             Rule = (0, Selections.Count - 1, 1);
         }
         public static FilterOptionItem Create(
-            int id, string name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, params CustomRoles[] notassing
+            int id, string name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, params CustomRoles[] notassing
         )
         {
             return new FilterOptionItem(
-                id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, () => notassing
+                id, name, defaultIndex, tab, isSingleValue, imp, mad, crew, neu, addon, () => notassing
             );
         }
         public static FilterOptionItem Create(
-            int id, Enum name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null
+            int id, Enum name, int defaultIndex, TabGroup tab, bool isSingleValue, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, Func<CustomRoles[]> notassing = null
         )
         {
             return new FilterOptionItem(
-                id, name.ToString(), defaultIndex, tab, isSingleValue, imp, mad, crew, neu, notassing
+                id, name.ToString(), defaultIndex, tab, isSingleValue, imp, mad, crew, neu, addon, notassing
             );
         }
         public static FilterOptionItem Create(
-            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null
+            SimpleRoleInfo roleInfo, int idOffset, Enum name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, Func<CustomRoles[]> notassing = null
         )
         {
             var opt = new FilterOptionItem(
-                roleInfo.ConfigId + idOffset, name.ToString(), defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, notassing
+                roleInfo.ConfigId + idOffset, name.ToString(), defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, addon, notassing
             );
             opt.SetParent(parent ?? roleInfo.RoleOption);
             opt.SetParentRole(roleInfo.RoleName);
             return opt;
         }
         public static FilterOptionItem Create(
-            SimpleRoleInfo roleInfo, int idOffset, string name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, Func<CustomRoles[]> notassing = null
+            SimpleRoleInfo roleInfo, int idOffset, string name, int defaultIndex, bool isSingleValue, OptionItem parent = null, bool imp = false, bool mad = false, bool crew = false, bool neu = false, bool addon = false, Func<CustomRoles[]> notassing = null
         )
         {
             var opt = new FilterOptionItem(
-                roleInfo.ConfigId + idOffset, name, defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, notassing
+                roleInfo.ConfigId + idOffset, name, defaultIndex, roleInfo.Tab, isSingleValue, imp, mad, crew, neu, addon, notassing
             );
             opt.SetParent(parent ?? roleInfo.RoleOption);
             opt.SetParentRole(roleInfo.RoleName);

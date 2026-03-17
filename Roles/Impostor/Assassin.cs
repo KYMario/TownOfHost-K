@@ -110,7 +110,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         SoloWinOption.Create(RoleInfo, 11);
         OptionCanCallMeetingKill = BooleanOptionItem.Create(RoleInfo, 10, OptionName.AssasinCanCallMeetingKill, false, false);
         OptionHasOtherRole = BooleanOptionItem.Create(RoleInfo, 13, OptionName.AssasinHasOtherRole, false, false);
-        OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, () => InvalidRoles());
+        OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, false, () => InvalidRoles());
         OptionAssassinMeetingTime = IntegerOptionItem.Create(RoleInfo, 25, OptionName.AssassinMeetingTime, new(10, 180, 1), 35, false).SetValueFormat(OptionFormat.Seconds);
 
         ObjectOptionitem.Create(RoleInfo, 26, "AssassinMerlin", true, null).SetOptionName(() => "Merlin Setting").SetColor(Merlin.RoleInfo.RoleColor);

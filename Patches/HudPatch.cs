@@ -124,7 +124,7 @@ namespace TownOfHost
                         if (roleClass.HasAbility)
                         {
                             bool Visible = roleClass.CanUseAbilityButton() && GameStates.IsInTask;
-                            if ((roleClass as IUsePhantomButton)?.IsPhantomRole is false) Visible = false;
+                            if ((roleClass as IUsePhantomButton)?.IsPhantomRole is false && player.Data.RoleType is RoleTypes.Phantom) Visible = false;
                             __instance.AbilityButton.ToggleVisible(Visible);
                         }
                     }
