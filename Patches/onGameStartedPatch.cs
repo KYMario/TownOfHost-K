@@ -231,15 +231,23 @@ namespace TownOfHost
             else Main.LagTime = 0.23f;
             Logger.Info($"region:{ServerManager.Instance?.CurrentRegion?.Name ?? "???"} ,LagTime : {Main.LagTime} ,({AmongUsClient.Instance.Ping}) PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
 
-            if (PlayerCatch.AllPlayerControls.All(pc => pc.IsModClient()))
+            if (PlayerControl.LocalPlayer.PlayerId != 0)
             {
                 new LateTask(() =>
                 {
-                    PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc => PlayerNameColor.Set(pc)));
+                    if (GameStates.IsInGame) return;
+
+                    Logger.Warn("イントロの強制表示", "OnStartGame");
+                    PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc =>
+                    {
+                        PlayerNameColor.Set(pc);
+                        if (pc != null) pc.Data.Disconnected = false;
+                    }));
                     PlayerControl.LocalPlayer.StopAllCoroutines();
+                    HudManagerCoShowIntroPatch.Cancel = false;
                     DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
                     DestroyableSingleton<HudManager>.Instance.HideGameLoader();
-                }, 1.2f, "", true);
+                }, 2.5f, "", true);
             }
         }
     }
@@ -564,7 +572,7 @@ namespace TownOfHost
             }
 
             //コネクティングが1ならコネクティングを削除
-            if (PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.Connecting)).Count() == 1)
+            if (PlayerCatch.AllPlayerControls.Count(x => x.Is(CustomRoles.Connecting)) == 1)
             {
                 PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.Connecting)).ToArray().Do(
                             pc => PlayerState.GetByPlayerId(pc.PlayerId).RemoveSubRole(CustomRoles.Connecting));
@@ -573,9 +581,7 @@ namespace TownOfHost
 
             if (GameModeManager.IsStandardClass())
             {
-                if (!PlayerCatch.AllPlayerControls.All(pc => pc.IsModClient()))
-                    StandardIntro.SetRole();
-                else StandardIntro.CoResetRoleY();
+                StandardIntro.CoResetRoleY();
             }//RPC.RpcSyncAllNetworkedPlayer();
 
             PlayerCatch.CountAlivePlayers(true);

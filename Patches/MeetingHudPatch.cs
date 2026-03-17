@@ -108,7 +108,7 @@ public static class MeetingHudPatch
             PlayerCatch.OldAlivePlayerControles.Clear();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
-                pc.GetPlayerState().IsBlackOut = false;
+                //pc.GetPlayerState().IsBlackOut = false;
                 pc.Data.Role.NameColor = Palette.White;
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId].Clear();
 

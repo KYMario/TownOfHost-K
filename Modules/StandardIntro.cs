@@ -278,7 +278,7 @@ class StandardIntro
                 var send = false;
                 foreach (var dis in Disconnected)
                 {
-                    var client = GameData.Instance.AllPlayers.ToArray().Where(data => data.PlayerId == dis).FirstOrDefault();
+                    var client = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(data => data.PlayerId == dis);
                     if (client == null) continue;
                     client.Disconnected = true;
                     send = true;

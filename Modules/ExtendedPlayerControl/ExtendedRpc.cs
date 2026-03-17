@@ -50,7 +50,7 @@ namespace TownOfHost
                 //マッドメイトの最初からの内通
                 if (role.IsMadmate() && Options.MadCanSeeImpostor.GetBool())
                 {
-                    if (PlayerCatch.AllPlayerFirstTypes.Where(x => x.Value is CustomRoleTypes.Impostor).Any())
+                    if (PlayerCatch.AllPlayerFirstTypes.Any(x => x.Value is CustomRoleTypes.Impostor))
                         foreach (var imp in PlayerCatch.AllPlayerFirstTypes.Where(x => x.Value is CustomRoleTypes.Impostor))
                         {
                             var iste = PlayerState.GetByPlayerId(imp.Key);
@@ -271,7 +271,7 @@ namespace TownOfHost
 
             if (player == null) return;
 
-            var pc = AmongUsClient.Instance.allClients.ToArray().Where(x => x.Id == clientId).FirstOrDefault();
+            var pc = AmongUsClient.Instance.allClients.ToArray().FirstOrDefault(x => x.Id == clientId);
 
             //Logger.Info($"({pc?.PlayerName ?? "???"}){player?.Data?.GetLogPlayerName() ?? "( ᐛ )"} =>  {role}", "RpcSetRoleDesync");
 
