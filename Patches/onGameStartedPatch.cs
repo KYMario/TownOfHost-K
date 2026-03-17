@@ -230,6 +230,17 @@ namespace TownOfHost
             }
             else Main.LagTime = 0.23f;
             Logger.Info($"region:{ServerManager.Instance?.CurrentRegion?.Name ?? "???"} ,LagTime : {Main.LagTime} ,({AmongUsClient.Instance.Ping}) PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
+
+            if (PlayerCatch.AllPlayerControls.All(pc => pc.IsModClient()))
+            {
+                new LateTask(() =>
+                {
+                    PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc => PlayerNameColor.Set(pc)));
+                    PlayerControl.LocalPlayer.StopAllCoroutines();
+                    DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
+                    DestroyableSingleton<HudManager>.Instance.HideGameLoader();
+                }, 1.2f, "", true);
+            }
         }
     }
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]
@@ -338,22 +349,8 @@ namespace TownOfHost
         public static void Postfix()
         {
             //Logger.Warn("!!!2", "SR");
-            if (!AmongUsClient.Instance.AmHost)
-            {
-                if (PlayerCatch.AllPlayerControls.All(pc => pc.IsModClient()))
-                {
-                    new LateTask(() =>
-                    {
-                        PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc => PlayerNameColor.Set(pc)));
-                        PlayerControl.LocalPlayer.StopAllCoroutines();
-                        HudManagerCoShowIntroPatch.Cancel = false;
-                        DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
-                        DestroyableSingleton<HudManager>.Instance.HideGameLoader();
-                        UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
-                    }, 0.2f, "", true);
-                }
-                return;
-            }
+            if (!AmongUsClient.Instance.AmHost) return;
+
             RpcSetRoleReplacer.Release(); //保存していたSetRoleRpcを一気に書く
             RpcSetRoleReplacer.senders.Do(kvp => kvp.Value.SendMessage());
 
@@ -575,8 +572,11 @@ namespace TownOfHost
             UtilsRoleInfo.SetRoleLists();
 
             if (GameModeManager.IsStandardClass())
-                StandardIntro.CoResetRoleY();
-            //RPC.RpcSyncAllNetworkedPlayer();
+            {
+                if (!PlayerCatch.AllPlayerControls.All(pc => pc.IsModClient()))
+                    StandardIntro.SetRole();
+                else StandardIntro.CoResetRoleY();
+            }//RPC.RpcSyncAllNetworkedPlayer();
 
             PlayerCatch.CountAlivePlayers(true);
             UtilsOption.SyncAllSettings();

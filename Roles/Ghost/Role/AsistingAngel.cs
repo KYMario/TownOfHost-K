@@ -166,7 +166,7 @@ namespace TownOfHost.Roles.Ghost
 
         public static float GetNowCoolDown()
         {
-            if (Asist == null) return CoolDown.GetFloat();
+            if (Asist == null) return Limit > LimitDay.GetFloat() ? 255 : CoolDown.GetFloat();
 
             return CoolDown.GetFloat() + (AddClowDown.GetFloat() * Count);
         }
