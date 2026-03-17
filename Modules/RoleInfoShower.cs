@@ -212,6 +212,7 @@ class RoleInfoShower
                         var numItems = 0;
                         List<CustomRoles> rolelist = new();
                         CustomRoleManager.SortCustomRoles.DoIf(r => r.IsStartedRole(), r => rolelist.Add(r));
+                        var achievementmedal = UtilsSprite.LoadSprite("TownOfHost.Resources.Label.AchievementMedal.png");
                         foreach (var customrole in rolelist.OrderBy(role => role.IsVanilla() is false))
                         {
                             if (!Event.CheckRole(customrole)) continue;
@@ -395,19 +396,25 @@ class RoleInfoShower
                                     {
                                         var achievementButton = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
                                         achievementButton.transform.localPosition = new(-1.0f, 2.5f, -100f);
-                                        achievementButton.transform.localScale = new(0.2f, 0.9f, 1f);
+                                        achievementButton.transform.localScale = new(0.16f, 1f, 1f);
                                         achievementButton.name = "Achievement";
                                         achievementButton.Text.text = " ";
-                                        achievementButton.Background.color = ModColors.ModColor;
                                         AchievementPassiveButton = achievementButton.GetComponent<PassiveButton>();
                                         AchievementPassiveButton.OnMouseOut = new();
                                         AchievementPassiveButton.OnMouseOver = new();
                                         AchievementPassiveButton.OnClick = new();
-                                        AchievementPassiveButton.OnMouseOut
-                                            .AddListener((System.Action)(() => ToolTip.Hide()));
-                                        AchievementPassiveButton.OnMouseOver
-                                            .AddListener((System.Action)(() => ToolTip.Show(AchievementPassiveButton, AchievementText, null)));
+                                        AchievementPassiveButton.OnMouseOut.AddListener((System.Action)(() =>
+                                            {
+                                                achievementButton.Background.color = Palette.White;
+                                                ToolTip.Hide();
+                                            }));
+                                        AchievementPassiveButton.OnMouseOver.AddListener((System.Action)(() =>
+                                            {
+                                                achievementButton.Background.color = Palette.AcceptedGreen;
+                                                ToolTip.Show(AchievementPassiveButton, AchievementText, null);
+                                            }));
                                         AchievementText += $"<align=\"left\"><size=120%>{GetString("Achievement")}\n{text}";
+                                        achievementButton.Background.GetComponent<SpriteRenderer>().sprite = achievementmedal;
                                     }
                                     RoleInfo.gameObject.SetActive(true);
                                 }
