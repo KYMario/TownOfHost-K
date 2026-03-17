@@ -2279,6 +2279,7 @@
 "CharismaStarGatherButtonText","Gather","集合"
 "QuickKiller_Timer","QuickTime","クイックモード"
 "Archer_AbilityButton","Shot","矢を放つ"
+"EvilBlender_AbilityButton","ReleaseGas","毒ガス発生"
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""

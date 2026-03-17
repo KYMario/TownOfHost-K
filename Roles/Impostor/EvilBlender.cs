@@ -324,6 +324,15 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
     {
         if (UseingId == Player.PlayerId) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
     }
+    public override string GetAbilityButtonText()
+    {
+        return GetString("EvilBlender_AbilityButton"); ;
+    }
+    public override bool OverrideAbilityButton(out string text)
+    {
+        text = "EvilBlender_AbilityButton";
+        return true;
+    }
     public static Dictionary<int, Achievement> achievements = new();
     [Attributes.PluginModuleInitializer]
     public static void Load()
