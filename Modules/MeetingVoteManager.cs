@@ -574,7 +574,6 @@ public class MeetingVoteManager
             pc.RpcExileV3();
         }
         PlayerState.GetByPlayerId(killtargetid).SetDead();
-        PlayerState.AllPlayerStates[killtargetid].SetDead();
 
         MeetingHud meetingHud = MeetingHud.Instance;
         HudManager hudManager = DestroyableSingleton<HudManager>.Instance;
@@ -582,7 +581,7 @@ public class MeetingVoteManager
         {
             hudManager.ShadowQuad.gameObject.SetActive(false);
             pc.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-            if (AmongUsClient.Instance.AmHost) pc.RpcSetScanner(false);
+            //if (AmongUsClient.Instance.AmHost) pc.RpcSetScanner(false);
             ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
             importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
             meetingHud.SetForegroundForDead();
@@ -625,8 +624,7 @@ public class MeetingVoteManager
         }
         if (AmongUsClient.Instance.AmHost)
         {
-            meetingHud.CheckForEndVoting();
-            _ = new LateTask(() => meetingHud?.CheckForEndVoting(), 3f, "CheckForEndVoteing", true);
+            _ = new LateTask(() => Instance?.CheckAndEndMeeting(), 3f, "CheckForEndVoteing", true);
         }
     }
 }

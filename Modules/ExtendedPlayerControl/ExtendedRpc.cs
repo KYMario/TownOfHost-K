@@ -460,7 +460,8 @@ namespace TownOfHost
             {//道連れ、マジシャン等で死んでいないのにIsDeadを変更する場合はモーションを入れる。
                 if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                 {
-                    DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(player.Data, player.Data);
+                    if (GameStates.IsMeeting is false)
+                        DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(player.Data, player.Data);
                 }
                 else
                 {

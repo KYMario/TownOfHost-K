@@ -284,6 +284,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
             }
 
             MeetingVoteManager.ResetVoteManager(target.PlayerId);
+            if (target != PlayerControl.LocalPlayer) Player.RpcMeetingKill(target);
             return;
         }
         Player.RpcExileV2();
@@ -308,6 +309,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         }
 
         MeetingVoteManager.ResetVoteManager(Player.PlayerId);
+        if (Player != PlayerControl.LocalPlayer) Player.RpcMeetingKill(Player);
     }
     bool CanBeKilledBy(CustomRoles role)
     {
