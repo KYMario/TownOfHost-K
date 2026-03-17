@@ -1,12 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using AmongUs.GameOptions;
 using HarmonyLib;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
-using TownOfHost.Roles.Crewmate;
-using TownOfHost.Roles.Impostor;
 using UnityEngine;
 
 namespace TownOfHost

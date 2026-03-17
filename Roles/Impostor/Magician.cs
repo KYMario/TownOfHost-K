@@ -181,6 +181,10 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             magiccount++;
             state.DeathReason = CustomDeathReason.Magic;
             state.SetDead();
+            var roomName = target.GetShipRoomName();
+            target.GetPlayerState().KillRoom = roomName;
+            UtilsGameLog.AddGameLog($"Magic", $"{UtilsName.GetPlayerColor(target.PlayerId, true)}({UtilsRoleText.GetTrueRoleName(target.PlayerId, false).RemoveSizeTags()}) [{Utils.GetVitalText(target.PlayerId, true)}]〔{roomName}〕");
+            UtilsGameLog.AddGameLogsub($"\n\t⇐ {UtilsName.GetPlayerColor(Player.PlayerId, true)}({UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)})");
         }
         MagicTarget.Clear();
         HaveKillCount -= MagicUseKillCount;

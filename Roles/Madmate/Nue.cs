@@ -127,6 +127,8 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
         target.RpcExileV3();
         state.DeathReason = targetId == Player.PlayerId ? CustomDeathReason.Misfire : CustomDeathReason.Kill;
         state.SetDead();
+        var roomName = target.GetShipRoomName();
+        target.GetPlayerState().KillRoom = roomName;
 
         UtilsGameLog.AddGameLog($"Nue", $"{UtilsName.GetPlayerColor(target, true)}(<b>{UtilsRoleText.GetTrueRoleName(target.PlayerId, false)}</b>) [{Utils.GetVitalText(target.PlayerId, true)}]");
         UtilsGameLog.AddGameLogsub($"\n\t⇐ {UtilsName.GetPlayerColor(Player, true)}(<b>{UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)}</b>)");
