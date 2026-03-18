@@ -150,6 +150,7 @@ namespace TownOfHost.Roles.Ghost
                         CustomWinnerHolder.WinnerIds.Add(AsistingAngelId);
                         CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.AsistingAngel);
                         Logger.Info($"{AsistingAngelId} => Asist対象が勝利したので自身も勝利", "AsistingAngel");
+                        Achievements.RpcCompleteAchievement(AsistingAngelId, 0, achievements[1]);
                         return true;
                     }
                     Logger.Info($"{AsistingAngelId} => Asist対象が負けてるので負け。", "AsistingAngel");
@@ -197,6 +198,15 @@ namespace TownOfHost.Roles.Ghost
                 pos = newPos;
                 GetArrow.Add(playerId, pos);
             }
+        }
+        public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(CustomRoles.AsistingAngel, Id + 0, 1, 0, 0);
+            var l1 = new Achievement(CustomRoles.AsistingAngel, Id + 1, 1, 0, 1);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
         }
     }
 }

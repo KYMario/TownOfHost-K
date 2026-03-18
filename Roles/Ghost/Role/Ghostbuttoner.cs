@@ -60,6 +60,7 @@ namespace TownOfHost.Roles.Ghost
                 {
                     count[pc.PlayerId]--;
                     ReportDeadBodyPatch.ExReportDeadBody(pc, null, false);
+                    Achievements.RpcCompleteAchievement(pc.PlayerId, 0, achievements[0]);
                 }
                 SendRPC(pc.PlayerId);
             }
@@ -87,6 +88,13 @@ namespace TownOfHost.Roles.Ghost
         public static void ReceiveRPC(MessageReader reader, byte playerId)
         {
             count[playerId] = reader.ReadInt32();
+        }
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(CustomRoles.Ghostbuttoner, Id + 0, 1, 0, 0);
+            achievements.Add(0, n1);
         }
     }
 }

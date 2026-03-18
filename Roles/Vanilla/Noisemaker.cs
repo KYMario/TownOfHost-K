@@ -34,4 +34,11 @@ public sealed class Noisemaker : RoleBase
         AURoleOptions.NoisemakerAlertDuration = NoisemakerAlertDuration.GetFloat();
         AURoleOptions.NoisemakerImpostorAlert = NoisemakerImpostorAlert.GetBool();
     }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
+    }
 }

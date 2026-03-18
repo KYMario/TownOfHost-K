@@ -13,6 +13,7 @@ using TownOfHost.Roles.Ghost;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Modules;
+using TownOfHost.Roles.Vanilla;
 
 namespace TownOfHost.Roles.Core;
 
@@ -99,6 +100,7 @@ public static class CustomRoleManager
                     {
                         GuardreasonNumber = 2;
                         info.GuardPower = 1;
+                        Achievements.RpcCompleteAchievement(AsistingAngel.AsistingAngelId, 0, AsistingAngel.achievements[0]);
                     }
                 }
                 //守護天使ちゃんの天使チェック
@@ -195,11 +197,13 @@ public static class CustomRoleManager
                     {
                         appearanceKiller.RpcSetRoleDesync(RoleTypes.Viper, pc.GetClientId());
                     }
+                Achievements.RpcCompleteAchievement(appearanceKiller.PlayerId, 1, Viper.achievements[0]);
             }
             if (info.DontRoleAbility is false)
             {
                 if (appearanceTarget.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() == RoleTypes.Noisemaker)
                 {
+                    Achievements.RpcCompleteAchievement(appearanceTarget.PlayerId, 0, Noisemaker.achievements[0]);
                     if (AmongUsClient.Instance.AmHost)
                         foreach (var pc in PlayerCatch.AllPlayerControls)
                         {
@@ -213,6 +217,11 @@ public static class CustomRoleManager
             if (GhostNoiseSender.Nois.ContainsValue(appearanceTarget.PlayerId))
             {
                 if (AmongUsClient.Instance.AmHost)
+                {
+                    foreach (var gn in GhostNoiseSender.Nois.Where(n => n.Value == appearanceTarget.PlayerId))
+                    {
+                        Achievements.RpcCompleteAchievement(gn.Key, 0, GhostNoiseSender.achievements[0]);
+                    }
                     foreach (var pc in PlayerCatch.AllPlayerControls)
                     {
                         if (pc == PlayerControl.LocalPlayer)
@@ -221,6 +230,7 @@ public static class CustomRoleManager
                             appearanceTarget.RpcSetRoleDesync(RoleTypes.Noisemaker, pc.GetClientId());
                         appearanceTarget.SyncSettings();
                     }
+                }
             }
 
             if (info.DontRoleAbility is false)

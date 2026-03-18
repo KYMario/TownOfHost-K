@@ -42,6 +42,7 @@ namespace TownOfHost.Roles.Ghost
                 SendRPC(pc.PlayerId);
                 RemoveDisableDevicesPatch.UpdateDisableDevices();
                 UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                Achievements.RpcCompleteAchievement(pc.PlayerId, 0, achievements[0]);
                 _ = new LateTask(() =>
                 {
                     DemUseAbility = false;
@@ -75,6 +76,13 @@ namespace TownOfHost.Roles.Ghost
 
             DemUseAbility = useAbility;
             RemoveDisableDevicesPatch.UpdateDisableDevices(!useAbility);
+        }
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(CustomRoles.DemonicCrusher, Id + 0, 1, 0, 0);
+            achievements.Add(0, n1);
         }
     }
 }
