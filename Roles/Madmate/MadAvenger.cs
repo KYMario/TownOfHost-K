@@ -174,6 +174,7 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
                         Guessd.Add(pc);
                         Player.RpcProtectedMurderPlayer();
                         Utils.SendMessage(GetString("Skill.MadAvengersuccess"), Player.PlayerId, title: " <color=#ff1919>" + GetString("MadAvengerMeeting"));
+                        if (Guessd.Count is 1) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
 
                         foreach (var go in PlayerCatch.AllPlayerControls.Where(pc => pc != null && !pc.IsAlive()))
                         {
@@ -182,7 +183,7 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
 
                         foreach (var Guessdpc in Guessd)
                         {
-                            var pc1 = PlayerCatch.AllAlivePlayerControls.Where(pc1 => pc1.IsNeutralKiller() || pc1.Is(CustomRoles.GrimReaper)).Count();
+                            var pc1 = PlayerCatch.AllAlivePlayerControls.Count(pc1 => pc1.IsNeutralKiller() || pc1.Is(CustomRoles.GrimReaper));
                             if (Guessd.Count == pc1)
                             {
                                 //革命成功
@@ -192,6 +193,7 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
                                 _ = new LateTask(() => Utils.SendMessage(GetString("Skill.MadAvenger8"), title: $"<color=#ff1919>{GetString("MadAvenger")}　{Utils.ColorString(Main.PlayerColors[Player.PlayerId], $"{Player.name}</b>")}"), 9.5f, "Kakumeiseikou");
                                 _ = new LateTask(() =>//殺害処理
                                 {
+                                    var killcount = 0;
                                     foreach (var pc in PlayerCatch.AllAlivePlayerControls)
                                     {
                                         if (pc.PlayerId != Player.PlayerId)
@@ -202,10 +204,14 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
                                             var state = PlayerState.GetByPlayerId(pc.PlayerId);
                                             state.DeathReason = CustomDeathReason.Bombed;
                                             state.SetDead();
+                                            killcount++;
                                         }
                                         else
                                             RPC.PlaySoundRPC(pc.PlayerId, Sounds.KillSound);
                                     }
+                                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+                                    if (3 <= Guessd.Count && 10 <= killcount)
+                                        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
                                     CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Impostor, Player.PlayerId, hantrole: CustomRoles.MadAvenger);
                                 }, 15f, "Kakumeiseikou");
                                 return true;
@@ -240,4 +246,16 @@ public sealed class MadAvenger : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
     }
 
     public override string GetProgressText(bool comms = false, bool GameLog = false) => !GameLog && OptionCanseeimpostorCount.GetBool() ? $"({PlayerCatch.AliveImpostorCount})" : "";
+
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        var sp2 = new Achievement(RoleInfo, 2, 1, 0, 3, true);
+        achievements.Add(0, l1);
+        achievements.Add(1, sp1);
+        achievements.Add(2, sp2);
+    }
 }

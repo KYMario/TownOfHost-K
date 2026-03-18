@@ -714,6 +714,13 @@ namespace TownOfHost
             var players = player.GetPlayersInAbilityRangeSorted(false);
             return players.Count <= 0 ? null : players[0];
         }
+        public static bool IsWinner(this PlayerControl player, CustomWinner? team = null)
+        {
+            if (CustomWinnerHolder.WinnerIds.Contains(player.PlayerId) && !CustomWinnerHolder.CantWinPlayerIds.Contains(player.PlayerId))
+                return team.HasValue ? CustomWinnerHolder.winners.Contains(team.Value) || CustomWinnerHolder.AdditionalWinnerRoles.Contains((CustomRoles)team.Value)
+                                        : true;
+            return false;
+        }
 
         //アプデ対応の参考
         //https://github.com/Hyz-sui/TownOfHost-H

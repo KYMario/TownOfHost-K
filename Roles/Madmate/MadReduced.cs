@@ -68,15 +68,13 @@ public sealed class MadReduced : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
                 numVotes = 1;
                 forvote = 255;
             }
-            else
-            if (sourceVotedForId == Skip)
+            else if (sourceVotedForId == Skip)
             {
                 Skill = false;
                 numVotes = 1;
                 forvote = 255;
             }
-            else
-            if (sourceVotedForId == Player.PlayerId)
+            else if (sourceVotedForId == Player.PlayerId)
             {
                 Skill = false;
                 numVotes = 1;

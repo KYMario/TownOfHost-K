@@ -32,6 +32,7 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
         () => HasTask.False
     )
     {
+        flug = false;
     }
     static OptionItem OptionKillCoolDown;
     static OptionItem OptionKillDeathreason;
@@ -102,6 +103,7 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
                     AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
                 }
             }
+            flug = true;
             Player.SetRealKiller(Player);
             return;
         }
@@ -113,6 +115,7 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
         if (!Player.IsAlive()) return;
         AdjustKillCooldown = false;
         ResetCooldown = false;
+        flug = true;
         MyState.DeathReason = deathReasons[OptionAbilityDeathreason.GetValue()];
         Player.RpcMurderPlayer(Player);
     }
@@ -138,5 +141,22 @@ public sealed class MadSuicide : RoleBase, IKiller, IUsePhantomButton, IKillFlas
 
         if (isForHud) return GetString("MadSuicideLowerInfo");
         return $"<size=50%>{GetString("MadSuicideLowerInfo")}</size>";
+    }
+    public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
+    {
+        if (flug && (target?.PlayerId ?? byte.MaxValue) == Player.PlayerId) return;
+        flug = false;
+    }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if (flug && exiled is not null) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+    }
+    bool flug;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, n1);
     }
 }

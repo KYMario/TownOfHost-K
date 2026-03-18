@@ -212,5 +212,21 @@ namespace TownOfHost.Roles.Neutral
                 Logger.Warn($"既に{targetId}はGrimPlayersに含まれていたため、追加に失敗しました", "GrimReaper");
             }
         }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (Player.IsWinner(CustomWinner.GrimReaper))
+            {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+            }
+        }
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var l1 = new Achievement(RoleInfo, 0, 10, 0, 0);
+            var n2 = new Achievement(RoleInfo, 1, 1, 0, 1);
+            achievements.Add(0, l1);
+            achievements.Add(1, n2);
+        }
     }
 }

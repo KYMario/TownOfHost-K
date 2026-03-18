@@ -276,7 +276,7 @@ public sealed class King : RoleBase
     }
     public override void CheckWinner(GameOverReason reason)
     {
-        if (Sp1Flug && reason is not GameOverReason.CrewmatesByTask && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate))
+        if (Sp1Flug && reason is not GameOverReason.CrewmatesByTask && Player.IsWinner(CustomWinner.Crewmate))
         {
             var crewmates = PlayerCatch.AllAlivePlayerControls.Where(pc => pc.GetCustomRole().IsCrewmate());
             if (crewmates.Count(pc => !pc.Is(CustomRoles.Crewmate)) <= 2 && 0 < crewmates.Count())
@@ -284,7 +284,7 @@ public sealed class King : RoleBase
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
             }
         }
-        if (Player.IsAlive() && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate))
+        if (Player.IsAlive() && Player.IsWinner(CustomWinner.Crewmate))
         {
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         }

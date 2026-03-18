@@ -236,9 +236,8 @@ namespace TownOfHost.Roles.Impostor
         public override void CheckWinner(GameOverReason reason)
         {
             if (Limit) return;
-            if (CustomWinnerHolder.winners.Contains(CustomWinner.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
-            if ((CustomWinnerHolder.winners.Contains(CustomWinner.MadonnaLovers) || CustomWinnerHolder.AdditionalWinnerRoles.Contains(CustomRoles.MadonnaLovers))
-                && Lovers.MaMadonnaLoversPlayers.Any(lov => lov.PlayerId == Player.PlayerId))
+            if (Player.IsWinner(CustomWinner.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+            if (Player.IsWinner(CustomWinner.MadonnaLovers) && Lovers.MaMadonnaLoversPlayers.Any(lov => lov.PlayerId == Player.PlayerId))
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[3]);
         }
         public static Dictionary<int, Achievement> achievements = new();

@@ -29,7 +29,9 @@ public sealed class MadChanger : RoleBase, IKiller, IKillFlashSeeable, IDeathRea
     )
     {
         KillTarget = null;
+        usecount = 0;
     }
+    int usecount;
     static OptionItem CanUseVent;
     static OptionItem PlayAnimation;
     static OptionItem KillCoolDown;
@@ -78,6 +80,7 @@ public sealed class MadChanger : RoleBase, IKiller, IKillFlashSeeable, IDeathRea
         KillTarget = null;
         Player.SetKillCooldown();
         if (!PlayAnimation.GetBool()) Player.RpcResetAbilityCooldown();
+        usecount++;
 
         if (target.inVent || target.MyPhysics.Animations.IsPlayingEnterVentAnimation() || pc.inVent || pc.MyPhysics.Animations.IsPlayingEnterVentAnimation()
         || target.MyPhysics.Animations.IsPlayingAnyLadderAnimation() || pc.MyPhysics.Animations.IsPlayingAnyLadderAnimation()
@@ -116,5 +119,19 @@ public sealed class MadChanger : RoleBase, IKiller, IKillFlashSeeable, IDeathRea
     {
         text = "MadChanger_Ability";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], usecount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], usecount);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 30, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

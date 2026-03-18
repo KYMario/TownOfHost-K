@@ -205,7 +205,7 @@ public sealed class WolfBoy : RoleBase, IKiller, ISchrodingerCatOwner
     }
     public override void CheckWinner(GameOverReason reason)
     {
-        if (CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate) && Player.IsLovers() is false &&
+        if (Player.IsWinner(CustomWinner.Crewmate) && Player.IsLovers() is false &&
         Player.Is(CustomRoles.Amanojaku) is false)
         {
             // 勝利に必要なキル数に届いていない場合

@@ -226,7 +226,7 @@ public sealed class FireWorks : RoleBase, IImpostor, IUsePhantomButton
     bool spflug;
     public override void CheckWinner(GameOverReason reason)
     {
-        if (CustomWinnerHolder.winners.Contains(CustomWinner.Impostor) && spflug)
+        if (Player.IsWinner(CustomWinner.Impostor) && spflug)
         {
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
         }

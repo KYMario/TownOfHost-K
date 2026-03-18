@@ -167,7 +167,7 @@ namespace TownOfHost.Roles.Neutral
         public override void CheckWinner(GameOverReason reason)
         {
             if (3 <= MyState.GetKillCount()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
-            if (CustomWinnerHolder.winners.Contains(CustomWinner.Jackal))
+            if (Player.IsWinner(CustomWinner.Jackal) && !Player.IsLovers())
             {
                 foreach (var j in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CountTypes.Jackal)))
                 {

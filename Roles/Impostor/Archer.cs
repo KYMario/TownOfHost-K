@@ -303,7 +303,7 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
     }
     public override void CheckWinner(GameOverReason reason)
     {
-        if (spflug && CustomWinnerHolder.winners.Contains(CustomWinner.Impostor))
+        if (spflug && Player.IsWinner(CustomWinner.Impostor))
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
     }
     float movevalue;

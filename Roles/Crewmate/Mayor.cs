@@ -156,7 +156,7 @@ public sealed class Mayor : RoleBase
     }
     public override void CheckWinner(GameOverReason reason)
     {
-        if (sp1flug == 2 && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate))
+        if (sp1flug == 2 && Player.IsWinner(CustomWinner.Crewmate))
         {
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
         }

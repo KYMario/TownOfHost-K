@@ -240,7 +240,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
     }
     public override void CheckWinner(GameOverReason reason)
     {
-        if (2 <= spflug && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate) && Optioncollect.GetInt() <= 50)
+        if (2 <= spflug && Player.IsWinner(CustomWinner.Crewmate) && Optioncollect.GetInt() <= 50)
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
     }
     public static Dictionary<int, Achievement> achievements = new();

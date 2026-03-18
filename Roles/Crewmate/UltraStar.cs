@@ -157,7 +157,7 @@ public sealed class UltraStar : RoleBase, IKiller
     bool IKiller.IsKiller => true;
     public override void CheckWinner(GameOverReason reason)
     {
-        if (Player.IsAlive() && CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate))
+        if (Player.IsAlive() && Player.IsWinner(CustomWinner.Crewmate))
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
     }
     public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();

@@ -47,6 +47,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
         GuessedFool = false;
         IsKilled = false;
         IsSeeImpostor = false;
+        SpFlug = false;
 
         MyTaskState.NeedTaskCount = canseetaskcount > 0 && canusevotecount < canseetaskcount ? canseetaskcount : canusevotecount;
     }
@@ -109,6 +110,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
         {
             GuessedFool = true;
             MeetingKill(votedForId);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             _ = new LateTask(() =>
             {
                 MeetingVoteManager.Instance.ClearAndExile(votedForId, 253);
@@ -172,6 +174,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
 
         if (Is(killer) && info.IsCanKilling)
         {
+            SpFlug = true;
             IsKilled = true;
         }
     }
@@ -186,6 +189,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
             MyState.DeathReason = CustomDeathReason.Suicide;
             Player.SetRealKiller(Player);
             Player.RpcMurderPlayer(Player);
+            _ = new LateTask(() => SpFlug = false, 2, "Resetflug", true);
         }
     }
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
@@ -196,6 +200,7 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
             MyState.DeathReason = CustomDeathReason.Suicide;
             Player.SetRealKiller(Player);
             Player.RpcMurderPlayer(Player);
+            _ = new LateTask(() => SpFlug = false, 2, "Resetflug", true);
         }
     }
 
@@ -229,5 +234,22 @@ public sealed class Nue : RoleBase, ISelfVoter, IKiller
             return "<#ff1919>★</color>";
         }
         return "";
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (SpFlug && Player.IsWinner(CustomWinner.Impostor))
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+        }
+    }
+    bool SpFlug;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }
