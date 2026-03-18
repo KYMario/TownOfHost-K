@@ -20,7 +20,7 @@ class RoleInfoShower
     public static GameObject Scrollbargameobject;
     public static TextMeshPro RoleInfo;
     public static float CloseButtonY;
-    public static TabGroup NowTab;
+    public static TabGroup? NowTab;
     public static PassiveButton AchievementPassiveButton;
     public static string AchievementText;
     public static Dictionary<CustomRoles, GameObject> buttons = new();
@@ -151,7 +151,8 @@ class RoleInfoShower
                             CallEsc();
                         }));
 
-                        foreach (var tab in EnumHelper.GetAllValues<TabGroup>())
+                        var alltab = EnumHelper.GetAllValues<TabGroup>();
+                        foreach (var tab in alltab)
                         {
                             var tabbutton = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
                             tabbutton.transform.localPosition = new(1.6f, 2.5f + (((int)tab + 1) * -0.4f), -200f);
@@ -165,6 +166,25 @@ class RoleInfoShower
                                 {
                                     pilldown.Text.text = "Now:" + (tab is TabGroup.MainSettings ? "All Roles" : GetString($"TabGroup.{tab}"));
                                     NowTab = tab;
+                                    tabbuttons.Do(button => button.gameObject.SetActive(false));
+                                }));
+                            tabbutton.gameObject.SetActive(false);
+                            tabbuttons.Add(tabbuttonPassiveButton);
+                        }
+                        //その他
+                        {
+                            var tabbutton = Object.Instantiate(mouseMoveToggle, CustomBackground.transform);
+                            tabbutton.transform.localPosition = new(1.6f, 2.5f + (((int)alltab.Count() + 1) * -0.4f), -200f);
+                            tabbutton.transform.localScale = new(0.5f, 0.9f, 1f);
+                            tabbutton.name = $"OtherAchievement";
+                            tabbutton.Text.text = "<#e7959a>Achievement";
+                            tabbutton.Background.color = Palette.DisabledGrey;
+                            var tabbuttonPassiveButton = tabbutton.GetComponent<PassiveButton>();
+                            tabbuttonPassiveButton.OnClick = new();
+                            tabbuttonPassiveButton.OnClick.AddListener(new System.Action(() =>
+                                {
+                                    pilldown.Text.text = "Now:" + "<#e7959a>Achievement";
+                                    NowTab = null;
                                     tabbuttons.Do(button => button.gameObject.SetActive(false));
                                 }));
                             tabbutton.gameObject.SetActive(false);
@@ -422,6 +442,90 @@ class RoleInfoShower
                             buttons.Add(customrole, ToggleButton.gameObject);
                             numItems++;
                         }
+                        foreach (var type in EnumHelper.GetAllValues<NomalAchievementType>())
+                        {
+                            // ボタン生成
+                            var ToggleButton = Object.Instantiate(mouseMoveToggle, Scrollbargameobject.GetComponentInParent<Scroller>().Inner.transform);
+
+                            ToggleButton.transform.localScale = new Vector3(0.5f, 1, 1);
+                            ToggleButton.name = $"{type}";
+                            ToggleButton.Text.text = $"<b>{type.GetButtonName()}</b>";
+
+                            var passiveButton = ToggleButton.GetComponent<PassiveButton>();
+                            ToggleButton.gameObject.AddComponent<UIScrollbarHelper>();
+                            ToggleButton.Background.color = Color.gray;
+                            passiveButton.OnClick = new();
+                            passiveButton.OnClick.AddListener(new System.Action(() =>
+                            {
+                                achievementtext.gameObject.SetActive(false);
+                                pilldown.gameObject.SetActive(false);
+                                tabbuttons.Do(button => button.gameObject.SetActive(false));
+                                IsShowRoleInfo = true;
+                                buttons.Values.Do(button => button.gameObject.SetActive(false));
+                                if (RoleInfo.IsNullOrDestroyed())
+                                {
+                                    RoleInfo = TMPTemplate.Create("RoleInfo"
+                                    , "", Color.white, 3, TextAlignmentOptions.TopLeft, true, CustomBackground.transform);
+                                    RoleInfo.transform.localPosition = new(-1.6f, 2.1267f, -50);
+                                    RoleInfo.transform.localScale = new(0.5f, 1f, 1);
+                                }
+                                {
+                                    var AllAchievements = NomalAchievement.typeachievement[type];
+                                    var text = "";
+                                    AchievementText = "";
+                                    (float c, float a) d = (0, 0);
+                                    var i = 0;
+                                    foreach (var achievement in AllAchievements)
+                                    {
+                                        var mark = "";
+                                        var title = "";
+                                        var constraint = "";
+                                        var color = "";
+                                        if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
+                                        switch (achievement.Difficulty)
+                                        {
+                                            case 0: mark += "◎"; color = "<#674020>"; break;
+                                            case 1: mark += "◆"; color = "<#aacbf7>"; break;
+                                            case 2: mark += "★"; color = "<#ffea4e>"; break;
+                                            case 3: mark += "ф"; color = "<#17f7aa>"; break;
+                                        }
+                                        if (achievement.IsHidden) mark = $"?{mark}";
+                                        title += $"{(achievement.IsCompleted ? $"{color}{mark}" : $"<#888888>-{mark}")}" + "  ";
+
+                                        if (achievement.IsHidden is false || achievement.IsCompleted)
+                                        {
+                                            title += $"～{Achievements.GetAchievementNames(achievement, "Title")}～</color>";
+                                            if (achievement.step > 1) title += $"   ({achievement.states}/{achievement.step})";
+                                            var infotext = $"<size=70%>             {Achievements.GetAchievementNames(achievement, "Info", 2)}</size>";
+                                            constraint = Achievements.GetAchievementNames(achievement, "Constraint", 2);
+                                            if (achievement.IsCompleted is false)
+                                            {
+                                                infotext = $"<size=70%>             {Achievements.GetAchievementNames(achievement, "Info", 1)}</size>";
+                                                constraint = Achievements.GetAchievementNames(achievement, "Constraint", 1);
+                                            }
+                                            if (infotext != "")
+                                                title += $"{infotext}</color>";
+                                            if (constraint != "")
+                                                title += $"<size=60%>\n<#cccccc>{constraint}</color></size>";
+                                        }
+                                        else
+                                        {
+                                            title += $"～{(Main.UseingJapanese ? "隠し実績..." : "Hide Achievement")}～</color>";
+                                            if (achievement.step > 1) title += $"   ({achievement.states}/{achievement.step})";
+                                            title += $"<size=50%>\n<#cccccc>{Achievements.GetAchievementNames(achievement, "Constraint", 1)}</color></size>";
+                                        }
+
+                                        text += i % 2 == 0 ? $"{title}" : $"<pos=120%>{title}</pos>\n";
+                                        if (achievement.IsHidden is false) d = (d.c + (achievement.IsCompleted ? 1 : 0), d.a + 1);
+                                        i++;
+                                    }
+                                    RoleInfo.text = text;
+                                    RoleInfo.gameObject.SetActive(true);
+                                }
+                            }));
+                            buttons.Add((CustomRoles)((int)(type + 1) * -1), ToggleButton.gameObject);
+                            numItems++;
+                        }
                         Scrollbargameobject.GetComponentInParent<Scroller>().ContentYBounds.max = numItems > 9 ? 0.5f * (numItems / 4 - 9) : 0;
                         Scrollbargameobject.GetComponentInParent<Scroller>().Inner.localPosition = Vector3.zero;
                     }
@@ -479,7 +583,7 @@ class MainMenuManagerUpdatePatch
             if (buttongameobject is null) continue;
             bool IsActive = RoleInfoShower.NowTab switch
             {
-                TabGroup.MainSettings => true,
+                TabGroup.MainSettings => 0 <= (int)buttongameobjectdata.Key,
                 TabGroup.ImpostorRoles => buttongameobjectdata.Key.IsImpostor(),
                 TabGroup.MadmateRoles => buttongameobjectdata.Key.IsMadmate(),
                 TabGroup.NeutralRoles => buttongameobjectdata.Key.IsNeutral(),
@@ -487,6 +591,7 @@ class MainMenuManagerUpdatePatch
                 TabGroup.GhostRoles => buttongameobjectdata.Key.IsGhostRole(),
                 TabGroup.Addons => buttongameobjectdata.Key.IsAddOn(),
                 TabGroup.Combinations => buttongameobjectdata.Key.IsCombinationRole(),
+                null => (int)buttongameobjectdata.Key < 0,
                 _ => false
             };
             if (IsActive)
