@@ -63,7 +63,7 @@ public static class OptionSaver
                     }
                     assignOptionitem.RoleValues[i].Do(role =>
                     {
-                        ids.Add(role.GetRoleInfo()?.ConfigId ?? -300);
+                        ids.Add(role.GetRoleInfo()?.ConfigId ?? (Options.CustomRoleSpawnChances.TryGetValue(role, out var opt) ? opt.Id : -100));
                     });
 
                     assign.Add(i, ids.ToArray());
@@ -144,7 +144,7 @@ public static class OptionSaver
                         }
                         foreach (var roleid in item.Value)
                         {
-                            var roleopt = OptionItem.AllOptions.Where(opt => opt.Id == roleid).FirstOrDefault();
+                            var roleopt = OptionItem.AllOptions.FirstOrDefault(opt => opt.Id == roleid);
 
                             if (roleopt is not null)
                             {

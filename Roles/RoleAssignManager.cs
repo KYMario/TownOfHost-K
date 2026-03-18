@@ -152,18 +152,18 @@ namespace TownOfHost.Roles
                         if (!AssignRoleList.Contains(addon)) AssignRoleList.Add(addon);
             }
             else
-            if (Modules.SuddenDeathMode.NowSuddenDeathMode)
-            {
-                var roles = AssignRoleList.Where(role => role != CustomRoles.Impostor && !role.IsAddOn() && !role.IsGhostRole() && !role.IsLovers()).ToArray();
-
-                if (roles.Length < PlayerCatch.AllPlayerControls.Count())
+                if (Modules.SuddenDeathMode.NowSuddenDeathMode)
                 {
-                    for (var i = roles.Length; i < PlayerCatch.AllPlayerControls.Count(); i++)
+                    var roles = AssignRoleList.Where(role => role != CustomRoles.Impostor && !role.IsAddOn() && !role.IsGhostRole() && !role.IsLovers()).ToArray();
+
+                    if (roles.Length < PlayerCatch.AllPlayerControls.Count())
                     {
-                        AssignRoleList.Add(CustomRoles.Impostor);
+                        for (var i = roles.Length; i < PlayerCatch.AllPlayerControls.Count(); i++)
+                        {
+                            AssignRoleList.Add(CustomRoles.Impostor);
+                        }
                     }
                 }
-            }
 
             foreach (var role in AssignRoleList)
             {
@@ -197,10 +197,11 @@ namespace TownOfHost.Roles
 
                 var role = _role;
                 var result = false;
-                SlotRoleAssign.SlotRoles.Do(info =>
+                SlotRoleAssign.SlotRoles.OrderBy(x => Guid.NewGuid()).ToList().Do(info =>
                 {
                     var id = info.CheckAssignRole(ref role);
                     result = (result || id is 1) && id is not 2;
+                    if (id is 2) return;
                 });
                 if (result) continue;
 
@@ -299,10 +300,11 @@ namespace TownOfHost.Roles
                 {
                     var targetRole = _targetRole;
                     var result = false;
-                    SlotRoleAssign.SlotRoles.Do(info =>
+                    SlotRoleAssign.SlotRoles.OrderBy(x => Guid.NewGuid()).ToList().Do(info =>
                     {
                         var id = info.CheckAssignRole(ref targetRole);
                         result = (result || id is 1) && id is not 2;
+                        if (id is 2) return;
                     });
                     if (result) continue;
                     AssignRoleList.Add(targetRole);
@@ -325,7 +327,6 @@ namespace TownOfHost.Roles
                 //確率がそのまま追加枚数に
                 for (var i = 0; i < count; i++)
                     randomRoleTicketPool.AddRange(Enumerable.Repeat((role, i), chance / 10).ToList());
-
             }
 
             //確定分では足りない場合に抽選を行う
@@ -340,10 +341,11 @@ namespace TownOfHost.Roles
                     {
                         var targetRole = _targetRole;
                         var result = false;
-                        SlotRoleAssign.SlotRoles.Do(info =>
+                        SlotRoleAssign.SlotRoles.OrderBy(x => Guid.NewGuid()).ToList().Do(info =>
                         {
                             var id = info.CheckAssignRole(ref targetRole);
                             result = (result || id is 1) && id is not 2;//割り当て済みならtrue。別アサインされるならfalseにもどす
+                            if (id is 2) return;//別アサインを見つけたなら一回きりあげる
                         });
                         if (result) continue;
                         AssignRoleList.Add(targetRole);
