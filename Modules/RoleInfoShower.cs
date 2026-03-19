@@ -24,6 +24,7 @@ class RoleInfoShower
     public static PassiveButton AchievementPassiveButton;
     public static string AchievementText;
     public static Dictionary<CustomRoles, GameObject> buttons = new();
+    static bool IsNull = false;
 
     public static void CreateMenu(MainMenuManager mainmenu)
     {
@@ -36,7 +37,13 @@ class RoleInfoShower
             if (menuBehaviour is null)
             {
                 mainmenu.settingsButton.OnClick.Invoke();
-                _ = new LateTask(() => CreateMenu(mainmenu), 0.05f, "", true);
+                if (IsNull) return;
+                IsNull = true;
+                _ = new LateTask(() =>
+                {
+                    CreateMenu(mainmenu);
+                    IsNull = false;
+                }, 0.05f, "", true);
                 return;
             }
             bool IsError = false;
@@ -471,17 +478,17 @@ class RoleInfoShower
                                 }
                                 {
                                     var AllAchievements = NomalAchievement.typeachievement[type];
-                                    var text = "";
+                                    var text = "<line-height=130%>";
                                     AchievementText = "";
                                     (float c, float a) d = (0, 0);
                                     var i = 0;
                                     foreach (var achievement in AllAchievements)
                                     {
-                                        var mark = "";
+                                        var mark = "<size=65%>";
                                         var title = "";
                                         var constraint = "";
                                         var color = "";
-                                        if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
+                                        //if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
                                         switch (achievement.Difficulty)
                                         {
                                             case 0: mark += "◎"; color = "<#674020>"; break;
@@ -496,26 +503,27 @@ class RoleInfoShower
                                         {
                                             title += $"～{Achievements.GetAchievementNames(achievement, "Title")}～</color>";
                                             if (achievement.step > 1) title += $"   ({achievement.states}/{achievement.step})";
-                                            var infotext = $"<size=70%>             {Achievements.GetAchievementNames(achievement, "Info", 2)}</size>";
+                                            var infotext = $"<size=40%>             {Achievements.GetAchievementNames(achievement, "Info", 2)}</size>";
                                             constraint = Achievements.GetAchievementNames(achievement, "Constraint", 2);
                                             if (achievement.IsCompleted is false)
                                             {
-                                                infotext = $"<size=70%>             {Achievements.GetAchievementNames(achievement, "Info", 1)}</size>";
+                                                infotext = $"<size=40%>             {Achievements.GetAchievementNames(achievement, "Info", 1)}</size>";
                                                 constraint = Achievements.GetAchievementNames(achievement, "Constraint", 1);
                                             }
                                             if (infotext != "")
                                                 title += $"{infotext}</color>";
                                             if (constraint != "")
-                                                title += $"<size=60%>\n<#cccccc>{constraint}</color></size>";
+                                                title += $"<size=25%>\n<#cccccc>{constraint}</color></size>";
                                         }
                                         else
                                         {
                                             title += $"～{(Main.UseingJapanese ? "隠し実績..." : "Hide Achievement")}～</color>";
                                             if (achievement.step > 1) title += $"   ({achievement.states}/{achievement.step})";
-                                            title += $"<size=50%>\n<#cccccc>{Achievements.GetAchievementNames(achievement, "Constraint", 1)}</color></size>";
+                                            constraint = Achievements.GetAchievementNames(achievement, "Constraint", 1);
+                                            if (constraint is not "") title += $"<size=25%>\n<#cccccc>{constraint}</color></size>";
                                         }
 
-                                        text += i % 2 == 0 ? $"{title}" : $"<pos=120%>{title}</pos>\n";
+                                        text += i % 2 == 0 ? $"{title}" : $"<pos=135%>{title}</pos>\n";
                                         if (achievement.IsHidden is false) d = (d.c + (achievement.IsCompleted ? 1 : 0), d.a + 1);
                                         i++;
                                     }

@@ -399,11 +399,11 @@ namespace TownOfHost.Modules
             if (!SuddenRemainingPlayerCount.GetBool()) return "";
             if (NowSuddenDeathTemeMode && seen == seer)
             {
-                var t1 = PlayerCatch.AllAlivePlayerControls.Where(pc => TeamRed.Contains(pc.PlayerId)).Count();
-                var t2 = PlayerCatch.AllAlivePlayerControls.Where(pc => TeamBlue.Contains(pc.PlayerId)).Count();
-                var t3 = PlayerCatch.AllAlivePlayerControls.Where(pc => TeamYellow.Contains(pc.PlayerId)).Count();
-                var t4 = PlayerCatch.AllAlivePlayerControls.Where(pc => TeamGreen.Contains(pc.PlayerId)).Count();
-                var t5 = PlayerCatch.AllAlivePlayerControls.Where(pc => TeamPurple.Contains(pc.PlayerId)).Count();
+                var t1 = PlayerCatch.AllAlivePlayerControls.Count(pc => TeamRed.Contains(pc.PlayerId));
+                var t2 = PlayerCatch.AllAlivePlayerControls.Count(pc => TeamBlue.Contains(pc.PlayerId));
+                var t3 = PlayerCatch.AllAlivePlayerControls.Count(pc => TeamYellow.Contains(pc.PlayerId));
+                var t4 = PlayerCatch.AllAlivePlayerControls.Count(pc => TeamGreen.Contains(pc.PlayerId));
+                var t5 = PlayerCatch.AllAlivePlayerControls.Count(pc => TeamPurple.Contains(pc.PlayerId));
                 if (t1 > 0) tex += $"<{ModColors.codered}>({t1})</color>";
                 if (t2 > 0) tex += $"<{ModColors.codeblue}>({t2})</color>";
                 if (t3 > 0) tex += $"<{ModColors.codeyellow}>({t3})</color>";
@@ -520,8 +520,7 @@ namespace TownOfHost.Modules
                         TeamGreen.Remove(pc.PlayerId);
                         TeamPurple.Remove(pc.PlayerId);
                     }
-                    else
-                    if (-0.2 <= pos.x && pos.x <= 0.7 && -1.1 <= pos.y && pos.y <= 0.4)
+                    else if (-0.2 <= pos.x && pos.x <= 0.7 && -1.1 <= pos.y && pos.y <= 0.4)
                     {
                         TeamRed.Remove(pc.PlayerId);
                         if (!TeamBlue.Contains(pc.PlayerId))
@@ -530,8 +529,7 @@ namespace TownOfHost.Modules
                         TeamGreen.Remove(pc.PlayerId);
                         TeamPurple.Remove(pc.PlayerId);
                     }
-                    else
-                    if (1.7 <= pos.x && pos.x <= 3 && -1.1 <= pos.y && pos.y <= 0.7 && SuddenAddTeamYellow.GetBool())
+                    else if (1.7 <= pos.x && pos.x <= 3 && -1.1 <= pos.y && pos.y <= 0.7 && SuddenAddTeamYellow.GetBool())
                     {
                         TeamRed.Remove(pc.PlayerId);
                         TeamBlue.Remove(pc.PlayerId);
@@ -540,8 +538,7 @@ namespace TownOfHost.Modules
                         TeamGreen.Remove(pc.PlayerId);
                         TeamPurple.Remove(pc.PlayerId);
                     }
-                    else
-                    if (0.5f <= pos.x && pos.x <= 2.1 && 2.1 <= pos.y && pos.y <= 3.2 && SuddenAddTeamGreen.GetBool())
+                    else if (0.5f <= pos.x && pos.x <= 2.1 && 2.1 <= pos.y && pos.y <= 3.2 && SuddenAddTeamGreen.GetBool())
                     {
                         TeamRed.Remove(pc.PlayerId);
                         TeamBlue.Remove(pc.PlayerId);
@@ -550,8 +547,7 @@ namespace TownOfHost.Modules
                             TeamGreen.Add(pc.PlayerId);
                         TeamPurple.Remove(pc.PlayerId);
                     }
-                    else
-                    if (-2.9 <= pos.x && pos.x <= -1.1 && 2.2 <= pos.y && pos.y <= 3.0 && SuddenAddTeamPurple.GetBool())
+                    else if (-2.9 <= pos.x && pos.x <= -1.1 && 2.2 <= pos.y && pos.y <= 3.0 && SuddenAddTeamPurple.GetBool())
                     {
                         TeamRed.Remove(pc.PlayerId);
                         TeamBlue.Remove(pc.PlayerId);

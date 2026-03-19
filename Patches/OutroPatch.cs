@@ -146,6 +146,8 @@ namespace TownOfHost
 
             Camouflage.PlayerSkins.Clear();
             Statistics.Update();
+            CheckGetNomalAchievement.OnGameEnd();
+            Achievements.UpdateAchievement();
         }
     }
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]

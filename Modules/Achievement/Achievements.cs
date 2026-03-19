@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
 using Hazel;
 using TownOfHost.Attributes;
 using TownOfHost.Roles.Core;
@@ -54,7 +55,10 @@ class Achievements
                 case 1:
                     UpdateStatesAchievement.Add(achievement, addstate);
                     break;
-
+                case 2:
+                    if (achievement.IsCompleted) return;
+                    GameCompleteAchievement.Add(achievement);
+                    break;
             }
             return;
         }
@@ -89,7 +93,7 @@ class Achievements
                 case 1: text = text.RemoveDeltext("<[^>]*?>", "???"); break;
                 case 2: text = text.RemoveDeltext("<").RemoveDeltext(">"); break;
             }
-            if (key == "Constraint" && text.StartsWith("-")) text = $"<i>{text}</i>";
+            if (key == "Constraint" && text.StartsWith("-") && 0 < changetextflug) text = $"<i>{text}</i>";
             return text;
         }
         return "";
@@ -183,7 +187,7 @@ public class Achievement
         {
             Logger.Error($"{this.id}({role}-{id})が重複してます", "Achievement");
         }
-        NomalAchievement.achievements.Add(id, this);
+        NomalAchievement.achievements.Add(this.id, this);
         if (!NomalAchievement.typeachievement.TryAdd(type, [this]))
         {
             var list = NomalAchievement.typeachievement[type];

@@ -16,7 +16,6 @@ using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Ghost;
 using TownOfHost.Patches;
-using TownOfHost.Roles.Impostor;
 
 namespace TownOfHost
 {
@@ -255,6 +254,7 @@ namespace TownOfHost
 
             // ゲーム終了
             GameManager.Instance.RpcEndGame(reason, false);
+            CheckGetNomalAchievement.CallEndGame(reason);
         }
         private static void SetRoleSummaryText(CustomRpcSender sender = null)
         {

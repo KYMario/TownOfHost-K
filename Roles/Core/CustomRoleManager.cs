@@ -348,6 +348,7 @@ public static class CustomRoleManager
             appearanceKiller.ResetKillCooldown();
         UtilsOption.SyncAllSettings();
         UtilsNotifyRoles.NotifyRoles();
+        CheckGetNomalAchievement.OnMurderPlayer(info);
         //サブロールは表示めんどいしながいから省略★
         if (PlayerState.GetByPlayerId(appearanceTarget.PlayerId).DeathReason != CustomDeathReason.Guess && !GameStates.CalledMeeting)
         {
