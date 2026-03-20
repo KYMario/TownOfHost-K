@@ -146,6 +146,7 @@
 "CandleLighter","Candle Lighter","キャンドルライター",
 "Express","Express","エクスプレス"
 "Observer","Observer","観察者"
+"Analyzer","Analyzer","アナライザー"
 "#CrewmateName"
 
 "# ニュートラル役職"
@@ -438,6 +439,7 @@
 "ExpressInfo","Let's run around comfortably","気持ちよく駆け回ろう",
 "MerlinInfo","Make it work","アサシンに気づかれる事無く、上手くやり通せ。"
 "ObserverInfo","I'm keeping an eye on you.","見張ってるで...!"
+"AnalyzerInfo","","さぁて...今どんな感じかな?"
 "#CrewmateInfo"
 
 "# ニュートラル役職"
@@ -688,6 +690,7 @@
 "ExpressInfoLong","It is just fast.","ただ足が速い。",
 "MerlinInfoLong","Combination role with <#ff1919>assassin</color>. \n\nThe names of Imposters and Egoists appear in red. Loses when Assassin guesses himself in \n\n Assassin meeting.","<#ff1919>アサシン</color>とのコンビネーション役職。\n\nインポスター、エゴイストの名前が赤く見える。\n\nアサシン会議でアサシンに自身を推測されると負ける。"
 "ObserverInfoLong","Voting for someone in a meeting marks them as a “monitored target.” When a monitored target dies, a kill flash occurs for everyone.","会議で誰かに投票する事で投票相手を「監視対象」にする。\n監視対象が死亡した時、全員にキルフラッシュが発生する。"
+"AnalyzerInfoLong","","一定タスクを完了させた後に、陣営毎に指定されているベントに入ることで、\n会議開始時に、その陣営の生存人数を確認することができる。\nマッドメイトはクルーとしてカウントされ、生存カウントに含まれない役職はカウントされない。\n陣営事の指定ベントは色付き矢印で表示されている。(<#ff1919>Ⓘ</color>:インポスター <#8cffff>Ⓒ</color>:クルー <#cccccc>Ⓝ</color>:第三陣営)"
 "#CrewmateInfoLong"
 
 "# ニュートラル役職"
@@ -1613,6 +1616,8 @@
 "MerlinCantSeeNeutralColor","Neutral NameColor Gray","名前の色をグレーに統一する"
 "MerlinHasTask","Merlin Hastask","マーリンがタスクを持つか"
 "MerlinCanSeeMadmate","Can See Madmates","マッドメイトも見える"
+"AnalyzerTurnMax","Turn Maximum","1ターンでの使用可能回数"
+"AnalyzerUseto","Can Use to %roleTypes%","%roleTypes%の残り人数を調べられる"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""
@@ -2000,6 +2005,8 @@
 "Inspector.InfoTeam","{0} was {1}","{0}は{1}だった。"
 "Inspector.InfoRoom","{0} on {1}.","{0}は{1}で死亡した。"
 "Inspector.Title","【===== Inspector Search =====】","【===== 捜査結果 =====】"
+"Analyzer_MeetingText","{0} was {1}players...","{0}陣営は残り{1}人いるようだ。"
+"Analyzer_MeetingTitle","【===== Analysis =====】","【===== 解析結果 =====】"
 
 "OnePlayer","the first person","一人目"
 "TowPlayer","second person","二人目"
@@ -2193,6 +2200,7 @@
 "WolfBoy_LowerText","Kill {1} a total of {0} times.","合計{0}回{1}をキルせよ"
 "EvilBlender_SabotageLowerAlive","<#ff1919>!!Poison Gas Detected!!\n!!<#ffffff>Reach {1} within {0}</color> seconds!!</color>","<#ff1919>!!毒ガス発生中!!\n!!<#ffffff>{0}</color>秒以内に{1}へ行け!!</color>"
 "EvilBlender_SabotageLower","<#ff1919>!!Poison Gas Detected!!<#ffffff>{0}</color></color>","<#ff1919>!!毒ガス発生中!!<#ffffff>({0}s)</color></color>"
+"Analyzer_Ability","vent → UseAbility","ベント → 陣営の残り人数を確認"
 
 "## かくれんぼ設定"
 "HideAndSeekOptions","Hide and Seek Settings","かくれんぼの設定","躲猫猫设置","躲貓貓設定","Настройки Пряток","Configurações do Esconde-Esconde",""

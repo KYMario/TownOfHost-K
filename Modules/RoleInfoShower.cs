@@ -382,7 +382,7 @@ class RoleInfoShower
                                         var title = "";
                                         var constraint = "";
                                         var color = "";
-                                        //if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
+                                        if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
                                         switch (achievement.Difficulty)
                                         {
                                             case 0: mark += "◎"; color = "<#674020>"; break;
@@ -488,7 +488,7 @@ class RoleInfoShower
                                         var title = "";
                                         var constraint = "";
                                         var color = "";
-                                        //if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
+                                        if (achievement.IsHidden && achievement.IsCompleted is false && (50 > (d.c / d.a))) continue;
                                         switch (achievement.Difficulty)
                                         {
                                             case 0: mark += "◎"; color = "<#674020>"; break;

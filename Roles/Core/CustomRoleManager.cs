@@ -899,6 +899,7 @@ public enum CustomRoles
     Satellite,
     Merlin,
     //DEBUG only Crewmate
+    Analyzer,
     //Neutral
     Arsonist,
     Egoist,
