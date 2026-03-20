@@ -56,7 +56,7 @@ namespace TownOfHost
             var text = __instance.freeChatField.textArea.text;
             if (ChatHistory.Count == 0 || ChatHistory[^1] != text) ChatHistory.Add(text);
             ChatControllerUpdatePatch.CurrentHistorySelection = ChatHistory.Count;
-            string[] args = text.ToLower().Split(' ');
+            string[] args = text/*.ToLower()*/.Split(' ');
             string subArgs = "";
             var canceled = false;
             var cancelVal = "";
@@ -1255,12 +1255,14 @@ namespace TownOfHost
                 SendMessage(GetString("Error.CommandFailed"), player.PlayerId);
             }
             if (args[0] != "/cmd" || args.Length <= 1) return;//cmdが無い場合は処理をしない
-            args = args.Skip(1).ToArray();
 
             if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
+
+            /*
+            args = text.ToLower().Split(' ');*/
+            args = args.Skip(1).ToArray();
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
-            args = text.ToLower().Split(' ');
             canceled = true;
             switch (args[0])
             {
