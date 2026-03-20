@@ -1,6 +1,7 @@
 using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using UnityEngine;
 
 namespace TownOfHost.Roles.Neutral
 {
@@ -91,6 +92,7 @@ namespace TownOfHost.Roles.Neutral
             {
                 var target = PlayerCatch.GetPlayerById(ReamoteTargetId);
                 if (!target.IsAlive()) return true;
+                if (30 <= Vector2.Distance(Player.GetTruePosition(), target.GetTruePosition())) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
                 if (OptionKillAnimation.GetBool())
                 {
                     _ = new LateTask(() =>

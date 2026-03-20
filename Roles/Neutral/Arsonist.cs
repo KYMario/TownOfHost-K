@@ -301,10 +301,12 @@ public sealed class Arsonist : RoleBase, IKiller, IUsePhantomButton
     {
         if (GameStates.IsInGame && IsDouseDone(Player) && Optionfire.GetBool())
         {
+            var i = 0;
             foreach (var pc in PlayerCatch.AllAlivePlayerControls)
             {
                 if (pc.PlayerId != Player.PlayerId)
                 {
+                    i++;
                     //生存者は焼殺
                     pc.SetRealKiller(Player);
                     pc.RpcMurderPlayer(pc);
@@ -319,9 +321,20 @@ public sealed class Arsonist : RoleBase, IKiller, IUsePhantomButton
             {
                 CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
             }
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (10 <= i) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             return;
         }
         ResetCooldown = true;
         AdjustKillCooldown = true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

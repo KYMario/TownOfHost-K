@@ -94,6 +94,8 @@ namespace TownOfHost
                     return false;
             }
         }
+        public static bool IsCriticalSabotage(this SystemTypes system) =>
+        system is SystemTypes.Laboratory or SystemTypes.HeliSabotage or SystemTypes.Reactor or SystemTypes.LifeSupp;
 
         public static SystemTypes GetCriticalSabotageSystemType() => (MapNames)Main.NormalOptions.MapId switch
         {

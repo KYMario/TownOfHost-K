@@ -344,7 +344,7 @@ namespace TownOfHost
                                     || (role is CustomRoles.ProgressKiller && ProgressKiller.ProgressWorkhorseseen)
                                     || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                     {
-                                        TargetMark.Append($"<#0000ff>lue>♦</color>");
+                                        TargetMark.Append($"<#0000ff>♦</color>");
                                     }
                                 }
                             }
@@ -709,7 +709,7 @@ namespace TownOfHost
                                     || (role is CustomRoles.ProgressKiller && ProgressKiller.ProgressWorkhorseseen)
                                     || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                     {
-                                        TargetMark.Append($"<#0000ff>lue>♦</color>");
+                                        TargetMark.Append($"<#0000ff>♦</color>");
                                     }
                                 }
                             }

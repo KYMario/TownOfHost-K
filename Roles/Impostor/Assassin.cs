@@ -481,7 +481,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     }
     public override CustomRoles TellResults(PlayerControl player) => AddRole?.TellResults(player) ?? CustomRoles.NotAssigned;
     public override RoleTypes? AfterMeetingRole => AddRole?.AfterMeetingRole ?? null;
-    public override void CheckWinner() => AddRole?.CheckWinner();
+    public override void CheckWinner(GameOverReason reason) => AddRole?.CheckWinner(reason);
 
 
     bool IImpostor.CanBeLastImpostor => AddRole is IImpostor impostor ? impostor.CanBeLastImpostor : true;

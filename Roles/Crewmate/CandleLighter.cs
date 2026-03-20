@@ -31,6 +31,7 @@ public sealed class CandleLighter : RoleBase
         endVision = OptionTaskEndVision.GetFloat();
         countStartTime = OptionCountStartTime.GetInt();
         endVisionTime = OptionTaskEndVisionTime.GetInt();
+        IsSent = true;
     }
 
     private static OptionItem OptionTaskStartVision;
@@ -54,7 +55,7 @@ public sealed class CandleLighter : RoleBase
 
     private float visionTimer;
     private int lastProcessedSecond;
-
+    private bool IsSent;
     private static void SetupOptionItem()
     {
         OptionTaskStartVision = FloatOptionItem.Create(RoleInfo, 10, OptionName.CandleLighterStartVision, new(0.5f, 5f, 0.1f), 2.0f, false)
@@ -131,5 +132,17 @@ public sealed class CandleLighter : RoleBase
                 }
             }
         }
+        else if (IsSent is false)
+        {
+            IsSent = true;
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        }
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

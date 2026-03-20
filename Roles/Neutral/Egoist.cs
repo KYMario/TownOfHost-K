@@ -95,11 +95,19 @@ public sealed class Egoist : RoleBase, ISidekickable, ILNKiller, ISchrodingerCat
         {
             CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Egoist);
             CustomWinnerHolder.NeutralWinnerIds.Add(__egoist.Player.PlayerId);
+            Achievements.RpcCompleteAchievement(__egoist.Player.PlayerId, 0, achievements[0]);
         }
     }
     public bool CanMakeSidekick() => CanCreateSideKick;
     public void ApplySchrodingerCatOptions(IGameOptions option)
     {
         option.SetVision(true);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, l1);
     }
 }

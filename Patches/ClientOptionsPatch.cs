@@ -30,6 +30,7 @@ namespace TownOfHost
         private static ClientActionItem FpsLimitRemoval;
         private static ClientActionItem AutoSaveScreenShot;
         private static ClientActionItem PreloadMapAssets;
+        public static OptionsMenuBehaviour Instance;
 
         public static void Postfix(OptionsMenuBehaviour __instance)
         {

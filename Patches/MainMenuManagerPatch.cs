@@ -26,6 +26,7 @@ namespace TownOfHost
         private static SimpleButton gitHubButton;
         private static SimpleButton TwitterXButton;
         private static SimpleButton TOHkBOTButton;
+        private static SimpleButton RoleInfoButton;
         //private static SimpleButton VersionChangeButton;
         private static SimpleButton betaversionchange;
         public static TextMeshPro Statistics_TMP;
@@ -37,6 +38,20 @@ namespace TownOfHost
         public static void StartPostfix(MainMenuManager __instance)
         {
             SimpleButton.SetBase(__instance.quitButton);
+            if (SimpleButton.IsNullOrDestroyed(RoleInfoButton))
+            {
+                RoleInfoButton = CreateButton(
+                    "RoleInfoButton",
+                    new(2.4f, 1, 1f),
+                    new Color32(51, 156, 126, byte.MaxValue),
+                    new Color32(103, 224, 190, byte.MaxValue),
+                    () =>
+                    {
+                        RoleInfoShower.CreateMenu(__instance);
+                    },
+                    "Role/Achivement"
+                );
+            }
             //Discordボタンを生成
             if (SimpleButton.IsNullOrDestroyed(discordButton))
             {
@@ -351,8 +366,8 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
-            if (Statistics_TMP.gameObject != null)
-                Statistics_TMP.gameObject.SetActive(false);
+            if (Statistics_TMP?.gameObject != null)
+                Statistics_TMP?.gameObject.SetActive(false);
             if (Statistics_ScrollStuff?.gameObject != null)
                 Statistics_ScrollStuff?.gameObject.SetActive(false);
 
@@ -369,6 +384,7 @@ namespace TownOfHost
                 _ = new LateTask(() => TMP.SetText(text), 0.05f, "Set", true);
                 if (text == "") warning.SetActive(false);
             }
+            OptionsMenuBehaviourStartPatch.Instance = null;
         }
         [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]
         public static void ResetScreenPostfix()
@@ -381,7 +397,12 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
+            if (Statistics_TMP != null)
+                Statistics_TMP?.gameObject.SetActive(false);
+            if (Statistics_ScrollStuff != null)
+                Statistics_ScrollStuff?.gameObject.SetActive(false);
             CreateStreameMenu.CloseMenu();
+            OptionsMenuBehaviourStartPatch.Instance = null;
         }
         public static void DestroyButton()
         {

@@ -5,6 +5,7 @@ using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
+using System.Linq;
 
 namespace TownOfHost.Roles.Neutral
 {
@@ -145,6 +146,7 @@ namespace TownOfHost.Roles.Neutral
             }
             CanSideKick = false;
             SendRPC();
+            if (target.Is(CustomRoleTypes.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, Jackal.achievements[1]);
             Player.RpcProtectedMurderPlayer(target);
             target.RpcProtectedMurderPlayer(Player);
             target.RpcProtectedMurderPlayer(target);

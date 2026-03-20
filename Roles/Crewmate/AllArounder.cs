@@ -1,11 +1,10 @@
-using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using AmongUs.GameOptions;
 using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Modules.ChatManager;
-using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Impostor;
@@ -51,6 +50,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         RMadmate = RandomMadmate.GetInt();
 
         SkillLimit = OptionSkillLimit.GetInt();
+        Experienced = new();
     }
     #region Kill
     public override void OnMurderPlayerAsTarget(MurderInfo info)
@@ -265,7 +265,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         if ((CanBeKilledBy(target.GetCustomRole()) && !AlienTairo) || (target.IsLovers() && OptionMeetingSheriffCanKillLovers.GetBool()) || (target.Is(CustomRoles.Amanojaku) && OptionMeetingSheriffCanKillNeutrals.GetBool()))
         {
             state = PlayerState.GetByPlayerId(target.PlayerId);
-            target.RpcExileV2();
+            target.RpcExileV3();
             state.DeathReason = CustomDeathReason.Kill;
             state.SetDead();
 
@@ -287,7 +287,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
             if (target != PlayerControl.LocalPlayer) Player.RpcMeetingKill(target);
             return;
         }
-        Player.RpcExileV2();
+        Player.RpcExileV3();
         MyState.DeathReason = target.Is(CustomRoles.Tairou) && Tairou.TairoDeathReason ? CustomDeathReason.Counter :
                             target.Is(CustomRoles.Alien) && Alien.TairoDeathReason ? CustomDeathReason.Counter :
                             (target.Is(CustomRoles.JackalAlien) && JackalAlien.TairoDeathReason ? CustomDeathReason.Counter :
@@ -445,6 +445,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         {
             if (CustomWinnerHolder.WinnerTeam is CustomWinner.Impostor)
             {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
                 return true;
             }
             else if (CustomWinnerHolder.WinnerTeam is CustomWinner.Crewmate)
@@ -464,6 +465,11 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         }
 
         return false;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (4 <= Experienced.Count) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        if (10 <= Experienced.Count) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
     }
     #endregion
     #region Add/Set
@@ -556,7 +562,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
         }
 
         SetNowRoleRPC();
-
+        if (Experienced.Contains(NowRole) is false) Experienced.Add(NowRole);
         hasTasks = () => (NowRole is NowMode.Madmate or NowMode.Opportunist) ? HasTask.ForRecompute : HasTask.True;
     }
 
@@ -613,6 +619,7 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
     private int SkillLimit;
     public int UsedSkillCount;
     int TMTask;
+    List<NowMode> Experienced;
     enum OptionName
     {
         AllArounderRandomBait, BaitReportDelay, BaitMaxDelay,
@@ -695,4 +702,15 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
     }
 
     #endregion
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        var l2 = new Achievement(RoleInfo, 2, 1, 0, 1, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, l2);
+    }
 }

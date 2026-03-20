@@ -166,7 +166,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
     }
     public void UseTellAbility(byte votedForId)
     {
-        int chance = IRandom.Instance.Next(1, 101);
+        int chance = IRandom.Instance.Next(0, 101);
         var target = PlayerCatch.GetPlayerById(votedForId);
         if (!target.IsAlive()) return;
         if (GameTell.TryGetValue(votedForId, out var telledrole) && OptionDontChengeGame.GetBool())
@@ -179,7 +179,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
         }
         count++;
         MeetingUsedcount++;
-        if (chance < collect)
+        if (chance < collect && collect is not 0)
         {
             Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}(成功)", "PonkotuTeller");
             var FtR = target.GetTellResults(Player); //結果を変更するかチェック

@@ -129,7 +129,7 @@ class TaskBattle
                                 t2 += PlayerCatch.GetPlayerById(id).GetPlayerTaskState().CompletedTasksCount;
                         }
                     }
-                    Mark.Append($"<#ffff00>ellow>({t2}/{t1})</color>");
+                    Mark.Append($"<#ffff00>({t2}/{t1})</color>");
                 }
                 if (TaskBattleShowFastestPlayer.GetBool())
                 {
@@ -154,7 +154,7 @@ class TaskBattle
         else
         {
             if (TaskBattelCanSeeOtherPlayer.GetBool())
-                Mark.Append($"<#ffff00>ellow>({target.GetPlayerTaskState().CompletedTasksCount}/{target.GetPlayerTaskState().AllTasksCount})</color>");
+                Mark.Append($"<#ffff00>({target.GetPlayerTaskState().CompletedTasksCount}/{target.GetPlayerTaskState().AllTasksCount})</color>");
         }
     }
 
@@ -304,45 +304,45 @@ class TaskBattle
                 }
             }
             else
-            if (!TaskBattle.TaskBattleTeamWinType.GetBool())
-            {
-                int TaskPlayerB = PlayerCatch.AlivePlayersCount(CountTypes.TaskPlayer);
-                bool win = TaskPlayerB <= 1;
-                if (TaskBattle.IsTaskBattleTeamMode)
+                if (!TaskBattle.TaskBattleTeamWinType.GetBool())
                 {
-                    foreach (var pc in PlayerCatch.AllPlayerControls)
+                    int TaskPlayerB = PlayerCatch.AlivePlayersCount(CountTypes.TaskPlayer);
+                    bool win = TaskPlayerB <= 1;
+                    if (TaskBattle.IsTaskBattleTeamMode)
                     {
-                        if (pc == null) continue;
-                        if (pc.AllTasksCompleted())
-                            win = true;
+                        foreach (var pc in PlayerCatch.AllPlayerControls)
+                        {
+                            if (pc == null) continue;
+                            if (pc.AllTasksCompleted())
+                                win = true;
+                        }
                     }
-                }
-                if (win)
-                {
-                    reason = GameOverReason.CrewmatesByTask;
-                    CustomWinnerHolder.ResetAndSetWinner(CustomWinner.TaskPlayerB);
-                    foreach (var pc in PlayerCatch.AllAlivePlayerControls)
-                        CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
-                }
-                else return false; //勝利条件未達成
-            }
-            else
-            {
-                foreach (var t in TaskBattle.TaskBattleTeams.Values)
-                {
-                    if (t == null) continue;
-                    var task = 0;
-                    foreach (var id in t)
-                        task += PlayerState.GetByPlayerId(id).taskState.CompletedTasksCount;
-                    if (TaskBattle.TaskBattleTeamWinTaskc.GetFloat() <= task)
+                    if (win)
                     {
                         reason = GameOverReason.CrewmatesByTask;
                         CustomWinnerHolder.ResetAndSetWinner(CustomWinner.TaskPlayerB);
+                        foreach (var pc in PlayerCatch.AllAlivePlayerControls)
+                            CustomWinnerHolder.WinnerIds.Add(pc.PlayerId);
+                    }
+                    else return false; //勝利条件未達成
+                }
+                else
+                {
+                    foreach (var t in TaskBattle.TaskBattleTeams.Values)
+                    {
+                        if (t == null) continue;
+                        var task = 0;
                         foreach (var id in t)
-                            CustomWinnerHolder.WinnerIds.Add(id);
+                            task += PlayerState.GetByPlayerId(id).taskState.CompletedTasksCount;
+                        if (TaskBattle.TaskBattleTeamWinTaskc.GetFloat() <= task)
+                        {
+                            reason = GameOverReason.CrewmatesByTask;
+                            CustomWinnerHolder.ResetAndSetWinner(CustomWinner.TaskPlayerB);
+                            foreach (var id in t)
+                                CustomWinnerHolder.WinnerIds.Add(id);
+                        }
                     }
                 }
-            }
 
             return true;
         }

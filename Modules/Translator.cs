@@ -14,6 +14,7 @@ namespace TownOfHost
     public static class Translator
     {
         public static Dictionary<string, Dictionary<int, string>> translateMaps;
+        public static Dictionary<string, Dictionary<int, string>> achievementMaps;
         public const string LANGUAGE_FOLDER_NAME = "Language";
 
         [PluginModuleInitializer]
@@ -21,6 +22,7 @@ namespace TownOfHost
         {
             Logger.Info("Language Dictionary Initialize...", "Translator");
             LoadLangs();
+            LoadAchievementLangs();
             Logger.Info("Language Dictionary Initialize Finished", "Translator");
         }
         public static void LoadLangs()

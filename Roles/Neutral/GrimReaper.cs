@@ -153,8 +153,11 @@ namespace TownOfHost.Roles.Neutral
             var Grim = Player;
             if (target.IsAlive() && Player.IsAlive())
             {
-                CustomRoleManager.OnCheckMurder(Grim, target, target, target, true, true, Killpower: 2, deathReason: CustomDeathReason.Grim);
-                if (!isButton && Grim.IsAlive()) RPC.PlaySoundRPC(Grim.PlayerId, Sounds.KillSound);
+                if (CustomRoleManager.OnCheckMurder(Grim, target, target, target, true, true, Killpower: 2, deathReason: CustomDeathReason.Grim))
+                {
+                    if (!isButton && Grim.IsAlive()) RPC.PlaySoundRPC(Grim.PlayerId, Sounds.KillSound);
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
+                }
             }
         }
         public override bool CancelReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target, ref DontReportreson reportreson)

@@ -108,12 +108,12 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
             return true;
         }
         else
-        if (Team == TeamType.None)
-        {
-            info.CanKill = false;
-            ChangeTeamOnKill(killer);
-            return false;
-        }
+            if (Team == TeamType.None)
+            {
+                info.CanKill = false;
+                ChangeTeamOnKill(killer);
+                return false;
+            }
         return true;
     }
     /// <summary>
@@ -215,22 +215,26 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
     {
         bool? won = Team switch
         {
-            TeamType.None => CustomWinnerHolder.WinnerTeam == CustomWinner.Crewmate && CanWinTheCrewmateBeforeChange,
-            TeamType.Mad => CustomWinnerHolder.WinnerTeam == CustomWinner.Impostor,
-            TeamType.Crew => CustomWinnerHolder.WinnerTeam == CustomWinner.Crewmate,
-            TeamType.Jackal => CustomWinnerHolder.WinnerTeam == CustomWinner.Jackal,
-            TeamType.Egoist => CustomWinnerHolder.WinnerTeam == CustomWinner.Egoist,
-            TeamType.CountKiller => CustomWinnerHolder.WinnerTeam == CustomWinner.CountKiller,
-            TeamType.Remotekiller => CustomWinnerHolder.WinnerTeam == CustomWinner.Remotekiller,
-            TeamType.DoppelGanger => CustomWinnerHolder.WinnerTeam == CustomWinner.DoppelGanger,
-            TeamType.MilkyWay => CustomWinnerHolder.WinnerTeam == CustomWinner.MilkyWay,
-            TeamType.Betrayer => CustomWinnerHolder.WinnerTeam == CustomWinner.MadBetrayer,
+            TeamType.None => CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate) && CanWinTheCrewmateBeforeChange,
+            TeamType.Mad => CustomWinnerHolder.winners.Contains(CustomWinner.Impostor),
+            TeamType.Crew => CustomWinnerHolder.winners.Contains(CustomWinner.Crewmate),
+            TeamType.Jackal => CustomWinnerHolder.winners.Contains(CustomWinner.Jackal),
+            TeamType.Egoist => CustomWinnerHolder.winners.Contains(CustomWinner.Egoist),
+            TeamType.CountKiller => CustomWinnerHolder.winners.Contains(CustomWinner.CountKiller),
+            TeamType.Remotekiller => CustomWinnerHolder.winners.Contains(CustomWinner.Remotekiller),
+            TeamType.DoppelGanger => CustomWinnerHolder.winners.Contains(CustomWinner.DoppelGanger),
+            TeamType.MilkyWay => CustomWinnerHolder.winners.Contains(CustomWinner.MilkyWay),
+            TeamType.Betrayer => CustomWinnerHolder.winners.Contains(CustomWinner.MadBetrayer),
             _ => null,
         };
         if (!won.HasValue)
         {
             logger.Warn($"不明な猫の勝利チェック: {Team}");
             return false;
+        }
+        if (won.Value && Player.IsAlive())
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         }
         return won.Value;
     }
@@ -276,5 +280,23 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
             return UtilsRoleText.GetRoleColor(CustomRoles.Crewmate);
         }
         return color.Value;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (reason is GameOverReason.ImpostorsBySabotage && Team is TeamType.Mad
+            && Main.SabotageType is SystemTypes.Reactor or SystemTypes.Laboratory
+            && CustomWinnerHolder.winners.Contains(CustomWinner.Impostor))
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+        }
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp = new Achievement(RoleInfo, 1, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp);
     }
 }

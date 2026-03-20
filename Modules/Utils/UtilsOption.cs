@@ -194,15 +194,15 @@ namespace TownOfHost
                         if (opt.Name is "RoleAssigningAlgorithm" or "LimitMeetingTime" or "LowerLimitVotingTime")
                             sb.Append($"\n▶{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
                         else
-                        if (opt.Name is "KillFlashDuration" or "DefaultShapeshiftCooldown" or "DefaultShapeshiftDuration" or "DefaultEngineerCooldown" or "DefaultEngineerInVentMaxTime")
-                            sb.Append($"\n◇{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
-                        else
-                        if (opt.Name is "KickModClient" or "KickPlayerFriendCodeNotExist" or "ApplyDenyNameList" or "ApplyBanList")
-                            sb.Append($"\n◆{opt.GetName(true)}\n");
-                        else if (opt.Name is "TaskBattleSet" or "ONspecialMode" or "ExperimentalMode" or "MadmateOption" or "GhostRoleOptions"
-                                or "MapModification" or "TaskOption" or "Sabotage" or "RandomMapsMode" or "GhostOptions" or "MeetingAndVoteOpt" or "DevicesOption" or "ConvenientOptions")
-                            sb.Append($"\n■{opt.GetName(false)}\n");
-                        else sb.Append($"\n・{opt.GetName(true)}\n");
+                            if (opt.Name is "KillFlashDuration" or "DefaultShapeshiftCooldown" or "DefaultShapeshiftDuration" or "DefaultEngineerCooldown" or "DefaultEngineerInVentMaxTime")
+                                sb.Append($"\n◇{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
+                            else
+                                if (opt.Name is "KickModClient" or "KickPlayerFriendCodeNotExist" or "ApplyDenyNameList" or "ApplyBanList")
+                                    sb.Append($"\n◆{opt.GetName(true)}\n");
+                                else if (opt.Name is "TaskBattleSet" or "ONspecialMode" or "ExperimentalMode" or "MadmateOption" or "GhostRoleOptions"
+                                        or "MapModification" or "TaskOption" or "Sabotage" or "RandomMapsMode" or "GhostOptions" or "MeetingAndVoteOpt" or "DevicesOption" or "ConvenientOptions")
+                                    sb.Append($"\n■{opt.GetName(false)}\n");
+                                else sb.Append($"\n・{opt.GetName(true)}\n");
                         ShowChildrenSettings(opt, ref sb, 1, getbool: true);
                         CheckPageChange(PlayerId, sb);
                     }
@@ -878,10 +878,10 @@ namespace TownOfHost
     #region  Option
     public static class UtilsOption
     {
-        public static string GetFrom(SimpleRoleInfo info) => GetFrom(info.From, info.RoleName);
-        public static string GetFrom(From from, CustomRoles role = CustomRoles.NotAssigned)
+        public static string GetFrom(SimpleRoleInfo info, bool isblock = true) => GetFrom(info.From, info.RoleName, isblock);
+        public static string GetFrom(From from, CustomRoles role = CustomRoles.NotAssigned, bool isblock = true)
         {
-            string Fromtext = "<#000000>From:</color>";
+            string Fromtext = $"<#{(isblock ? "000000" : "ffffff")}>From:</color>";
             switch (from)
             {
                 case From.None: Fromtext = ""; break;

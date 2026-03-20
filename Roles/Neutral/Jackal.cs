@@ -1,3 +1,4 @@
+using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
 using TownOfHost.Modules;
@@ -129,6 +130,7 @@ namespace TownOfHost.Roles.Neutral
             }
             CanSideKick = false;
             SendRPC();
+            if (target.Is(CustomRoleTypes.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             Player.RpcProtectedMurderPlayer(target);
             target.RpcProtectedMurderPlayer(Player);
             target.RpcProtectedMurderPlayer(target);
@@ -153,13 +155,11 @@ namespace TownOfHost.Roles.Neutral
             if (isForHud) return GetString("PhantomButtonSideKick");
             return $"<size=50%>{GetString("PhantomButtonSideKick")}</size>";
         }
-
         public void SendRPC()
         {
             using var sender = CreateSender();
             sender.Writer.Write(CanSideKick);
         }
-
         public override void ReceiveRPC(MessageReader reader)
         {
             CanSideKick = reader.ReadBoolean();

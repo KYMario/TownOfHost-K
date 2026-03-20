@@ -47,7 +47,7 @@ public sealed class BorderKiller : RoleBase, IImpostor
     public float CalculateKillCooldown() => OptionKillCoolDown.GetFloat();
     public override string GetProgressText(bool comms = false, bool GameLog = false) => $"({MyState.GetKillCount(false)}/{OptionMissionKillcount.GetInt()})";
 
-    public override void CheckWinner()
+    public override void CheckWinner(GameOverReason reason)
     {
         //目標キルカウント ＞ 現在のキルカウント
         if (OptionMissionKillcount.GetInt() > MyState.GetKillCount(false) && Player.IsWinner(CustomWinner.Impostor))

@@ -6,7 +6,6 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
-using HarmonyLib;
 using Hazel;
 
 namespace TownOfHost.Roles.Neutral;
@@ -293,6 +292,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         }
 
         var giftrole = roles[IRandom.Instance.Next(roles.Count)];
+        if (giftrole.IsDebuffAddon()) Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[2]);
         target.RpcSetCustomRole(giftrole);
         Logger.Info($"{Player.Data.GetLogPlayerName()}:gift=>{target.Data.GetLogPlayerName()}({giftrole})", "SantaClaus");
         _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("SantaGiftAddonMessage"), UtilsRoleText.GetRoleColorAndtext(giftrole)), target.PlayerId), 5f, "SantaGiftMeg", true);
@@ -333,5 +333,21 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
 
             EntotuVentPos = pos;
         }
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], giftpresent);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], giftpresent);
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 50, 0, 2);
+        var l1 = new Achievement(RoleInfo, 2, 10, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
+        achievements.Add(2, l1);
     }
 }

@@ -260,10 +260,10 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
                 winner = CustomWinner.Impostor;//マッドメイトは追加勝利的な判定?
             }
             else
-            if (Targetrole.IsCrewmate())
-            {
-                winner = CustomWinner.Crewmate;
-            }
+                if (Targetrole.IsCrewmate())
+                {
+                    winner = CustomWinner.Crewmate;
+                }
             if (Targetrole is CustomRoles.JackalAlien or CustomRoles.Jackaldoll or CustomRoles.JackalMafia)
             {
                 winner = CustomWinner.Jackal;

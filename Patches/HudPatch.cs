@@ -447,12 +447,12 @@ namespace TownOfHost
                 Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(targetlover), "♥"));
             }
             else
-            if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
-            || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
-            || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seer.Is(CustomRoles.OneLove)))
-            {
-                Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
-            }
+                if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
+                || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
+                || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seer.Is(CustomRoles.OneLove)))
+                {
+                    Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
+                }
 
             if (target.Is(CustomRoles.Connecting) && PlayerControl.LocalPlayer.Is(CustomRoles.Connecting)
             && !target.Is(CustomRoles.WolfBoy) && !PlayerControl.LocalPlayer.Is(CustomRoles.WolfBoy))
@@ -470,23 +470,23 @@ namespace TownOfHost
                 //プログレスキラー
                 if (seer.Is(CustomRoles.ProgressKiller) && target.Is(CustomRoles.Workhorse) && ProgressKiller.ProgressWorkhorseseen)
                 {
-                    Mark.Append($"<#0000ff>lue>♦</color>");
+                    Mark.Append($"<#0000ff>♦</color>");
                 }
                 //エーリアン
                 if ((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<#0000ff>lue>♦</color>");
+                        Mark.Append($"<#0000ff>♦</color>");
                     }
                 if ((seerRole as JackalAlien)?.mode == Alien.AlienMode.ProgressKiller == true && JackalAlien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<#0000ff>lue>♦</color>");
+                        Mark.Append($"<#0000ff>♦</color>");
                     }
                 if ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<#0000ff>lue>♦</color>");
+                        Mark.Append($"<#0000ff>♦</color>");
                     }
                 //seer役職が対象のSuffix
                 Suffix.Append(seerRole?.GetSuffix(seer, target));
@@ -620,16 +620,16 @@ namespace TownOfHost
                     desc += $"<size=70%>{inforoleinfo?.Desc()}";
                 }
                 else
-                if (inforole.IsVanilla() && inforole is not CustomRoles.GuardianAngel)
-                {
-                    text += $"<size=100%>{inforoleinfo.Description.Blurb}" + "\n\n</size>";
-                    desc += $"<size=70%>{inforoleinfo.Description.Description}";
-                }
-                else
-                {
-                    text += "<size=100%>" + GetString($"{inforole}Info") + "\n\n</size>";
-                    desc += "<size=70%>" + GetString($"{inforole}InfoLong");
-                }
+                    if (inforole.IsVanilla() && inforole is not CustomRoles.GuardianAngel)
+                    {
+                        text += $"<size=100%>{inforoleinfo.Description.Blurb}" + "\n\n</size>";
+                        desc += $"<size=70%>{inforoleinfo.Description.Description}";
+                    }
+                    else
+                    {
+                        text += "<size=100%>" + GetString($"{inforole}Info") + "\n\n</size>";
+                        desc += "<size=70%>" + GetString($"{inforole}InfoLong");
+                    }
                 desc = desc.RemoveDeltext("、", "、\n");
                 desc = desc.RemoveDeltext("。", "。\n");
 

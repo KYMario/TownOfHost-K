@@ -157,6 +157,7 @@ namespace TownOfHost
         private static TextMeshPro roleSummary;
         private static SimpleButton showHideButton;
         public static SimpleButton ScreenShotbutton;
+        static StringBuilder sb;
 
         public static void Postfix(EndGameManager __instance)
         {
@@ -202,11 +203,21 @@ namespace TownOfHost
                 () =>
                 {
                     var setToActive = !roleSummary.gameObject.activeSelf;
+                    if (setToActive is false)
+                    {
+                        if (roleSummary.text.Contains("★") is false)
+                        {
+                            roleSummary.text = Achievements.GetAllAchievement();
+                            showHideButton.Label.text = GetString("HideResults");
+                            return;
+                        }
+                    }
+                    roleSummary.text = sb.ToString();
                     roleSummary.gameObject.SetActive(setToActive);
                     Main.ShowResults.Value = setToActive;
-                    showHideButton.Label.text = GetString(setToActive ? "HideResults" : "ShowResults");
+                    showHideButton.Label.text = GetString(setToActive ? "ShowAward" : "ShowResults");
                 },
-                GetString(showInitially ? "HideResults" : "ShowResults"))
+                GetString(showInitially ? "ShowAward" : "ShowResults"))
             {
                 Scale = new(1.5f, 0.5f),
                 FontSize = 2f,
@@ -228,7 +239,7 @@ namespace TownOfHost
                 FontSize = 2f,
             };
 
-            StringBuilder sb = new();
+            sb = new();
             if (TaskBattle.IsRTAMode && Options.CurrentGameMode == CustomGameMode.TaskBattle)
             {
                 sb.Append(UtilsGameLog.GetRTAText());

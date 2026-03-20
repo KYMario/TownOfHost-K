@@ -21,7 +21,8 @@ public sealed class Analyzer : RoleBase
             24400,
             SetupOptionItem,
             "NC",
-            "#9da6ee"
+            "#9da6ee",
+            (3, 10)
         );
     public Analyzer(PlayerControl player)
     : base(

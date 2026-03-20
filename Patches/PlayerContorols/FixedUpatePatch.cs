@@ -328,9 +328,9 @@ namespace TownOfHost
                             Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(targetlover), "♥"));
                         }
                         else
-                        if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seerisonelover)
-                        || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seerisonelover)
-                        || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seerisonelover))
+                            if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seerisonelover)
+                            || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seerisonelover)
+                            || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seerisonelover))
                         {
                             Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
                         }
@@ -361,7 +361,7 @@ namespace TownOfHost
                                 || ((seerRole is ProgressKiller) && ProgressKiller.ProgressWorkhorseseen)
                                 || ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen))
                                 {
-                                    Mark.Append($"<#0000ff>lue>♦</color>");
+                                    Mark.Append($"<#0000ff>♦</color>");
                                 }
                             }
                             Suffix.Append(seerRole?.GetSuffix(seer, target));

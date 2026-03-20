@@ -577,7 +577,8 @@ namespace TownOfHost
                     .EndRpc();
                 sender.SendMessage();
             }
-            else Camouflage.RpcSetSkin(player);
+            else if (Camouflage.ventplayr.Contains(player.PlayerId))
+                Camouflage.RpcSetSkin(player, force: null);
 
             return true;
 

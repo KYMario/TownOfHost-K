@@ -50,6 +50,7 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
     )
     {
         EatCount = 0;
+        turneat = 0;
         staticEatedPlayers.Clear();
         Viperkilledplayers = new();
 
@@ -78,6 +79,7 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
     Dictionary<byte, Vector2> DiePlayerPos = new();//死体の矢印
     Dictionary<byte, float> Viperkilledplayers = new();//とける予定の死体
     static List<byte> staticEatedPlayers = new();//食べられたおにく
+    int turneat;
     enum OptionName
     {
         VultrueCanSeeKillFlushTaskCount,
@@ -114,9 +116,11 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
             Logger.Info($"{EatCount + 1}個目のお食事", "Vulture");
             reason = DontReportreson.Eat;
             EatCount++;
+            turneat++;
             staticEatedPlayers.Add(target.PlayerId);
             DiePlayerPos.Where(poss => poss.Key == target.PlayerId).Do(poss => GetArrow.Remove(Player.PlayerId, poss.Value));
             RpcEatPlayer(target.PlayerId);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
 
             //勝利の確認
             if (OptWinEatcount <= EatCount)
@@ -145,6 +149,10 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
                     .EndRpc();
                 sender.EndMessage();
                 sender.SendMessage();
+            }
+            if (turneat > 2)
+            {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
 
             return true;
@@ -300,5 +308,14 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
         EatPlayer,
         AddDiePlayerPos,
         ClearDiePlayerPos
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 10, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

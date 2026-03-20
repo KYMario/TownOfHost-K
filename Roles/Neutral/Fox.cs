@@ -57,6 +57,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
         canwin3player = OptCanWin3players.GetBool();
 
         Guard = 0;
+        IsNoticed = false;
         checktaskwinflag = false;
         FoxRoom = null;
     }
@@ -72,6 +73,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
     static OptionItem OptCanWin3players; static bool canwin3player;
     bool checktaskwinflag;
     SystemTypes? FoxRoom;
+    bool IsNoticed;
     enum OptionName
     {
         FoxGiveGuardTaskcount,
@@ -169,6 +171,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
             }
             MeetingVoteManager.ResetVoteManager(Player.PlayerId);
             Player.RpcMeetingKill(Player);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
         }
         return CustomRoles.NotAssigned;
     }
@@ -220,6 +223,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
     {
         if (!Player.IsAlive() || FoxRoom == null) return "";
 
+        IsNoticed = true;
         var chance = IRandom.Instance.Next(100);
         if (chance > 95) return $"<color=#d288ee>{GetString("FoxAliveMeg1")}</color>";
         if (chance > 90) return $"<color=#d288ee>{GetString("FoxAliveMeg2")}</color>";
@@ -254,6 +258,8 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
             {
                 CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
                 reason = GameOverReason.ImpostorsByKill;
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (IsNoticed is false && 5 <= UtilsGameLog.day) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
                 return true;
             }
         }
@@ -291,5 +297,16 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
         Guard = reader.ReadInt32();
         var roomId = reader.ReadByte();
         FoxRoom = roomId == byte.MaxValue ? null : (SystemTypes)roomId;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var n2 = new Achievement(RoleInfo, 1, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, n2);
+        achievements.Add(2, sp1);
     }
 }

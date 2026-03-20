@@ -340,10 +340,11 @@ public sealed class PlagueDoctor : RoleBase, IKiller
         if (comprete)
         {
             InfectActive = false;
-
+            var i = 0;
             foreach (var player in PlayerCatch.AllAlivePlayerControls)
             {
                 if (player.Is(CustomRoles.PlagueDoctor)) continue;
+                i++;
                 player.SetRealKiller(null);
                 player.RpcMurderPlayer(player);
                 var state = PlayerState.GetByPlayerId(player.PlayerId);
@@ -355,6 +356,8 @@ public sealed class PlagueDoctor : RoleBase, IKiller
                 if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.PlagueDoctor, plagueDoctor.PlayerId, true))
                 {
                     CustomWinnerHolder.NeutralWinnerIds.Add(plagueDoctor.PlayerId);
+                    Achievements.RpcCompleteAchievement(plagueDoctor.PlayerId, 0, achievements[0]);
+                    if (10 <= i) Achievements.RpcCompleteAchievement(plagueDoctor.PlayerId, 0, achievements[1]);
                 }
             }
         }
@@ -363,5 +366,14 @@ public sealed class PlagueDoctor : RoleBase, IKiller
     {
         text = "Plague_Kill";
         return true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

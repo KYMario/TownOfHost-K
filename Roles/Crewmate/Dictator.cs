@@ -28,7 +28,9 @@ public sealed class Dictator : RoleBase, ISelfVoter
         RoleInfo,
         player
     )
-    { }
+    {
+        IsUseTurn = false;
+    }
     enum OptionName
     {
         DictatorSelfVote
@@ -37,6 +39,7 @@ public sealed class Dictator : RoleBase, ISelfVoter
     {
         OptionSelfVote = BooleanOptionItem.Create(RoleInfo, 10, OptionName.DictatorSelfVote, false, false);
     }
+    bool IsUseTurn;
     static OptionItem OptionSelfVote;
     bool ISelfVoter.CanUseVoted() => false;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
@@ -57,6 +60,7 @@ public sealed class Dictator : RoleBase, ISelfVoter
                     MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.Suicide, Player.PlayerId);
                     PlayerCatch.GetPlayerById(votedForId).SetRealKiller(Player);
                     MeetingVoteManager.Instance.ClearAndExile(Player.PlayerId, votedForId);
+                    CheckAchievement(votedForId);
                     UtilsGameLog.AddGameLog($"Dictator", string.Format(GetString("Dictator.log"), UtilsName.GetPlayerColor(Player)));
                 }
                 SetMode(Player, status is VoteStatus.Self);
@@ -86,6 +90,7 @@ public sealed class Dictator : RoleBase, ISelfVoter
         }
         if (!OptionSelfVote.GetBool())
         {
+            CheckAchievement(sourceVotedForId);
             MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.Suicide, Player.PlayerId);
             PlayerCatch.GetPlayerById(sourceVotedForId).SetRealKiller(Player);
             MeetingVoteManager.Instance.ClearAndExile(Player.PlayerId, sourceVotedForId);

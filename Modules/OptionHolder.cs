@@ -1266,6 +1266,8 @@ namespace TownOfHost
                 case CustomGameMode.HideAndSeek: tag = CustomOptionTags.HideAndSeek; break;
                 case CustomGameMode.MurderMystery: tag = CustomOptionTags.MurderMystery; break;
             }
+            CustomRoleManager.SortCustomRoles.Add(role);
+            if (role.GetCombination() is not CustomRoles.NotAssigned) CustomRoleManager.SortCustomRoles.Add(role.GetCombination());
             var spawnOption = IntegerOptionItem.Create(id, combination == CombinationRoles.None ? role.ToString() : combination.ToString(), new(0, 100, 10), 0, tab, false, from)
                     .SetColorcode(UtilsRoleText.GetRoleColorCode(role))
                     .SetColor(UtilsRoleText.GetRoleColor(role, true))

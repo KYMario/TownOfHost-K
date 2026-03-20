@@ -245,6 +245,9 @@ namespace TownOfHost
                         or CustomRoles.AsistingAngel
                         ;
         }
+        public static bool IsStartedRole(this CustomRoles role) => role is not
+            CustomRoles.NotAssigned and not CustomRoles.TaskPlayerB and not CustomRoles.HASFox and not
+             CustomRoles.HASTroll and not CustomRoles.MMArcher;
         static System.Collections.Generic.List<CustomRoles> GiveGuesserrole =
         [
             CustomRoles.Cakeshop,

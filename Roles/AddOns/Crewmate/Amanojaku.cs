@@ -65,7 +65,6 @@ namespace TownOfHost.Roles.AddOns.Common
                 //LNかつオポが付与されているなら処理しない
                 if (pc.Is(CustomRoles.LastNeutral) && LastNeutral.GiveOpportunist.GetBool()) return false;
 
-                Logger.Info("aaa", "aaa");
                 var Canwin = false;
                 foreach (var data in OptionRole.Where(d => d.Value.GetBool()))
                 {

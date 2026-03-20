@@ -112,6 +112,9 @@ public sealed class Warlock : RoleBase, IImpostor
                 }
                 Player.SetKillCooldown();
                 CursedPlayer = null;
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
+                if (killTarget.Is(CustomRoleTypes.Impostor))
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
         }
         else
@@ -135,5 +138,14 @@ public sealed class Warlock : RoleBase, IImpostor
     {
         text = "Warlock_Ability";
         return true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 2, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

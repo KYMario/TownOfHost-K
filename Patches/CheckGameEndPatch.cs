@@ -149,7 +149,7 @@ namespace TownOfHost
                 foreach (var player in PlayerCatch.AllPlayerControls)
                 {
                     var roleclass = player.GetRoleClass();
-                    roleclass?.CheckWinner();
+                    roleclass?.CheckWinner(reason);
                 }
                 Twins.CheckAddWin();
 
