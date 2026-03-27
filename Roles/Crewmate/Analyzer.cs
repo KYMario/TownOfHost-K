@@ -16,13 +16,14 @@ public sealed class Analyzer : RoleBase
             typeof(Analyzer),
             player => new Analyzer(player),
             CustomRoles.Analyzer,
-            () => RoleTypes.Engineer,
+            () => OptionAwakening.GetBool() ? RoleTypes.Crewmate : RoleTypes.Engineer,
             CustomRoleTypes.Crewmate,
             24400,
             SetupOptionItem,
             "NC",
             "#9da6ee",
-            (3, 10)
+            (3, 10),
+            introSound: () => GetIntroSound(RoleTypes.Crewmate)
         );
     public Analyzer(PlayerControl player)
     : base(
@@ -87,7 +88,7 @@ public sealed class Analyzer : RoleBase
         AURoleOptions.EngineerCooldown = Isfall ? 3 : Cooldown;
         AURoleOptions.EngineerInVentMaxTime = 1;
     }
-    public override RoleTypes? AfterMeetingRole => Maximum <= Usecount ? RoleTypes.Crewmate : RoleTypes.Engineer;
+    public override RoleTypes? AfterMeetingRole => !Awakened || Maximum <= Usecount ? RoleTypes.Crewmate : RoleTypes.Engineer;
     public override bool OnEnterVent(PlayerPhysics physics, int ventId)
     {
         var oldfall = Isfall;
@@ -339,6 +340,8 @@ public sealed class Analyzer : RoleBase
             if (Awakened == false)
                 if (!Utils.RoleSendList.Contains(Player.PlayerId))
                     Utils.RoleSendList.Add(Player.PlayerId);
+            if (Player.IsAlive() && !Awakened)
+                Player.RpcSetRoleDesync(RoleTypes.Crewmate, Player.GetClientId(), SendOption.None);
             Awakened = true;
         }
         return true;
