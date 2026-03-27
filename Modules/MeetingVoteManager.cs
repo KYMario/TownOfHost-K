@@ -59,6 +59,24 @@ public class MeetingVoteManager
         allVotes[voter] = vote;
         EndMeeting(false, true);
     }
+
+    /// <summary>
+    /// 今までに行われた投票をすべて削除し，特定の投票先に1票投じられた状態で会議を強制終了します
+    /// </summary>
+    /// <param name="voters">投票を行う人</param>
+    /// <param name="exiled">追放先</param>
+    public void ClearAndExiles(byte[] voters, byte exiled)
+    {
+        logger.Info($"ClearAndExilesにより、{GetVoteName(exiled)} が追放されます");
+        ClearVotes();
+        foreach (var voter in voters)
+        {
+            var vote = new VoteData(voter);
+            vote.DoVote(exiled, 1);
+            allVotes[voter] = vote;
+        }
+        EndMeeting(false, true);
+    }
     public void ClearAndEndMeeting()
     {
         logger.Info($"削除して会議を終了します");

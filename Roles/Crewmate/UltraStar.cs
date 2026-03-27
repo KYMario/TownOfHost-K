@@ -137,6 +137,7 @@ public sealed class UltraStar : RoleBase, IKiller
         if (cankill)
         {
             KillCool = Optionkillcool.GetFloat() + 1.5f;
+            Player.RpcResetAbilityCooldown(Sync: true);
         }
     }
     public override void OnReportDeadBody(PlayerControl _, NetworkedPlayerInfo __) => Player.RpcSetColor((byte)PlayerColor);
