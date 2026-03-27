@@ -124,7 +124,7 @@ namespace TownOfHost
                 CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.GrimReaper, byte.MaxValue);
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.GrimReaper);
                 CustomWinnerHolder.NeutralWinnerIds.Add(PlayerCatch.AllPlayerControls
-                    .Where(pc => pc.GetCustomRole() is CustomRoles.GrimReaper).FirstOrDefault()?.PlayerId ?? byte.MaxValue);
+                    .FirstOrDefault(pc => pc.GetCustomRole() is CustomRoles.GrimReaper)?.PlayerId ?? byte.MaxValue);
             }
             else if (Imp == 0 && Jackal == 0 && Remotekiller == 0 && MadBetrayer == 0 && FoxAndCrew <= MilkyWay)
             {

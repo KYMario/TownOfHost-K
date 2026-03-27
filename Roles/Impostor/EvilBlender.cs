@@ -125,6 +125,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         UseingId = Player.PlayerId;
         IsUsed = true;
         Main.IsActiveSabotage = true;
+        Main.SabotageType = SystemTypes.Hallway;
         Main.LastSab = Player.PlayerId;
         Main.SabotageActivetimer = 0;
         limittimer = 0;
@@ -244,6 +245,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
             limittimer = 0;
             IsLeft = false;
             Main.IsActiveSabotage = false;
+            Main.SabotageType = SystemTypes.Hallway;
             Main.LastSab = byte.MaxValue;
             Main.SabotageActivetimer = 0;
             UtilsNotifyRoles.NotifyRoles();
