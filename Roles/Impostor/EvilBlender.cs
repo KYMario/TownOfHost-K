@@ -274,7 +274,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
         if (seen != seer) return "";
         if (isForMeeting) return "";
 
-        if (UseingId == Player.PlayerId)
+        if (UseingId == (Player?.PlayerId ?? 100))
         {
             if (PlayerRooms.TryGetValue(seer.PlayerId, out var room))
                 return string.Format(GetString("EvilBlender_SabotageLowerAlive"), (int)(SabotageLimittime - limittimer), GetString($"{room}"));
