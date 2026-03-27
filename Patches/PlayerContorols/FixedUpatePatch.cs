@@ -180,12 +180,12 @@ namespace TownOfHost
                     SuddenDeathMode.UpdateTeam();
                     StreamerInfo.FixUpdate();
                 }
-                Utils.ApplySuffix(__instance);
+                //Utils.ApplySuffix(__instance);
             }
             //LocalPlayer専用
             if (__instance.AmOwner)
             {
-                timer = (timer + 1) % 10;
+                timer = (timer + 1) % 15;
 
                 {
                     OcCoVentUsePatch.timer += Time.fixedDeltaTime;
@@ -331,9 +331,9 @@ namespace TownOfHost
                             if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seerisonelover)
                             || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seerisonelover)
                             || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seerisonelover))
-                        {
-                            Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
-                        }
+                            {
+                                Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
+                            }
 
                         if ((target.Is(CustomRoles.Connecting) && seerSubrole.Contains(CustomRoles.Connecting)
                         && !target.Is(CustomRoles.WolfBoy) && seerRole is not WolfBoy)
