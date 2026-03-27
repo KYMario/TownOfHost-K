@@ -236,6 +236,10 @@ class StandardIntro
                 DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
                 DestroyableSingleton<HudManager>.Instance.HideGameLoader();
                 UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+
+                var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None);
+                sender.Write((int)RPC.ModSystem.ShowIntro);
+                AmongUsClient.Instance.FinishRpcImmediately(sender);
             }, 0.2f, "", true);
 
             new LateTask(() =>

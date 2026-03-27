@@ -230,25 +230,6 @@ namespace TownOfHost
             }
             else Main.LagTime = 0.23f;
             Logger.Info($"region:{ServerManager.Instance?.CurrentRegion?.Name ?? "???"} ,LagTime : {Main.LagTime} ,({AmongUsClient.Instance.Ping}) PlayerCount : {PlayerCatch.AllPlayerControls.Count()}", "OnGamStarted Fin");
-
-            if (PlayerControl.LocalPlayer.PlayerId != 0)
-            {
-                new LateTask(() =>
-                {
-                    if (GameStates.IsInGame) return;
-
-                    Logger.Warn("イントロの強制表示", "OnStartGame");
-                    PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc =>
-                    {
-                        PlayerNameColor.Set(pc);
-                        if (pc != null) pc.Data.Disconnected = false;
-                    }));
-                    PlayerControl.LocalPlayer.StopAllCoroutines();
-                    HudManagerCoShowIntroPatch.Cancel = false;
-                    DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
-                    DestroyableSingleton<HudManager>.Instance.HideGameLoader();
-                }, 2.5f, "", true);
-            }
         }
     }
     [HarmonyPatch(typeof(RoleManager), nameof(RoleManager.SelectRoles))]

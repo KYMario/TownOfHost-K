@@ -588,13 +588,16 @@ namespace TownOfHost
             SyncMuderMystery,
             SyncNextSpawn,
             SyncOneLove,
-            SyncVoteResult
+            SyncVoteResult,
+            ShowIntro
         }
         public static void RpcModSetting(MessageReader reader)
         {
             if (AmongUsClient.Instance.AmHost) return;
 
-            switch ((ModSystem)reader.ReadInt32())
+            var type = (ModSystem)reader.ReadInt32();
+            Logger.Info($"Rpc-SyncModSystem-{type}", "RPC");
+            switch (type)
             {
                 case ModSystem.SyncDeviceTimer:
                     DisableDevice.ReadMessage(reader);
@@ -650,6 +653,23 @@ namespace TownOfHost
                         var result = new MeetingVoteManager.VoteResult(exileId, Istie);
                         AntiBlackout.voteresult = result;
                         MeetingVoteManager.Voteresult = reader.ReadString();
+                    }
+                    break;
+                case ModSystem.ShowIntro:
+                    if (PlayerControl.LocalPlayer.PlayerId != 0)
+                    {
+                        if (GameStates.IsInGame) return;
+
+                        Logger.Warn("イントロの強制表示", "OnStartGame");
+                        PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc =>
+                        {
+                            PlayerNameColor.Set(pc);
+                            if (pc != null) pc.Data.Disconnected = false;
+                        }));
+                        PlayerControl.LocalPlayer.StopAllCoroutines();
+                        HudManagerCoShowIntroPatch.Cancel = false;
+                        DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
+                        DestroyableSingleton<HudManager>.Instance.HideGameLoader();
                     }
                     break;
             }
