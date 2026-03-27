@@ -765,6 +765,7 @@ namespace TownOfHost
                 CustomRoles.LastNeutral => AddonInfo(role),
                 CustomRoles.Workhorse => AddonInfo(role, from: From.TownOfHost),
                 CustomRoles.OneWolf => AddonInfo(role),
+                CustomRoles.Stack => AddonInfo(role),
                 //幽霊役職
                 CustomRoles.Ghostbuttoner => AddonInfo(role),
                 CustomRoles.GhostNoiseSender => AddonInfo(role),
@@ -777,7 +778,7 @@ namespace TownOfHost
                 CustomRoles.DemonicVenter => AddonInfo(role),
                 CustomRoles.AsistingAngel => AddonInfo(role),
 
-                _ => $"{role.GetRoleInfo()?.ConfigId ?? -100}...?(´・ω・｀)"
+                _ => $"{role}-{role.GetRoleInfo()?.ConfigId ?? -100}...?(´・ω・｀)"
             });
         }
         public static string AddonInfo(CustomRoles role, string Mark = "", From from = From.None, PlayerControl pc = null)
