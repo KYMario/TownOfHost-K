@@ -665,7 +665,7 @@
 "ComebackerInfoLong","By entering a vent, you can teleport to the location of the last vent you entered.","ベントに入ることで、前回入ったベントの位置へテレポートできる。\nベントに入ったのが初回の時はテレポートされない。\nベント内に潜ることや通常のベント移動はできない。"
 "WhiteHackerInfoLong","After completing the required number of tasks, you can place a GPS tracker on someone. By voting for someone other than yourself during a meeting, you can place a GPS tracker on the player you voted for, allowing you to pinpoint their final location on the next turn. However, if the target dies, their location cannot be determined.","既定のタスク数を完了すると、誰かにGPSを仕掛けることができるようになる。\n会議で自身以外の誰かに投票することで投票先のプレイヤーにGPSを仕掛けることができ、次ターンの最終位置を特定することができる。\nただし、対象が死亡すると特定できない。"
 "WolfBoyInfoLong","Crew team but can kill everyone. However, he is treated as an imposter by other role.","クルー陣営だがすべてのプレイヤーを殺すことができる。\nただし、大狼をキルしようとすると返り討ちにあってしまう。\nタスクがない。\n他の役職(インポスターを除く)からは狼少年ではなくインポスターとして処理される。"
-"FortunerInfoLong","","最初はクルーだと自覚する。\nタスクを全て完了させた後、フォーチュナーであることが分かる。\nキルボタンを使用した相手にランダムで属性を付与する。"
+"FortunerInfoLong","","タスクを全て完了させた後、キルボタンが使用できるようになる。\nキルボタンを使用した相手に次会議開始時、ランダムで属性を付与する。\n\n'1回使用で属性を1つ渡す'がON、または上書きする付与属性が未設定の場合は、ランダムで1つ。\nそれ以外の場合は設定した属性が全て付与される。"
 "NiceAddoerInfoLong","Add-ons are granted","ナイスアドナー専用で属性が付与される。\n同じ属性が重複している場合、重複した属性はナイスアドナーの設定が優先される。"
 "InSenderInfoLong","When killed, he reports his own corpse.","キルされた時に、自身が自身の死体をレポートする。"
 "StaffInfoLong","If a match ends with a staff member not completing a task while the staff member is still alive, the staff member cannot win as a crewmate team. \n staff tasks are not included in the crewmate tasks.","スタッフが生存中にタスクを終えていない状態で試合が終了した場合、スタッフはクルーメイト陣営として勝利することができない。\nスタッフのタスクはクルーメイトのタスクには含まれない。\nベントを使用する事ができる。(設定あり)"
@@ -1618,6 +1618,8 @@
 "MerlinCanSeeMadmate","Can See Madmates","マッドメイトも見える"
 "AnalyzerTurnMax","Turn Maximum","1ターンでの使用可能回数"
 "AnalyzerUseto","Can Use to %roleTypes%","%roleTypes%の残り人数を調べられる"
+"FortunerAddGiveAddon","Set AddGiveAddoneList","付与する属性を上書きする"
+"FortunerGiveOne","One use Give oneaddon","1回使用で属性を1つ渡す"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""

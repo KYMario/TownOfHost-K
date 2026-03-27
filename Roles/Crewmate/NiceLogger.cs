@@ -61,7 +61,7 @@ namespace TownOfHost.Roles.Crewmate
         public override void OnDestroy() => NiceLoggers.Clear();
         private static void SetupOptionItem()
         {
-            OptionCoolTime = FloatOptionItem.Create(RoleInfo, 10, Option.NiceLoggerCoolTime, new(0f, 60f, 0.5f), 3f, false).SetValueFormat(OptionFormat.Seconds);
+            OptionCoolTime = FloatOptionItem.Create(RoleInfo, 10, Option.NiceLoggerCoolTime, new(0.5f, 60f, 0.5f), 3f, false).SetValueFormat(OptionFormat.Seconds);
         }
         public bool CanUseImpostorVentButton() => false;
         public bool CanUseSabotageButton() => false;

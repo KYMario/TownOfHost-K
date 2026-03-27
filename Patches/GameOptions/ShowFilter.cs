@@ -159,7 +159,7 @@ class ShowFilter
                             }
                         }
                         if (NotAssign.Contains(customrole)) continue;
-                        if (!customrole.IsAddOn())
+                        if (!customrole.IsAddOn() && !(customrole is CustomRoles.Amanojaku))
                         {
                             var roletype = customrole.GetCustomRoleTypes();
                             if (roletype is CustomRoleTypes.Impostor && role.imp is false) continue;
@@ -240,8 +240,9 @@ class ShowFilter
                                 TabGroup.Combinations => data.Key.IsCombinationRole(),
                                 _ => false
                             };
-                            IsActive = (IsActive && data.Key.IsEnable()) || (IsActive && data.Key.IsVanilla())
-                            || (IsActive && (data.Key.GetCombination().IsEnable() || data.Key.IsEnable()));
+                            IsActive = (IsActive && data.Key.IsEnable()) || (IsActive && data.Key.IsVanilla())//配役可能性有 or ばにら
+                            || (IsActive && (data.Key.GetCombination().IsEnable() || data.Key.IsEnable()))//コンビの親が配役可能性有
+                            || (IsActive && data.Key.IsAddOn());//属性
                             if (IsActive && data.Value.Background.color == Color.grey)
                             {
                                 data.Value.GetComponent<PassiveButton>()?.OnClick?.Invoke();
@@ -274,7 +275,8 @@ class ShowFilter
                                 _ => false
                             };
                             IsActive = (IsActive && data.Key.IsEnable()) || (IsActive && data.Key.IsVanilla())
-                            || (IsActive && (data.Key.GetCombination().IsEnable() || data.Key.IsEnable()));
+                            || (IsActive && (data.Key.GetCombination().IsEnable() || data.Key.IsEnable()))
+                            || (IsActive && data.Key.IsAddOn());
                             if (IsActive && data.Value.Background.color == Color.green)
                             {
                                 data.Value.GetComponent<PassiveButton>()?.OnClick?.Invoke();
