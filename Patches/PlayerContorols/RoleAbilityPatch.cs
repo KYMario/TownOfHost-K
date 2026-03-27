@@ -408,7 +408,12 @@ namespace TownOfHost
 
                         foreach (var pc in PlayerCatch.AllPlayerControls)
                         {
-                            if (pc == user || pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue; //本人とホストは別の処理
+                            if (pc == user) continue; //本人とホストは別の処理
+                            if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                            {
+                                __instance.myPlayer.RpcSnapToDesync(pc, pos);
+                                continue;
+                            }
                             Dictionary<int, float> Distance = new();
                             Vector2 position = pc.transform.position;
                             //一番遠いベントを調べて送る
@@ -422,7 +427,7 @@ namespace TownOfHost
                                 .EndRpc()
                                 .EndMessage();
                             sender.SendMessage();
-                            __instance.myPlayer.RpcSnapToForced(pos);
+                            __instance.myPlayer.RpcSnapToDesync(pc, pos);
                         }
                         //多分負荷あれだし、テープで無理やり戻した感じだから参考にしない方がいい、
 
@@ -525,6 +530,7 @@ namespace TownOfHost
             CoEnterVentPatch.VentPlayers.Remove(__instance.myPlayer.PlayerId);
 
             var player = __instance.myPlayer;
+
             if (CoEnterVentPatch.OldOnEnterVent.TryGetValue(player.PlayerId, out var canuse))
             {
                 if (canuse is false)
