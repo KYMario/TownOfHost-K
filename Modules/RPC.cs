@@ -78,6 +78,10 @@ namespace TownOfHost
                 case RpcCalls.StartMeeting:
                     PlayerControl p = PlayerCatch.GetPlayerById(subReader.ReadByte());
                     Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()} => {p?.GetNameWithRole().RemoveHtmlTags() ?? "null"}", "StartMeeting");
+                    if (AmongUsClient.Instance.AmHost is false && p is null)
+                    {
+                        p.GetPlayerState().NumberOfRemainingButtons--;
+                    }
                     break;
                 case RpcCalls.CheckVanish:
                 case RpcCalls.StartVanish:
