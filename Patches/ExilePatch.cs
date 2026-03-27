@@ -157,7 +157,7 @@ namespace TownOfHost
                 }, 0.5f, "Restore IsDead Task");
                 _ = new LateTask(() =>
                 {
-                    if (AntiBlackout.OverrideExiledPlayer() && // 追放対象が上書きされる状態 (上書きされない状態なら実行不要)
+                    if (//AntiBlackout.OverrideExiledPlayer() && // 追放対象が上書きされる状態 (上書きされない状態なら実行不要)
                         exiled != null && //exiledがnullでない
                         exiled.Object != null && //exiled.Objectがnullでない
                     !Iscallassasin)
