@@ -105,7 +105,7 @@ public static class CustomRoleManager
                     }
                 }
                 //守護天使ちゃんの天使チェック
-                if (GuardianAngel.Guarng.ContainsKey(attemptTarget.PlayerId))
+                if (GuardianAngel.GuardianAngelGuarding.ContainsKey(attemptTarget.PlayerId))
                 {
                     GuardreasonNumber = 1;
                     info.GuardPower = 1;
@@ -163,16 +163,22 @@ public static class CustomRoleManager
                         break;
                     case 1: //Guardianangel
                             //死んでる人にはパリーン見せる
+                        var owner = GuardianAngel.GuardianAngelGuarding[attemptTarget.PlayerId].owner;
                         PlayerCatch.AllPlayerControls.Where(pc => pc is not null && !pc.IsAlive())
-                            .Do(pc => attemptKiller.RpcProtectedMurderPlayer(pc, attemptTarget));
+                            .Do(pc =>
+                            {
+                                attemptKiller.RpcProtectedMurderPlayer(pc, attemptTarget);
+                                if (pc.PlayerId == owner) pc.RpcProtectedMurderPlayer();
+                            });
                         GuardianAngel.MeetingNotify |= true;
-                        UtilsGameLog.AddGameLog($"GuardianAngel", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
+                        UtilsGameLog.AddGameLog($"GuardianAngel", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)
+                            + $"({UtilsName.GetPlayerColor(owner)}"));
                         Logger.Info($"{attemptKiller.GetNameWithRole().RemoveHtmlTags()} => {attemptTarget.GetNameWithRole().RemoveHtmlTags()}守護天使ちゃんのガード!", "GuardianAngel");
-                        if (GuardianAngel.Guarng.ContainsKey(attemptTarget.PlayerId))
-                            GuardianAngel.Guarng[attemptTarget.PlayerId] = 999f;
+                        if (GuardianAngel.GuardianAngelGuarding.ContainsKey(attemptTarget.PlayerId))
+                            GuardianAngel.GuardianAngelGuarding[attemptTarget.PlayerId] = (999f, owner);
                         break;
                     case 2://AsistingAngel
-                        UtilsGameLog.AddGameLog($"AsistingAngel", UtilsName.GetPlayerColor(PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.AsistingAngel)).FirstOrDefault())
+                        UtilsGameLog.AddGameLog($"AsistingAngel", UtilsName.GetPlayerColor(PlayerCatch.AllPlayerControls.FirstOrDefault(x => x.Is(CustomRoles.AsistingAngel)))
                         + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
                         break;
                     case 3://Role
