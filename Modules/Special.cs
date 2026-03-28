@@ -78,7 +78,8 @@ static class Event
         {CustomRoles.Vega,() => Tanabata},
         {CustomRoles.SpeedStar , () => Special},
         {CustomRoles.Chameleon , () => Special},
-        {CustomRoles.Fortuner , () => Special},
+        //{CustomRoles.UnFortuner , () => 4 <= DateTime.Now.Month},
+        //{CustomRoles.Fortuner , () => 4 <= DateTime.Now.Month},
         {CustomRoles.Cakeshop , () => NowRoleEvent}
     };
 
@@ -169,7 +170,6 @@ public sealed class SpeedStar : RoleBase, IImpostor, IUsePhantomButton
     {
         Event.OptionLoad.Add("SpeedStar");
         Event.OptionLoad.Add("Chameleon");
-        Event.OptionLoad.Add("Fortuner");
         Event.OptionLoad.Add("Cakeshop");
     }
     public override void ApplyGameOptions(IGameOptions opt) => AURoleOptions.PhantomCooldown = cooldown;
@@ -215,166 +215,6 @@ public sealed class SpeedStar : RoleBase, IImpostor, IUsePhantomButton
         return $"<size=50%>{GetString("PhantomButtonLowertext")}</size>";
     }
     public override string GetAbilityButtonText() => GetString("SpeedStarAbility");
-}
-public sealed class Fortuner : RoleBase, IKiller
-{
-    public static readonly SimpleRoleInfo RoleInfo =
-        SimpleRoleInfo.Create(
-            typeof(Fortuner),
-            player => new Fortuner(player),
-            CustomRoles.Fortuner,
-            () => RoleTypes.Crewmate,
-            CustomRoleTypes.Crewmate,
-            24100,
-            SetUpOptionItem,
-            "fo",
-            "#34f098",
-            (0, 51),
-            true,
-            from: From.Speyrp
-        );
-    public Fortuner(PlayerControl player)
-    : base(
-        RoleInfo,
-        player,
-        () => HasTask.True
-    )
-    {
-        UseCount = OptionUseCount.GetInt();
-        cooldown = OptionCooldown.GetFloat();
-        giveplayerid = new();
-    }
-    List<byte> giveplayerid = new();
-    int UseCount; static OptionItem OptionUseCount;
-    float cooldown; static OptionItem OptionCooldown;
-    public static void SetUpOptionItem()
-    {
-        OptionUseCount = IntegerOptionItem.Create(RoleInfo, 10, GeneralOption.OptionCount, new(1, 50, 1), 2, false);
-        OptionCooldown = FloatOptionItem.Create(RoleInfo, 11, GeneralOption.Cooldown, OptionBaseCoolTime, 30, false);
-        OverrideTasksData.Create(RoleInfo, 12);
-    }
-    public override RoleTypes? AfterMeetingRole => MyTaskState.IsTaskFinished ? RoleTypes.Impostor : RoleTypes.Crewmate;
-    bool IKiller.CanUseSabotageButton() => false;
-    bool IKiller.CanUseImpostorVentButton() => false;
-    bool IKiller.IsKiller => false;
-    bool IKiller.CanUseKillButton() => MyTaskState.IsTaskFinished && UseCount > 0;
-    float IKiller.CalculateKillCooldown() => cooldown;
-    void IKiller.OnCheckMurderAsKiller(MurderInfo info)
-    {
-        giveplayerid.Add(info.AppearanceTarget.PlayerId);
-        Logger.Info($"{info.AppearanceTarget.PlayerId}-{UseCount}", "F<EGTfaAr>or<canoacw>tu<na!>n<ruanor1>er".RemoveHtmlTags());
-        info.DoKill = false;
-        UseCount--;
-        Player.SetKillCooldown(target: info.AppearanceTarget);
-        UtilsNotifyRoles.NotifyRoles();
-        SendRpc();
-    }
-    public override void ApplyGameOptions(IGameOptions opt)
-    {
-        opt.SetVision(false);
-    }
-    public override string GetProgressText(bool comms = false, bool GameLog = false)
-        => MyTaskState.IsTaskFinished ? $"<{RoleInfo.RoleColorCode}> ({UseCount})</color>" : "";
-    public override CustomRoles Misidentify() => MyTaskState.IsTaskFinished ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
-    public override bool OnCompleteTask(uint taskid)
-    {
-        if (Player.IsAlive() && MyTaskState.IsTaskFinished)
-        {
-            Player.RpcSetRoleDesync(RoleTypes.Impostor, Player.GetClientId());
-            _ = new LateTask(() =>
-            {
-                Player.SetKillCooldown();
-                UtilsNotifyRoles.NotifyRoles();
-            }, 0.2f);
-        }
-        return true;
-    }
-    CustomRoles[] givel1addons =
-    {
-        CustomRoles.Lighting,
-        CustomRoles.Moon,
-        CustomRoles.Tiebreaker,
-        CustomRoles.Opener,
-        CustomRoles.Management,
-        CustomRoles.Autopsy
-    };
-    CustomRoles[] givel2addons =
-    {
-        CustomRoles.Autopsy,
-        CustomRoles.Lighting,
-        CustomRoles.Moon,
-        CustomRoles.Tiebreaker,
-        CustomRoles.Opener,
-        CustomRoles.Management,
-        CustomRoles.MagicHand,
-        CustomRoles.Serial
-    };
-    CustomRoles[] givel3addons =
-    {
-        CustomRoles.Autopsy,
-        CustomRoles.Lighting,
-        CustomRoles.Moon,
-        CustomRoles.Guesser,
-        CustomRoles.Tiebreaker,
-        CustomRoles.Opener,
-        CustomRoles.Management,
-        CustomRoles.Speeding,
-        CustomRoles.MagicHand,
-        CustomRoles.Serial,
-        CustomRoles.PlusVote,
-        CustomRoles.Seeing
-    };
-    enum Fortune
-    {
-        GiveLv1Addon = 40,
-        GiveLv2Addon = 75,
-        GiveLv3Addon = 100
-    }
-    public override void OnStartMeeting()
-    {
-        foreach (var id in giveplayerid)
-        {
-            var player = id.GetPlayerControl();
-            var role = CustomRoles.NotAssigned;
-            if (player.IsAlive())
-            {
-                var chance = IRandom.Instance.Next(100);
-                if (chance < (int)Fortune.GiveLv1Addon)
-                {
-                    var roles = givel1addons.Where(role => !player.Is(role)).ToList();
-                    if (roles.Count <= 0) continue;
-                    role = roles[IRandom.Instance.Next(roles.Count)];
-                    player.RpcSetCustomRole(role);
-                }
-                else if (chance < (int)Fortune.GiveLv2Addon)
-                {
-                    var roles = givel2addons.Where(role => !player.Is(role)).ToList();
-                    if (roles.Count <= 0) continue;
-                    role = roles[IRandom.Instance.Next(roles.Count)];
-                    player.RpcSetCustomRole(role);
-                }
-                else
-                {
-                    var roles = givel3addons.Where(role => !player.Is(role)).ToList();
-                    if (roles.Count <= 0) continue;
-                    role = roles[IRandom.Instance.Next(roles.Count)];
-                    player.RpcSetCustomRole(role);
-                }
-            }
-            if (role is not CustomRoles.NotAssigned)
-                _ = new LateTask(() => Utils.SendMessage(string.Format(GetString("For<deador>tu<life>ne_Meg".RemoveHtmlTags()), UtilsRoleText.GetRoleColorAndtext(role)), player.PlayerId), 0.5f, "forsendmeg", null);
-        }
-        giveplayerid.Clear();
-    }
-    void SendRpc()
-    {
-        using var sender = CreateSender();
-        sender.Writer.Write(UseCount);
-    }
-    public override void ReceiveRPC(MessageReader reader)
-    {
-        UseCount = reader.ReadInt32();
-    }
 }
 public sealed class Chameleon : RoleBase, IAdditionalWinner
 {

@@ -317,7 +317,7 @@ namespace TownOfHost
 
                     //第三属性
                     { CustomRoles.Amanojaku,"#005243"},
-                    {CustomRoles.Faction,"#695328"},
+                    {CustomRoles.Faction,"#c6a768"},
                     {CustomRoles.Lovers, "#ff6be4"},
                     {CustomRoles.RedLovers, "#d70035"},
                     {CustomRoles.YellowLovers, "#fac559"},

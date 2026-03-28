@@ -66,6 +66,7 @@
 "ProBowler","ProBowler","プロボーラー"
 "Eraser","Eraser","イレイサー"
 "EvilMaker","EvilMaker","イビルメーカー"
+"UnFortuner","UnFortuner","アンフォーチュナー"
 "QuickKiller","QuickKiller","クイックキラー"
 "BorderKiller","BorderKiller","ボーダーキラー"
 "Ballooner","Ballooner","バルーナー"
@@ -364,6 +365,7 @@
 "AssassinInfo","Who is Merlin?","マーリンは誰だ...?"
 "ArcherInfo","———Pierce through","——————貫け。"
 "EvilBlenderInfo","Chemistry solves everything","化学は裏切らない"
+"UnFortunerInfo","Happiness for Only Impostors","幸せになりたい..."
 "#ImpostorInfo"
 
 "# マッドメイト系役職"
@@ -556,7 +558,7 @@
 "TransparentInfo","hey!! hey!!! plz report!!","ねぇ...なんで気付いてくれないの..."
 "AmnesiaInfo","Where am I? Who am I?","ここはどこ..わたしはだれ...?"
 "InfoPoorInfo","What!?","何もしてないのに壊れたんだけど！"
-"NewsInfo","","臨時ニュースです..."
+"NewsInfo","Breaking news...","臨時ニュースです..."
 "SunglassesInfo","The thing that obstructed my view","我の視界を遮りしモノ"
 
 "## 役職説明ロング"
@@ -615,7 +617,8 @@
 "CharismaStarInfoLong","An imposter that allows any player to assemble to the nearest vent from himself. The \n kill button uses double clicks. The single click determines the member to assemble, while the double click usually kills. Multiple members can be set to gather, and by pressing the disappear button, the members can be gathered to a vent near you. [\n “gather all” setting is turned on, all members can be gathered together if no one has been chosen. When the \n gathering setting is on, if the target player is using a ladder, he/she cannot gather. If a player cannot assemble due to the setting, he/she will self-destruct.","任意のプレイヤーを自身から一番近いベントへ集合させることができるインポスター。\nキルボタンはダブルクリックを使い分ける。シングルクリックでは集合メンバーを決め、ダブルクリックでは通常キルをする。\n集合メンバーは複数人設定することができ、消えるボタンを押すことでそのメンバーを自身付近のベントに集めることができる。\n全員集合できる設定をONにしている時、誰もメンバーを決めていないと全員を集合させることができる。\n集合をかけた時、対象プレイヤーがはしごを使用していると集まることが出来ない。設定により、集まれないプレイヤーは自爆する。",
 "AssassinInfoLong","Combination Role with <#8cc2ff>Merlin</color>. \n Assassin's Conference can be triggered upon death when the \n banishment or the setting “Causing Assassin's Conference outside of banishment” is enabled. \n If you can guess (vote) for Merlin in the Assassin's Conference, the Imposter will win. \n Also, when the setting is enabled, the ability of some roles can be held along with Assassin.","<#8cc2ff>マーリン</color>とのコンビネーション役職。\n\n追放、又は「追放以外でもアサシン会議を起こす」の設定が有効時に死亡時に\nアサシン会議を発生させることができる。\n\nアサシン会議でマーリンに推測(投票)できればインポスターの勝利。\n\nまた、設定有効時にはアサシンと併せて一部の役職の能力を持つこともできる。"
 "ArcherInfoLong","An Impostor who can kill Crewmates using a bow and arrows.\nPress the Phantom button and move in the opposite direction of where you want to fire to shoot an arrow.\nPlayers hit by the arrow die instantly (deathreason: Hit).\nThe arrow disappears when it hits a wall or after a certain amount of time.","弓矢を駆使し、クルーをキルすることができるインポスター。\nファントムボタンを押し、矢を放ちたい方向と逆方向に移動し、\nもう一度ファントムボタンを押すことで矢を放つことができる。\n矢が当たったプレイヤーはその場で死亡する(死因:命中)\n矢は壁に当たるか一定時間経過すると消滅する。"
-"EvilBlenderInfoLong","","1度のみ特殊サボタージュを発動することができるインポスター。\nドア閉め以外のサボタージュが発動されていない時にファントムボタンを押すと\n「毒ガス」をマップ全体に充満させることができる。\n毒ガスが発生した時、生存しているプレイヤーは一定時間以内に指定された部屋へ行かないと死亡する。(死因:窒息)\n毒ガス発生中は緊急ボタンは使用できず、サボタージュも発動できない。"
+"EvilBlenderInfoLong","An Impostor who can activate a special sabotage only once.\nIf no sabotage other than door closing is active, pressing the Phantom button will fill the entire map with Poison Gas.\nWhen the gas is released, all living players must reach the designated room within a certain time or they will die (cause of death: Suffocation).\nWhile Poison Gas is active, the emergency button cannot be used and no sabotages can be triggered.","1度のみ特殊サボタージュを発動することができるインポスター。\nドア閉め以外のサボタージュが発動されていない時にファントムボタンを押すと\n「毒ガス」をマップ全体に充満させることができる。\n毒ガスが発生した時、生存しているプレイヤーは一定時間以内に指定された部屋へ行かないと死亡する。(死因:窒息)\n毒ガス発生中は緊急ボタンは使用できず、サボタージュも発動できない。"
+"UnFortunerInfoLong","An Impostor who can grant attributes.\nThe kill target at the moment the Phantom button is used will receive a random attribute at the start of the next meeting.\n\nIf 'Grant one attribute per use' is ON, or if no overwrite attributes are configured, one random attribute is applied.\nOtherwise, all configured attributes are applied.","属性を付与することのできるインポスター。\nファントムボタンを使用した時のキルターゲットに\n次会議開始時、ランダムで属性を付与する。\n\n'1回使用で属性を1つ渡す'がON、または上書きする付与属性が未設定の場合は、ランダムで1つ。\nそれ以外の場合は設定した属性が全て付与される。"
 "#ImpostorInfoLong"
 
 "# マッドメイト系役職"
@@ -665,7 +668,7 @@
 "ComebackerInfoLong","By entering a vent, you can teleport to the location of the last vent you entered.","ベントに入ることで、前回入ったベントの位置へテレポートできる。\nベントに入ったのが初回の時はテレポートされない。\nベント内に潜ることや通常のベント移動はできない。"
 "WhiteHackerInfoLong","After completing the required number of tasks, you can place a GPS tracker on someone. By voting for someone other than yourself during a meeting, you can place a GPS tracker on the player you voted for, allowing you to pinpoint their final location on the next turn. However, if the target dies, their location cannot be determined.","既定のタスク数を完了すると、誰かにGPSを仕掛けることができるようになる。\n会議で自身以外の誰かに投票することで投票先のプレイヤーにGPSを仕掛けることができ、次ターンの最終位置を特定することができる。\nただし、対象が死亡すると特定できない。"
 "WolfBoyInfoLong","Crew team but can kill everyone. However, he is treated as an imposter by other role.","クルー陣営だがすべてのプレイヤーを殺すことができる。\nただし、大狼をキルしようとすると返り討ちにあってしまう。\nタスクがない。\n他の役職(インポスターを除く)からは狼少年ではなくインポスターとして処理される。"
-"FortunerInfoLong","","タスクを全て完了させた後、キルボタンが使用できるようになる。\nキルボタンを使用した相手に次会議開始時、ランダムで属性を付与する。\n\n'1回使用で属性を1つ渡す'がON、または上書きする付与属性が未設定の場合は、ランダムで1つ。\nそれ以外の場合は設定した属性が全て付与される。"
+"FortunerInfoLong","After completing all tasks, the Kill button becomes usable.\nUsing the Kill button on a target will grant them a random attribute at the start of the next meeting.\n\nIf 'Grant one attribute per use' is ON, or if no overwrite attributes are configured, one random attribute is applied.\nOtherwise, all configured attributes are applied.","タスクを全て完了させた後、キルボタンが使用できるようになる。\nキルボタンを使用した相手に次会議開始時、ランダムで属性を付与する。\n\n'1回使用で属性を1つ渡す'がON、または上書きする付与属性が未設定の場合は、ランダムで1つ。\nそれ以外の場合は設定した属性が全て付与される。"
 "NiceAddoerInfoLong","Add-ons are granted","ナイスアドナー専用で属性が付与される。\n同じ属性が重複している場合、重複した属性はナイスアドナーの設定が優先される。"
 "InSenderInfoLong","When killed, he reports his own corpse.","キルされた時に、自身が自身の死体をレポートする。"
 "StaffInfoLong","If a match ends with a staff member not completing a task while the staff member is still alive, the staff member cannot win as a crewmate team. \n staff tasks are not included in the crewmate tasks.","スタッフが生存中にタスクを終えていない状態で試合が終了した場合、スタッフはクルーメイト陣営として勝利することができない。\nスタッフのタスクはクルーメイトのタスクには含まれない。\nベントを使用する事ができる。(設定あり)"
@@ -690,7 +693,7 @@
 "ExpressInfoLong","It is just fast.","ただ足が速い。",
 "MerlinInfoLong","Combination role with <#ff1919>assassin</color>. \n\nThe names of Imposters and Egoists appear in red. Loses when Assassin guesses himself in \n\n Assassin meeting.","<#ff1919>アサシン</color>とのコンビネーション役職。\n\nインポスター、エゴイストの名前が赤く見える。\n\nアサシン会議でアサシンに自身を推測されると負ける。"
 "ObserverInfoLong","Voting for someone in a meeting marks them as a “monitored target.” When a monitored target dies, a kill flash occurs for everyone.","会議で誰かに投票する事で投票相手を「監視対象」にする。\n監視対象が死亡した時、全員にキルフラッシュが発生する。"
-"AnalyzerInfoLong","","一定タスクを完了させた後に、陣営毎に指定されているベントに入ることで、\n会議開始時に、その陣営の生存人数を確認することができる。\nマッドメイトはクルーとしてカウントされ、生存カウントに含まれない役職はカウントされない。\n陣営事の指定ベントは色付き矢印で表示されている。(<#ff1919>Ⓘ</color>:インポスター <#8cffff>Ⓒ</color>:クルー <#cccccc>Ⓝ</color>:第三陣営)"
+"AnalyzerInfoLong","After completing a certain number of tasks, entering the vent designated for each faction allows you to check the number of surviving players in that faction at the start of the meeting.\nMadmates are counted as Crewmates, and roles that are excluded from the alive count are not counted.\nThe designated vents for each faction are indicated by colored arrows. (<#ff1919>Ⓘ</color>: Impostor <#8cffff>Ⓒ</color>: Crewmate <#cccccc>Ⓝ</color>: Neutral)","一定タスクを完了させた後に、陣営毎に指定されているベントに入ることで、\n会議開始時に、その陣営の生存人数を確認することができる。\nマッドメイトはクルーとしてカウントされ、生存カウントに含まれない役職はカウントされない。\n陣営事の指定ベントは色付き矢印で表示されている。(<#ff1919>Ⓘ</color>:インポスター <#8cffff>Ⓒ</color>:クルー <#cccccc>Ⓝ</color>:第三陣営)"
 "#CrewmateInfoLong"
 
 "# ニュートラル役職"
@@ -1856,6 +1859,7 @@
 "TwinsDiefollow","follow die","片割れが死亡すると後追いする"
 "TwinsAddWin","If his partner wins, he himself wins","片割れが勝利すると自身も追加勝利する"
 "CanSeeFactionMate","Can See Other Faction","徒党が見える"
+"CantKillFaction","Cant Kill Faction(Only DeathReason'Kill')","徒党仲間をキルできない(死因キルのみ影響)"
 "OneWolfImpostorKillMe","Impostor Kill OneWolf Mode","インポスターが一匹狼をキルした時"
 "OneWolfMeCanKillImpostor","OneWolf Kill Impostor Mode","一匹狼がインポスターをキルした時"
 "AssignAddon","Assign Addon","付与するアドオン"
@@ -2290,6 +2294,7 @@
 "QuickKiller_Timer","QuickTime","クイックモード"
 "Archer_AbilityButton","Shot","矢を放つ"
 "EvilBlender_AbilityButton","ReleaseGas","毒ガス発生"
+"Fortuner_AbilityButton","Give","付与"
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""
@@ -2320,7 +2325,7 @@
 "PreloadMapAssets","Preload Map Assets","事前にマップアセットを読み込む"
 "StreamList","HopeList","参加希望者リスト"
 
-"HideSomeFriendCodesInfo","","ロビーにいるクルーのフレンドコード等を非表示にします\n※自身の画面のみ"
+"HideSomeFriendCodesInfo","Hides the friend codes of crew in the lobby \n(from your perspective only)","ロビーにいるクルーのフレンドコード等を非表示にします\n※自身の画面のみ"
 "PreloadMapAssetsInfo","Loads maps on launch / lobby join.\nMay reduce game start loading time.\nRejoin lobby to apply.","ゲーム起動時/ロビー参加時 にマップを読み込みます\nこれによりゲーム開始時のロードが早くなる可能性があります\n※適応にはロビーへの再参加が必要です"
 
 "## ヘルプテキスト"
@@ -2612,9 +2617,9 @@
 "OptionCopy","Copy","オプションをコピー"
 "OptionLoad","Load","オプションをロード"
 "OptionReset","Reset","オプションをリセット"
-"OptionCopyInfo","","バニラの設定 と プリセット をクリップボードにコピーします"
-"OptionLoadInfo","","クリップボードから バニラの設定 と プリセット を読み込みます\n<#ff1919>注意: 現在の選択しているプリセットが上書きされます</color>"
-"OptionResetInfo","","プリセット をリセットします\n<#ff1919>注意: 現在の選択しているプリセットが上書きされます</color>"
+"OptionCopyInfo","Copy VanillaOption and priset to the clipboard","バニラの設定 と プリセット をクリップボードにコピーします"
+"OptionLoadInfo","Load Vanilla settings and presets from the clipboard\n<#ff1919>※selected preset will be overwritten</color>","クリップボードから バニラの設定 と プリセット を読み込みます\n<#ff1919>注意: 現在の選択しているプリセットが上書きされます</color>"
+"OptionResetInfo","Reset Priset\n<#ff1919>(selected preset will be overwritten)</color>","プリセット をリセットします\n<#ff1919>注意: 現在の選択しているプリセットが上書きされます</color>"
 "GameMasterON","GameMaster : ON","GameMaster : ON"
 "voteskip","No one was expelled.(Skip)","誰も追放されなかった(投票スキップ)"
 "votetie","No one was expelled.(Tie)","誰も追放もされなかった(同数投票)"

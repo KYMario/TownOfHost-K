@@ -14,6 +14,7 @@ using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Vanilla;
+using TownOfHost.Roles.AddOns.Neutral;
 
 namespace TownOfHost.Roles.Core;
 
@@ -121,6 +122,10 @@ public static class CustomRoleManager
                         info.GuardPower = CanuseGuards.First().Key;
                         GuardreasonNumber = 0;
                     }
+                }
+                if (info.AttemptKiller.Is(CustomRoles.Faction) && info.AttemptTarget.Is(CustomRoles.Faction) && deathReason is CustomDeathReason.Kill && Faction.CantKillFaction.GetBool())
+                {
+                    info.CanKill = false;
                 }
                 OneWolf.OnCheckMurder(info);
             }
@@ -826,6 +831,7 @@ public enum CustomRoles
     Archer,
     Assassin,
     EvilBlender,
+    UnFortuner,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,

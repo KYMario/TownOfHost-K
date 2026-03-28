@@ -94,6 +94,7 @@ namespace TownOfHost
 
                 if (role.IsGhostRole() || role < CustomRoles.NotAssigned)
                 {
+                    player.ResetKillCooldown();
                     player.SetKillCooldown(delay: true, force: true);
                     player.RpcResetAbilityCooldown();
                     UtilsNotifyRoles.NotifyRoles(ForceLoop: true);

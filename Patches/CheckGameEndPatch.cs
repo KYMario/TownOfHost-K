@@ -82,8 +82,6 @@ namespace TownOfHost
                             }
                             break;
                         default:
-                            // クルーでもインポスター勝利でもない場合のみ。徒党の処理をする
-                            Faction.CheckWin();
                             //ラバー勝利以外の時にラバーをしめt...勝利を剥奪する処理。
                             //どーせ追加なら追加勝利するやろし乗っ取りなら乗っ取りやし。
                             if (CustomWinnerHolder.WinnerTeam.IsLovers())
@@ -152,6 +150,7 @@ namespace TownOfHost
                     roleclass?.CheckWinner(reason);
                 }
                 Twins.CheckAddWin();
+                Faction.CheckWin();
 
                 ShipStatus.Instance.enabled = false;
                 if (CustomWinnerHolder.WinnerTeam != CustomWinner.Crewmate && (reason.Equals(GameOverReason.CrewmatesByTask) || reason.Equals(GameOverReason.CrewmatesByVote)))

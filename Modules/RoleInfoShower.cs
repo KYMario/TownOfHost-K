@@ -370,6 +370,9 @@ class RoleInfoShower
                                         case CustomRoles.SwitchSheriff:
                                             showlist.Add(CustomRoles.Sheriff);
                                             break;
+                                        case CustomRoles.UnFortuner:
+                                            showlist.Add(CustomRoles.Fortuner);
+                                            break;
                                     }
                                     var AllAchievements = Achievement.AllAchievements.Where(x => showlist.Contains(x.Value.role));
                                     var text = "";

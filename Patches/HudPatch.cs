@@ -381,7 +381,8 @@ namespace TownOfHost
                             // キルボタンがバグってもなんかスイッチシェリフのキルボだけ大丈夫なことが多い。
                             if ((roleClass as IKiller)?.OverrideKillButton(out string name) == true && Main.CustomSprite.Value)
                             {
-                                __instance.KillButton.graphic.sprite = CustomButton.Get(name);
+                                __instance.KillButton.ChangeGraphic(CustomButton.Get(name));
+                                //__instance.KillButton.graphic.sprite = CustomButton.Get(name);
                             }
                             else if (MotoKillButton)
                             {

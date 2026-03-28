@@ -9,24 +9,42 @@ class Faction
 {
     public static Dictionary<CustomRoles, OptionItem> OptionRole = new();
     static OptionItem CanSeeFactionMate;
+    public static OptionItem CantKillFaction;
     public static void SetUpOption()
     {
         Options.SetupRoleOptions(19600, TabGroup.Addons, CustomRoles.Faction, new(1, 1, 1));
         CanSeeFactionMate = BooleanOptionItem.Create(19611, "CanSeeFactionMate", false, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction);
+        CantKillFaction = BooleanOptionItem.Create(19613, "CantKillFaction", false, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction);
         ObjectOptionitem.Create(19612, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Assign Option").SetSubRoleOptionItem(CustomRoles.Faction);
 
         var id = 19620;
+        List<CustomRoles> AddWinners = [CustomRoles.Amanojaku];
         foreach (var role in EnumHelper.GetAllValues<CustomRoles>().Where(role => role.IsNeutral()).OrderBy(x => x.GetRoleInfo()?.ConfigId ?? 100000))
         {
-            if (SoloWinOption.AllData.ContainsKey(role))
+            if (SoloWinOption.AllData.ContainsKey(role) is false)
             {
-                var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction).SetEnabled(() => role.IsEnable());
-                option.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", UtilsRoleText.GetRoleColorAndtext(role) } };
+                if (role is CustomRoles.Jackaldoll or CustomRoles.JackalAlien or CustomRoles.JackalMafia) continue;
 
-                if (!OptionRole.TryAdd(role, option))
-                {
-                    Logger.Error($"{role}重複したよ!!!", "Faction");
-                }
+                AddWinners.Add(role);
+                continue;
+            }
+            var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction).SetEnabled(() => role.IsEnable());
+            option.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", UtilsRoleText.GetRoleColorAndtext(role) } };
+
+            if (!OptionRole.TryAdd(role, option))
+            {
+                Logger.Error($"{role}重複したよ!!!", "Faction");
+            }
+        }
+
+        foreach (var role in AddWinners)
+        {
+            var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction).SetEnabled(() => role.IsEnable());
+            option.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", UtilsRoleText.GetRoleColorAndtext(role) } };
+
+            if (!OptionRole.TryAdd(role, option))
+            {
+                Logger.Error($"{role}重複したよ!!!", "Faction");
             }
         }
     }
@@ -43,11 +61,12 @@ class Faction
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Faction);
                 foreach (var player in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.Faction)))
                 {
-                    if (player.IsLovers())
+                    if (player.IsLovers() || player.GetCustomRole() is CustomRoles.Emptiness)
                     {
                         CustomWinnerHolder.CantWinPlayerIds.Add(player.PlayerId);
                         continue;
                     }
+                    CustomWinnerHolder.CantWinPlayerIds.Remove(player.PlayerId);
                     CustomWinnerHolder.WinnerIds.Add(player.PlayerId);
                 }
             }
@@ -86,17 +105,39 @@ class Faction
                     {
                         PlayerState.GetByPlayerId(player.PlayerId).SetSubRole(CustomRoles.Faction);
                         Logger.Info($"役職設定:{player.Data.GetLogPlayerName()} + Faction", "Faction");
+                        continue;
+                    }
+                }
+                if (player.Is(CustomRoles.Amanojaku) && OptionRole.TryGetValue(CustomRoles.Amanojaku, out var amaopt))
+                {
+                    if (amaopt.GetBool())
+                    {
+                        PlayerState.GetByPlayerId(player.PlayerId).SetSubRole(CustomRoles.Faction);
+                        Logger.Info($"役職設定:{player.Data.GetLogPlayerName()} + Faction", "Faction");
+                        continue;
                     }
                 }
             }
+        }
 
-            if (PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.Faction)).Count() is 1)
+        var allfaction = PlayerCatch.AllPlayerControls.Where(player => player.Is(CustomRoles.Faction));
+
+        if (allfaction.Count() is 1)
+        {
+            foreach (var player in allfaction)
             {
-                foreach (var player in PlayerCatch.AllPlayerControls.Where(player => player.Is(CustomRoles.Faction)))
-                {
-                    player.GetPlayerState().RemoveSubRole(CustomRoles.Faction);
-                }
-                Logger.Info("徒党が1人だから削除", "Faction");
+                player.GetPlayerState().RemoveSubRole(CustomRoles.Faction);
+            }
+            Logger.Info("徒党が1人だから削除", "Faction");
+        }
+
+        // 徒党が無事始動した場合、色を付ける
+        foreach (var seer in allfaction)
+        {
+            foreach (var seen in allfaction)
+            {
+                if (seer == seen) continue;
+                NameColorManager.Add(seer.PlayerId, seen.PlayerId, UtilsRoleText.GetRoleColorCode(CustomRoles.Faction));
             }
         }
     }
