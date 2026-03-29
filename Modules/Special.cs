@@ -78,8 +78,8 @@ static class Event
         {CustomRoles.Vega,() => Tanabata},
         {CustomRoles.SpeedStar , () => Special},
         {CustomRoles.Chameleon , () => Special},
-        //{CustomRoles.UnFortuner , () => 4 <= DateTime.Now.Month},
-        //{CustomRoles.Fortuner , () => 4 <= DateTime.Now.Month},
+        {CustomRoles.UnFortuner , () => 4 <= DateTime.Now.Month},
+        {CustomRoles.Fortuner , () => 4 <= DateTime.Now.Month},
         {CustomRoles.Cakeshop , () => NowRoleEvent}
     };
 
