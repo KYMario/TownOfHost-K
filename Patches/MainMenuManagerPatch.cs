@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using TMPro;
@@ -12,6 +11,7 @@ using TownOfHost.Templates;
 using Object = UnityEngine.Object;
 using TownOfHost.Modules;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace TownOfHost
 {
@@ -235,6 +235,8 @@ namespace TownOfHost
                             },
                             "v" + release.TagName.TrimStart('v').Trim('S').Trim('s') + (release.DownloadUrl == null ? "(ERROR)" : ""));
                             i++;
+                            button2.Button.OnMouseOver.AddListener((Action)(() => ToolTip.Show(button2.Button, release.Info, null)));
+                            button2.Button.OnMouseOut.AddListener((Action)ToolTip.Hide);
                         }
                     },
                     Translator.GetString("versionchangebutton"));

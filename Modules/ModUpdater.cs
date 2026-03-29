@@ -106,6 +106,7 @@ namespace TownOfHost
                                 release.DownloadUrl = asset.DownloadUrl;
                         }
                         release.OpenURL = $"https://github.com/KYMario/TownOfHost-K/releases/tag/{tag}";
+                        release.Info = release.body.Split("\n")[1] + "\n" + release.body.Split("\n")[2];
 
                         if (tag == null) continue;
                         //動かないバージョンに切り替えれないようにするための応急手当。.31になる頃には消す。
@@ -271,9 +272,12 @@ namespace TownOfHost
             public string TagName { get; set; }
             [JsonPropertyName("assets")]
             public List<Asset> Assets { get; set; }
+            [JsonPropertyName("body")]
+            public string body { get; set; }
 
             public string DownloadUrl { get; set; }
             public string OpenURL { get; set; }
+            public string Info { get; set; }
 
             public class Asset
             {
