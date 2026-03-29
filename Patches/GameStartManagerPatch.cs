@@ -458,17 +458,20 @@ namespace TownOfHost
 
                     if (!AmongUsClient.Instance) return;
 
-                    var nowname = __instance.playerName.text;
-                    if (nowname.Contains(DataManager.player.Customization.Name) || (Main.nickName != "" && nowname.Contains(Main.nickName)))
-                    { time = 0; }
-                    else
+                    if (AmongUsClient.Instance.AmHost)
                     {
-                        time += Time.fixedDeltaTime;
-                        if (3 <= time)
+                        var nowname = __instance.playerName.text;
+                        if (nowname.Contains(DataManager.player.Customization.Name) || (Main.nickName != "" && nowname.Contains(Main.nickName)))
+                        { time = 0; }
+                        else
                         {
-                            Logger.Error("HostNameError", "HostNameError");
-                            time = 0;
-                            host.Character.RpcSetName(Main.nickName == "" ? DataManager.player.Customization.Name : Main.nickName);
+                            time += Time.fixedDeltaTime;
+                            if (3 <= time)
+                            {
+                                Logger.Error("HostNameError", "HostNameError");
+                                time = 0;
+                                host.Character.RpcSetName(Main.nickName == "" ? DataManager.player.Customization.Name : Main.nickName);
+                            }
                         }
                     }
 
