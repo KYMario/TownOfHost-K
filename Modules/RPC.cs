@@ -1,13 +1,11 @@
 using System;
 using System.Collections;
 using System.Linq;
-using System.Threading.Tasks;
 using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using TownOfHost.Modules;
-using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Impostor;
@@ -80,7 +78,7 @@ namespace TownOfHost
                     Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()} => {p?.GetNameWithRole().RemoveHtmlTags() ?? "null"}", "StartMeeting");
                     if (AmongUsClient.Instance.AmHost is false && p is null)
                     {
-                        p.GetPlayerState().NumberOfRemainingButtons--;
+                        __instance.GetPlayerState().NumberOfRemainingButtons--;
                     }
                     break;
                 case RpcCalls.CheckVanish:
