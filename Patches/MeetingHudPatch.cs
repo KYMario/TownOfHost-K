@@ -355,12 +355,12 @@ public static class MeetingHudPatch
                             else if (Utils.RoleSendList.Contains(pva.TargetPlayerId)) UtilsShowOption.SendRoleInfo(pc);
                         }
                     }, 1, "sendroleinfo");
-                }, 2.5f, "Send to Chat", true);
+                }, 5f, "Send to Chat", true);
                 _ = new LateTask(() =>
                 {
                     ChatUpdatePatch.BlockSendName = false;
                     NameColorManager.RpcMeetingColorName();
-                }, 5.5f, "SetName", true);
+                }, 8f, "SetName", true);
             }
             Main.IsActiveSabotage =
                 Utils.IsActive(SystemTypes.Reactor)
