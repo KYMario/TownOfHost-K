@@ -186,6 +186,7 @@ namespace TownOfHost
             __instance.BackgroundBar.material.color = BackgroundBar;
 
             LastWinsText = WinnerText.text;
+            __instance.transform.SetLocalZ(20);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -193,9 +194,19 @@ namespace TownOfHost
             //           ==最終結果表示==
             //#######################################
 
+            var parent = TMPTemplate.Create(
+                "parent");
+
+            parent.alignment = TextAlignmentOptions.TopRight;
+            parent.rectTransform.pivot = new(2.1f, -10.5f);
+            var parentAspectPos = parent.gameObject.AddComponent<AspectPosition>();
+            parentAspectPos.Alignment = AspectPosition.EdgeAlignments.LeftTop;
+            parentAspectPos.DistanceFromEdge = new(5.3f, 3, 0);
+            parent.gameObject.SetActive(true);
+
             var showInitially = Main.ShowResults.Value;
             showHideButton = new SimpleButton(
-                __instance.transform,
+                parent.transform,
                 "ShowHideResultsButton",
                 new(-4.5f, 2.6f, -14f),  // BackgroundLayer(z=-13)より手前
                 new(0, 136, 209, byte.MaxValue),
@@ -224,7 +235,7 @@ namespace TownOfHost
             };
 
             ScreenShotbutton = new SimpleButton(
-                __instance.transform,
+                parent.transform,
                 "ScreenShotButton",
                 new(-3.5f, 2.6f, -14f),
                 new(0, 245, 185, byte.MaxValue),
@@ -277,10 +288,13 @@ namespace TownOfHost
                 Color.white,
                 1.25f,
                 TextAlignmentOptions.TopLeft,
-                setActive: true,
-                parent: __instance.transform);
-            modtext.transform.localPosition = new(5.8f, 2.7f, -20);
+                setActive: false);
             modtext.transform.localScale = new Vector3(1.7f, 1.7f, 1f);
+            modtext.alignment = TextAlignmentOptions.TopRight;
+            modtext.rectTransform.pivot = new(0.3f, -6f);
+            var modtextAspectPos = modtext.gameObject.AddComponent<AspectPosition>();
+            modtextAspectPos.Alignment = AspectPosition.EdgeAlignments.RightTop;
+            modtextAspectPos.DistanceFromEdge = new(5f, 3f);
             modtext.gameObject.SetActive(true);
 
             //if (Main.UseWebHook.Value) UtilsWebHook.WH_ShowLastResult();
