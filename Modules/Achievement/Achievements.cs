@@ -10,7 +10,7 @@ namespace TownOfHost;
 class Achievements
 {
     public static List<Achievement> GameCompleteAchievement = new();
-    public static Dictionary<Achievement, int> UpdateStatesAchievement = new();
+    public static List<(Achievement achievement, int addcount)> UpdateStatesAchievement = new();
     [GameModuleInitializer]
     public static void init()
     {
@@ -27,49 +27,53 @@ class Achievements
     }
     public static void RpcCompleteAchievement(byte playerid, int flug, Achievement achievement, int addstate = 1)
     {
-        if (flug == 0)
+        try
         {
-            var key = playerid.GetPlayerControl().GetClient()?.ProductUserId ?? $"{PlayerCatch.GetPlayerInfoById(playerid).GetLogPlayerName()}";
-            if (AllPlayerAchievements.TryGetValue(key, out var list))
+            if (flug == 0)
             {
-                if (list.Contains(achievement) is false)
+                var key = playerid.GetPlayerControl().GetClient()?.ProductUserId ?? $"{PlayerCatch.GetPlayerInfoById(playerid).GetLogPlayerName()}";
+                if (AllPlayerAchievements.TryGetValue(key, out var list))
                 {
-                    list.Add(achievement);
-                    AllPlayerAchievements[key] = list;
+                    if (list.Contains(achievement) is false)
+                    {
+                        list.Add(achievement);
+                        AllPlayerAchievements[key] = list;
+                    }
+                    else return;//もう送信済みなら以下の処理を行わない
                 }
-                else return;//もう送信済みなら以下の処理を行わない
+                else
+                {
+                    List<Achievement> achilist = [achievement];
+                    AllPlayerAchievements.TryAdd(key, achilist);
+                }
             }
-            else
+            if (playerid == PlayerControl.LocalPlayer.PlayerId)
             {
-                List<Achievement> achilist = [achievement];
-                AllPlayerAchievements.Add(key, achilist);
+                switch (flug)
+                {
+                    case 0:
+                        GameCompleteAchievement.Add(achievement);
+                        break;
+                    case 1:
+                        UpdateStatesAchievement.Add((achievement, addstate));
+                        break;
+                    case 2:
+                        if (achievement.IsCompleted) return;
+                        GameCompleteAchievement.Add(achievement);
+                        break;
+                }
+                return;
             }
-        }
-        if (playerid == PlayerControl.LocalPlayer.PlayerId)
-        {
-            switch (flug)
+            else if (playerid.GetPlayerControl().IsModClient() && AmongUsClient.Instance.AmHost)
             {
-                case 0:
-                    GameCompleteAchievement.Add(achievement);
-                    break;
-                case 1:
-                    UpdateStatesAchievement.Add(achievement, addstate);
-                    break;
-                case 2:
-                    if (achievement.IsCompleted) return;
-                    GameCompleteAchievement.Add(achievement);
-                    break;
+                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GetAchievement, SendOption.None, -1);
+                writer.Write(playerid);
+                writer.Write(flug);
+                writer.Write(achievement.id);
+                AmongUsClient.Instance.FinishRpcImmediately(writer);
             }
-            return;
         }
-        else if (playerid.GetPlayerControl().IsModClient() && AmongUsClient.Instance.AmHost)
-        {
-            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.GetAchievement, SendOption.None, -1);
-            writer.Write(playerid);
-            writer.Write(flug);
-            writer.Write(achievement.id);
-            AmongUsClient.Instance.FinishRpcImmediately(writer);
-        }
+        catch { }
     }
 
     public static string ShowCompleteAchievement()
@@ -103,9 +107,9 @@ class Achievements
         if (Statistics.CheckAdd(false) is not "") return;
         foreach (var upac in UpdateStatesAchievement)
         {
-            upac.Key.Updatestates(upac.Value);
-            if (upac.Key.step <= upac.Key.states && upac.Key.IsCompleted is false)
-                GameCompleteAchievement.Add(upac.Key);
+            upac.achievement.Updatestates(upac.addcount);
+            if (upac.achievement.step <= upac.achievement.states && upac.achievement.IsCompleted is false)
+                GameCompleteAchievement.Add(upac.achievement);
         }
         foreach (var ac in GameCompleteAchievement)
         {
@@ -124,10 +128,10 @@ class Achievements
                 case 0: mark += "◎"; color = "<#674020>"; break;
                 case 1: mark += "◆"; color = "<#aacbf7>"; break;
                 case 2: mark += "★"; color = "<#ffea4e>"; break;
-                case 3: mark += "ф"; color = "<#262750>"; break;
+                case 3: mark += "ф"; color = "<#17f7aa>"; break;
             }
             text += $"{color}{mark}" + "  ";
-            text += $"～{GetAchievementNames(achi, "Title")}～</color>" + $"<size=60%>({UtilsRoleText.GetRoleColorAndtext(achi.role)})</size>";
+            text += $"～{GetAchievementNames(achi, "Title")}～</color>" + (achi.role is CustomRoles.NotAssigned ? "" : $"<size=60%>({UtilsRoleText.GetRoleColorAndtext(achi.role)})</size>");
             text += $"<size=60%>{GetAchievementNames(achi, "Info")}</size>";
             text += "\n";
         }
