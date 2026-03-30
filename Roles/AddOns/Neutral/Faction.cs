@@ -21,6 +21,7 @@ class Faction
         List<CustomRoles> AddWinners = [CustomRoles.Amanojaku];
         foreach (var role in EnumHelper.GetAllValues<CustomRoles>().Where(role => role.IsNeutral()).OrderBy(x => x.GetRoleInfo()?.ConfigId ?? 100000))
         {
+            if (role is CustomRoles.Madonna) continue;
             if (SoloWinOption.AllData.ContainsKey(role) is false)
             {
                 if (role is CustomRoles.Jackaldoll or CustomRoles.JackalAlien or CustomRoles.JackalMafia) continue;
@@ -28,7 +29,12 @@ class Faction
                 AddWinners.Add(role);
                 continue;
             }
-            var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction).SetEnabled(() => role.IsEnable());
+            var option = BooleanOptionItem.Create(id++, "AssingroleType", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Faction).SetEnabled(() =>
+            {
+                if (role is not CustomRoles.Jackal) return role.IsEnable();
+
+                return CustomRoles.Jackal.IsEnable() || CustomRoles.JackalAlien.IsEnable() || CustomRoles.JackalMafia.IsEnable() || CustomRoles.Jackaldoll.IsEnable();
+            });
             option.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", UtilsRoleText.GetRoleColorAndtext(role) } };
 
             if (!OptionRole.TryAdd(role, option))
