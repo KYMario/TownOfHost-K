@@ -229,8 +229,8 @@ public static class MeetingHudPatch
             Send = "<size=80%>";
             Title = "";
 
-            if (!Options.firstturnmeeting || !MeetingStates.FirstMeeting) Title += string.Format(GetString("Message.Day"), UtilsGameLog.day).Color(Palette.Orange) + "\n";
-            else Title += GetString("Message.first").Color(Palette.Orange) + "\n";
+            if (!Options.firstturnmeeting || !MeetingStates.FirstMeeting) Title += string.Format(GetString("Message.Day"), UtilsGameLog.day).Color(Palette.Orange);
+            else Title += GetString("Message.first").Color(Palette.Orange);
 
             foreach (var roleClass in CustomRoleManager.AllActiveRoles.Values)
             {
@@ -269,7 +269,7 @@ public static class MeetingHudPatch
                 if (Send.RemoveHtmlTags() != "") Send += "\n";
                 Send += "<size=120%>【" + GetString("LastMeetingre") + "】\n</size>" + MeetingVoteManager.Voteresult;
             }
-            Send += $"\n{GetString("MeetingHelp")}";
+            Send += $"\n<size=50%>{GetString("MeetingHelp")}</size>";
             TemplateManager.SendTemplate("OnMeeting", noErr: true);
             if (MeetingStates.FirstMeeting) TemplateManager.SendTemplate("OnFirstMeeting", noErr: true);
             if (Send != "") Utils.SendMessage(Send, title: Title);
