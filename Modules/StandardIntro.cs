@@ -193,6 +193,18 @@ class StandardIntro
         }
         void Intoro()
         {
+            bool IsPlayerSkinShuffleMode = Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special);
+            if (IsPlayerSkinShuffleMode)
+            {
+                PlayerCatch.AllPlayerControls.Do(pc =>
+                {
+                    Camouflage.RpcSetSkin(pc);
+                    if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
+
+                    if (Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
+                    else pc.RpcSetName(outfit.PlayerName);
+                });
+            }
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;

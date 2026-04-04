@@ -151,7 +151,7 @@ namespace TownOfHost
                     var tageId = IRandom.Instance.Next(players.Count);
                     var pl = players.OrderBy(x => Guid.NewGuid()).ToArray()[tageId];
                     Logger.Info($"{pc?.Data?.PlayerName} => {pl?.Data?.PlayerName}", "Shuffle");
-                    UtilsGameLog.AddGameLogsub($"{pc?.Data?.PlayerName}のシャッフル先 : {pl?.Data?.PlayerName}");
+                    UtilsGameLog.AddGameLogsub($"\n{pc?.Data?.PlayerName}のシャッフル先 : {pl?.Data?.PlayerName}");
 
                     var colorId = pl.Data.DefaultOutfit.ColorId;
 
@@ -197,17 +197,6 @@ namespace TownOfHost
                 if (Options.IsStandardHAS)
                 {
                     Options.HideAndSeekKillDelayTimer = Options.StandardHASWaitingTime.GetFloat();
-                }
-                if (IsPlayerSkinShuffleMode)
-                {
-                    PlayerCatch.AllPlayerControls.Do(pc =>
-                    {
-                        Camouflage.RpcSetSkin(pc);
-                        if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
-
-                        if (Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
-                        else pc.RpcSetName(outfit.PlayerName);
-                    });
                 }
             }
 
