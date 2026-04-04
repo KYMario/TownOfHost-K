@@ -165,6 +165,7 @@ namespace TownOfHost
                     var clientId = seer.GetClientId();
                     string playername = pc.GetRealName(isMeeting: true);
                     playername = playername.ApplyNameColorData(seer, pc, true);
+                    if (clientId == -1) continue;
 
                     var sender = CustomRpcSender.Create("MeetingNameColor", SendOption.None);
                     sender.StartMessage(clientId);

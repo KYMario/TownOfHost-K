@@ -15,7 +15,12 @@ namespace TownOfHost.Patches
                 if (!__instance.playerInfo._object) return;
                 if (__instance.TextArea.text != string.Empty && IsSystemMeg is false) //投票通知ではないなら
                 {
-                    __instance.NameText.text = __instance.playerInfo.GetLogPlayerName().ApplyNameColorData(PlayerControl.LocalPlayer, __instance.playerInfo._object, true);
+                    if (__instance.playerInfo._object.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                    {
+                        __instance.NameText.text = Utils.ColorString(UtilsRoleText.GetRoleColor(PlayerControl.LocalPlayer.GetCustomRole()), PlayerControl.LocalPlayer.Data.GetLogPlayerName());
+                        return;
+                    }
+                    __instance.NameText.text = __instance.playerInfo.GetLogPlayerName().RemoveColorTags().ApplyNameColorData(PlayerControl.LocalPlayer, __instance.playerInfo._object, true);
                     return;
                 }
             }

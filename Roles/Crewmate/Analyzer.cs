@@ -341,7 +341,7 @@ public sealed class Analyzer : RoleBase
                 if (!Utils.RoleSendList.Contains(Player.PlayerId))
                     Utils.RoleSendList.Add(Player.PlayerId);
             if (Player.IsAlive() && !Awakened)
-                Player.RpcSetRoleDesync(RoleTypes.Crewmate, Player.GetClientId(), SendOption.None);
+                Player.RpcSetRoleDesync(RoleTypes.Engineer, Player.GetClientId(), SendOption.None);
             Awakened = true;
         }
         return true;

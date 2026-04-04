@@ -719,7 +719,7 @@ namespace TownOfHost
                 Logger.Warn("イントロの表示をキャンセルしました", "CoShowIntro");
                 return false;
             }
-            GameStates.InGame = true;
+            if (AmongUsClient.Instance.AmHost is false) GameStates.InGame = true;
             Cancel = true;
             return true;
         }
