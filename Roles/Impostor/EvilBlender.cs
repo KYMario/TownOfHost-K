@@ -86,6 +86,7 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
     {
         if (UseingId is not byte.MaxValue)
         {
+            UseingId = byte.MaxValue;
             PlayerCatch.AllPlayerControls.DoIf(pc => pc.IsModClient(), pc => SendPublicRpc(pc.PlayerId, 0, null));
         }
         UseingId = byte.MaxValue;

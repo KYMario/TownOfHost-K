@@ -128,7 +128,7 @@ namespace TownOfHost
                             __instance.AbilityButton.ToggleVisible(Visible);
                         }
                     }
-                    if (Main.CustomSprite.Value && CustomButtonHud.CantJikakuIsPresent is not true)
+                    if (Main.CustomSprite.Value && CustomButtonHud.CantJikakuIsPresent is not true && !player.Is(CustomRoles.Amnesia))
                     {
                         if (roleClass != null)
                         {
@@ -345,7 +345,7 @@ namespace TownOfHost
                             return;
                         }
                     }
-                    if (CustomRoles.Amnesia.IsPresent()) return;
+                    if (CustomRoles.Amnesia.IsPresent() && (customrole.IsVanilla() || player.Is(CustomRoles.Amnesia))) return;
                     var missrole = CustomRoles.NotAssigned;
                     if (CantJikakuIsPresent == null)
                         foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -359,6 +359,7 @@ namespace TownOfHost
                     if (CantJikakuIsPresent == true && (customrole.IsVanilla() || missrole.IsVanilla())) return;
                     if (customrole.IsVanilla()) return;
                     if (roleClass == null) return;
+                    CantJikakuIsPresent = false;
                     if (Main.CustomSprite.Value)
                     {
                         if (roleClass != null)
