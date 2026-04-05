@@ -416,6 +416,7 @@ namespace TownOfHost
         /// <summary> ホストがロビーでチャットする時に使用します </summary>
         public static void SendChat(string text)
         {
+            if (GameStates.InGame) return;
             var name = Main.nickName == string.Empty ? DataManager.player.Customization.Name : Main.nickName;
             Main.MessagesToSend.Add((text, byte.MaxValue, name));
         }
