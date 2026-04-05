@@ -346,12 +346,17 @@ namespace TownOfHost
                         }
                     }
                     if (CustomRoles.Amnesia.IsPresent()) return;
+                    var missrole = CustomRoles.NotAssigned;
                     if (CantJikakuIsPresent == null)
                         foreach (var pc in PlayerCatch.AllPlayerControls)
                         {
-                            if (pc.GetMisidentify(out _)) CantJikakuIsPresent = true;
+                            if (pc.GetMisidentify(out var role))
+                            {
+                                CantJikakuIsPresent = true;
+                                if (pc.PlayerId == player.PlayerId) missrole = role;
+                            }
                         }
-                    if (CantJikakuIsPresent == true) return;
+                    if (CantJikakuIsPresent == true && (customrole.IsVanilla() || missrole.IsVanilla())) return;
                     if (customrole.IsVanilla()) return;
                     if (roleClass == null) return;
                     if (Main.CustomSprite.Value)
