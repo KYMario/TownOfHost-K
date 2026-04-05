@@ -135,11 +135,10 @@ namespace TownOfHost.Roles.Neutral
             target.RpcProtectedMurderPlayer(Player);
             target.RpcProtectedMurderPlayer(target);
             UtilsGameLog.AddGameLog($"SideKick", string.Format(GetString("log.Sidekick"), UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})", UtilsName.GetPlayerColor(Player, true)));
-            target.RpcSetCustomRole(CustomRoles.Jackaldoll);
+            target.RpcSetCustomRole(CustomRoles.Jackaldoll, log: null);
             JackalDoll.Sidekick(target, Player);
             if (!Utils.RoleSendList.Contains(target.PlayerId)) Utils.RoleSendList.Add(target.PlayerId);
             UtilsOption.MarkEveryoneDirtySettings();
-            UtilsGameLog.LastLogRole[target.PlayerId] += "<b>⇒" + Utils.ColorString(UtilsRoleText.GetRoleColor(target.GetCustomRole()), GetString($"{target.GetCustomRole()}")) + "</b>";
         }
         public override string GetAbilityButtonText() => GetString("Sidekick");
         public override bool OverrideAbilityButton(out string text)
