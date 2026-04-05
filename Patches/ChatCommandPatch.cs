@@ -1475,8 +1475,9 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "JackalChat");
                         foreach (var jac in AllPlayerControls)
                         {
-                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || (!jac.IsAlive())) && (jac.PlayerId != player.PlayerId && !Isclient))
+                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || (!jac.IsAlive())))
                             {
+                                if (jac.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = jac.GetClientId();
@@ -1513,8 +1514,9 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "LoversChat");
                         foreach (var lover in AllPlayerControls)
                         {
-                            if (lover && (lover.GetLoverRole() == loverrole || (!lover.IsAlive())) && (lover.PlayerId != player.PlayerId && !Isclient))
+                            if (lover && (lover.GetLoverRole() == loverrole || (!lover.IsAlive())))
                             {
+                                if (lover.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = lover.GetClientId();
@@ -1542,6 +1544,7 @@ namespace TownOfHost
                         {
                             if (twins && (twins.PlayerId == twinsid || (!twins.IsAlive())) && (twins.PlayerId != player.PlayerId && !Isclient))
                             {
+                                if (twins.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = twins.GetClientId();
@@ -1566,8 +1569,9 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "Connectingchat");
                         foreach (var connect in AllPlayerControls)
                         {
-                            if (connect && ((connect.Is(CustomRoles.Connecting) && !connect.Is(CustomRoles.WolfBoy)) || (!connect.IsAlive())) && (connect.PlayerId != player.PlayerId && !Isclient))
+                            if (connect && ((connect.Is(CustomRoles.Connecting) && !connect.Is(CustomRoles.WolfBoy)) || (!connect.IsAlive())))
                             {
+                                if (connect.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = connect.GetClientId();
