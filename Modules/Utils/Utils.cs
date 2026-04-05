@@ -332,6 +332,7 @@ namespace TownOfHost
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
             if (title == "") title = $"<{Main.ModColor}>" + GetString($"DefaultSystemMessageTitle") + "</color>";
+            if (IsRestriction() && isTowSend && title == "NonTitle") title = "";
 
             var towsend = "";
             if (checkl && text.Length > 500 && sendTo != PlayerControl.LocalPlayer.PlayerId)
@@ -398,18 +399,19 @@ namespace TownOfHost
             var fir = "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
-            if (Utils.IsRestriction())
+            if (IsRestriction())
             {
                 var sendtext = text;
                 if (!VersionInfoManager.GetCustomFlag(1))
                     sendtext = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
-                Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}</color><#ffffff>\n<size=70%>{sendtext}"));
+                if (isTowSend && title == "") Main.MessagesToSend.Add(($" ", sendTo, $"{fir}<#ffffff><size=70%>{sendtext}"));
+                else Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}</color><#ffffff>\n<size=70%>{sendtext}"));
             }
             else
                 Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
             {
-                SendMessage(towsend, sendTo, title, true, isTowSend: true);
+                SendMessage(towsend, sendTo, "NonTitle", true, isTowSend: true);
             }
         }
 
