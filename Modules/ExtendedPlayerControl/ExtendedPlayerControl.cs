@@ -403,7 +403,7 @@ namespace TownOfHost
 
                 var tage = playerInfo.Object;
 
-                if (tage == null || tage.inVent) continue;
+                if (tage == null || tage.inVent || !tage.IsAlive()) continue;
                 if (!SuddenDeathMode.NowSuddenDeathTemeMode && IsOneclick && tage.GetCustomRole().GetCustomRoleTypes() == roletype && roletype is CustomRoleTypes.Impostor
                 && !tage.Is(CustomRoles.OneWolf) && !pc.Is(CustomRoles.OneWolf) && !pc.Is(CustomRoles.Amnesiac)) continue;
                 if (SuddenDeathMode.NowSuddenDeathTemeMode)
