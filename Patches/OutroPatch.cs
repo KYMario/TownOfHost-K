@@ -63,7 +63,8 @@ namespace TownOfHost
 
             var star = "★".Color(winnerColor);
             KillLog = $"{GetString("GameLog")}\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star;
-            outputLog = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star;
+            outputLog = AmongUsClient.Instance.AmHost ? "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star
+            : "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + star + meg.Mark(winnerColor, false) + "/b" + star;
 
             LastGameSave.CreateIfNotExists();
             Main.Alltask = UtilsTask.AllTaskstext(false, false, false, false, false).RemoveHtmlTags();
@@ -157,7 +158,7 @@ namespace TownOfHost
         private static TextMeshPro roleSummary;
         private static SimpleButton showHideButton;
         public static SimpleButton ScreenShotbutton;
-        static StringBuilder sb;
+        public static StringBuilder sb = new();
 
         public static void Postfix(EndGameManager __instance)
         {
@@ -216,14 +217,14 @@ namespace TownOfHost
                     var setToActive = !roleSummary.gameObject.activeSelf;
                     if (setToActive is false)
                     {
-                        if (roleSummary.text.Contains("★") is false)
+                        if (roleSummary.text.Contains("<size=0>★</size>"))
                         {
                             roleSummary.text = Achievements.GetAllAchievement();
                             showHideButton.Label.text = GetString("HideResults");
                             return;
                         }
                     }
-                    roleSummary.text = sb.ToString();
+                    roleSummary.text = sb.ToString() + "<size=0>★</size>";
                     roleSummary.gameObject.SetActive(setToActive);
                     Main.ShowResults.Value = setToActive;
                     showHideButton.Label.text = GetString(setToActive ? "ShowAward" : "ShowResults");
@@ -272,7 +273,7 @@ namespace TownOfHost
             }
             roleSummary = TMPTemplate.Create(
                 "RoleSummaryText",
-                sb.ToString(),
+                sb.ToString() + "<size=0>★</size>",
                 Color.white,
                 1.25f,
                 TextAlignmentOptions.TopLeft,

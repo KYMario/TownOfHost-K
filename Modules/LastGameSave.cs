@@ -91,36 +91,27 @@ public static class LastGameSave
         }
         string Log()
         {
-            var sb = new StringBuilder();
-
-            var winnerColor = ((CustomRoles)CustomWinnerHolder.WinnerTeam).GetRoleInfo()?.RoleColor ?? Palette.DisabledGrey;
-            if (destroy)
+            StringBuilder sb = new();
+            if (TaskBattle.IsRTAMode && Options.CurrentGameMode == CustomGameMode.TaskBattle)
             {
-                sb.Append("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + "</b>");
+                sb.Append(UtilsGameLog.GetRTAText());
+                EndGamePatch.KillLog += $"<#D4AF37>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</color>{"★".Color(Palette.DisabledGrey)}\n" + sb.ToString().Replace("\n", "\n　") + $"\n{"★".Color(Palette.DisabledGrey)}<#D4AF37>~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</color>{"★".Color(Palette.DisabledGrey)}";
             }
-
-            sb.Append("""<align="center">""");
-            sb.Append("<size=150%>").Append(GetString("LastResult")).Append("</size>");
-            sb.Append('\n').Append(SetEverythingUpPatch.LastWinsText.Mark(winnerColor, false));
-            sb.Append("</align>");
-
-            sb.Append("<size=70%>\n");
-            List<byte> cloneRoles = new(PlayerState.AllPlayerStates.Keys);
-
-            foreach (var pc in cloneRoles) if (PlayerCatch.GetPlayerById(pc) == null) continue;
-
-            foreach (var id in Main.winnerList)
+            else
             {
-                sb.Append($"\n★ ".Color(winnerColor)).Append(UtilsGameLog.GetLogtext(id));
-                cloneRoles.Remove(id);
+                sb.Append(GetString("RoleSummaryText"));
+                List<byte> cloneRoles = new(PlayerState.AllPlayerStates.Keys);
+                foreach (var id in Main.winnerList)
+                {
+                    sb.Append($"\n★ ").Append(EndGamePatch.SummaryText[id]);
+                    cloneRoles.Remove(id);
+                }
+                foreach (var id in cloneRoles)
+                {
+                    sb.Append($"\n　 ").Append(EndGamePatch.SummaryText[id]);
+                }
             }
-            foreach (var id in cloneRoles)
-            {
-                sb.Append($"\n　 ").Append(UtilsGameLog.GetLogtext(id));
-            }
-            sb.Append("\n\n");
-            sb.Append(string.Format(GetString("Result.Task"), Main.Alltask));
-            return "\n\n" + sb.ToString().RemoveHtmlTags();
+            return "\n" + sb.ToString().RemoveHtmlTags();
         }
     }
     public static void SeveImage(bool autosave = false)

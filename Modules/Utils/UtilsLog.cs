@@ -429,7 +429,8 @@ namespace TownOfHost
                         case 3: mark += "ф"; color = "<#17f7aa>"; break;
                     }
                     text += $"\n{color}{mark}" + "  ";
-                    text += $"～{Achievements.GetAchievementNames(achievement, "Title")}～</color>" + $"<size=60%>({GetRoleColorAndtext(achievement.role)})</size>";
+                    text += $"～{Achievements.GetAchievementNames(achievement, "Title")}～</color>" +
+                    (achievement.role is CustomRoles.NotAssigned ? "" : $"<size=60%>({GetRoleColorAndtext(achievement.role)})</size>");
                     text += $"<size=60%>{Achievements.GetAchievementNames(achievement, "Info")}</size>";
                 }
                 SendMessage(text, playerid);

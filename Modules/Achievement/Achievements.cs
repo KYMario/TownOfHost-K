@@ -1,6 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
-using HarmonyLib;
 using Hazel;
 using TownOfHost.Attributes;
 using TownOfHost.Roles.Core;
@@ -118,6 +116,8 @@ class Achievements
     }
     public static string GetAllAchievement()
     {
+        var issave = Statistics.CheckAdd(false);
+        if (issave is not "") return issave;
         var text = "★Achievement\n";
         foreach (var achi in GameCompleteAchievement)
         {
