@@ -368,6 +368,7 @@ namespace TownOfHost.Modules
                     if (HasRoleAddon) addspeed = data.GiveSpeeding.GetBool() ? data.Speed.GetFloat() : addspeed;
                     speed += addspeed;
                 }
+                if (state.CanMove is false) speed = Main.MinSpeed;
                 AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, 10f);
             }
 

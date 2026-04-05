@@ -4,6 +4,7 @@ using Hazel;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -27,9 +28,12 @@ class Penguin : RoleBase, IImpostor
     {
         AbductTimerLimit = OptionAbductTimerLimit.GetFloat();
         MeetingKill = OptionMeetingKill.GetBool();
+
+        CustomRoleManager.OnEnterVentOthers.Add(OnEnterVentOthers);
     }
     public override void OnDestroy()
     {
+        Penguins = new();
         AbductVictim = null;
     }
 
@@ -47,6 +51,7 @@ class Penguin : RoleBase, IImpostor
     private float AbductTimerLimit;
     private bool stopCount;
     private bool MeetingKill;
+    static HashSet<Penguin> Penguins = new();
 
     //拉致中にキルしそうになった相手の能力を使わせないための処置
     public bool IsKiller => AbductVictim == null;
@@ -62,6 +67,7 @@ class Penguin : RoleBase, IImpostor
         stopCount = false;
         oldpos = Vector2.zero;
         movecount = 0;
+        Penguins.Add(this);
     }
     public override void ApplyGameOptions(IGameOptions opt) => AURoleOptions.ShapeshifterCooldown = AbductVictim != null ? AbductTimer : 255f;
     private void SendRPC()
@@ -95,12 +101,16 @@ class Penguin : RoleBase, IImpostor
         SendRPC();
         movecount = 0;
         oldpos = Player.GetTruePosition();
+        target.GetPlayerState().CanMove = false;
+        target.MarkDirtySettings();
     }
     void RemoveVictim()
     {
         if (AbductVictim != null)
         {
             PlayerState.GetByPlayerId(AbductVictim.PlayerId).CanUseMovingPlatform = true;
+            AbductVictim.GetPlayerState().CanMove = true;
+            AbductVictim.MarkDirtySettings();
             AbductVictim = null;
         }
         MyState.CanUseMovingPlatform = true;
@@ -284,9 +294,29 @@ class Penguin : RoleBase, IImpostor
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
         }
     }
+    public static bool OnEnterVentOthers(PlayerPhysics physics, int ventId)
+    {
+        var user = physics.myPlayer;
+        foreach (var Penguin in Penguins)
+        {
+            if (Penguin.AbductVictim != null)
+            {
+                if (Penguin.AbductVictim.PlayerId == user.PlayerId)
+                {
+                    _ = new LateTask(() =>
+                    {
+                        if (user.inVent && user.IsAlive())
+                            physics.RpcBootFromVent(ventId);
+                    }, 0.8f, "PenginTargetnonvent", true);
+                    return true;
+                }
+            }
+        }
+        return true;
+    }
     Vector2 oldpos;
     float movecount;
-    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    public static Dictionary<int, Achievement> achievements = new();
     [Attributes.PluginModuleInitializer]
     public static void Load()
     {

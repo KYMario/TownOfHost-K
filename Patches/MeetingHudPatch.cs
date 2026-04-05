@@ -99,6 +99,7 @@ public static class MeetingHudPatch
         public static void Prefix()
         {
             Logger.Info($"------------会議開始　day:{UtilsGameLog.day}------------", "Phase");
+            GameStates.introDestroyed = true;
             ChatUpdatePatch.DoBlockChat = true;
             ChatUpdatePatch.BlockSendName = true;
             MeetingStates.Sending = true;
@@ -355,12 +356,12 @@ public static class MeetingHudPatch
                             else if (Utils.RoleSendList.Contains(pva.TargetPlayerId)) UtilsShowOption.SendRoleInfo(pc);
                         }
                     }, 1, "sendroleinfo");
-                }, 5f, "Send to Chat", true);
+                }, 3f, "Send to Chat", true);
                 _ = new LateTask(() =>
                 {
                     ChatUpdatePatch.BlockSendName = false;
                     NameColorManager.RpcMeetingColorName();
-                }, 8f, "SetName", true);
+                }, 5.5f, "SetName", true);
             }
             Main.IsActiveSabotage =
                 Utils.IsActive(SystemTypes.Reactor)

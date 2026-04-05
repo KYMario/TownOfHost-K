@@ -25,6 +25,7 @@ namespace TownOfHost
         public int Killcount;
         public Vector2 LastKillPosition;
         public RoleTypes NowRoleType;
+        public bool CanMove;
 
         /// <summary>
         /// 持っているガード。<br/>
@@ -74,6 +75,7 @@ namespace TownOfHost
             LastKillPosition = new(100, 100);
             Killcount = 0;
             NowRoleType = RoleTypes.GuardianAngel;
+            CanMove = true;
         }
         public CustomRoles GetCustomRole()
         {
