@@ -37,6 +37,9 @@ namespace TownOfHost
         ClientSendHideMessage,
         SyncModSystem,
         SyncAssassinState,
+        SendAIMessage,
+        SendAIReply = 230,
+        SetInvisible = 200
     }
     public enum Sounds
     {
@@ -97,7 +100,7 @@ namespace TownOfHost
         }
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
-            if (DebugModeManager.EnableTOHkDebugMode.GetBool() && callId != (byte)RpcCalls.SetPetStr) Logger.Info(callId + $"{(callId < (byte)CustomRPC.VersionCheck ? (RpcCalls)callId : (CustomRPC)callId)}" + "RPCを受け取りました！", "RPC");
+            if (DebugModeManager.EnableTOHPDebugMode.GetBool() && callId != (byte)RpcCalls.SetPetStr) Logger.Info(callId + $"{(callId < (byte)CustomRPC.VersionCheck ? (RpcCalls)callId : (CustomRPC)callId)}" + "RPCを受け取りました！", "RPC");
             //CustomRPC以外は処理しない
             if (callId < (byte)CustomRPC.VersionCheck) return;
 

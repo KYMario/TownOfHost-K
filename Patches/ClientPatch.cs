@@ -42,25 +42,11 @@ namespace TownOfHost
         }
     }
 
-    [HarmonyPatch(typeof(MMOnlineManager), nameof(MMOnlineManager.Start))]
-    class MMOnlineManagerStartPatch
-    {
-        public static void Postfix(MMOnlineManager __instance)
-        {
-            //ローカルのHaS作成ボタン削除
-            var delhas = GameObject.Find("CreateHnSGameButton");
-            if (delhas) delhas?.SetActive(false);
-        }
-    }
-
     [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Show)), HarmonyPriority(Priority.VeryLow)]
     class CreateGameOptionsShowPatch
     {
         public static void Prefix(CreateGameOptions __instance)
         {
-            //HaSボタンを非表示にする
-            __instance.modeButtons[1]?.gameObject?.SetActive(false);
-
             //マップIdが無効な時画面の操作ができなくなってしまうのを修正
             var mapId = GameOptionsManager.Instance.CurrentGameOptions.MapId;
 
@@ -76,16 +62,6 @@ namespace TownOfHost
             __instance.SelectMode(0, false);
             __instance.SetCurrentServer();
             //__instance.UpdateServerText(ServerManager.Instance.CurrentRegion.Name);
-        }
-    }
-
-    [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.SelectMode))]
-    class CreateGameOptionsSelectModePatch
-    {
-        //通常モードを選択させる
-        public static void Prefix(ref int i)
-        {
-            i = 0;
         }
     }
 

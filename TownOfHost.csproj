@@ -1,34 +1,35 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
-    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
-    <Description>fork by Town Of Host</Description>
-    <Authors>tukasa0001(EmptyBottle), integral0131</Authors>
-    <langVersion>preview</langVersion>
-    <AssemblyName>TownOfHost-K</AssemblyName>
-    <NoWarn>MSB3246</NoWarn>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+		<GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+		<Description>fork by Town Of Host</Description>
+		<Authors>tukasa0001(EmptyBottle), integral0131</Authors>
+		<langVersion>preview</langVersion>
+		<AssemblyName>TownOfHost-Pko</AssemblyName>
+		<NoWarn>MSB3246</NoWarn>
+		<AmongUs>C:\Program Files (x86)\Steam\steamapps\common\Among Us tohp</AmongUs>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Reference Include="$(AmongUs)\BepInEx\core\*.dll" />
-    <Reference Include="$(AmongUs)\BepInEx\interop\*.dll" />
-    <EmbeddedResource Include=".\Resources\**" />
-  </ItemGroup>
-    
-  <ItemGroup>
-    <PackageReference Include="Costura.Fody" Version="5.7.0">
-      <IncludeAssets>runtime; compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="csv" Version="2.0.87" />
-    <PackageReference Include="GitInfo" Version="2.0.20">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="$(AmongUs)\BepInEx\core\*.dll" />
+		<Reference Include="$(AmongUs)\BepInEx\interop\*.dll" />
+		<EmbeddedResource Include=".\Resources\**" />
+	</ItemGroup>
 
-  <Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
-    <Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(AmongUs)/BepInEx/plugins/"/>
-  </Target>
+	<ItemGroup>
+		<PackageReference Include="Costura.Fody" Version="5.7.0">
+			<IncludeAssets>runtime; compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="csv" Version="2.0.87" />
+		<PackageReference Include="GitInfo" Version="2.0.20">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<Target Name="Copy" AfterTargets="Build" Condition="'$(AmongUs)' != ''">
+		<Copy SourceFiles="$(OutputPath)$(AssemblyName).dll" DestinationFolder="$(AmongUs)/BepInEx/plugins/"/>
+	</Target>
 </Project>

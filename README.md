@@ -1,10 +1,10 @@
-# Town Of Host-K
+# Town Of Host-Pko
 
-[English version here](https://github.com/KYMario/TownOfHost-K/blob/main/README-EN.md)<br>
+[English version here](https://github.com/KYMario/TownOfHost-Pko/blob/main/README-EN.md)<br>
 
-[![Discord](./Images/TownOfHostK_readme.png)](https://discord.gg/5DPqH8seFq)
+[![Discord](./Images/TownOfHostPko_readme.png)](https://discord.gg/5DPqH8seFq)
 
-<p align="center"><a href="https://github.com/KYMario/TownOfHost-K/releases/"><img src="https://badgen.net/github/release/KYMario/TownOfHost-K"></a></p>
+<p align="center"><a href="https://github.com/KYMario/TownOfHost-Pko/releases/"><img src="https://badgen.net/github/release/KYMario/TownOfHost-Pko"></a></p>
 
 ## この Mod について
 
@@ -12,21 +12,21 @@
 この Mod の問題などに関して公式に問い合わせないでください。<br>
 
 この Mod はTOHに役職や機能など追加したModです
-TOH-Kで起きたバグは本家や他MODには報告しないでまずはkに報告してください。<br>
+TOH-Pで起きたバグは本家や他MODには報告しないでまずはkに報告してください。<br>
 
-また、TOH-Kに関する質問、バグ報告は基本、[DiscordServer](https://discord.gg/5DPqH8seFq)でのみ受け付けております。<br>
+また、TOH-Pに関する質問、バグ報告は基本、[DiscordServer](https://discord.gg/5DPqH8seFq)でのみ受け付けております。<br>
 
 機能面などを開発者にDMで聞くのは超大迷惑なので基本おやめください。<br>
 
 [本家TOHはこちら](https://github.com/tukasa0001/TownOfHost)<br>
 
-## [Wiki](https://github.com/KYMario/TownOfHost-K/wiki)もあるよ!
+## [Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)もあるよ!
 
 ## リリース
 AmongUsバージョン : **17.0.0**~<br>
 
-**最新版は[こちら](https://github.com/KYMario/TownOfHost-K/releases/latest)**<br>
-過去バージョンは[こちら](https://github.com/KYMario/TownOfHost-K/releases)<br>
+**最新版は[こちら](https://github.com/KYMario/TownOfHost-Pko/releases/latest)**<br>
+過去バージョンは[こちら](https://github.com/KYMario/TownOfHost-Pko/releases)<br>
 
 ## 公開ルームについて
 > [!Note]
@@ -55,16 +55,16 @@ AmongUsバージョン : **17.0.0**~<br>
 **禁止されない行為**
 > [**Note**]
 > - Discordや村のオープンチャットで非公開ルームのコードを伝え身内間でMod部屋を開催
-> - Town Of Host-Kのマッチメイキングでの募集
+> - Town Of Host-Pkoのマッチメイキングでの募集
 > - Youtubeなどの配信サイトで上記の禁止行為に該当しない参加型/身内村配信<br>
 
 =>　要するに**Modだと認知していない野良のプレイヤーが交わる可能性がある**とアウトです。<br>
 <br>
 勧誘部屋に遭遇した場合は勧誘先に無闇に参加せずまずは開発者にお知らせください。厳正に対処いたします。<br>
 
-## TOH-Kでの処罰、利用不可について
+## TOH-Pでの処罰、利用不可について
 v.5.1.61.1以降より[SuperNewRoles](https://github.com/SuperNewRoles/SuperNewRoles/)様等一部のModに搭載されていた<br>
-ブラックリストをTown Of Host-Kでも適応するようにいたしました。<br>
+ブラックリストをTown Of Host-Pkoでも適応するようにいたしました。<br>
 
 > [!note]
 > - 【処罰に値する利用方法】
@@ -79,7 +79,7 @@ v.5.1.61.1以降より[SuperNewRoles](https://github.com/SuperNewRoles/SuperNewR
 -----------------------------------------------
 
 **【絶対に読むんだ】**<br>
-Town Of Host-Kの利用をもって"処罰に値する利用方法"内で記載されている<br>
+Town Of Host-Pkoの利用をもって"処罰に値する利用方法"内で記載されている<br>
 行動をしないと誓い,<br>
 処罰に値する利用を行った場合はいかなる場合でも処罰を受け入れるものとします。<br>
 
@@ -92,17 +92,17 @@ Modが使えなくなるよ!<br>
 その処罰に値する利用方法をしないよ！！<br>
 ってことです。
 
-## TownOfHost-Kってなんだい?
+## TownOfHost-Pkoってなんだい?
 他のAmongUsのModとはまた一味違った、斬新で独特な機能や役職が多いModです。<br>
 
 HostModなので部屋主のみModを導入すれば、<br>
 参加者はModを導入する必要もカスタムサーバー追加等の面倒な手間なしで<br>
-導入者が部屋を建て、その部屋に入ることでTownOfHost-Kを遊ぶことができます！<br>
+導入者が部屋を建て、その部屋に入ることでTownOfHost-Pkoを遊ぶことができます！<br>
 
-詳しい仕様などは[Wiki](https://github.com/KYMario/TownOfHost-K/wiki)やゲーム内確認できます<br>
+詳しい仕様などは[Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)やゲーム内確認できます<br>
 
 ## 役職について
-かなりの数があるので[Wiki](https://github.com/KYMario/TownOfHost-K/wiki)をご確認ください。
+かなりの数があるので[Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)をご確認ください。
 
 ## 機能,モードについて
 
@@ -110,11 +110,11 @@ HostModなので部屋主のみModを導入すれば、<br>
 
 <summary>モード</summary>
 
-- [スタンダード](https://github.com/KYMario/TownOfHost-K/wiki/スタンダード)
-- - [役職入りかくれんぼ](https://github.com/KYMario/TownOfHost-K/wiki/役職入りかくれんぼ)
-- - [サドンデスモード](https://github.com/KYMario/TownOfHost-K/wiki/サドンデスモード)
-- [かくれんぼ](https://github.com/KYMario/TownOfHost-K/wiki/かくれんぼ)
-- [タスクバトル](https://github.com/KYMario/TownOfHost-K/wiki/タスクバトル)
+- [スタンダード](https://github.com/KYMario/TownOfHost-Pko/wiki/スタンダード)
+- - [役職入りかくれんぼ](https://github.com/KYMario/TownOfHost-Pko/wiki/役職入りかくれんぼ)
+- - [サドンデスモード](https://github.com/KYMario/TownOfHost-Pko/wiki/サドンデスモード)
+- [かくれんぼ](https://github.com/KYMario/TownOfHost-Pko/wiki/かくれんぼ)
+- [タスクバトル](https://github.com/KYMario/TownOfHost-Pko/wiki/タスクバトル)
 
 </details>
 
@@ -122,13 +122,13 @@ HostModなので部屋主のみModを導入すれば、<br>
 
 > **Note**
 > - 棒読みちゃんを起動してる時のみ読み上げ設定をONにしてください (自動でOFFになります)
-> - [TOHK_DATA\options.txt](#オプションファイル)からポートを設定できます。
+> - [TOHP_DATA\options.txt](#オプションファイル)からポートを設定できます。
 
 #### 外部リンク
-　TownOfHost-K<br>
-　　[Twitter(X)](https://x.com/Tohkserver_k)<br>
+　TownOfHost-Pko<br>
+　　[Twitter(X)](https://x.com/TOHPserver_k)<br>
 
-**TownOfHost-Kの開発者**<br>
+**TownOfHost-Pkoの開発者**<br>
 　暇な人 KY/けーわい<br>
 　　[Youtube](https://www.youtube.com/@MTGC_KY)<br>
 　　[Twitter(X)](https://x.com/ky_mario_ky) ・ [Bluesky](https://bsky.app/profile/kymario.bsky.social)<br>
@@ -147,14 +147,14 @@ HostModなので部屋主のみModを導入すれば、<br>
 　はろん<br>
 　　[Twitter(X)](https://x.com/HellWeen11)<br>
 
-**TownOfHost-Kのサポーター**<br>
+**TownOfHost-Pkoのサポーター**<br>
 　りぃりぃ<br>
 　　[Twitter(X)](https://x.com/rixirixi0202)<br>
 
 ※本家TownOfHost様の開発者はここでは省略させていただきます
 #### クレジット
 [Town Of Host](https://github.com/tukasa0001/TownOfHost)<br>
-　Fork元の本家です。<br>TownOfHost様にある機能はTownOfHost-Kでも大体実装されています<br>
+　Fork元の本家です。<br>TownOfHost様にある機能はTownOfHost-Pkoでも大体実装されています<br>
 
 [Town Of Host_Y](https://github.com/Yumenopai/TownOfHost_Y)<br>
 　会議時の役職表示、会議拡張、ワーカホリック,属性名、一部役職を参考/移植させて頂きました！<br>

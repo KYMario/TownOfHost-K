@@ -134,7 +134,7 @@ public static class LastGameSave
         }
         SetEverythingUpPatch.ScreenShotbutton.Button.transform.SetLocalY(-50);
         var now = DateTime.Now;
-        var path = $"{ScreenShotFolder.FullName}TOH-Kv{Main.PluginVersion}-{now.Year}-{now.Month}-{now.Day}-{now.Hour}.{now.Minute}.png";
+        var path = $"{ScreenShotFolder.FullName}TOH-Pv{Main.PluginVersion}-{now.Year}-{now.Month}-{now.Day}-{now.Hour}.{now.Minute}.png";
 
         _ = new LateTask(() => ScreenCapture.CaptureScreenshot(path), 0.5f, "SecreenShot");
 

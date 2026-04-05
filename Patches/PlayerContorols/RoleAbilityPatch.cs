@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 using System.Linq;
-
-using Hazel;
-using HarmonyLib;
-using UnityEngine;
 using AmongUs.GameOptions;
-
+using HarmonyLib;
+using Hazel;
 using TownOfHost.Modules;
+using TownOfHost.Patches.ISystemType;
+using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Ghost;
-using TownOfHost.Roles.AddOns.Common;
-using TownOfHost.Patches.ISystemType;
+using TownOfHost.Roles.Impostor;
+using UnityEngine;
 
 namespace TownOfHost
 
@@ -605,10 +604,7 @@ namespace TownOfHost
     {
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
-            if (!AmongUsClient.Instance.AmHost || !Main.CanUseAbility) return false;
-
-            Logger.Info("CheckProtect発生: " + __instance.GetNameWithRole().RemoveHtmlTags() + "=>" + target.GetNameWithRole().RemoveHtmlTags(), "CheckProtect");
-
+            // ゴースト系能力
             if (__instance.IsGhostRole())
             {
                 Ghostbuttoner.UseAbility(__instance);
@@ -623,16 +619,7 @@ namespace TownOfHost
                 return false;
             }
 
-            if (__instance.GetCustomRole() is CustomRoles.Sheriff or CustomRoles.WolfBoy or CustomRoles.SwitchSheriff)
-            {
-                if (__instance.Data.IsDead)
-                {
-                    Logger.Info("守護をブロックしました。", "CheckProtect");
-                    return false;
-                }
-            }
-            //全部falseしてもいい気はする
-            return true;
+            return false;
         }
     }
     #endregion

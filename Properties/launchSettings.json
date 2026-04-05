@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "プロファイル 1": {
+      "commandName": "Executable",
+      "executablePath": "$(AmongUs)\\Among Us.exe"
+    }
+  }
+}

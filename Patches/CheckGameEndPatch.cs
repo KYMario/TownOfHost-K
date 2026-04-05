@@ -1,22 +1,22 @@
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
-using UnityEngine;
-
+using Hazel;
 using TownOfHost.Modules;
+using TownOfHost.Patches;
+using TownOfHost.Roles.AddOns.Common;
+using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
-using TownOfHost.Roles.Neutral;
-using TownOfHost.Roles.AddOns.Neutral;
-using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Crewmate;
 using TownOfHost.Roles.Ghost;
-using TownOfHost.Patches;
 using TownOfHost.Roles.Impostor;
+using TownOfHost.Roles.Neutral;
+using UnityEngine;
 
 namespace TownOfHost
 {
@@ -28,28 +28,20 @@ namespace TownOfHost
         {
             if (!AmongUsClient.Instance.AmHost) return true;
 
-            //ゲーム終了判定済みなら中断
             if (predicate == null) return false;
 
-            //ゲーム終了しないモードで廃村以外の場合は中断
             if (Main.DontGameSet && CustomWinnerHolder.WinnerTeam != CustomWinner.Draw) return false;
 
-            //カススポエディターでは終了させたくないので中断
             if (CustomSpawnEditor.ActiveEditMode) return false;
 
-            //後追い処理等が終わってないなら中断
             if (predicate is NormalGameEndPredicate && Main.AfterMeetingDeathPlayers.Count is not 0) return false;
 
-            //廃村用に初期値を設定
             var reason = GameOverReason.ImpostorsByKill;
 
-            //ゲーム終了判定
             predicate.CheckForEndGame(out reason);
 
-            //ゲーム終了時
             if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default)
             {
-                //カモフラージュ強制解除
                 PlayerCatch.AllPlayerControls.Do(pc => Camouflage.RpcSetSkin(pc, ForceRevert: true, RevertToDefault: true));
 
                 if (Options.CurrentGameMode != CustomGameMode.Standard || !SuddenDeathMode.NowSuddenDeathMode)
@@ -70,7 +62,6 @@ namespace TownOfHost
                             }
                             break;
                         case CustomWinner.Impostor:
-
                             PlayerCatch.AllPlayerControls
                                 .Where(pc => (pc.Is(CustomRoleTypes.Impostor) || pc.Is(CustomRoleTypes.Madmate) || pc.Is(CustomRoles.SKMadmate)) && (!pc.GetCustomRole().IsLovers() || !pc.Is(CustomRoles.Jackaldoll)))
                                 .Do(pc => CustomWinnerHolder.WinnerIds.Add(pc.PlayerId));
@@ -83,10 +74,7 @@ namespace TownOfHost
                             }
                             break;
                         default:
-                            // クルーでもインポスター勝利でもない場合のみ。徒党の処理をする
                             Faction.CheckWin();
-                            //ラバー勝利以外の時にラバーをしめt...勝利を剥奪する処理。
-                            //どーせ追加なら追加勝利するやろし乗っ取りなら乗っ取りやし。
                             if (CustomWinnerHolder.WinnerTeam.IsLovers())
                                 break;
                             PlayerCatch.AllPlayerControls
@@ -94,7 +82,7 @@ namespace TownOfHost
                                 .Do(p => CustomWinnerHolder.CantWinPlayerIds.Add(p.PlayerId));
                             break;
                     }
-                //チーム戦で勝者がチームじゃない時(単独勝利とかね)
+
                 if (SuddenDeathMode.NowSuddenDeathTemeMode && !(CustomWinnerHolder.WinnerTeam is CustomWinner.SuddenDeathRed or CustomWinner.SuddenDeathBlue or CustomWinner.SuddenDeathGreen or CustomWinner.SuddenDeathYellow or CustomWinner.PurpleLovers))
                 {
                     SuddenDeathMode.TeamAllWin();
@@ -105,7 +93,7 @@ namespace TownOfHost
                     {
                         Lovers.LoversSoloWin(ref reason);
                     }
-                    if (reason.Equals(GameOverReason.CrewmatesByTask))//タスクの場合リア充敗北☆
+                    if (reason.Equals(GameOverReason.CrewmatesByTask))
                     {
                         PlayerCatch.AllPlayerControls
                             .Where(pc => pc.IsLovers())
@@ -113,7 +101,6 @@ namespace TownOfHost
                     }
                     Lovers.LoversAddWin();
 
-                    //追加勝利陣営
                     foreach (var pc in PlayerCatch.AllPlayerControls.Where(pc => !CustomWinnerHolder.WinnerIds.Contains(pc.PlayerId) || pc.GetCustomRole() is CustomRoles.Turncoat or CustomRoles.AllArounder))
                     {
                         if (!pc.IsLovers() && !pc.Is(CustomRoles.Amanojaku))
@@ -138,6 +125,10 @@ namespace TownOfHost
                 {
                     CurseMaker.CheckWin();
                     Fox.SFoxCheckWin(ref reason);
+                    // ★ 神の勝利判定
+                    God.CheckWin(ref reason);
+                    // ★ マグロの勝利判定
+                    Tuna.CheckWin(ref reason);
                 }
                 AsistingAngel.CheckAddWin();
                 foreach (var phantomthiefplayer in PlayerCatch.AllAlivePlayerControls.Where(pc => pc.GetCustomRole() is CustomRoles.PhantomThief))
@@ -175,9 +166,7 @@ namespace TownOfHost
         private static IEnumerator CoEndGame(AmongUsClient self, GameOverReason reason)
         {
             GameStates.IsOutro = true;
-            // サーバー側のパケットサイズ制限によりCustomRpcSenderが利用できないため，遅延を挟むことで順番の整合性を保つ．
 
-            // バニラ画面でのアウトロを正しくするためのゴーストロール化
             List<byte> ReviveRequiredPlayerIds = new();
             var winner = CustomWinnerHolder.WinnerTeam;
             foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -207,12 +196,10 @@ namespace TownOfHost
                         Logger.Info($"{pc.GetNameWithRole().RemoveHtmlTags()}: CrewmateGhostに変更", "ResetRoleAndEndGame");
                         pc.RpcSetRole(RoleTypes.CrewmateGhost, false);
                     }
-                    // 蘇生までの遅延の間にオートミュートをかけられないように元に戻しておく
                     pc.Data.IsDead = isDead;
                 }
             }
 
-            // CustomWinnerHolderの情報の同期
             if (PlayerCatch.AnyModClient())
             {
                 var winnerWriter = self.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.EndGame, Hazel.SendOption.Reliable);
@@ -220,27 +207,22 @@ namespace TownOfHost
                 self.FinishRpcImmediately(winnerWriter);
             }
 
-            // 蘇生を確実にゴーストロール設定の後に届けるための遅延
             yield return new WaitForSeconds(EndGameDelay);
 
             if (ReviveRequiredPlayerIds.Count > 0)
             {
-                // 蘇生 パケットが膨れ上がって死ぬのを防ぐため，1送信につき1人ずつ蘇生する
                 for (int i = 0; i < ReviveRequiredPlayerIds.Count; i++)
                 {
                     var playerId = ReviveRequiredPlayerIds[i];
                     var playerInfo = GameData.Instance.GetPlayerById(playerId);
-                    // 蘇生
                     playerInfo.IsDead = false;
                 }
                 GameDataSerializePatch.SerializeMessageCount++;
                 RPC.RpcSyncAllNetworkedPlayer();
                 GameDataSerializePatch.SerializeMessageCount--;
-                // ゲーム終了を確実に最後に届けるための遅延
                 yield return new WaitForSeconds(EndGameDelay);
             }
             yield return new WaitForSeconds(EndGameDelay);
-            //ちゃんとバニラに試合結果表示させるための遅延
             try
             {
                 SetRoleSummaryText();
@@ -252,12 +234,16 @@ namespace TownOfHost
             }
             yield return new WaitForSeconds(EndGameDelay);
 
-            // ゲーム終了
             GameManager.Instance.RpcEndGame(reason, false);
+            EndGameNavigation nav = DestroyableSingleton<EndGameNavigation>.Instance;
+            if (nav != null)
+            {
+                nav.NextGame();
+            }
         }
         private static void SetRoleSummaryText(CustomRpcSender sender = null)
         {
-            var winners = new List<PlayerControl>(); //先に処理
+            var winners = new List<PlayerControl>();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 if (CustomWinnerHolder.WinnerIds.Contains(pc.PlayerId)) winners.Add(pc);
@@ -285,7 +271,6 @@ namespace TownOfHost
                 }
             var (CustomWinnerText, CustomWinnerColor, _, _, _) = UtilsGameLog.GetWinnerText(winnerList: winnerList);
             var winnerSize = GetScale(CustomWinnerText.RemoveHtmlTags().Length, 2, 3.3);
-            // フォントサイズを制限
             CustomWinnerText = $"<size={winnerSize}>{CustomWinnerText}</size>";
             static double GetScale(int input, double min, double max)
                 => min + (max - min) * (1 - (double)(input - 1) / 13);
@@ -296,7 +281,7 @@ namespace TownOfHost
                 if (pc == null) continue;
                 var target = (winnerList.Contains(pc.PlayerId) ? pc : (winnerList.Count == 0 ? pc : PlayerCatch.GetPlayerById(winnerList.OrderBy(pc => pc).FirstOrDefault()) ?? pc)) ?? pc;
                 var targetname = Main.AllPlayerNames[target.PlayerId].Color(UtilsRoleText.GetRoleColor(target.GetCustomRole()));
-                var text = $"<voffset=25>{CustomWinnerText}\n<voffset=24>{targetname}";// sb.ToString() +$"\n</align><voffset=23>{CustomWinnerText}\n<voffset=45><size=1.75>{targetname}";
+                var text = $"<voffset=25>{CustomWinnerText}\n<voffset=24>{targetname}";
                 if (sender == null)
                 {
                     target.RpcSetNamePrivate(text, true, pc, true);

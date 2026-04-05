@@ -437,7 +437,7 @@ namespace TownOfHost
             if (CustomWinnerHolder.WinnerTeam != CustomWinner.Default && !Main.DontGameSet) return;
 
             /* 会議拡張の奴 */
-            var Minfo = $"<voffset=20><line-height=0><{Main.ModColor}><size=85%>TownOfHost-K</size>\t\t \n \t\t</color><size=70%><#ffffff>v{Main.PluginShowVersion}</color></size></voffset>";
+            var Minfo = $"<voffset=20><line-height=0><{Main.ModColor}><size=85%>TownOfHost-Pko</size>\t\t \n \t\t</color><size=70%><#ffffff>v{Main.PluginShowVersion}</color></size></voffset>";
             Minfo += $"<voffset=17.5>\n<#fc9003>Day.{UtilsGameLog.day}</color>" + Bakery.BakeryMark() + $"<voffset=15>\n{ExtendedMeetingText}</voffset>";
             if (CustomRolesHelper.CheckGuesser() || PlayerCatch.AllPlayerControls.Any(pc => pc.Is(CustomRoles.Guesser)))
             {

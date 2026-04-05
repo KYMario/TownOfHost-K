@@ -57,7 +57,7 @@ namespace TownOfHost
     class Alert
     {
         /*
-        public static void Send(string text, string name = "TownOfHost-K", string avatar = "https://cdn.discordapp.com/attachments/1219855613752774657/1254725875535183933/TabIcon_MainSettings.png?ex=667a8a08&is=66793888&hm=dc20a50c7cadab0a15a215c19abcde6006fbef9911299ab82e452b7cf5242f57&")
+        public static void Send(string text, string name = "TownOfHost-Pko", string avatar = "https://cdn.discordapp.com/attachments/1219855613752774657/1254725875535183933/TabIcon_MainSettings.png?ex=667a8a08&is=66793888&hm=dc20a50c7cadab0a15a215c19abcde6006fbef9911299ab82e452b7cf5242f57&")
         {
             ClientOptionsManager.CheckOptions();
             HttpClient httpClient = new();

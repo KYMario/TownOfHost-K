@@ -69,7 +69,7 @@ namespace TownOfHost
 
             if (PlayerCatch.AliveImpostorCount != AliveImpostorCount)
             {
-                Logger.Info("生存しているインポスター:" + AliveImpostorCount + "人", "CountAliveImpostors");
+                Logger.Info("生存しているチンポスター:" + AliveImpostorCount + "人", "CountAliveImpostors");
                 PlayerCatch.AliveImpostorCount = AliveImpostorCount;
                 LastImpostor.SetSubRole();
                 Amnesia.CheckImpostorCount();

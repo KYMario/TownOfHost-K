@@ -69,5 +69,10 @@ namespace TownOfHost
         {
             base.SetValue(Rule.RepeatIndex(value), doSync);
         }
+
+        internal static object Create(int v1, string v2, object value, int v3, bool v4)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

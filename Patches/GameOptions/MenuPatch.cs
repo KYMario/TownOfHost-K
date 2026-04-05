@@ -170,7 +170,7 @@ namespace TownOfHost
                 RoleSettingsButton.gameObject.SetActive(false);
 
                 ModSettingsButton.gameObject.name = "TownOfHostSetting";
-                ModSettingsButton.buttonText.text = "TownOfHost-K";
+                ModSettingsButton.buttonText.text = "TownOfHost-Pko";
                 var activeSprite = ModSettingsButton.activeSprites.GetComponent<SpriteRenderer>();
                 var selectedSprite = ModSettingsButton.selectedSprites.GetComponent<SpriteRenderer>();
                 activeSprite.color = StringHelper.CodeColor(Main.ModColor);
@@ -568,7 +568,6 @@ namespace TownOfHost
                 InfoCount = count.transform.GetComponentInChildren<TMPro.TextMeshPro>();
             }
         }
-
         public static void CreateOptions(TabGroup tab, Dictionary<TabGroup, GameObject> menus, Dictionary<CustomRoles, GameObject> crmenus, Transform tabtransfrom, bool forceAllTabs = false)
         {
             if (!forceAllTabs && tabGenerated.Contains(tab)) return;

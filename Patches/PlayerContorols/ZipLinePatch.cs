@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using HarmonyLib;
+using TownOfHost.Roles.Core;
 
 namespace TownOfHost
 {
@@ -17,6 +18,16 @@ namespace TownOfHost
         public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target, [HarmonyArgument(1)] ZiplineBehaviour ziplineBehaviour, [HarmonyArgument(2)] bool fromTop)
         {
             if (AmongUsClient.Instance.AmHost is false) return true;
+
+            // ★ 波動砲がチャージ中またはビーム中ならジップライン使用禁止
+            if (__instance.GetRoleClass() is Roles.Impostor.HadouHo hadouHo)
+            {
+                if (hadouHo.IsCharging || hadouHo.ShowBeamMark)
+                {
+                    return false;
+                }
+            }
+
             if (!fromTop && Options.CantUseZipLineTotop.GetBool()) return false;
             if (fromTop && Options.CantUseZipLineTodown.GetBool()) return false;
 
@@ -84,6 +95,27 @@ namespace TownOfHost
             }
             ZiplineCools.Clear();
             ZipdiePlayers.Clear();
+        }
+    }
+
+    [HarmonyPatch(typeof(MovingPlatformBehaviour))]
+    class HadouHoMovingPlatformPatch
+    {
+        [HarmonyPatch(nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl)), HarmonyPrefix]
+        public static bool UsePrefix(PlayerControl player)
+        {
+            // ★ ホストのみ処理
+            if (AmongUsClient.Instance.AmHost is false) return true;
+
+            // ★ 波動砲がチャージ中またはビーム中なら梯子使用禁止
+            if (player.GetRoleClass() is Roles.Impostor.HadouHo hadouHo)
+            {
+                if (hadouHo.IsCharging || hadouHo.ShowBeamMark)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

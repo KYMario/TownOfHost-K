@@ -119,9 +119,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
     {
         var id = RoleInfo.ConfigId + idOffset;
         parent ??= RoleInfo.RoleOption;
-        // (%team%陣営)
         var inTeam = GetString("In%team%", new Dictionary<string, string>() { ["%team%"] = GetRoleString(catType.ToString()) });
-        // シュレディンガーの猫(%team%陣営)
         var catInTeam = Utils.ColorString(SchrodingerCat.GetCatColor(catType), UtilsRoleText.GetRoleName(CustomRoles.SchrodingerCat) + inTeam);
         Dictionary<string, string> replacementDic = new() { ["%role%"] = catInTeam };
         SchrodingerCatKillTargetOptions[catType] = BooleanOptionItem.Create(id, OptionName.SheriffCanKill + "%role%", defaultValue, RoleInfo.Tab, false).SetParent(parent).SetParentRole(CustomRoles.Sheriff);
@@ -177,7 +175,6 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
 
             if (!CanBeKilledBy(target) || AlienTairo)
             {
-                //ターゲットが大狼かつ死因を変える設定なら死因を変える、それ以外はMisfire
                 PlayerState.GetByPlayerId(killer.PlayerId).DeathReason =
                             target.Is(CustomRoles.Tairou) && Tairou.TairoDeathReason ? CustomDeathReason.Counter :
                             target.Is(CustomRoles.Alien) && Alien.TairoDeathReason ? CustomDeathReason.Counter :
@@ -196,6 +193,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
         }
         return;
     }
+    
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(CanUseKillButton() ? Color.yellow : Color.gray, $"({ShotLimit})");
     public static bool CanBeKilledBy(PlayerControl player)
     {

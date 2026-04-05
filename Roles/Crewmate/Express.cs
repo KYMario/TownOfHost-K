@@ -22,10 +22,7 @@ public sealed class Express : RoleBase
         );
 
     public Express(PlayerControl player)
-    : base(
-        RoleInfo,
-        player
-    )
+        : base(RoleInfo, player)
     {
         speed = OptionSpeed.GetFloat();
     }
@@ -45,8 +42,17 @@ public sealed class Express : RoleBase
             .SetValueFormat(OptionFormat.Multiplier);
     }
 
+    // ★ 速度を加算方式に変更
     public override void Add()
     {
-        Main.AllPlayerSpeed[Player.PlayerId] = speed;
+        Main.AllPlayerSpeed[Player.PlayerId] += speed;
     }
+    public override void ChengeRoleAdd()
+    {
+        // Express が外れた瞬間に速度を戻す
+        Main.AllPlayerSpeed[Player.PlayerId] -= speed;
+
+        base.ChengeRoleAdd();
+    }
+
 }

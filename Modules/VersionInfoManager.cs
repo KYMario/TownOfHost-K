@@ -19,8 +19,8 @@ namespace TownOfHost.Modules;
 [HarmonyPatch]
 class VersionInfoManager
 {
-    public static readonly string URL = "https://raw.githubusercontent.com/KYMario/TownOfHost-K/main/versions.json";
-    //public static readonly string URL = "https://raw.githubusercontent.com/KYMario/TOHk-Test/main/versions.json";
+    public static readonly string URL = "https://raw.githubusercontent.com/KYMario/TownOfHost-Pko/main/versions.json";
+    //public static readonly string URL = "https://raw.githubusercontent.com/KYMario/TOHP-Test/main/versions.json";
     public static Dictionary<string, VersionInfo> Versions { get; protected set; }
     public static VersionInfo version { get; protected set; }
     public static VersionInfo allversion { get; protected set; }
@@ -90,7 +90,7 @@ class VersionInfoManager
         {
             var announceText = new GameObject("ModAnnounceText").AddComponent<TextMeshPro>();
 
-            announceText.transform.SetParent(CredentialsPatch.TohkLogo.transform);
+            announceText.transform.SetParent(CredentialsPatch.TOHPLogo.transform);
             announceText.transform.localPosition = new(0f, 1f, 0f);
             announceText.fontSize =
             announceText.fontSizeMax =
@@ -278,7 +278,7 @@ class VersionInfoManager
         try
         {
             UnityWebRequest request = UnityWebRequest.Get(URL);
-            request.SetRequestHeader("User-Agent", "TownOfHost-K VersionChecker");
+            request.SetRequestHeader("User-Agent", "TownOfHost-Pko VersionChecker");
 
             var co = request.SendWebRequest();
             while (!co.isDone) { System.Threading.Thread.Sleep(10); }

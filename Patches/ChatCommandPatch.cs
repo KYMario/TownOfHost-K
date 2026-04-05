@@ -3,28 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-
+using System.Threading.Tasks;
+using AmongUs.GameOptions;
+using Assets.CoreScripts;
+using HarmonyLib;
 using Hazel;
 using InnerNet;
-using HarmonyLib;
-using UnityEngine;
-using Assets.CoreScripts;
-using AmongUs.GameOptions;
-
 using TownOfHost.Modules;
 using TownOfHost.Modules.ChatManager;
-using TownOfHost.Roles.Core;
-using TownOfHost.Roles.Impostor;
-using static TownOfHost.Utils;
-using static TownOfHost.UtilsGameLog;
-using static TownOfHost.UtilsShowOption;
-using static TownOfHost.UtilsRoleText;
-using static TownOfHost.UtilsRoleInfo;
-using static TownOfHost.Translator;
-using static TownOfHost.PlayerCatch;
-using TownOfHost.Roles.Core.Descriptions;
 using TownOfHost.Patches;
 using TownOfHost.Roles.AddOns.Common;
+using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Core.Descriptions;
+using TownOfHost.Roles.Crewmate;
+using TownOfHost.Roles.Impostor;
+using UnityEngine;
+using static TownOfHost.PlayerCatch;
+using static TownOfHost.Translator;
+using static TownOfHost.Utils;
+using static TownOfHost.UtilsGameLog;
+using static TownOfHost.UtilsRoleInfo;
+using static TownOfHost.UtilsRoleText;
+using static TownOfHost.UtilsShowOption;
 
 namespace TownOfHost
 {
@@ -32,6 +32,7 @@ namespace TownOfHost
     class ChatCommands
     {
         public static List<string> ChatHistory = new();
+        public static string RuleText = "";
         public static Dictionary<CustomRoles, string> roleCommands;
         public static bool Prefix(ChatController __instance)
         {
@@ -99,11 +100,19 @@ namespace TownOfHost
             }
             args = args.Skip(1).ToArray();
 
+            // ★ ここに追加する ★
+            string cmd = args[0];
+            string sub = args.Length > 1 ? args[1] : "";
+
+            // ここはそのまま
             if (GuessManager.GuesserMsg(PlayerControl.LocalPlayer, text)) canceled = true;
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
-            switch (args[0])
+            // ★ switch を args[0] ではなく cmd に変更する ★
+            switch (cmd)
             {
+
+
                 case "/dump":
                     canceled = true;
                     UtilsOutputLog.DumpLog();
@@ -144,11 +153,120 @@ namespace TownOfHost
                         sender.SendMessage();
                     }
                     break;
+               
             }
             if (AmongUsClient.Instance.AmHost)
             {
                 switch (args[0])
                 {
+                    case "/pko":
+                        {
+                            canceled = true;
+                            string prompt = string.Join(" ", args.Skip(1));
+                            byte senderId = PlayerControl.LocalPlayer.PlayerId;
+
+                            Logger.Info($"[AI] pko called: {prompt}", "AI"); // ★ログ確認用
+                            TownOfHost.Modules.Aiserver.Send(prompt, senderId);
+
+                            __instance.freeChatField.textArea.Clear();
+                            break;
+                        }
+
+                    case "/8ball":
+                        canceled = true;
+                        if (args.Length > 1)
+                        {
+                            string question = string.Join(" ", args.Skip(1));
+                            string[] answers = {
+            "確実にそうです！", "そうでしょう！", "おそらくそうです。",
+            "YES！", "そう思います。","もちろんはい！","いいえに決まってんだろー!!",
+            "そうかもしれません。", "わかりません。","自分で考えろよカス", "はいはいそうだね～",
+            "今は教えられません。", "期待しない方がいいでしょう。", "違うと思います。",
+            "おそらく違います。", "絶対に違います！",
+        };
+                            var rand = new System.Random();
+                            string answer = answers[rand.Next(answers.Length)];
+                            SendMessage($"8ball {PlayerControl.LocalPlayer.Data.PlayerName}「{question}」\n→ {answer}");
+                        }
+                        break;
+                    case "/s":
+                    case "/set":
+                        if (sub == "r" || sub == "rule")
+                        {
+                            canceled = true;
+
+                            string newRule = string.Join(" ", args.Skip(2));
+
+                            if (RuleText == "")
+                            {
+                                RuleText = newRule;
+                                SendMessage($"<size=90%><color=#ff0000>📋 ルールを設定しました！</color>\n{RuleText}</size>");
+                            }
+                            else
+                            {
+                                RuleText = newRule;
+                                SendMessage($"<size=90%><color=#ff0000>📋 ルールを変更しました！</color>\n{RuleText}</size>");
+                            }
+                        }
+                        break;
+                    case "/d":
+                    case "/delete":
+                        if (sub == "r" || sub == "rule")
+                        {
+                            canceled = true;
+
+                            if (RuleText == "")
+                            {
+                                SendMessage("ルールが設定されていません！", PlayerControl.LocalPlayer.PlayerId);
+                            }
+                            else
+                            {
+                                RuleText = "";
+                                SendMessage("<color=#ff0000>📋 ルールを削除しました！</color>");
+                            }
+                        }
+                        break;
+                    case "/rule":
+                    case "/rl":
+                        canceled = true;
+                        if (RuleText == "")
+                            SendMessage("ルールがまだ設定されていません！", PlayerControl.LocalPlayer.PlayerId);
+                        else
+                            SendMessage($"<size=90%><color=#ff0000>📋 ルール</color>\n{RuleText}</size>");
+                        break;
+                    case var s when System.Text.RegularExpressions.Regex.IsMatch(s, @"^/\d+d\d+$"):
+                        canceled = true;
+                        var match = System.Text.RegularExpressions.Regex.Match(args[0], @"^/(\d+)d(\d+)$");
+                        if (match.Success)
+                        {
+                            int min = int.Parse(match.Groups[1].Value);
+                            int max = int.Parse(match.Groups[2].Value);
+                            int result = new System.Random().Next(min, max + 1);
+                            string colorName = PlayerControl.LocalPlayer.Data.DefaultOutfit.ColorId switch
+                            {
+                                0 => "レッド",
+                                1 => "ブルー",
+                                2 => "グリーン",
+                                3 => "ピンク",
+                                4 => "オレンジ",
+                                5 => "イエロー",
+                                6 => "ブラック",
+                                7 => "ホワイト",
+                                8 => "パープル",
+                                9 => "ブラウン",
+                                10 => "シアン",
+                                11 => "ライム",
+                                12 => "マルーン",
+                                13 => "ローズ",
+                                14 => "バナナ",
+                                15 => "グレー",
+                                16 => "タン",
+                                17 => "コーラル",
+                                _ => "不明な色"
+                            };
+                            SendMessage($" {PlayerControl.LocalPlayer.Data.PlayerName} ({colorName})が{min}〜{max}でサイコロを振りました → {result}");
+                        }
+                        break;
                     case "/win":
                     case "/winner":
                         canceled = true;
@@ -251,7 +369,6 @@ namespace TownOfHost
                         if (name.StartsWith(" ")) break;
                         Main.nickName = name;
                         break;
-
                     case "/hn":
                     case "/hidename":
                         canceled = true;
@@ -950,7 +1067,7 @@ namespace TownOfHost
                         break;
 
                     case "/cr":
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool())
                         {
                             canceled = true;
                             subArgs = args.Length < 2 ? "" : args[1];
@@ -987,7 +1104,7 @@ namespace TownOfHost
                         }
                         break;
                     case "/fps":
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool() && DebugModeManager.AmDebugger)
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool() && DebugModeManager.AmDebugger)
                         {
                             CredentialsPatch.a = true;
                             _ = new LateTask(() =>
@@ -1010,7 +1127,7 @@ namespace TownOfHost
                         }
                         break;
                     case "/tp":
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool())
                         {
                             canceled = true;
                             subArgs = args.Length < 2 ? "" : args[1];
@@ -1022,7 +1139,7 @@ namespace TownOfHost
                         }
                         break;
                     case "/wi":
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool())
                         {
                             canceled = true;
                             subArgs = args.Length < 2 ? "" : args[1];
@@ -1045,7 +1162,7 @@ namespace TownOfHost
                         }
                         break;
                     case "/wiop":
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool())
                         {
                             canceled = true;
                             subArgs = args.Length < 2 ? "" : args[1];
@@ -1079,7 +1196,7 @@ namespace TownOfHost
                         break;
 
                     case "/dgm":
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool())
                         {
                             canceled = true;
                             if (!GameStates.InGame)
@@ -1094,7 +1211,7 @@ namespace TownOfHost
 
                     case "/debug":
                         canceled = true;
-                        if (DebugModeManager.EnableTOHkDebugMode.GetBool())
+                        if (DebugModeManager.EnableTOHPDebugMode.GetBool())
                         {
                             subArgs = args.Length < 2 ? "" : args[1];
                             switch (subArgs)
@@ -1356,6 +1473,87 @@ namespace TownOfHost
                                 SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
                             }
                         GetAddonsHelp(player);
+                    }
+                    break;
+                case "/pko":
+                    canceled = true;
+                    string userMsg = string.Join(" ", args.Skip(1));
+                    TownOfHost.Modules.Aiserver.Send(userMsg, player.PlayerId);
+                    break;
+                case "/r":
+                case "/rename":
+                    canceled = true;
+                    var name = string.Join(" ", args.Skip(1)).Trim();
+                    if (string.IsNullOrEmpty(name))
+                    {
+                        player.RpcSetName(player.Data.PlayerName);
+                        break;
+                    }
+                    if (!GameStates.IsLobby)
+                    {
+                        SendMessage(GetString("RenameError.NotLobby"), player.PlayerId);
+                        break;
+                    }
+                    if (name.StartsWith(" ")) break;
+                    // ★ RpcSetName で全員に名前変更を通知
+                    player.RpcSetName(name);
+                    break;
+                case "/8ball":
+                    canceled = true;
+                    if (args.Length > 1)
+                    {
+                        string question = string.Join(" ", args.Skip(1));
+                        string[] answers = {
+            "確実にそうです！", "そうでしょう！", "おそらくそうです。",
+            "YES！", "そう思います。","もちろんはい！","いいえに決まってんだろー!!",
+            "そうかもしれません。", "わかりません。","自分で考えろよカス", "はいはいそうだね～",
+            "今は教えられません。", "期待しない方がいいでしょう。", "違うと思います。",
+            "おそらく違います。", "絶対に違います！", 
+        };
+                        var rand = new System.Random();
+                        string answer = answers[rand.Next(answers.Length)];
+                        SendMessage($"8ball {player.Data.PlayerName}「{question}」\n→ {answer}");
+                    }
+                    break;
+                case "/rule":
+                case "/rl":
+                    canceled = true;
+                    if (ChatCommands.RuleText == "")
+                        SendMessage("ルールがまだ設定されていません！", player.PlayerId);
+                    else
+                        SendMessage($"<size=90%><color=#ff0000>📋 ルール</color>\n{ChatCommands.RuleText}</size>", player.PlayerId);
+                    break;
+                case var s when System.Text.RegularExpressions.Regex.IsMatch(s, @"^/\d+d\d+$"):
+                    canceled = true;
+                    var match = System.Text.RegularExpressions.Regex.Match(args[0], @"^/(\d+)d(\d+)$");
+                    if (match.Success)
+                    {
+                        int min = int.Parse(match.Groups[1].Value);
+                        int max = int.Parse(match.Groups[2].Value);
+                        int result = new System.Random().Next(min, max + 1);
+                        string colorName = player.Data.DefaultOutfit.ColorId switch
+                        {
+                            0 => "レッド",
+                            1 => "ブルー",
+                            2 => "グリーン",
+                            3 => "ピンク",
+                            4 => "オレンジ",
+                            5 => "イエロー",
+                            6 => "ブラック",
+                            7 => "ホワイト",
+                            8 => "パープル",
+                            9 => "ブラウン",
+                            10 => "シアン",
+                            11 => "ライム",
+                            12 => "マルーン",
+                            13 => "ローズ",
+                            14 => "バナナ",
+                            15 => "グレー",
+                            16 => "タン",
+                            17 => "コーラル",
+                            _ => "不明な色"
+                        };
+                        SendMessage($" {player.Data.PlayerName} ({colorName})が{min}〜{max}でサイコロを振りました → {result}");
                     }
                     break;
                 case "/t":

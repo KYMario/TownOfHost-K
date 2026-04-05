@@ -24,11 +24,11 @@ public class ModNewsHistory
                 var news = new ModNews
                 {
                     Number = 100002,
-                    Title = "ハッピーハロウィンついにTOH-Kリリース！",
+                    Title = "ハッピーハロウィンついにTOH-Pリリース！",
                     SubTitle = "やっとリリースしたよ！",
-                    ShortTitle = "◆TOH-K v5.1.14",
-                    Text = "ハロウィンにリリースしたのだぁー\n\rってことで(?)TOH-Kを使ってくれてありがとおおお!\n\r\n\rあ、詳しくは<nobr><link=\"https://github.com/KYMario/TownOfHost-K\">README</nobr></link> 見てね～\n\r\n\rマジでここなに書いたらいいんやろな なにも思いつかないぜ(これただ独り言めっちゃ書いてるやばいやつだ)\n\rまぁTOH-Kのこと話します 初リリースってことで元々24役職(ﾈﾀ役職含め)あったのを12役職まで減らしたんだぜ！ 多分いつかアプデで一部は追加すると思う\n\rそ～し～て～実は隠し要素あります！ 1つはコマンド、もう一つは隠しコマンド(key)で使えるようになるよ！<size=40%>\nやぁ。Yだ。1周年記念でニュースを閉じた画面で特定のキーを押す隠しコマンドを追加してみたのさ。\n探してみてネ。ハハハ</size>\n探してみてね\n\rあとYouTubeとかTwitter(X)でTOHkの動画とかじゃんじゃん投稿しちゃって！"
-                    + " あ、でもちゃんとMODで本家じゃなくてTOHkってことわかるようにしてね それだけ守ってくれれば.. 配信とか動画で使ってくれるとめちゃ喜びます！\n\rそれじゃあこのぐらいでいいかな、じゃあkを楽しんできてね～\n\r\n\rTOH-K開発者: けーわい,タイガー,夜藍/中の人,ねむa,はろん\nサポーター:りぃりぃ",
+                    ShortTitle = "◆TOH-P v5.1.14",
+                    Text = "ハロウィンにリリースしたのだぁー\n\rってことで(?)TOH-Pを使ってくれてありがとおおお!\n\r\n\rあ、詳しくは<nobr><link=\"https://github.com/KYMario/TownOfHost-Pko\">README</nobr></link> 見てね～\n\r\n\rマジでここなに書いたらいいんやろな なにも思いつかないぜ(これただ独り言めっちゃ書いてるやばいやつだ)\n\rまぁTOH-Pのこと話します 初リリースってことで元々24役職(ﾈﾀ役職含め)あったのを12役職まで減らしたんだぜ！ 多分いつかアプデで一部は追加すると思う\n\rそ～し～て～実は隠し要素あります！ 1つはコマンド、もう一つは隠しコマンド(key)で使えるようになるよ！<size=40%>\nやぁ。Yだ。1周年記念でニュースを閉じた画面で特定のキーを押す隠しコマンドを追加してみたのさ。\n探してみてネ。ハハハ</size>\n探してみてね\n\rあとYouTubeとかTwitter(X)でTOHPの動画とかじゃんじゃん投稿しちゃって！"
+                    + " あ、でもちゃんとMODで本家じゃなくてTOHPってことわかるようにしてね それだけ守ってくれれば.. 配信とか動画で使ってくれるとめちゃ喜びます！\n\rそれじゃあこのぐらいでいいかな、じゃあkを楽しんできてね～\n\r\n\rTOH-P開発者: けーわい,タイガー,夜藍/中の人,ねむa,はろん\nサポーター:りぃりぃ",
                     Date = "2023-10-31T00:00:00Z"
                 };
                 AllModNews.Add(news);
@@ -38,8 +38,8 @@ public class ModNewsHistory
                 {
                     Number = 100003,
                     Title = "もう12月！？ メリクリ～",
-                    SubTitle = "Town Of Host-K v5.1.31",
-                    ShortTitle = "◆TOH-K v5.1.31",
+                    SubTitle = "Town Of Host-Pko v5.1.31",
+                    ShortTitle = "◆TOH-P v5.1.31",
                     Text = "TOH v5.1.3への対応\nテレポートキラーに自爆設定が追加されたよ!\n (ターゲットが)ベントやぬーん、梯子を使っている時自爆する設定を追加したのだ！\n次はジャッカルマフィア!\n ジャッカルがｼﾞｬｯｶﾙﾏﾌｨｱを視認できるか(その逆も)\n ジャッカルがｼﾞｬｯｶﾙﾏﾌｨｱをキルできるかも設定できるようになったよぉ\nあと参加者がタイマーコマンド使うと霊界送りにされるﾔﾊﾞｲﾔﾂも直したのだ",
                     Date = "2023-12-23T00:00:00Z"
                 };
@@ -50,8 +50,8 @@ public class ModNewsHistory
                 {
                     Number = 100004,
                     Title = "ハッピーニューイヤー",
-                    SubTitle = "Town Of Host-K v5.1.45",
-                    ShortTitle = "◆TOH-K v5.1.45",
+                    SubTitle = "Town Of Host-Pko v5.1.45",
+                    ShortTitle = "◆TOH-P v5.1.45",
                     Text = "TOH v5.1.4への対応\nメインメニューにX(Twitter)のボタンを追加したよ！\n是非フォローよろしくね^^(乞食)\nそして新役職！大狼の追加!!\nシェリフが大狼をキルとシェリフが誤爆する。\nまた、占い師が大狼を占ってもクルーメイトと表示される!\n新ゲームモード タスクバトル解放！\nタスクを誰よりも早く終わらせよう\nボタンが押せなく、インポスターがいないモードです\nタスクを全て終わらせると自動でゲームが終了します\n (実はv5.1.14から隠しコマンドとしてあったり..)\n\nそしてこれがほぼGithubのと同じになってる..\nってことでいつも通りここになにか書いときます(("
                     + "\n今回のアプデ、kyは..\n\n\n\n\n\nタスクバトルの解放以外なにもしていない!!(((殴\nﾀﾞｯﾃ!ﾀﾞﾚﾓkﾔｯﾃｸﾝﾅｲｼﾞｬﾝ!!(((\n\nてかﾊｯﾋﾟｰﾆｭｰｲﾔｰってもう遅かったりする..?",
                     Date = "2024-01-19T00:00:00Z"
@@ -63,9 +63,9 @@ public class ModNewsHistory
                 {
                     Number = 100005,
                     Title = "鬼退治だ！！！",
-                    SubTitle = "Town Of Host-K v5.1.46",
-                    ShortTitle = "◆TOH-K v5.1.46",
-                    Text = "新役職大量に追加したよ(ﾀｲﾘｮｳﾅﾉｶｼﾗﾝｹﾄﾞ)\n各役職紹介は<nobr><link=\"https://github.com/KYMario/TownOfHost-K\">README</nobr></link>をご覧ください！\n\n大狼とマッドジェスター、占い師に設定を追加！\n\n大狼はシェリフ誤爆時の死因を変えるかの設定追加\nマッドジェスターはベント使えるかの有無を追加\n占い師に能力を発揮するタスク数を追加!\n\n機能面の追加もあるよ！\nキルクール0sでやってみたいよね？そんな時は設定で出来るようになったよ！\n/sw 勝利させたい陣営 のコマンド追加！(ｱﾝﾏﾂｶﾜﾝｶﾓ)\n\n\n最後にK開発者2人増えた事をお知らせするね！\nみんなが沢山遊んでくれるMODにしていくのでみんなよろしくね^^",
+                    SubTitle = "Town Of Host-Pko v5.1.46",
+                    ShortTitle = "◆TOH-P v5.1.46",
+                    Text = "新役職大量に追加したよ(ﾀｲﾘｮｳﾅﾉｶｼﾗﾝｹﾄﾞ)\n各役職紹介は<nobr><link=\"https://github.com/KYMario/TownOfHost-Pko\">README</nobr></link>をご覧ください！\n\n大狼とマッドジェスター、占い師に設定を追加！\n\n大狼はシェリフ誤爆時の死因を変えるかの設定追加\nマッドジェスターはベント使えるかの有無を追加\n占い師に能力を発揮するタスク数を追加!\n\n機能面の追加もあるよ！\nキルクール0sでやってみたいよね？そんな時は設定で出来るようになったよ！\n/sw 勝利させたい陣営 のコマンド追加！(ｱﾝﾏﾂｶﾜﾝｶﾓ)\n\n\n最後にK開発者2人増えた事をお知らせするね！\nみんなが沢山遊んでくれるMODにしていくのでみんなよろしくね^^",
                     Date = "2024-02-03T00:00:00Z"
                 };
                 AllModNews.Add(news);
@@ -75,10 +75,10 @@ public class ModNewsHistory
                 {
                     Number = 100006,
                     Title = "ハッピーバレンタイン！",
-                    SubTitle = "Town Of Host-K v5.1.47",
-                    ShortTitle = "◆TOH-K v5.1.47",
+                    SubTitle = "Town Of Host-Pko v5.1.47",
+                    ShortTitle = "◆TOH-P v5.1.47",
                     Text = "今回はバグ修正や設定追加が基本だ！ﾀﾀﾞｼ新役職もあるぞい！\n\n新役職\n\nマジシャン！\n天秤！なんかこの役職聞いたことあるって？ｿﾝﾅﾉｷﾆｼﾀﾗﾏｹﾀﾞ!\n\nバグ修正\n\nウルトラスターが霊界でキルしてしまう問題\n非ホストModクライアントがいると発生する問題(一部)\n\n変更箇所\n\nぽんこつ占い師:\n占い失敗時今まではクルーメイト固定だったのが死亡者、自身、投票相手含むゲームにある役職が結果として表示されるように(更にぽんこつ度アップに)\n\n死神:\n死体通報出来ないように変更\n\n"
-                    + "ウルトラスター:\nキル範囲をめっちゃ狭くしたぜ\n\n設定追加\n\n設定場所の移動、まとめたり、カラフルにしました。\n\nマッドメイト系役職の設定にレポート出来ない設定追加\n\nウォッチングをマッドメイトにアサインするように設定追加、それに伴いマッドメイト系役職の設定から他の人の投票先が見れる設定削除\n\nぽんこつ占い師、マッドテラーに陣営占い設定追加\n\n死神に緊急会議ボタンが使用可能かの設定追加\n\n自投票で能力発動する役職に1会議に使う能力を制限する設定追加\n\nクライアント設定に、「推奨設定を隠す」追加\n\nこの他にも変更あるから<nobr><link=\"https://github.com/KYMario/TownOfHost-K\">README</nobr></link>を見てね\n\nボイスコマンドにset追加。使い方は/voって打とう！",
+                    + "ウルトラスター:\nキル範囲をめっちゃ狭くしたぜ\n\n設定追加\n\n設定場所の移動、まとめたり、カラフルにしました。\n\nマッドメイト系役職の設定にレポート出来ない設定追加\n\nウォッチングをマッドメイトにアサインするように設定追加、それに伴いマッドメイト系役職の設定から他の人の投票先が見れる設定削除\n\nぽんこつ占い師、マッドテラーに陣営占い設定追加\n\n死神に緊急会議ボタンが使用可能かの設定追加\n\n自投票で能力発動する役職に1会議に使う能力を制限する設定追加\n\nクライアント設定に、「推奨設定を隠す」追加\n\nこの他にも変更あるから<nobr><link=\"https://github.com/KYMario/TownOfHost-Pko\">README</nobr></link>を見てね\n\nボイスコマンドにset追加。使い方は/voって打とう！",
                     Date = "2024-02-14T00:00:00Z"
                 };
                 AllModNews.Add(news);
@@ -88,8 +88,8 @@ public class ModNewsHistory
                 {
                     Number = 100007,
                     Title = "ひな祭り",
-                    SubTitle = "Town Of Host-K v5.1.48",
-                    ShortTitle = "◆TOH-K v5.1.48",
+                    SubTitle = "Town Of Host-Pko v5.1.48",
+                    ShortTitle = "◆TOH-P v5.1.48",
                     Text = "バグ修正\n\n天秤の会議にて会議が終わらなくなる問題\n天秤会議にて、同数投票でホストが追放された時「どちらも追放された。」と表示されない問題\nGMが入ってる場合会議が終わらない問題\nマジシャンのマジックでキルした時のキルクールが元の半分になる問題\nマジシャンのハットの色がホストの色になってしまう問題\nホスト以外のmod導入済みプレイヤーがシャイボーイになったとき、mod導入者がBANされる問題\nメイヤーの覚醒OFF設定でも覚醒してしまう問題\nワークホースが配役されない問題",
                     Date = "2024-03-03T00:00:00Z"
                 };
@@ -100,8 +100,8 @@ public class ModNewsHistory
                 {
                     Number = 100008,
                     Title = "ホワイトデー",
-                    SubTitle = "Town Of Host-K v5.1.59",
-                    ShortTitle = "◆TOH-K v5.1.59",
+                    SubTitle = "Town Of Host-Pko v5.1.59",
+                    ShortTitle = "◆TOH-P v5.1.59",
                     Text = "Among Us v2024.3.5sとTOH v5.1.5に対応\n\n属性二つ追加だ！\nスピーディング\nイレクター\n\n機能追加\nマッドメイトに停電を無効にするかの設定追加<size=50%>消すのめんどくさかった</size>\nフレンドコードがなくてもBANListを適用できるように。\nテンプレートに装飾できるようになったよ!\n\nバグ修正\nキルボタンを持っているmod導入済みプレイヤーに属性が\n 付くとキルボタンが消える問題\n天秤でホストが追放されている時の画面が終わる前に\n ゲームが終了するとホストの名前がバグる問題\n"
                     + "ホスト以外のmod導入済みプレイヤーがシャイボーイに\n なったとき、mod導入者がBANされる問題\n(↑今度こそ修正)\nミーティングシェリフのキルで会議が終わるはずなのに\n 終了しない問題\n\n仕様変更..?\n\n設定にある廃村ボタンをホストじゃない時は\n 表示しないように\n\nたぶん他にはなにも変わってないハズ...ﾊｽﾞ..",
                     Date = "2024-03-14T00:00:00Z"
@@ -113,15 +113,15 @@ public class ModNewsHistory
                 {
                     Number = 100009,
                     Title = "エイプリルフール",
-                    SubTitle = "Town Of Host-K v5.1.61.0",
-                    ShortTitle = "◆TOH-K v5.1.61.0",
+                    SubTitle = "Town Of Host-Pko v5.1.61.0",
+                    ShortTitle = "◆TOH-P v5.1.61.0",
                     Text = "まっさかあのKがちゃんとリリースするなんて...!?(???)\n\nもう春ですかぁ\n...っということで春の大型アップデート！\n<nobr><link=\"https://youtu.be/P4IG7YluvoQ\">大雑把にまとめたYoutube</nobr></link>\n\n<size=125%>【新役職】</size>\n<b>Crewmate</b>\n巫女\nカムバッカー\n<b>Impostor</b>\nデクレッシェンド\nモグラ\nリミッター\nプログレスキラー\nエイリアン\n"
                     + "<b>Madmate</b>\nマッドリデュース\nマッドアベンジャー\n<b>Neutral</b>\nマドンナ\n<b>ユニット役職</b>\nドライバーとブレイド\n\n<size=120%>【新属性追加】</size>\nゲッサー\nムーン\nスピーディング\nライティング\nマネジメント\nシリアル\nコネクティング\nプラスポート\nオープナー\nノンレポート\nノットヴォウター\nイレクター\nウォーター\nクラムシー\nスラッカー\nトランスパレント\n"
-                    + "ラストニュートラル\n\n<size=120%>【新機能】</size>\n★カスタムスポーン\n<size=50%>ホストが設定したスポーン位置にスポーンします。</size>\n★カスタムボタン\n<size=50%>今までMod導入者でもバニラボタンだったけど...\n今回から一部のボタンはカスタムボタンになるよ!\nMod設定(TOH-Kの設定)からボタンの見た目を変更するをONにすると変更できるよ!</size>"
+                    + "ラストニュートラル\n\n<size=120%>【新機能】</size>\n★カスタムスポーン\n<size=50%>ホストが設定したスポーン位置にスポーンします。</size>\n★カスタムボタン\n<size=50%>今までMod導入者でもバニラボタンだったけど...\n今回から一部のボタンはカスタムボタンになるよ!\nMod設定(TOH-Pの設定)からボタンの見た目を変更するをONにすると変更できるよ!</size>"
                     + "\n☆設定画面でもルームタイマーを表示するように\n☆オブションの保存とリセットをボタンから操作できるように\n☆一部役職をワンクリックボタン対応\n☆ゲームマスターONの場合右上と開始ボタンの下に表記するように\n☆オプションの保存とリセットのボタン追加\n☆/kfコマンド追加\n☆インサイダーモード\n\n<size=120%>【新設定追加】</size>\n・マッドメイト系役職がベント移動できない\n"
                     + "・シーアに通信妨害中も効果が発揮されるか\n・テレポートキラーのテレポートキル時に死因を変える設定\n\n<size=120%>【タスクバトルに新機能追加】</size>\nチーム戦の設定を追加、チームでタスクを競い合おう！\nまた一人で開始するとタイマーが表示されるぞ!\n\n<size=120%>【バグ修正】</size>\n・ファングルのキノコカオスでマジシャンの挙動がおかしくなる問題\n・ホスト以外のMOD導入者が回数表示がおかしい問題\n"
-                    + "・クルー以外のタスクでタスク勝利が出来ていた問題\n・エアシップのスポーンが正常に行われない時がある問題\n・ランダムスポーンが正常に動作しない問題\n・/nしても特殊モード設定が表示されなかった問題\n・天秤会議でウィッチの呪いなどが発動してしまう問題\n・一部ベント使用不可役職がベントに入ると動きがおかしくなる問題\n\n\n<size=120%>【DiscordにTOHkのBOTが！？】</size>"
-                    + "\nTOHkの役職の説明などがコマンドで確認できたりします。\n詳しくは<nobr><link=\"https://discord.gg/5DPqH8seFq\">TOHk公式Discord鯖</nobr></link>まで～\n\n\n\n絶対他も追加したものなどあるのでGitHubをご覧ください！",
+                    + "・クルー以外のタスクでタスク勝利が出来ていた問題\n・エアシップのスポーンが正常に行われない時がある問題\n・ランダムスポーンが正常に動作しない問題\n・/nしても特殊モード設定が表示されなかった問題\n・天秤会議でウィッチの呪いなどが発動してしまう問題\n・一部ベント使用不可役職がベントに入ると動きがおかしくなる問題\n\n\n<size=120%>【DiscordにTOHPのBOTが！？】</size>"
+                    + "\nTOHPの役職の説明などがコマンドで確認できたりします。\n詳しくは<nobr><link=\"https://discord.gg/5DPqH8seFq\">TOHP公式Discord鯖</nobr></link>まで～\n\n\n\n絶対他も追加したものなどあるのでGitHubをご覧ください！",
                     Date = "2024-04-01T00:00:00Z"
                 };
                 AllModNews.Add(news);
@@ -132,13 +132,13 @@ public class ModNewsHistory
                 {
                     Number = 100010,
                     Title = "春のバグ修正祭り",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.61.1</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.61.1</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.61.1</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.61.1</color>",
                     Text = "バグ多くてすまんね！<size=25%>夜藍＜これでバグ無くなってマイクラしまくりt((((\n</size>\n<size=125%>【新コマンド追加】</size>\n・/meetinginfo(/mi)コマンド追加\n <size=70%>┗ 会議中に使えます。ミーティングインフォを自身に(ホストの場合は全員に)再表示します。</size>\n\n<size=125%>【バグ修正】</size>\n<size=80%>・イビルトラッカー等一部役職が条件下で行動不可になる問題\n"
                     + "・ルームタイマーが動かなくなる問題\n・マドンナの投票が他人でも検知してしまう問題\n・ホスト以外がカムバッカーを引くと正常に動作しない問題\n・タスクバトルでエアシップを選択した場合正常にスポーンしない問題\n・ゲッサーのID表示がホスト視点正常に動作してない問題\n・イビルトラッカーの追跡能力がホスト以外正常に動作しない問題\n・ブレイドがドライバーを視認をすることが出来ない問題(これに伴いドライバーとブレイド設定を別々に変更)\n\n"
                     + "<size=125%>【新設定】</size>\n<size=80%>・スナイパーの弾数を99まで増加。\n・スナイパーが弾を持っていない場合シェイプシフトできない設定追加\n・スナイパーの弾が残っていてもキル出来る設定追加。\n・ドライバーとブレイドにブレイドがベント使えるかの設定追加\n\n</size><size=125%>【仕様変更】</size>\n<size=80%>・ウィッチのモード変更がシェイプシフトの場合クールダウンを0sに\n・花火職人の設置をワンクリ固定に\n"
                     + "・花火職人の設置一回目をカウントに入れないように。\n・会議後死亡するプレイヤーの死体通報を無視するように\n・パン屋のメッセージをミーティングインフォで表示されるように\n・MeetingInfoにターン数と通報者/通報された死体の表示を追加。\n・KillLogを一新。\n・翻訳の幅広げました。\n・/feの表示を廃村表示に\n・霊界タスク数を試合結果に表示しないように\n・ゲッサーキルが行われた場合霊界に詳細を表示するように。\n・マッドアベンジャーの革命中に出る邪魔するなメッセージを投票者のみ表示に変更\n\n</size><size=125%>【クライアント対応について】</size>\n"
-                    + "開発者がいうのもなんですが...\nTown Of Host-Kには\nホスト以外が導入すると面白くなる要素がたっぷり(?)あります。\nだからこそクライアント対応をしたいのですが...\nいかんせん想定外のバグが起こってしまっているのが現状です。(´・ω・｀)<size=20%>\n(夜藍はめんどくさいっていってるだけだけど!!)\nｹﾞﾌﾝｹﾞﾌﾝ</size>\n\n...\nこのverでは開発者同士でクライアントテストをしてない\nというのに加え、現状バグ報告に上がっておりなおかつ修正されていないバグが起こる可能性がある\nので参加者はModを無効化して参加することをお勧めいたします...\n_(:3 」∠)_ｺﾞﾒﾝﾈ...\nいつか対応する日まで。\n\n</size>永遠のぽんこつより。",
+                    + "開発者がいうのもなんですが...\nTown Of Host-Pkoには\nホスト以外が導入すると面白くなる要素がたっぷり(?)あります。\nだからこそクライアント対応をしたいのですが...\nいかんせん想定外のバグが起こってしまっているのが現状です。(´・ω・｀)<size=20%>\n(夜藍はめんどくさいっていってるだけだけど!!)\nｹﾞﾌﾝｹﾞﾌﾝ</size>\n\n...\nこのverでは開発者同士でクライアントテストをしてない\nというのに加え、現状バグ報告に上がっておりなおかつ修正されていないバグが起こる可能性がある\nので参加者はModを無効化して参加することをお勧めいたします...\n_(:3 」∠)_ｺﾞﾒﾝﾈ...\nいつか対応する日まで。\n\n</size>永遠のぽんこつより。",
                     Date = "2024-04-15T00:00:00Z"
                 };
                 AllModNews.Add(news);
@@ -148,10 +148,10 @@ public class ModNewsHistory
                 {
                     Number = 100011,
                     Title = "ゴールデンウィーク",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.61.2</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.61.2</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.61.2</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.61.2</color>",
                     Text =
-                    "<size=80%><size=100%>なんか気づいたらそこそこ新要素多くなっちゃった</size>\n\n<size=125%>【☆新役職募集企画開始！☆】</size>\n<size=50%>ﾜｰﾊﾟﾁﾊﾟﾁ</size>\nということでこの度Town Of Host-Kの夏の大型アップデートに向けて...\n普段プレイしてくださっている方々から役職募集をやろうじゃないか!!\n<size=30%>(ほぼ虎さんのとっばつだったケド...)</size>\nｹﾞﾌﾝｹﾞﾌﾝ...\nということです...\n<size=125%>詳細はこちら⇒<nobr><link=\"https://youtu.be/iOkCr5Mcpxg\">【Youtube】</size>\n</nobr></link>\n皆様の素敵な案をお待ちしております!!\n\n"
+                    "<size=80%><size=100%>なんか気づいたらそこそこ新要素多くなっちゃった</size>\n\n<size=125%>【☆新役職募集企画開始！☆】</size>\n<size=50%>ﾜｰﾊﾟﾁﾊﾟﾁ</size>\nということでこの度Town Of Host-Pkoの夏の大型アップデートに向けて...\n普段プレイしてくださっている方々から役職募集をやろうじゃないか!!\n<size=30%>(ほぼ虎さんのとっばつだったケド...)</size>\nｹﾞﾌﾝｹﾞﾌﾝ...\nということです...\n<size=125%>詳細はこちら⇒<nobr><link=\"https://youtu.be/iOkCr5Mcpxg\">【Youtube】</size>\n</nobr></link>\n皆様の素敵な案をお待ちしております!!\n\n"
                     + "<size=125%>【新役職】</size><b>\n~CrewMate Roles~</b>\n・狼少年\t(菅牧慧さんからの提案です!!有難うございます!!)\n・ナイスアドナー\n・ホワイトハッカー\n\n<b>~MadMate Roles~</b>\n・マッドワーカー\n\n<b>~Impostor Roles~</b>\n・イビルアドナー\n\n<b>~Neutral Roles~</b>\n・モノクラー\n・ワーカホリック\n※ジャッカルドール\n\n<b>~Addons~</b>\n・天邪鬼\t(pinaさんからの提案を改良したものです!!有難うございます!!)\n・タイブレーカー\n・アムネシア"
                     + "\n\n<size=125%>【設定追加】</size>\n・シェイプマスターにアニメーション再生設定追加\n・一部役職に属性を付与するかの設定追加\n・一部画面のフレンドコードを隠す設定追加\n・サボタージュ勝利の場合発生させた陣営が勝利する設定追加\n・他人のペットが見えない設定追加\n・メイン設定に会議時間の上限 / 加減設定移設\n・ジェスターにシェイプシフト,ベント使用設定追加"
                     + "\n\n<size=125%>【遂にジャッカルにアレが...!】</size>\nじゃっかるがよわーい!!\nリモキラとか死神とかいすぎてジャッカルなんてつかわなーい!!\nジャッカル版のマッドメイドが欲しいよ～( ﾉД`)ｼｸｼｸ…\n...ん?上のジャッカルドールってなんだよ!!\n\nええっと。遂にジャッカルにサイドキックが追加されました!!\nワンクリックボタンでサイドキックできるようになっております。(その時のキルターゲットをジャッカルドールにします。)\nジャッカルドールはサイドキックマッドメイトと一緒な感じです。\n夢に見たジャッカルのサイドキック...ご堪能あれ。"
@@ -169,13 +169,13 @@ public class ModNewsHistory
                 {
                     Number = 100012,
                     Title = "梅雨がやってくるぞぉ!!",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.61.3</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.61.3</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.61.3</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.61.3</color>",
                     Text =
                     "<size=80%><size=100%>飴飴ふれふれ～</size>\n\n<size=125%>【☆新役職応募企画結果発表!☆】</size>\nまず一つ。発表遅くなり申し訳ございません!!!!!!!!!\n\n採用された役職は順次実装していきます。\n何が採用されたのか知りたいって?\n<size=125%><nobr><link=\"https://youtube.com/live/OKKaWXVSn0U\">ここを見よう!!</size>\n</nobr></link>\n\n"
-                    + "<size=125%>【思いは引き継いだ。】</size>\n1周年と~2ヶ月前にリリース♪<size=50%>...伝わらないか。</size>(・ー＜)☆～\nかくかくしかじかありまして...Revolutionary Host Roles様にあった役職を\n(一部)TownOfHost-Kに移植しようかという話になりました。\n(´・ω・｀)\n\n今回のアップデートでは、インセンダー、スタッフを移植しております。\n\n"
-                    + "<size=125%>【New Developer】</size>\nRHRは続く予定だったはずなのに急に終わりを告げられた...\n開発する場所が無くなった。\n\n...\n\n<size=30%>ﾅﾆｺﾚ(?)</size>\nということで...!\n<b>はろん</b>さんがTownOfHost-K開発者になりました～！\nどんどんぱふぱふ～\n\n"
-                    + "<size=125%>【残して共有したいよね?】</size>\nKで結構好評なゲームログ...\n今まではスクショするくらいしか共有方法がありませんでしたが、このverから\n<b>TOHK_Data</b>というフォルダの中に<b>LastGameResult.txt</b>が登場しました～！\nAmongUsを再起動するまで各試合のゲームログが記録されます!\n※ゲーム終了後にその試合が記録されるから不正はできないゾ!!\n\n"
+                    + "<size=125%>【思いは引き継いだ。】</size>\n1周年と~2ヶ月前にリリース♪<size=50%>...伝わらないか。</size>(・ー＜)☆～\nかくかくしかじかありまして...Revolutionary Host Roles様にあった役職を\n(一部)TownOfHost-Pkoに移植しようかという話になりました。\n(´・ω・｀)\n\n今回のアップデートでは、インセンダー、スタッフを移植しております。\n\n"
+                    + "<size=125%>【New Developer】</size>\nRHRは続く予定だったはずなのに急に終わりを告げられた...\n開発する場所が無くなった。\n\n...\n\n<size=30%>ﾅﾆｺﾚ(?)</size>\nということで...!\n<b>はろん</b>さんがTownOfHost-Pko開発者になりました～！\nどんどんぱふぱふ～\n\n"
+                    + "<size=125%>【残して共有したいよね?】</size>\nKで結構好評なゲームログ...\n今まではスクショするくらいしか共有方法がありませんでしたが、このverから\n<b>TOHP_Data</b>というフォルダの中に<b>LastGameResult.txt</b>が登場しました～！\nAmongUsを再起動するまで各試合のゲームログが記録されます!\n※ゲーム終了後にその試合が記録されるから不正はできないゾ!!\n\n"
                     + "<size=125%>【バグ修正】</size>\n・一部役職がサイドキック作成後動けなくなる問題\n・ゲッサーの正誤判定が正しくない問題\n・アーソニストクールが0の場合反応しない問題\n・サイドキック系役職がシェリフにキルされない問題\n・巫女の判定が全て同陣営と表示される問題\n・プログレスキラーのマークが正しくない問題\n・サイドキック作成後憑依が出来ない問題\n・エイリアンが自身の能力を見れない問題\n\n"
                     + "<size=125%>【仕様変更】</size>\n・/h rを設定関わらず役職名,略称どちらでも対応\n・/swの役職名対応\n<size=30%>(/sw シャイボーイ)とするとシャイボーイ勝利になります</size>\n・パン屋にレアメッセージ追加\n・ヴァンブ等ラスポスが付与されない役職でもラスポス属性のみ付与するように\n・ヴァンブ,死神等の対象者がボタン,通報した場合会議がキャンセルされないように\n・イビルハッカーのアドミンを名前の下にも表示\n・バニラ視点の名前を調整\n・`R Shift`+`M`+`Enter`で会議を始めれるように\n\n"
                     + "<size=125%>【設定追加】</size>\n・タスク削除設定追加\n・共通タスクを共通にしない設定追加\n・占い等一部役職に一定のタスク/能力発動まで自覚できない設定追加\n・ヴァンパイアに移動速度低下設定追加\n・タスクバトルに全員のタスクを共通にする設定追加\n\n"
@@ -191,8 +191,8 @@ public class ModNewsHistory
                 {
                     Number = 100013,
                     Title = "バニラアプデが来たぞぉ!!",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.5.1.7.12</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.5.1.7.12</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.5.1.7.12</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.5.1.7.12</color>",
                     Text = "え!?もう一ヶ月以上も前の話だって?\nﾃﾍﾍﾟﾛ(・-＜)☆～\n\n"
                     + "<size=125%>【おしらせ】</size>\n<size=80%>ぜった～いにバグが発生すると思います。\nバグを発見した際はDiscordの方でバグ報告するようにお願いします。\nイントロで暗転してしまった場合はラグの影響もあるかもしれないので鯖変えたり立て直してみたりをお勧めします。\n\n"
                     + "<size=125%>【バグについて】</size>\n・エイリアンのモードが全員共通になるバグ...?を修正\n・/kfを使用した時に極々稀にリアクターが継続してしまう問題の抑制\n・一部役職が/h rした時に挙動がおかしくなる問題の修正\n・タスクバトルで共通にするがONでも共通にならない問題の修正\n・会議後暗転してしまう問題の抑制"
@@ -223,8 +223,8 @@ public class ModNewsHistory
                 {
                     Number = 100014,
                     Title = "( ˘ω˘ )Zzz...Zzz...",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.7.13</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.7.13</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.7.13</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.7.13</color>",
                     Text = "今回はそこまで対応大変ではなかったです(感覚麻痺)\n"
                     + "対応だけかと思いきや新モードや便利な機能を追加してみたりしてるぜっ!!"
                     + "<size=80%>\n\n<size=125%>【追加設定】</size>\n"
@@ -241,8 +241,8 @@ public class ModNewsHistory
                     + "・ジャッカルドールとジャッカルマフィアのそれぞれの内通をちょっと変更\n"
                     + "・タスク上書き設定の通常タスクをOn/Offから個数設定に。\n<size=50%>ゲーム設定の通常タスクと同じにするとタスクが共通になるはず</size>\n"
                     + "\n<size=125%>【どんなところに迷い込んだんだっ...!?】</size>\n"
-                    + "普通、ロビーでは勿論参加者視点チャットやホストの名前の下にTOH-K表示があったりなかったりするくらいでどこに迷い込んでしまったのか分からなかったりすることがたまにあります。\n(まぁKは他Modと結構区別化してますけど!!!(((((()\n"
-                    + "そこで、参加者側でもロビーのみでTownOfHost-K v.(バージョン)とクライアントが普段右上で見てる情報が見れるようにしました～\nﾀｲﾍﾝﾀﾞｯﾀﾖ!!\n"
+                    + "普通、ロビーでは勿論参加者視点チャットやホストの名前の下にTOH-P表示があったりなかったりするくらいでどこに迷い込んでしまったのか分からなかったりすることがたまにあります。\n(まぁKは他Modと結構区別化してますけど!!!(((((()\n"
+                    + "そこで、参加者側でもロビーのみでTownOfHost-Pko v.(バージョン)とクライアントが普段右上で見てる情報が見れるようにしました～\nﾀｲﾍﾝﾀﾞｯﾀﾖ!!\n"
                     + "\n<size=125%>【サドンデスモード追加】</size>\n"
                     + "特殊モード設定の中に<b>サドンデスモード</b>が追加されました。\n有効にすると、勝利条件が\n<size=60%>1.自身以外全員全滅\n2.自身とラバー以外全滅\n3.時間切れ(リアクター)</size>\nになります。\n"
                     + "つまり...基本時間制限付きの殺し合いのゲームです。\n全員役職が一緒になって遊べたり...だから全員スナイパーとか...ウルトラスターとか()\n位置情報が送信されるオプションなども。詳細は色々試してみてね！"
@@ -257,8 +257,8 @@ public class ModNewsHistory
                 {
                     Number = 100015,
                     Title = "夏休みももう終わり・・・",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.7.14</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.7.14</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.7.14</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.7.14</color>",
                     Text = "とりあえずバグ修正...\n"
                     + "<size=80%>\n\n<size=125%>【追加設定】</size>\n"
                     + "・各シェリフにラバーズを打ち抜ける設定追加\n"
@@ -274,7 +274,7 @@ public class ModNewsHistory
                     + "・天秤会議が始まった時、全員生存しているように見える問題の修正\n"
                     + "・天秤能力発動時、暗転対策がうまく動作していない問題の修正\n"
                     + "<size=80%>\n\n<size=125%>【もっとかわいく！】</size>\n"
-                    + "やぁ。\nTOH-Kを入れているクライアントなら\nカスタムボタンを夜藍って奴が描いたものに差し替えれる機能があるんだ。\n"
+                    + "やぁ。\nTOH-Pを入れているクライアントなら\nカスタムボタンを夜藍って奴が描いたものに差し替えれる機能があるんだ。\n"
                     + "前バージョンまではキルボタン/インポスターベントのみだったけど...\n今回からはワンクリックボタンなどにも\nカスタムボタンに差し替えられるようになったよ！\n"
                     + "かわいいね！(自画自賛)\n"
                     + "<size=80%>\n\n<size=125%>【あれ一個しかない...?】</size>\n"
@@ -294,8 +294,8 @@ public class ModNewsHistory
                 {
                     Number = 100016,
                     Title = "はちがつさんじゅうににち！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.7.15</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.7.15</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.7.15</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.7.15</color>",
                     Text = "<size=80%>"
                     + "(*<mark=#000000> ・</mark>_<mark=#000000>・</mark>)／●~\n"
                     + "い る み り う た と ｜ お な だ し き  ８\n"
@@ -332,8 +332,8 @@ public class ModNewsHistory
                 {
                     Number = 100017,
                     Title = "何を言っている。9月だぞ。",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.8.16</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.8.16</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.8.16</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.8.16</color>",
                     Text = "<size=80%>"
                     + "よ～ら～ん～の～ぽんこつ～！m(__)m\n"
                     + "見直しって必要だね。\n"
@@ -355,8 +355,8 @@ public class ModNewsHistory
                 {
                     Number = 100018,
                     Title = "秋と言えば...月見...!!",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.8.17</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.8.17</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.8.17</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.8.17</color>",
                     Text = "<size=80%>"
                     + "月が綺麗ですね。"
                     + "\n<size=125%>【バグ修正】</size>\n"
@@ -395,8 +395,8 @@ public class ModNewsHistory
                 {
                     Number = 100019,
                     Title = "はろうぃんぱーてぃーのじゅんびしないと！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.8.18</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.8.18</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.8.18</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.8.18</color>",
                     Text = "<size=80%>"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・自動Modアップデートが動いてないかもしれない問題の修正\n・君臨者にアムネシアが付与されてしまう問題の修正\n・君臨者が追放中に抜けると処理が行われない問題の修正\n・バケネコだとキルボタンが生えないことがある問題の修正\n・ホストがナイスロガーだと設置後もタスクが出来ない問題の修正\n"
@@ -422,8 +422,8 @@ public class ModNewsHistory
                 {
                     Number = 100020,
                     Title = "(^ ω ^ == ^ ω ^ )やぁ！またあったね！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.9.18</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.9.18</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.9.18</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.9.18</color>",
                     Text = "<size=80%>"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・チャットコマンド秘匿がONでもラグで届かない問題"
@@ -446,10 +446,10 @@ public class ModNewsHistory
                 {
                     Number = 100021,
                     Title = "一周年だ～～～！！ﾄﾞﾝﾄﾞﾝﾊﾟﾌﾊﾟﾌ-!ﾄﾞﾝｶﾞﾗｶﾞｯｼｬｰﾝ!!",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v5.1.9.21</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v5.1.9.21</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v5.1.9.21</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v5.1.9.21</color>",
                     Text = "<size=80%>なんやかんやあって一周年。"
-                    + "\nまず...全ての内容を知りたかったら<nobr><link=\"https://github.com/KYMario/TownOfHost-K/releases/tag/5.1.9.21\">GitHubのリリースノート</nobr></link>を見てね！\nめっちゃながい！\n"
+                    + "\nまず...全ての内容を知りたかったら<nobr><link=\"https://github.com/KYMario/TownOfHost-Pko/releases/tag/5.1.9.21\">GitHubのリリースノート</nobr></link>を見てね！\nめっちゃながい！\n"
                     + "\nざーっとおさらいします！\n"
                     + "\n<size=125%>【バグ修正】</size>\nいっぱい。(GitHubに記載してるよ!)\n"
                     + "\n<size=125%>【仕様変更】</size>\nたくさん！(GitHubに記載してるよ!)\n"
@@ -488,8 +488,8 @@ public class ModNewsHistory
                 {
                     Number = 100023,
                     Title = "ほぼテストバージョン",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.22</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v519.22</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.22</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v519.22</color>",
                     Text = "<size=80%>"
                     + "バージョン表記がちょっと変わりました。\nいい感じに切り替えれる奴の実装で...\n"
                     + "<size=125%>【バグ修正】</size>\n"
@@ -527,8 +527,8 @@ public class ModNewsHistory
                 {
                     Number = 100024,
                     Title = "やっぱりテストバージョン",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.22.11</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v519.22.11</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.22.11</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v519.22.11</color>",
                     Text = "<size=80%>"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・爆弾魔のクールダウンデフォルトが0だった問題の修正\n"
@@ -560,8 +560,8 @@ public class ModNewsHistory
                 {
                     Number = 100025,
                     Title = "予想通りのテストバージョン",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.22.12</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v519.22.12</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.22.12</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v519.22.12</color>",
                     Text = "<size=80%>"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
                     + "・タスクバトルで参加者にベントが生えない問題の修正\n"
@@ -589,8 +589,8 @@ public class ModNewsHistory
                 {
                     Number = 100026,
                     Title = "色々してたら遅れちゃった",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.22.13</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v519.22.13</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.22.13</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v519.22.13</color>",
                     Text = "<size=80%>"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
                     + "・秘匿チャットが透け透けな問題の修正\n"
@@ -620,8 +620,8 @@ public class ModNewsHistory
                 {
                     Number = 100027,
                     Title = "ぽんこつ of the year 受賞しそう",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.22.14</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v519.22.14</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.22.14</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v519.22.14</color>",
                     Text = "<size=80%>of the year受賞しそうでいやー!!ってね。\n"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
                     + "・サドンデスモードだとめちゃくちゃ重い問題の修正...?\n"
@@ -642,8 +642,8 @@ public class ModNewsHistory
                 {
                     Number = 100028,
                     Title = "11月もう後半だってぇ!?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.23</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v519.23</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.23</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v519.23</color>",
                     Text = "<size=80%>前のニュースで寒くなった人ゴメンナサイ()\n"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
                     + "・処理を結構変更しました軽くなるかもしれません。分かりません\n"
@@ -658,7 +658,7 @@ public class ModNewsHistory
                     + "・AmongUsの画面サイズの比率が16:9じゃない時、設定画面を小さくするように変更\n"
                     + "・クライアントオプションにアウトロをスクショする設定を追加\n"
                     + "・アウトロにスクショ機能を搭載してみたよっ!\n"
-                    + "・TOHK_DATAフォルダ内に保存されるぜ\n"
+                    + "・TOHP_DATAフォルダ内に保存されるぜ\n"
                     + "<size=125%>【新役職】</size>\n"
                     + "今回の新役職は「<b><u>妖狐</u></b>」だよ。\n"
                     + "サボタージュが直せなかったり\nキルガードが付与されたりしてタスクやって生存すれば勝利って奴さ。\n詳しくはGitHubのwikiを見てくれよなっ!!\n"
@@ -673,8 +673,8 @@ public class ModNewsHistory
                 {
                     Number = 100029,
                     Title = "めええええええっちゃまたせたなああああああ！！！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.23.11</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v519.23.11</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.23.11</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v519.23.11</color>",
                     Text = "<size=80%>上着とセーターと服着てるのに寒い...\n"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
                     + "・まだ直ってない設定がオープンになってた問題の修正\n"
@@ -710,8 +710,8 @@ public class ModNewsHistory
                 {
                     Number = 100030,
                     Title = "えっ11月もう終わります!?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.23.12</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v519.23.12</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.23.12</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v519.23.12</color>",
                     Text = "<size=80%>上着とセーターと服ともっこもこの上着着てるのに寒い...\n"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
                     + "・アシスティングエンジェルがアシスト対象選択後も\n"
@@ -740,8 +740,8 @@ public class ModNewsHistory
                 {
                     Number = 100031,
                     Title = "メリークリスマス！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v519.24</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v519.24</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v519.24</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v519.24</color>",
                     Text = "<size=80%>結構早いけどプレゼントの時間だョ!!\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・ホスト視点記憶喪失者がイントロで透ける問題の修正\n"
@@ -796,8 +796,8 @@ public class ModNewsHistory
                 {
                     Number = 100032,
                     Title = "...やぁ!!またあったネ",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.24.11</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.24.11</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.24.11</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.24.11</color>",
                     Text = "<size=80%>大型はないと思うけどちょくちょくこういうのは...()()()\n"
                     + "というか新年直ぐに.25にしたら新年と一緒じゃん。やったね。1/ 4~8にしようかしら?\n"
                     + "<size=125%>【バグ修正/仕様変更】</size>\n"
@@ -817,8 +817,8 @@ public class ModNewsHistory
                 {
                     Number = 100033,
                     Title = "...てへっ！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.24.12</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.24.12</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.24.12</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.24.12</color>",
                     Text = "<size=80%>処理を変えすぎるとミスに気付けないぽんこつ君。\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・アウトロの試合結果が正常ではない問題の修正\n"
@@ -836,8 +836,8 @@ public class ModNewsHistory
                 {
                     Number = 100034,
                     Title = "こたつぬくぬくしてチキンを",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.24.13</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.24.13</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.24.13</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.24.13</color>",
                     Text = "<size=80%>おひさしぶり！...いうて1週間なんもなかっただけか...()\n"
                     + "ケーキ屋はいつか復刻するよ。\n近いうちに。\nそう。きっと。\n"
                     + "<size=125%>【バグ修正】</size>\n"
@@ -891,8 +891,8 @@ public class ModNewsHistory
                 {
                     Number = 100036,
                     Title = "よいお年を！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.24.14</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.24.14</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.24.14</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.24.14</color>",
                     Text = "<size=80%>\nん?リリースしてる暇あるの?\n明日の予定?\nリミッターと爆弾魔と花火職人、おまけにウィッチつれてくぞ。\nｹﾞﾌﾝｹﾞﾌﾝ\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・死亡したホストが秘匿チャットを見れない問題の修正\n"
@@ -931,8 +931,8 @@ public class ModNewsHistory
                 {
                     Number = 100037,
                     Title = "マタアイマシタネ",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.24.15</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.24.15</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.24.15</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.24.15</color>",
                     Text = "<size=80%>\n期間限定役職のバグやから速く直さないと！\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・アウトロ表示がたまに見切れる問題の対応\n"
@@ -950,8 +950,8 @@ public class ModNewsHistory
                 {
                     Number = 100038,
                     Title = "バグ修正はなんぼあってもいいですからねっ!!",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.24.16</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.24.16</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.24.16</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.24.16</color>",
                     Text = "<size=80%>\nけーわいさんログまだっすか...\n"
                     + "<size=125%>【バグ修正等】</size>\n"
                     + "・アウトロのテキスト処理を少し変更\n"
@@ -972,10 +972,10 @@ public class ModNewsHistory
                 {
                     Number = 100039,
                     Title = "謹賀新年",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K</color>",
-                    ShortTitle = "<color=#00c1ff>TOH-Kからの御挨拶</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko</color>",
+                    ShortTitle = "<color=#00c1ff>TOH-Pからの御挨拶</color>",
                     Text = "<size=80%>新年、明けましておめでとうございます。\n"
-                    + "今年もTownOfHost-Kをよろしくお願いいたします。\n"
+                    + "今年もTownOfHost-Pkoをよろしくお願いいたします。\n"
                     + "去年は凄く凄かった年だと思います。\n"
                     + "有名にもなれましたし、成長もしましたし、\n"
                     + "新年さっさとリリースするような余裕はないでス...\n"
@@ -997,8 +997,8 @@ public class ModNewsHistory
                 {
                     Number = 100040,
                     Title = "あけおめことよろ！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.25</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.519.25</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.25</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.519.25</color>",
                     Text = "<size=80%>\nあけましておめでとうございます。今年もよろしくお願いしますっ"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・キルターゲット取得で同陣営のプレイヤーが取得できる問題の修正\n"
@@ -1056,8 +1056,8 @@ public class ModNewsHistory
                 {
                     Number = 100041,
                     Title = "ことしもKはKだ。",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.25.11</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.25.11</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.25.11</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.25.11</color>",
                     Text = "<size=80%>\n遊べないレベルのバグだから..."
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・プロボーラーのキルが亜空間迄飛ぶ問題\n"
@@ -1076,8 +1076,8 @@ public class ModNewsHistory
                 {
                     Number = 100042,
                     Title = "もう1月が半分経ったんだぜ?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.26</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.519.26</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.26</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.519.26</color>",
                     Text = "<size=80%>\n遊べないレベルのバグだから..."
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・/n r 使用時一部役職の表示がおかしい問題の修正\n"
@@ -1126,8 +1126,8 @@ public class ModNewsHistory
                 {
                     Number = 100043,
                     Title = "リリースの頻度がぁ...",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.26.11</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.26.11</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.26.11</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.26.11</color>",
                     Text = "<size=80%>\nなんか前のニュースコピペされてね!?"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・/hrが全員に表示される問題の修正\n"
@@ -1160,8 +1160,8 @@ public class ModNewsHistory
                 {
                     Number = 100046,
                     Title = "2月ももう後半",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.26.21</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.26.21</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.26.21</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.26.21</color>",
                     Text = "<size=80%>\n凄くいっぱいしたから.21でいいっしょ！\nあ、後discordとかGithubにちゃんと情報載せてるから見たりしといてね！\n"
                     + "\n<size=125%>【まーたかわったのか！】</size>\n"
                     + "オプション画面が代わりました！！！\n"
@@ -1197,8 +1197,8 @@ public class ModNewsHistory
                 {
                     Number = 100048,
                     Title = "にゃんにゃんにゃんにゃん",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.26.23(&22)</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.26.23(&22)</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.26.23(&22)</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.26.23(&22)</color>",
                     Text = "<size=80%>\n.26.22のアプデ内容ニュースは内容薄すぎて省略されました。\n"
                     + ".26.22の変更点は文末に(22)って記載してます。"
                     + "\n<size=125%>【バグ修正】</size>\n"
@@ -1224,8 +1224,8 @@ public class ModNewsHistory
                 {
                     Number = 100049,
                     Title = "え?もう2月終わるの!?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.26.24</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.519.26.24</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.26.24</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.519.26.24</color>",
                     Text = "<size=80%>そろそろ学期末だったり...\n大事な時期になってきたネ...\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・双子の相乗り勝利が正常に動作しない事がある問題の修正\n"
@@ -1247,8 +1247,8 @@ public class ModNewsHistory
                 {
                     Number = 100050,
                     Title = "暑いのか寒いのかどっちなんだっ！！！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.519.27</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.519.27</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.519.27</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.519.27</color>",
                     Text = "<size=80%>やぁ！3月だ！\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・投票が正常に終了しない問題の対応\n"
@@ -1263,7 +1263,7 @@ public class ModNewsHistory
                     + "・バケネコ視点、死者蘇生される問題の修正\n"
                     + "\n<size=125%>【仕様変更】</size>\n"
                     + "・処理内容の変更\n"
-                    + "・TOH-Kの設定を整備\n"
+                    + "・TOH-Pの設定を整備\n"
                     + "┣  読み上げ同期は消し去り、強制ONになりました。\n"
                     + "┗  再起動時、読み上げ設定がOFFになるようになりました。\n"
                     + "・会議後の後追い処理をすこーし変更\n"
@@ -1285,7 +1285,7 @@ public class ModNewsHistory
                     + "クライアントのみ、試合結果を記録するようになりました。\n"
                     + "オンラインのデータベースとかじゃなくて個人で記録されてるので～\n"
                     + "共有されてるってことは現バージョンではありませぬ\n"
-                    + "基本どのTOH-Kでもデータは一緒です\n"
+                    + "基本どのTOH-Pでもデータは一緒です\n"
                     + "人数不足だったり一定条件下だと統計に反映されなくなります。ごりょーしょーを。\n\n"
                     + "2日後は一人でおでかけする予定なんだ！\n...ん?なんだい?\n夜藍より"
                     ,
@@ -1300,8 +1300,8 @@ public class ModNewsHistory
                 {
                     Number = 100053,
                     Title = "去年は初リリースって言ったりプレミア公開したなぁ",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.11.28.21</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.11.28.21</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.11.28.21</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.11.28.21</color>",
                     Text = "<size=80%>次のアップデートでけーわいさんがとてもすごいのつくります(申し訳程度のエイプリルフール)\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・ゲーム会議後もロビーの名前が引き継がれる問題の修正\n"
@@ -1332,8 +1332,8 @@ public class ModNewsHistory
                 {
                     Number = 100054,
                     Title = "4月ももう後半(テンプレ)",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.11.28.23</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.11.28.23</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.11.28.23</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.11.28.23</color>",
                     Text = "<size=80%>ねむい！ねむい！ねむい！あまいのたべたい！\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・ベントマスターのフラッシュで切る音が鳴らない問題の修正\n"
@@ -1359,8 +1359,8 @@ public class ModNewsHistory
                 {
                     Number = 100054,
                     Title = "ラバーズがいい感じになった！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.11.28.24</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.11.28.24</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.11.28.24</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.11.28.24</color>",
                     Text = "<size=80%>ちゃんと真面目にタイトルかいたよ。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・キラー専用アドオンに狼少年、ｽｲｯﾁｼｪﾘﾌが除外される問題の修正\n"
@@ -1385,8 +1385,8 @@ public class ModNewsHistory
                 {
                     Number = 100055,
                     Title = "GW...今年は特に何もないさ...",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.11.28.25</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.11.28.25</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.11.28.25</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.11.28.25</color>",
                     Text = "<size=80%>だって去年のくそ疲れたもん...\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・ウィッチが死亡したターンでも呪い表示が起こる問題の修正\n"
@@ -1403,8 +1403,8 @@ public class ModNewsHistory
                 {
                     Number = 100056,
                     Title = "そろそろGWだねっ!!()",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.12.28.31</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.12.28.31</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.12.28.31</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.12.28.31</color>",
                     Text = "<size=80%>結局そこそこのアプデはするんだね。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・キルフラッシュ後、視界が戻らない問題の対応\n"
@@ -1428,8 +1428,8 @@ public class ModNewsHistory
                 {
                     Number = 100057,
                     Title = "ムシトリアミ～(?)",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.12.28.32</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.12.28.32</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.12.28.32</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.12.28.32</color>",
                     Text = "<size=80%>バグ修正だぜ！\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・マフィアがシェイプシフター置き換えになってる問題の修正\n"
@@ -1457,8 +1457,8 @@ public class ModNewsHistory
                 {
                     Number = 100059,
                     Title = "バグ修正祭り開催中()",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.12.29.1x</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.12.29.1x</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.12.29.1x</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.12.29.1x</color>",
                     Text = "<size=80%>バグ修正の一覧とかそこらへんを載せまする。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "\n～～～～～～～～～～～～～～～～～～\n<size=60%>"
@@ -1499,8 +1499,8 @@ public class ModNewsHistory
                 {
                     Number = 100060,
                     Title = "Kの作り直し、K2(?)",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.12.29.19</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.12.29.19</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.12.29.19</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.12.29.19</color>",
                     Text = "<size=80%>山やんけ！\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・ウォーロックが一定条件下で通常キル出来る問題の修正\n"
@@ -1527,8 +1527,8 @@ public class ModNewsHistory
                 {
                     Number = 100061,
                     Title = "梅雨入りももう近いかな...?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.12.29.22</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.12.29.22</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.12.29.22</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.12.29.22</color>",
                     Text = "<size=80%>九州勢から突っ込まれそうだな。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・ホストが死亡後、成仏してない問題の修正\n"
@@ -1544,8 +1544,8 @@ public class ModNewsHistory
                 {
                     Number = 100062,
                     Title = "そろそろ役職が欲しいって...?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.29.23</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.13.29.23</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.29.23</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.13.29.23</color>",
                     Text = "<size=80%>考えたっちゃかんがえた。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・ホストのクールダウンが会議後おかしくなる問題の修正\n"
@@ -1568,8 +1568,8 @@ public class ModNewsHistory
                 {
                     Number = 100063,
                     Title = "HappyBirthday AmongUs!",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.29.29</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.13.29.29</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.29.29</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.13.29.29</color>",
                     Text = "<size=80%>2クルー?1つでユルシテ...()\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・スイッチシェリフのキルボタンが反応しない問題の修正\n"
@@ -1614,8 +1614,8 @@ public class ModNewsHistory
                 {
                     Number = 100064,
                     Title = "ﾋﾟﾋﾟﾋﾟ...こちらK管理局...",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.30</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.13.30</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.30</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.13.30</color>",
                     Text = "<size=80%>Y管理局から脱走したであろう4名をK管理署付近で発見。\n20:30頃、確保に成功...\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・マドンナ、片思いが正常に勝利しない問題の修正\n"
@@ -1692,8 +1692,8 @@ public class ModNewsHistory
                 {
                     Number = 100066,
                     Title = "～.30.1xの内容通知書～",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.30.1x</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.13.30.1x</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.30.1x</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.13.30.1x</color>",
                     Text = "<size=80%>\n2周年に向けて準備を...(2周年何しよう...)"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・イントロ緩和設定ON時にクールタイムなどが同期されなくなる問題の修正\n"
@@ -1756,9 +1756,9 @@ public class ModNewsHistory
                 var news = new ModNews
                 {
                     Number = 100067,
-                    Title = "㊗ TOH-K Discord鯖1000人突破！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.30.17</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.13.30.17</color>",
+                    Title = "㊗ TOH-P Discord鯖1000人突破！",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.30.17</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.13.30.17</color>",
                     Text = "<size=80%>\n皆様いつもありがとうございます。Discord入ってない人は入ってね。\n"
                     + "\n<size=125%>【期間限定役職】</size>\n"
                     + "Discord1000人突破記念にケーキが届いたようです。\n"
@@ -1789,8 +1789,8 @@ public class ModNewsHistory
                 {
                     Number = 100068,
                     Title = "秋になりかけ...?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.30.19</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.13.30.19</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.30.19</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.13.30.19</color>",
                     Text = "<size=80%>まだ暑いのには変わりないや。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・イントロ時に回線が切れる問題の対応...?\n"
@@ -1826,8 +1826,8 @@ public class ModNewsHistory
                 {
                     Number = 100068,
                     Title = "秋になりかけ...?",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.13.30.27</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.13.30.27</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.13.30.27</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.13.30.27</color>",
                     Text = "<size=80%>少し涼しいね。\n"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・Viperのキルボタンテキストがキルのままになっている問題の修正\n"
@@ -1851,8 +1851,8 @@ public class ModNewsHistory
                 {
                     Number = 100070,
                     Title = "祝☆2周年☆",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.14.31</color>",
                     Text = "<size=80%>少しも寒くないわ。前言撤回。寒い。\nアップデート内容は\n<nobr><link=\"https://youtu.be/FCoHIDgKhpA\">この動画で</nobr></link>　、広く浅く解説してます。"
                     + "\n<size=125%>【バグ修正】</size>\n"
                     + "・イビトラが距離表示に関わらず()が見えていた問題の修正\n"
@@ -1908,8 +1908,8 @@ public class ModNewsHistory
                 {
                     Number = 100071,
                     Title = "もう今年もあと少し...",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.14</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.14.31.14</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31.14</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.14.31.14</color>",
                     Text = "<size=80%>"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・ゲッサー能力使用時にMod導入者が蹴られる問題の修正\n"
@@ -1940,8 +1940,8 @@ public class ModNewsHistory
                 {
                     Number = 100072,
                     Title = "12月が始マｯた！",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.15</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.14.31.15</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31.15</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.14.31.15</color>",
                     Text = "<size=80%>さﾑイ!"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・入室時にMod導入者が蹴られる問題の修正\n"
@@ -1966,8 +1966,8 @@ public class ModNewsHistory
                 {
                     Number = 100073,
                     Title = "いい子には矢をあげよう。",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.21</color>",
-                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.14.31.21</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31.21</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-P v.51.14.31.21</color>",
                     Text = "<size=80%>2025年も終わる。"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・Mod導入者がやっぱり蹴られる問題の修正\n"
@@ -2006,8 +2006,8 @@ public class ModNewsHistory
                 {
                     Number = 100074,
                     Title = "鬼も福も外。",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.28</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31.28</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31.28</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.14.31.28</color>",
                     Text = "<size=80%>2026年はもう始まった。\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・ホストのチャットがおかしい問題の修正\n"
@@ -2030,8 +2030,8 @@ public class ModNewsHistory
                 {
                     Number = 100075,
                     Title = "雪やこんこん。",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.29</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31.29</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31.29</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.14.31.29</color>",
                     Text = "<size=80%>v51.14.31.26以前のバージョンは利用不可になります。\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・ゲッサーコマンド、通常コマンドが正常に動作しない問題の修正\n"
@@ -2053,8 +2053,8 @@ public class ModNewsHistory
                 {
                     Number = 100076,
                     Title = "雪は溶け、ふきのとうが姿を...",
-                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.31.31</color>",
-                    ShortTitle = "<color=#00c1ff>●TOH-K v.51.14.31.31</color>",
+                    SubTitle = "<color=#00c1ff>Town Of Host-Pko v.51.14.31.31</color>",
+                    ShortTitle = "<color=#00c1ff>●TOH-P v.51.14.31.31</color>",
                     Text = "<size=80%>やぁ。新要素の開発をやろうと思っていたのに対応でおじゃんになったぜ。\n"
                     + "<size=125%>【バグ修正】</size>\n"
                     + "・非クライアントバグの修正/対応\n"
@@ -2071,7 +2071,7 @@ public class ModNewsHistory
         }
     }
     //ここもTownOfHost_Y様を参考に..!
-    public const string ModNewsURL = "https://raw.githubusercontent.com/KYMario/TownOfHost-K/refs/heads/main/ModNews.json";
+    public const string ModNewsURL = "https://raw.githubusercontent.com/KYMario/TownOfHost-Pko/refs/heads/main/ModNews.json";
     static bool downloaded = false;
 
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.Start)), HarmonyPostfix]

@@ -19,7 +19,7 @@ namespace TownOfHost
     [HarmonyPatch]
     public class ModUpdater
     {
-        private static readonly string URL = "https://api.github.com/repos/KYMario/TownOfHost-K";
+        private static readonly string URL = "https://api.github.com/repos/KYMario/TownOfHost-Pko";
         public static bool hasUpdate = false;
         public static bool isBroken = false;
         public static bool isChecked = false;
@@ -66,7 +66,7 @@ namespace TownOfHost
                 string result;
                 using (HttpClient client = new())
                 {
-                    client.DefaultRequestHeaders.Add("User-Agent", "TownOfHost-K Updater");
+                    client.DefaultRequestHeaders.Add("User-Agent", "TownOfHost-Pko Updater");
                     using var response = await client.GetAsync(new Uri(url), HttpCompletionOption.ResponseContentRead);
                     if (!response.IsSuccessStatusCode || response.Content == null)
                     {
@@ -92,20 +92,20 @@ namespace TownOfHost
                         var assets = release.Assets;
                         foreach (var asset in assets)
                         {
-                            if (asset.Name == "TownOfHost-K_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
+                            if (asset.Name == "TownOfHost-Pko_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
                             {
                                 release.DownloadUrl = asset.DownloadUrl;
                                 break;
                             }
-                            if (asset.Name == "TownOfHost-K_Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
+                            if (asset.Name == "TownOfHost-Pko_Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
                             {
                                 release.DownloadUrl = asset.DownloadUrl;
                                 break;
                             }
-                            if (asset.Name == "TownOfHost-K.dll")
+                            if (asset.Name == "TownOfHost-Pko.dll")
                                 release.DownloadUrl = asset.DownloadUrl;
                         }
-                        release.OpenURL = $"https://github.com/KYMario/TownOfHost-K/releases/tag/{tag}";
+                        release.OpenURL = $"https://github.com/KYMario/TownOfHost-Pko/releases/tag/{tag}";
 
                         if (tag == null) continue;
                         //動かないバージョンに切り替えれないようにするための応急手当。.31になる頃には消す。
@@ -122,17 +122,17 @@ namespace TownOfHost
                     JArray assets = data["assets"].Cast<JArray>();
                     for (int i = 0; i < assets.Count; i++)
                     {
-                        if (assets[i]["name"].ToString() == "TownOfHost-K_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
+                        if (assets[i]["name"].ToString() == "TownOfHost-Pko_Steam.dll" && Constants.GetPlatformType() == Platforms.StandaloneSteamPC)
                         {
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                             break;
                         }
-                        if (assets[i]["name"].ToString() == "TownOfHost-K_Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
+                        if (assets[i]["name"].ToString() == "TownOfHost-Pko_Epic.dll" && Constants.GetPlatformType() == Platforms.StandaloneEpicPC)
                         {
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                             break;
                         }
-                        if (assets[i]["name"].ToString() == "TownOfHost-K.dll")
+                        if (assets[i]["name"].ToString() == "TownOfHost-Pko.dll")
                             downloadUrl = assets[i]["browser_download_url"].ToString();
                     }
                     var body = data["body"].ToString();
@@ -229,7 +229,7 @@ namespace TownOfHost
                 {
                     using var content = response.Content;
                     using var stream = content.ReadAsStream();
-                    using var file = new FileStream("BepInEx/plugins/TownOfHost-K.dll", FileMode.Create, FileAccess.Write);
+                    using var file = new FileStream("BepInEx/plugins/TownOfHost-Pko.dll", FileMode.Create, FileAccess.Write);
                     stream.CopyTo(file);
                     ShowPopup(GetString("updateRestart"), true, openurl);
                     return true;
@@ -259,7 +259,7 @@ namespace TownOfHost
                     button.GetComponent<PassiveButton>().OnClick = new();
                     button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
                     {
-                        Application.OpenURL(OpenURL == "" ? "https://github.com/KYMario/TownOfHost-K/releases/latest" : OpenURL);
+                        Application.OpenURL(OpenURL == "" ? "https://github.com/KYMario/TownOfHost-Pko/releases/latest" : OpenURL);
                         Application.Quit();
                     }));
                 }

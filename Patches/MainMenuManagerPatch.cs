@@ -25,7 +25,7 @@ namespace TownOfHost
         public static SimpleButton UpdateButton2;
         private static SimpleButton gitHubButton;
         private static SimpleButton TwitterXButton;
-        private static SimpleButton TOHkBOTButton;
+        private static SimpleButton TOHPBOTButton;
         //private static SimpleButton VersionChangeButton;
         private static SimpleButton betaversionchange;
         public static TextMeshPro Statistics_TMP;
@@ -58,7 +58,7 @@ namespace TownOfHost
                     new(-0.8f, -1f, 1f),//-1f
                     new(153, 153, 153, byte.MaxValue),
                     new(209, 209, 209, byte.MaxValue),
-                    () => Application.OpenURL("https://github.com/KYMario/TownOfHost-K"),
+                    () => Application.OpenURL("https://github.com/KYMario/TownOfHost-Pko"),
                     "GitHub");
             }
 
@@ -70,19 +70,19 @@ namespace TownOfHost
                     new(0.9f, -1f, 1f),
                     new(0, 202, 255, byte.MaxValue),
                     new(60, 255, 255, byte.MaxValue),
-                    () => Application.OpenURL("https://twitter.com/Tohkserver_k"),
+                    () => Application.OpenURL("https://twitter.com/TOHPserver_k"),
                     "Twitter(X)");
             }
-            // TOHkBOTボタンを生成
-            if (SimpleButton.IsNullOrDestroyed(TOHkBOTButton))
+            // TOHPBOTボタンを生成
+            if (SimpleButton.IsNullOrDestroyed(TOHPBOTButton))
             {
-                TOHkBOTButton = CreateButton(
-                    "TOHkBOTButton",
+                TOHPBOTButton = CreateButton(
+                    "TOHPBOTButton",
                     new(2.6f, -1f, 1f),
                     new(0, 201, 87, byte.MaxValue),
                     new(60, 201, 87, byte.MaxValue),
                     () => Application.OpenURL("https://discord.com/api/oauth2/authorize?client_id=1198276538563567716&permissions=8&scope=bot"),
-                    "TOHkBOT");
+                    "TOHPBOT");
             }
             if (SimpleButton.IsNullOrDestroyed(StatisticsButton))
             {
@@ -93,7 +93,7 @@ namespace TownOfHost
                     new(255, 248, 173, byte.MaxValue),
                     () =>
                     {
-                        CredentialsPatch.TohkLogo.gameObject.SetActive(false);
+                        CredentialsPatch.TOHPLogo.gameObject.SetActive(false);
                         __instance.screenTint.enabled = true;
                         Statistics_TMP.gameObject.SetActive(true);
                         Statistics_TMP.text = $"<size=60%>{SaveStatistics.ShowText()}";
@@ -165,7 +165,7 @@ namespace TownOfHost
                         updatea.name = "Update Detail";
                         updatea.gameObject.SetActive(true);
                         updatea.AnnouncementListSlider.SetActive(false);
-                        updatea.Title.text = "TOH-K " + ModUpdater.latestTitle;
+                        updatea.Title.text = "TOH-P " + ModUpdater.latestTitle;
                         updatea.AnnouncementBodyText.text = Regex.Replace(ModUpdater.body.Replace("#", "").Replace("**", ""), @"\[(.*?)\]\(.*?\)", "$1");
                         updatea.DateString.text = "Latest Release";
                         updatea.SubTitle.text = "";
@@ -185,7 +185,7 @@ namespace TownOfHost
                     new(60, 255, 183, byte.MaxValue),
                     () =>
                     {
-                        CredentialsPatch.TohkLogo.gameObject.SetActive(false);
+                        CredentialsPatch.TOHPLogo.gameObject.SetActive(false);
                         __instance.screenTint.enabled = true;
                         if (betaVersionMenu != null)
                         {
@@ -276,7 +276,7 @@ namespace TownOfHost
             bool isActive = true,
             Transform transform = null)
         {
-            var button = new SimpleButton(transform == null ? CredentialsPatch.TohkLogo.transform : transform, name, localPosition, normalColor, hoverColor, action, label, isActive);
+            var button = new SimpleButton(transform == null ? CredentialsPatch.TOHPLogo.transform : transform, name, localPosition, normalColor, hoverColor, action, label, isActive);
             if (scale.HasValue)
             {
                 button.Scale = scale.Value;
@@ -343,9 +343,9 @@ namespace TownOfHost
                 //    createbutton.GetComponent<BoxCollider2D>().offset = new(100f, 100);
             }
 
-            if (CredentialsPatch.TohkLogo != null)
+            if (CredentialsPatch.TOHPLogo != null)
             {
-                CredentialsPatch.TohkLogo.gameObject.SetActive(false);
+                CredentialsPatch.TOHPLogo.gameObject.SetActive(false);
             }
             if (VersionMenu != null)
                 VersionMenu.SetActive(false);
@@ -373,9 +373,9 @@ namespace TownOfHost
         [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]
         public static void ResetScreenPostfix()
         {
-            if (CredentialsPatch.TohkLogo != null)
+            if (CredentialsPatch.TOHPLogo != null)
             {
-                CredentialsPatch.TohkLogo?.gameObject?.SetActive(true);
+                CredentialsPatch.TOHPLogo?.gameObject?.SetActive(true);
             }
             if (VersionMenu != null)
                 VersionMenu.SetActive(false);

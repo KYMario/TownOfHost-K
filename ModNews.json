@@ -11,41 +11,41 @@
         {
             "Number": "100051",
             "Title": "ちょっとややこしくなっちゃった！",
-            "Subtitle": "<color=#00c1ff>Town Of Host-K v.51.10.27.12</color>",
-            "Short": "<color=#00c1ff>◆TOH-K v51.10.27.12</color>",
-            "Body": "<size=80%>かくかくしかじかでネ...\n<size=100%>！このバージョンは自動アップデートを使用できません！\n<nobr><link=\"https://github.com/KYMario/TownOfHost-K/wiki/導入方法・アップデート方法#手動アップデートの場合\">Wiki</nobr></link>に手動アップデートの方法を記載しております。\n手動で.dllを入れ替えてください。\n\nまたは、ニュースを閉じたらある、バージョン切り替えボタンから、「51.10.27.12」に切り替えてください。\n\n</size>\n<size=125%>【バグ修正】</size>\n・シェフ、アーソニスト等の役職がインポスターを切れない問題の修正\n会議後、名前変更が正常に行われない問題の修正\n\n<size=125%>【仕様変更】</size>\n・そこそこ！\n・また、本家TOH5.1.10に対応",
+            "Subtitle": "<color=#00c1ff>Town Of Host-Pko v.51.10.27.12</color>",
+            "Short": "<color=#00c1ff>◆TOH-P v51.10.27.12</color>",
+            "Body": "<size=80%>かくかくしかじかでネ...\n<size=100%>！このバージョンは自動アップデートを使用できません！\n<nobr><link=\"https://github.com/KYMario/TownOfHost-Pko/wiki/導入方法・アップデート方法#手動アップデートの場合\">Wiki</nobr></link>に手動アップデートの方法を記載しております。\n手動で.dllを入れ替えてください。\n\nまたは、ニュースを閉じたらある、バージョン切り替えボタンから、「51.10.27.12」に切り替えてください。\n\n</size>\n<size=125%>【バグ修正】</size>\n・シェフ、アーソニスト等の役職がインポスターを切れない問題の修正\n会議後、名前変更が正常に行われない問題の修正\n\n<size=125%>【仕様変更】</size>\n・そこそこ！\n・また、本家TOH5.1.10に対応",
             "Date": "2025-03-16T04:15:00Z"
         },
         {
             "Number": "100052",
             "Title": "(Kが)だめなのよ～",
-            "Subtitle": "<color=#00c1ff>Town Of Host-K v.51.10.28</color>",
-            "Short": "<color=#00c1ff>◆TOH-K v.51.10.28</color>",
+            "Subtitle": "<color=#00c1ff>Town Of Host-Pko v.51.10.28</color>",
+            "Short": "<color=#00c1ff>◆TOH-P v.51.10.28</color>",
             "Body": "<size=80%>やぁ！もう3月が終わるんだ！...は!?\n\nAmongUs本体最新版に対応してます。過去バージョンは対応してません。\n\n<size=125%>【バグ修正】</size>\n・一定条件下の時、スポーン時バグる問題の修正\n・マドンナラバーのタスクが勝利カウントに入る問題の修正\n・8~9人以上で落ちる奴の対策設定がONの時、イントロ暗転する問題の対応\n\n<size=125%>【仕様変更】</size>\n・通信を軽くしようとしてるんです。\n\n・AmongUs v16.0.0 に対応最後のsって多分steamのsだよね。(どうでもいい)\n\n\nアプデ対応中、りぃりぃにAmongUs公式から本日公開されたコラボの動画ループ再生されてました。\n頭狂う。\nby.Panda",
             "Date": "2025-03-26T05:40:00Z"
         },
         {
             "Number": "100054",
             "Title": "祝★15周年★",
-            "Subtitle": "<color=#00c1ff>Town Of Host-K</color>",
-            "Short": "<color=#00c1ff>◆TOH-K</color>",
+            "Subtitle": "<color=#00c1ff>Town Of Host-Pko</color>",
+            "Short": "<color=#00c1ff>◆TOH-P</color>",
             "Body": "<size=80%>こぁ！クルー！僕はけーわいさんだ！さっきは虎さんだった気がする...\nれいかいに送られてもう12年...\nはな火職人のねむaさんが頑張ってるんだけど...\nエイリアンジャッカルのはろんさんががそれを食\nい止めてるみたい..!\nプロボーラーがここにいれば...!\nりぃりぃがシャイボーイで自爆するから・・・\nルーモアの能力ももう使えないし...\nふねはどうなっちゃうんだろう...\n｜回試合終わらせようかな...\nルーレットで決めるか...",
             "Date": "2025-04-01T00:00:00Z"
         },
         {
             "Number": "100058",
             "Title": "●～*　ﾄﾞｯｶｰﾝ!",
-            "Subtitle": "<color=#00c1ff>Town Of Host-K v.51.12.29</color>",
-            "Short": "<color=#00c1ff>◆TOH-K v.51.12.29</color>",
+            "Subtitle": "<color=#00c1ff>Town Of Host-Pko v.51.12.29</color>",
+            "Short": "<color=#00c1ff>◆TOH-P v.51.12.29</color>",
             "Body": "<size=80%>けーわいさんが7割対応してくれました。僕は1割です。\n\n自動アップデートは使用できません。zipファイルから導入しなおしてください。\n★まだ完全に対応できたか怪しいです。バグがあれば報告ください★\n<size=125%>【バグ修正】</size>\n・バニラ16.0.5に対応\n\n・名前の二行目がONの時、ctが正常に表示されない問題の修正\n・非クライアント視点会議後もシェイプの名前がそのままの問題の対応\n・モノクラーに途中でなった時に上手く変身しない問題の対応?\n・一定条件下の時、追放されても勝利できない問題の修正\n・その他直ったか怪しいKのバグの対応()\nお肉アップデートだね。ｼﾞｭﾙﾘ...by.熊猫",
             "Date": "2025-05-21T20:00:00Z"
         },
         {
             "Number": "100069",
             "Title": "そろそろ2周年...",
-            "Subtitle": "<color=#00c1ff>Town Of Host-K 2周年</color>",
-            "Short": "<color=#00c1ff>●TOH-K \n2周年予告</color>",
-            "Body": "<size=80%>TownOfHost-Kがもうそろそろ2周年になるんだって！\nYoutubeの方でアプデ紹介動画があるらしい!\n\n<nobr><link=\"https://youtu.be/FCoHIDgKhpA\">動画はここをクリック!</nobr></link>\nそれじゃぁ！30日にまた会おうね！",
+            "Subtitle": "<color=#00c1ff>Town Of Host-Pko 2周年</color>",
+            "Short": "<color=#00c1ff>●TOH-P \n2周年予告</color>",
+            "Body": "<size=80%>TownOfHost-Pkoがもうそろそろ2周年になるんだって！\nYoutubeの方でアプデ紹介動画があるらしい!\n\n<nobr><link=\"https://youtu.be/FCoHIDgKhpA\">動画はここをクリック!</nobr></link>\nそれじゃぁ！30日にまた会おうね！",
             "Date": "2025-10-30T20:00:00Z"
         }
     ]

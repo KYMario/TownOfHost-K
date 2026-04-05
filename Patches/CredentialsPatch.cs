@@ -16,7 +16,7 @@ namespace TownOfHost
     [HarmonyPatch]
     public static class CredentialsPatch
     {
-        public static SpriteRenderer TohkLogo { get; private set; }
+        public static SpriteRenderer TOHPLogo { get; private set; }
         private static TextMeshPro pingTrackerCredential = null;
         private static AspectPosition pingTrackerCredentialAspectPos = null;
         private static float deltaTime = 0.0f;
@@ -75,7 +75,7 @@ namespace TownOfHost
                         if (DebugModeManager.IsDebugMode)
                         {
                             sb.Append("\r\n");
-                            sb.Append(DebugModeManager.EnableTOHkDebugMode.OptionMeGetBool() ? "<#0066de>DebugMode</color>" : Utils.ColorString(Color.green, "デバッグモード"));
+                            sb.Append(DebugModeManager.EnableTOHPDebugMode.OptionMeGetBool() ? "<#0066de>DebugMode</color>" : Utils.ColorString(Color.green, "デバッグモード"));
                         }
 
                         exSb.Clear();
@@ -149,14 +149,14 @@ namespace TownOfHost
                 }
 #endif
 
-                if (SpecialEventText == null && TohkLogo != null)
+                if (SpecialEventText == null && TOHPLogo != null)
                 {
                     SpecialEventText = TMPTemplate.Create(
                         "SpecialEventText",
                         "",
                         Color.white,
                         alignment: TextAlignmentOptions.Center,
-                        parent: TohkLogo.transform);
+                        parent: TOHPLogo.transform);
                     SpecialEventText.name = "SpecialEventText";
                     SpecialEventText.fontSizeMin = 3f;
                     SpecialEventText.transform.localPosition = new Vector3(0f, 0.8f, 0f);
@@ -235,13 +235,13 @@ namespace TownOfHost
                 amongUsLogo = GameObject.Find("LOGO-AU");
 
                 var rightpanel = __instance.gameModeButtons.transform.parent;
-                var logoObject = new GameObject("titleLogo_TOHk");
+                var logoObject = new GameObject("titleLogo_TOHP");
                 var logoTransform = logoObject.transform;
-                TohkLogo = logoObject.AddComponent<SpriteRenderer>();
+                TOHPLogo = logoObject.AddComponent<SpriteRenderer>();
                 logoTransform.parent = rightpanel;
                 logoTransform.localPosition = new(0f, 0.15f, 1f);
                 logoTransform.localScale *= 1.0f;
-                TohkLogo.sprite = UtilsSprite.LoadSprite(Event.April || Event.Special ? "TownOfHost.Resources.TownOfHost-K_A.png" : "TownOfHost.Resources.TownOfHost-K.png", 300f);
+                TOHPLogo.sprite = UtilsSprite.LoadSprite(Event.April || Event.Special ? "TownOfHost.Resources.TownOfHost-PKO-logo2.png" : "TownOfHost.Resources.TownOfHost-PKO-logo.png", 175f);
             }
         }
         [HarmonyPatch(typeof(ModManager), nameof(ModManager.LateUpdate))]

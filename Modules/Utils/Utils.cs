@@ -447,7 +447,7 @@ namespace TownOfHost
                         case SuffixModes.None:
                             break;
                         case SuffixModes.TOH:
-                            name += $"<size=75%>(<{Main.ModColor}>TOH-K v{Main.PluginShowVersion})</color></size>";
+                            name += $"<size=75%>(<{Main.ModColor}>TOH-P v{Main.PluginShowVersion})</color></size>";
                             break;
                         case SuffixModes.Streaming:
                             name += $"<size=75%>(<{Main.ModColor}>{GetString("SuffixMode.Streaming")})</color></size>";
@@ -499,7 +499,7 @@ namespace TownOfHost
                     case CustomGameMode.SuddenDeath: sb.Append("\r\n").Append(ColorString(GetRoleColor(CustomRoles.Comebacker), GetString("SuddenDeathMode"))); break;
                     case CustomGameMode.MurderMystery: sb.Append("\r\n").Append($"<#1a389c>{GetString("MurderMystery")}"); break;
                 }
-                n = "<line-height=-100%>\n<b></line-height>" + name + $"\n<line-height=-{(sb.Length is 0 ? "200" : "300")}%>\n<size=60%><line-height=0%><{Main.ModColor}>TownOfHost-K <#ffffff>v{Main.PluginShowVersion}<line-height=100%>{sb.ToString()}</size>\n<size=0> ";
+                n = "<line-height=-100%>\n<b></line-height>" + name + $"\n<line-height=-{(sb.Length is 0 ? "200" : "300")}%>\n<size=60%><line-height=0%><{Main.ModColor}>TownOfHost-Pko <#ffffff>v{Main.PluginShowVersion}<line-height=100%>{sb.ToString()}</size>\n<size=0> ";
                 if (force)
                     PlayerCatch.AllPlayerControls.DoIf(x => x.name != "Player(Clone)" && x.PlayerId != PlayerControl.LocalPlayer.PlayerId && !x.IsModClient(), x => PlayerControl.LocalPlayer.RpcSetNamePrivate(n, true, x, true));
                 else if (pc.PlayerId != PlayerControl.LocalPlayer.PlayerId)
@@ -906,7 +906,7 @@ namespace TownOfHost
         public static bool IsRestriction()
         {
             //デバッグならカスタム・ローカル問わずバニラと同処理。
-            if (DebugModeManager.AmDebugger && DebugModeManager.EnableTOHkDebugMode.GetBool()) return true;
+            if (DebugModeManager.AmDebugger && DebugModeManager.EnableTOHPDebugMode.GetBool()) return true;
             //カスタムサーバー か ローカルゲームならfalseを返す
             if (Main.IsCs() || GameStates.IsLocalGame) return false;
 

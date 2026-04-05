@@ -1,11 +1,11 @@
-# Town Of Host-K
+# Town Of Host-Pko
 
 !これは、英語版のReadmeです!<br>
 
 **DiscordServer**
-[![Discord](./Images/TownOfHostK_readme.png)](https://discord.gg/5DPqH8seFq)
+[![Discord](./Images/TownOfHostPko_readme.png)](https://discord.gg/5DPqH8seFq)
 
-<p align="center"><a href="https://github.com/KYMario/TownOfHost-K/releases/"><img src="https://badgen.net/github/release/KYMario/TownOfHost-K"></a></p>
+<p align="center"><a href="https://github.com/KYMario/TownOfHost-Pko/releases/"><img src="https://badgen.net/github/release/KYMario/TownOfHost-Pko"></a></p>
 
 # Regarding this mod
 This mod is not affiliated with Among Us or Innersloth LLC, and the content contained therein is not endorsed or otherwise sponsored by Innersloth LLC. Portions of the materials contained herein are property of Innersloth LLC. © Innersloth LLC.<br>
@@ -13,17 +13,17 @@ This mod is not affiliated with Among Us or Innersloth LLC, and the content cont
 Please do not contact the official support regarding issues with this mod.<br>
 
 This mod adds roles, features, and other elements to TownOfHost.<br>
-If you encounter bugs in TownOfHost-K, please report them to TownOfHost-K first, not to the original game or other mods.<br>
+If you encounter bugs in TownOfHost-Pko, please report them to TownOfHost-Pko first, not to the original game or other mods.<br>
 
-Additionally, questions and bug reports regarding TownOfHost-K are accepted on the [DiscordServer](https://discord.gg/5DPqH8seFq).<br>
+Additionally, questions and bug reports regarding TownOfHost-Pko are accepted on the [DiscordServer](https://discord.gg/5DPqH8seFq).<br>
 
-## [Wiki](https://github.com/KYMario/TownOfHost-K/wiki)
+## [Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)
 
 ## Release
 AmongUs version : **17.0.0**~<br>
 
-**The latest version is[Here](https://github.com/KYMario/TownOfHost-K/releases/latest)**<br>
-Previous versions are [Here](https://github.com/KYMario/TownOfHost-K/releases)<br>
+**The latest version is[Here](https://github.com/KYMario/TownOfHost-Pko/releases/latest)**<br>
+Previous versions are [Here](https://github.com/KYMario/TownOfHost-Pko/releases)<br>
 
 ## About Public Rooms
 > [!Note]
@@ -54,15 +54,15 @@ Previous versions are [Here](https://github.com/KYMario/TownOfHost-K/releases)<b
 **Permitted Activities**
 > [**Note**]
 > - Sharing private room codes in Discord to host Mod rooms among friends
-> - via Town Of Host-K matchmaking
+> - via Town Of Host-Pko matchmaking
 > - Participatory/private village streams on YouTube or similar platforms that do not involve the above prohibited activities<br>
 
 => In short, it is a violation if there is a possibility that **random players unaware of the Mod's existence might join**.<br>
 <br>
 If you encounter a recruitment room, do not join it indiscriminately. Please notify the developers first. We will handle it strictly.<br>
 
-## Punishments and Usage Restrictions in TOH-K
-Starting with version 5.1.61.1, we have implemented the blacklist functionality used in certain MODs, such as [SuperNewRoles](https://github.com/SuperNewRoles/SuperNewRoles/), into Town Of Host-K.
+## Punishments and Usage Restrictions in TOH-P
+Starting with version 5.1.61.1, we have implemented the blacklist functionality used in certain MODs, such as [SuperNewRoles](https://github.com/SuperNewRoles/SuperNewRoles/), into Town Of Host-Pko.
 
 > [!note]
 > - [Punishable Acts]
@@ -77,7 +77,7 @@ Players engaging in the above will be added to the blacklist at the MOD develope
 -----------------------------------------------
 
 **【You Must Read This】**<br>
-By using Town Of Host-K, you pledge not to engage in any actions listed under “Punishable Usage Methods”.<br>
+By using Town Of Host-Pko, you pledge not to engage in any actions listed under “Punishable Usage Methods”.<br>
 Should you engage in punishable usage, you agree to accept punishment under any circumstances.<br>
 
 -----------------------------------------------
@@ -88,17 +88,17 @@ you will lose access to the mod!<br>
 If you use this mod, you must accept losing access to it,<br>
 and you must not engage in any punishable usage methods!!<br>
 
-## What is TownOfHost-K?
+## What is TownOfHost-Pko?
 It's a mod packed with innovative and unique features and roles that sets it apart from other Among Us mods.
 
 As a HostMod, only the room owner needs to install the mod.
 Players don't need to install anything or go through the hassle of adding custom servers.
-Simply join the room created by the installer to play TownOfHost-K!
+Simply join the room created by the installer to play TownOfHost-Pko!
 
-Detailed specifications can be found on the [Wiki](https://github.com/KYMario/TownOfHost-K/wiki) or checked in-game.
+Detailed specifications can be found on the [Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki) or checked in-game.
 
 ## About Roles
-There are quite a few roles, so please check the [Wiki](https://github.com/KYMario/TownOfHost-K/wiki).
+There are quite a few roles, so please check the [Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki).
 
 ## About Features and Modes
 
@@ -106,11 +106,11 @@ There are quite a few roles, so please check the [Wiki](https://github.com/KYMar
 
 <summary>Modes</summary>
 
-- [Standard](https://github.com/KYMario/TownOfHost-K/wiki/Standard)
-- - [Hide and Seek with Roles](https://github.com/KYMario/TownOfHost-K/wiki/HideandSeekwithRoles)
-- - [Sudden Death Mode](https://github.com/KYMario/TownOfHost-K/wiki/SuddenDeath)
-- [Hide and Seek](https://github.com/KYMario/TownOfHost-K/wiki/HideandSeek)
-- [Task Battle](https://github.com/KYMario/TownOfHost-K/wiki/TaskBattle)
+- [Standard](https://github.com/KYMario/TownOfHost-Pko/wiki/Standard)
+- - [Hide and Seek with Roles](https://github.com/KYMario/TownOfHost-Pko/wiki/HideandSeekwithRoles)
+- - [Sudden Death Mode](https://github.com/KYMario/TownOfHost-Pko/wiki/SuddenDeath)
+- [Hide and Seek](https://github.com/KYMario/TownOfHost-Pko/wiki/HideandSeek)
+- [Task Battle](https://github.com/KYMario/TownOfHost-Pko/wiki/TaskBattle)
 
 </details>
 
@@ -121,10 +121,10 @@ For other features and changes, please refer to the main wiki.
 - Please enable the text-to-speech setting only when (棒読みちゃん)Bōyomi-chan is running (it will automatically turn off).
 
 #### External Links
-　TownOfHost-K<br>
-　　[Twitter(X)](https://x.com/Tohkserver_k)<br>
+　TownOfHost-Pko<br>
+　　[Twitter(X)](https://x.com/TOHPserver_k)<br>
 
-**TownOfHost-K Developer**<br>
+**TownOfHost-Pko Developer**<br>
 　ky<br>
 　　[Youtube](https://www.youtube.com/@MTGC_KY)<br>
 　　[Twitter(X)](https://x.com/ky_mario_ky) ・ [Bluesky](https://bsky.app/profile/kymario.bsky.social)<br>
@@ -150,7 +150,7 @@ For other features and changes, please refer to the main wiki.
 
 #### Credits
 [Town Of Host](https://github.com/tukasa0001/TownOfHost)<br>
-　This is the original project from which we forked.<br>Most features available in TownOfHost are also implemented in TownOfHost-K.<br>
+　This is the original project from which we forked.<br>Most features available in TownOfHost are also implemented in TownOfHost-Pko.<br>
 
 [Town Of Host_Y](https://github.com/Yumenopai/TownOfHost_Y)<br>
 
