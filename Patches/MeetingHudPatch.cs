@@ -19,6 +19,7 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.AddOns.Common;
 using static TownOfHost.Translator;
 using TownOfHost.Modules.ChatManager;
+using System;
 
 namespace TownOfHost;
 
@@ -705,5 +706,14 @@ class SetHighlightedPatch
         if (!__instance.HighlightedFX) return false;
         __instance.HighlightedFX.enabled = value;
         return false;
+    }
+}
+[HarmonyPatch(typeof(CheckClassicText), nameof(CheckClassicText.OnEnable))]
+public static class CheckClassicTexOnEnabletPatch
+{
+    public static void Postfix(CheckClassicText __instance)
+    {
+        if (DateTime.Now.Month is 4 && AprilFoolsMode.IsAprilFoolsModeToggledOn && AprilFoolsMode.ShouldClassicMode())
+            __instance.reportedText.gameObject.SetActive(false);
     }
 }
