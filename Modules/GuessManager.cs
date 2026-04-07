@@ -15,7 +15,6 @@ using TownOfHost.Roles.Madmate;
 using TownOfHost.Roles.Crewmate;
 
 using static TownOfHost.Translator;
-using TownOfHost.Patches;
 
 namespace TownOfHost;
 
@@ -301,7 +300,7 @@ public static class GuessManager
         {
             id = Convert.ToByte(num);
         }
-        else if (result.Contains("レッド") || result.Contains("赤") || result.Contains("red"))
+        else if (result.Contains("レッド") || result.Contains("赤") || result.ToLower().Contains("red"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -309,7 +308,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ブルー") || result.Contains("青") || result.Contains("blue"))
+        else if (result.Contains("ブルー") || result.Contains("青") || result.ToLower().Contains("blue"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -317,7 +316,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ライム") || (result.Contains("黄") && result.Contains("緑")) || result.Contains("lime"))
+        else if (result.Contains("ライム") || (result.Contains("黄") && result.Contains("緑")) || result.ToLower().Contains("lime"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -325,7 +324,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("グリーン") || result.Contains("緑") || result.Contains("Green"))
+        else if (result.Contains("グリーン") || result.Contains("緑") || result.ToLower().Contains("green"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -333,7 +332,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ピンク") || result.Contains("桃") || result.Contains("pink"))
+        else if (result.Contains("ピンク") || result.Contains("桃") || result.ToLower().Contains("pink"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -341,7 +340,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("オレンジ") || result.Contains("橙") || result.Contains("orange"))
+        else if (result.Contains("オレンジ") || result.Contains("橙") || result.ToLower().Contains("orange"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -349,7 +348,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("イエロー") || result.Contains("黄") || result.Contains("yellow"))
+        else if (result.Contains("イエロー") || result.Contains("黄") || result.ToLower().Contains("yellow"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -357,7 +356,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ブラック") || result.Contains("黒") || result.Contains("black"))
+        else if (result.Contains("ブラック") || result.Contains("黒") || result.ToLower().Contains("black"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -365,7 +364,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ホワイト") || result.Contains("白") || result.Contains("white"))
+        else if (result.Contains("ホワイト") || result.Contains("白") || result.ToLower().Contains("white"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -373,7 +372,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("紫") || result.Contains("Purple") || result.Contains("パープル"))
+        else if (result.Contains("紫") || result.ToLower().Contains("purple") || result.Contains("パープル"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -381,7 +380,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ブラウン") || result.Contains("茶") || result.Contains("brown"))
+        else if (result.Contains("ブラウン") || result.Contains("茶") || result.ToLower().Contains("brown"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -389,7 +388,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("シアン") || result.Contains("水") || result.Contains("cyan"))
+        else if (result.Contains("シアン") || result.Contains("水") || result.ToLower().Contains("cyan"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -397,7 +396,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("小豆") || result.Contains("マルーン") || result.Contains("maroon"))
+        else if (result.Contains("小豆") || result.Contains("マルーン") || result.ToLower().Contains("maroon"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -405,7 +404,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("薄桃") || result.Contains("ローズ") || result.Contains("Rose"))
+        else if (result.Contains("薄桃") || result.Contains("ローズ") || result.ToLower().Contains("rose"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -413,7 +412,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("ばなーぬ") || result.Contains("banana") || result.Contains("バナナ"))
+        else if (result.Contains("ばなーぬ") || result.ToLower().Contains("banana") || result.Contains("バナナ"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -421,7 +420,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("灰") || result.Contains("グレ－") || result.Contains("gray"))
+        else if (result.Contains("灰") || result.Contains("グレ－") || result.ToLower().Contains("gray"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -429,7 +428,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("tan") || result.Contains("タン"))
+        else if (result.ToLower().Contains("tan") || result.Contains("タン"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
@@ -437,7 +436,7 @@ public static class GuessManager
                     id = pc.PlayerId;
             }
         }
-        else if (result.Contains("coral") || result.Contains("珊瑚") || result.Contains("コーラル"))
+        else if (result.ToLower().Contains("coral") || result.Contains("珊瑚") || result.Contains("コーラル"))
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {

@@ -305,6 +305,7 @@ namespace TownOfHost.Modules.ChatManager
                     Main.MessagesToSend.RemoveAt(0);
                     var Ischatopen = HudManager.Instance?.Chat?.IsOpenOrOpening ?? false;
                     senderplayer = PlayerControl.LocalPlayer;
+                    name = senderplayer.Data.GetLogPlayerName();
                     // ホスト視点でのチャット送信
                     if (sendTo == byte.MaxValue || sendTo == senderplayer.PlayerId)
                     {
@@ -386,6 +387,7 @@ namespace TownOfHost.Modules.ChatManager
                 else//ホスト生存時はホストに喋らせる
                 {
                     senderplayer = PlayerControl.LocalPlayer;
+                    name = senderplayer.Data.GetLogPlayerName();
                     Main.MessagesToSend.RemoveAt(0);
                     // ホスト視点でのチャット送信
                     if (sendTo == byte.MaxValue)
