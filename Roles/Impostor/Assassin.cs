@@ -539,6 +539,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     public void ReceiveStateRPC(MessageReader reader)
     {
         NowState = (AssassinMeeting)reader.ReadInt32();
+        NowUse = NowState is AssassinMeeting.Guessing;
     }
 
     public void SendStateRPC() //一時用、いつか別の方法で実装する //いい案なんかないかな、
