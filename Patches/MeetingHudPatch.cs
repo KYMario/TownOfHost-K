@@ -113,6 +113,8 @@ public static class MeetingHudPatch
             {
                 //pc.GetPlayerState().IsBlackOut = false;
                 pc.Data.Role.NameColor = Palette.White;
+                pc.GetPlayerTaskState().hasTasks = UtilsTask.HasTasks(pc.Data, false);
+
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId].Clear();
 
                 if (Main.CheckShapeshift.TryGetValue(pc.PlayerId, out var shapeshifting) && shapeshifting && AmongUsClient.Instance.AmHost)

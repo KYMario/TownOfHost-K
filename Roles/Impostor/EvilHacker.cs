@@ -146,6 +146,7 @@ public sealed class EvilHacker : RoleBase, IImpostor, IKillFlashSeeable
             if (GameStates.IsInGame)
             {
                 Utils.SendMessage(message, Player.PlayerId, title);
+                MeetingHudPatch.StartPatch.meetingsends.Add((Player.PlayerId, message, title));
             }
         }, 4f, "EvilHacker Admin Message");
         return;

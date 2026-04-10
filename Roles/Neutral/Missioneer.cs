@@ -264,6 +264,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     {
         StringBuilder sb = new();
         sb.Append($"<size=80%>{GetString("MissioneerMeg")}");
+        if (NowMissionLists?.Count <= 0) NowMissionLists = GetMissionList(Math.Min(meetingassignmentcount, PlayerCatch.AllAlivePlayersCount - 1));
         foreach (var mission in NowMissionLists)
         {
             var data = PlayerCatch.GetPlayerInfoById(mission.Key);

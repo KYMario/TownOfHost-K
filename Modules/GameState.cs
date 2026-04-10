@@ -202,6 +202,7 @@ namespace TownOfHost
         {
             Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}: InitTask", "TaskState.Init");
             if (player == null || player.Data == null || player.Data.Tasks == null) return;
+            //非クライアントたまにここで止まる。
             if (!UtilsTask.HasTasks(player.Data, false))
             {
                 AllTasksCount = 0;
