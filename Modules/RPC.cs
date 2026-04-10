@@ -64,6 +64,8 @@ namespace TownOfHost
                 case RpcCalls.SetRole: //SetNameRPC
                     RoleTypes role = (RoleTypes)subReader.ReadUInt16();
                     Logger.Info("役職:" + __instance.GetRealName().RemoveHtmlTags() + " => " + role, "SetRole");
+                    if (AmongUsClient.Instance.AmHost is false && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                        CustomButtonHud.BottonHud();
                     break;
                 case RpcCalls.SendChat:
                     var text = subReader.ReadString();
