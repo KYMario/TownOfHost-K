@@ -287,7 +287,7 @@ namespace TownOfHost
                         var text2 = "</size><#ff1919>公開ルームからMod部屋へ勧誘/誘導をするのは<b>禁止</b>です</color>。<size=40%>\n<#ff1919>勧誘/誘導行為</color>にあった場合はスクリーンショット等と一緒に開発者にお知らせください。";
                         var text3 = "\n\nコマンド一覧は「/cmd /h」と送信することで確認できます。";//"</size>\n<size=60%>\n☆参加型配信を行ったり、SNSで募集するのは?\n<size=50%>→<#352ac9>全然大丈夫です!!やっちゃってください!!</color>\n　<#fc8803>バニラAmongUsの公開ルーム</color>での<red>宣伝/勧誘/誘導</color>がダメなのです!!</size>";
                         var text4 = "";//"\n☆開発者から許可貰ってるって言ってる?　　\n<size=50%>→<#c9145a>個々で許可を出しておりません</color>!!大噓つきですよ!!</size>\n☆公開ルームに参加し、コード宣伝して「来てね～」って言うのは?\n<size=50%>→<#ff1919>勧誘/誘導</color>に当たるのでダメです。迷惑考えてくださいよ!!";
-                        var text5 = "\n<size=40%><color=#7159A6>このMODはTOHKをフォークしたMODでTOHKとは別MODです。\n質問や不具合等が発生してもTOHKやTOHには報告しないでください。</color></size>";
+                        var text5 = "\n<size=60%><color=#7159A6>このMODはTOHKをフォークしたMODでTOHKとは別MODです。\n質問や不具合等が発生してもTOHKやTOHには報告しないでください。</color></size>";
                         Utils.SendMessage($"{text}{text2}{text3}{text4}{text5}", client.Character.PlayerId, $"<{Main.ModColor}>【This Room Use \"Town Of Host-Pko\"】</color>");
                     }
                     else

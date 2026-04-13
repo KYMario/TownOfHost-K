@@ -1,17 +1,18 @@
 using System.Collections.Generic;
-using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
 using UnityEngine;
+
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.PlayerCatch;
 using static TownOfHost.Utils;
 using static TownOfHost.Translator;
+using static TownOfHost.Modules.SelfVoteManager;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class Onmyoji : RoleBase, IKiller
+public sealed class Onmyoji : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -26,148 +27,240 @@ public sealed class Onmyoji : RoleBase, IKiller
             "#9b59b6",
             (6, 2),
             true,
-            countType: CountTypes.OutOfGame, // 生存者カウントなし
             from: From.SuperNewRoles
         );
 
     public Onmyoji(PlayerControl player)
-    : base(RoleInfo, player, () => HasTask.ForRecompute)
+        : base(RoleInfo, player, () => HasTask.True)
     {
-        PhantomCooldown = OptPhantomCooldown.GetFloat();
-        VentCooldown = OptVentCooldown.GetFloat();
-        VentInTime = OptVentInTime.GetFloat();
-        KillCooldown = OptKillCooldown.GetFloat();
-        NeedTask = OptNeedTask.GetBool();
-        MaxShikigami = OptMaxShikigami.GetInt();
         WinTaskCount = OptWinTaskCount.GetInt();
         MyTaskState.NeedTaskCount = WinTaskCount;
 
         ShikigamiIds = new();
-        checktaskwinflag = !NeedTask;
+        checktaskwinflag = false;
+
+        NextShikigamiCandidate = byte.MaxValue;
+        nearTimer = 0f;
+        hasSpawned = false;
+
+        CustomRoleManager.MarkOthers.Add(GetMarkOthers);
     }
 
-    static OptionItem OptPhantomCooldown;
-    static OptionItem OptVentCooldown;
-    static OptionItem OptVentInTime;
-    static OptionItem OptKillCooldown;
-    static OptionItem OptNeedTask;
-    static OptionItem OptMaxShikigami;
     static OptionItem OptWinTaskCount;
 
-    static float PhantomCooldown;
-    static float VentCooldown;
-    static float VentInTime;
-    static float KillCooldown;
-    static bool NeedTask;
-    static int MaxShikigami;
     static int WinTaskCount;
 
     public List<byte> ShikigamiIds;
     bool checktaskwinflag;
 
+    // ★ スポーン済みかどうか
+    bool hasSpawned = false;
+
+    // ★ 式神候補に3秒間近づいている時間
+    float nearTimer = 0f;
+
+    // ★ 会議で選ばれた式神候補
+    public byte NextShikigamiCandidate;
+
     enum OptionName
     {
-        OnmyojiVentCooldown,
-        OnmyojiVentInTime,
-        OnmyojiKillCooldown,
-        OnmyojiNeedTask,
-        OnmyojiMaxShikigami,
         OnmyojiWinTaskCount,
     }
 
     private static void SetupOptionItem()
     {
         SoloWinOption.Create(RoleInfo, 9, defo: 15);
-        OptKillCooldown = FloatOptionItem.Create(RoleInfo, 10, OptionName.OnmyojiKillCooldown, new(0f, 60f, 2.5f), 25f, false)
-            .SetValueFormat(OptionFormat.Seconds);
-        OptMaxShikigami = IntegerOptionItem.Create(RoleInfo, 11, OptionName.OnmyojiMaxShikigami, new(1, 5, 1), 1, false);
-        OptVentCooldown = FloatOptionItem.Create(RoleInfo, 12, OptionName.OnmyojiVentCooldown, new(0f, 60f, 2.5f), 15f, false)
-            .SetValueFormat(OptionFormat.Seconds);
-        OptVentInTime = FloatOptionItem.Create(RoleInfo, 13, OptionName.OnmyojiVentInTime, new(0f, 60f, 2.5f), 10f, false)
-            .SetValueFormat(OptionFormat.Seconds);
-        OptNeedTask = BooleanOptionItem.Create(RoleInfo, 14, OptionName.OnmyojiNeedTask, false, false);
         OptWinTaskCount = IntegerOptionItem.Create(RoleInfo, 15, OptionName.OnmyojiWinTaskCount, new(1, 99, 1), 5, false)
             .SetValueFormat(OptionFormat.Times);
         OverrideTasksData.Create(RoleInfo, 20);
     }
 
-    public override void ApplyGameOptions(IGameOptions opt)
+    // ★ スポーンした瞬間に呼ばれる（TOH-P 正しいシグネチャ）
+    public override void OnSpawn(bool initialState)
     {
-        AURoleOptions.EngineerCooldown = VentCooldown;
-        AURoleOptions.EngineerInVentMaxTime = VentInTime;
+        hasSpawned = true;
     }
 
-    public float CalculateKillCooldown() => KillCooldown;
-    public bool CanUseKillButton() => Player.IsAlive() && ShikigamiIds.Count < MaxShikigami;
-    public bool CanUseSabotageButton() => false;
-    public bool CanUseImpostorVentButton() => false;
+    // ★ 会議で能力を使えるかどうか
+    bool ISelfVoter.CanUseVoted()
+        => Player.IsAlive() && ShikigamiIds.Count < 1;
 
-    // 式神指名
-    public void OnCheckMurderAsKiller(MurderInfo info)
+    public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-        var (killer, target) = info.AttemptTuple;
-        info.DoKill = false;
+        if (!Is(voter)) return true;
+        if (!Player.IsAlive()) return true;
+        if (ShikigamiIds.Count >= 1) return true;
 
-        // キル能力なしクルーのみ指名可能
-        if (target.GetCustomRole().IsImpostor()) return;
-        if (target.GetCustomRole().GetCustomRoleTypes() == CustomRoleTypes.Neutral) return;
-        if ((target.GetRoleClass() as IKiller) != null) return;
-        if (ShikigamiIds.Count >= MaxShikigami) return;
+        if (CheckSelfVoteMode(Player, votedForId, out var status))
+        {
+            // ★ 自投票 → モード開始（システムメッセージ）
+            if (status is VoteStatus.Self)
+            {
+                Utils.SendMessage(
+                    "<color=#9b59b6>式神選択モードになりました！</color>\n\n" +
+                    "誰かに投票 → <color=#9b59b6>式神候補に指定</color>\n" +
+                    "自投票 → <color=#9b59b6>自身に投票</color>\n" +
+                    "投票スキップ → <color=#9b59b6>式神選択をキャンセル</color>",
+                    Player.PlayerId
+                );
+
+                SetMode(Player, true);
+                return false;
+            }
+
+            // ★ 他プレイヤーに投票 → 式神候補に設定
+            if (status is VoteStatus.Vote)
+            {
+                if (votedForId == Player.PlayerId || votedForId == SkipId)
+                {
+                    Utils.SendMessage("<color=#9b59b6>その相手には式神を付けられません。</color>", Player.PlayerId);
+                    SetMode(Player, false);
+                    return false;
+                }
+
+                NextShikigamiCandidate = votedForId;
+
+                Utils.SendMessage(
+                    "<color=#9b59b6>式神候補を設定しました！</color>\n" +
+                    "次のターン、この相手に近づくと式神になります。",
+                    Player.PlayerId
+                );
+
+                SetMode(Player, false);
+                return false;
+            }
+
+            // ★ スキップ → キャンセル
+            if (status is VoteStatus.Skip)
+            {
+                NextShikigamiCandidate = byte.MaxValue;
+
+                Utils.SendMessage(
+                    "<color=#9b59b6>式神選択をキャンセルしました。</color>",
+                    Player.PlayerId
+                );
+
+                SetMode(Player, false);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public override void OnStartMeeting()
+    {
+        NextShikigamiCandidate = byte.MaxValue;
+    }
+
+    public override void AfterMeetingTasks()
+    {
+        hasSpawned = false; // ★ 会議後はスポーン前扱いに戻す
+
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (!Player.IsAlive()) return;
+
+        foreach (var id in ShikigamiIds)
+        {
+            var sk = GetPlayerById(id);
+            if (sk == null || !sk.IsAlive()) continue;
+            TargetArrow.Add(Player.PlayerId, id);
+        }
+    }
+
+    public override void OnFixedUpdate(PlayerControl player)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (!GameStates.IsInTask) return;
+        if (!Player.IsAlive()) return;
+
+        // ★ スポーンするまで式神指名処理を無効化
+        if (!hasSpawned) return;
+
+        if (ShikigamiIds.Count >= 1) return;
+        if (NextShikigamiCandidate == byte.MaxValue) return;
+
+        var target = GetPlayerById(NextShikigamiCandidate);
+        if (target == null || !target.IsAlive())
+        {
+            nearTimer = 0f;
+            return;
+        }
+
+        float dist = Vector2.Distance(Player.GetTruePosition(), target.GetTruePosition());
+        if (dist <= 1.0f)
+        {
+            nearTimer += Time.fixedDeltaTime;
+
+            if (nearTimer >= 3f)
+            {
+                AddShikigami(target);
+                NextShikigamiCandidate = byte.MaxValue;
+                nearTimer = 0f;
+            }
+        }
+        else
+        {
+            nearTimer = 0f;
+        }
+    }
+
+    void AddShikigami(PlayerControl target)
+    {
+        if (ShikigamiIds.Count >= 1) return;
 
         ShikigamiIds.Add(target.PlayerId);
 
+        TargetArrow.Add(Player.PlayerId, target.PlayerId);
+
         if (!Utils.RoleSendList.Contains(target.PlayerId))
             Utils.RoleSendList.Add(target.PlayerId);
-        target.RpcSetCustomRole(CustomRoles.Shikigami, log: null);
 
-        // 式神に陰陽師のIDを記録
+        target.RpcSetCustomRole(CustomRoles.Shikigami, log: null);
         if (target.GetRoleClass() is Shikigami sk)
             sk.SetOwner(Player.PlayerId);
 
-        // 矢印追加
-        GetArrow.Add(Player.PlayerId, target.GetTruePosition());
+        NameColorManager.Add(Player.PlayerId, target.PlayerId, "#9b59b6");
 
-        killer.ResetKillCooldown();
-        killer.SetKillCooldown();
+        Player.RpcSetRoleDesync(RoleTypes.Engineer, Player.GetClientId());
+
         SendRPC();
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 0.2f, "Onmyoji Shikigami");
     }
 
-    // ベント：開閉モーションなし
-    public override bool OnEnterVent(PlayerPhysics physics, int ventId)
-    {
-        // エンジニアとして処理、開閉モーションをスキップ
-        return true;
-    }
-
-    // タスク完了チェック
     public override bool OnCompleteTask(uint taskid)
     {
-        if (NeedTask && MyTaskState.HasCompletedEnoughCountOfTasks(WinTaskCount))
+        if (MyTaskState.HasCompletedEnoughCountOfTasks(WinTaskCount))
             checktaskwinflag = true;
         return true;
     }
 
-    // 星詠み：キル能力持ちクルーの名前色を役職色で表示
-    public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (!Is(seer)) return "";
         if (seen.PlayerId == seer.PlayerId) return "";
-        if (!Player.IsAlive()) return "";
 
-        // キル能力持ちクルー
-        if (seen.GetCustomRole().GetCustomRoleTypes() == CustomRoleTypes.Crewmate
-            && seen.GetRoleClass() is IKiller)
+        foreach (var pc in AllPlayerControls)
         {
-            var roleColor = UtilsRoleText.GetRoleColorCode(seen.GetCustomRole());
-            return $"<color={roleColor}>★</color>";
+            if (pc.GetRoleClass() is not Onmyoji onmyoji) continue;
+            if (pc.PlayerId != seer.PlayerId) continue;
+            if (!pc.IsAlive()) return "";
+
+            if (seen.GetRoleClass() is not IKiller) return "";
+
+            var roleType = seen.GetCustomRole().GetCustomRoleTypes();
+            string color = roleType switch
+            {
+                CustomRoleTypes.Impostor => "#ff0000",
+                _ => UtilsRoleText.GetRoleColorCode(seen.GetCustomRole())
+            };
+
+            return $"<color={color}>★</color>";
         }
         return "";
     }
 
-    // 式神探知：矢印
-    public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
         if (!Is(seer) || isForMeeting || !Player.IsAlive()) return "";
@@ -179,12 +272,17 @@ public sealed class Onmyoji : RoleBase, IKiller
         {
             var sk = GetPlayerById(id);
             if (sk == null || !sk.IsAlive()) continue;
-            arrows += GetArrow.GetArrows(seer, sk.GetTruePosition());
+            arrows += TargetArrow.GetArrows(seer, id);
         }
         return arrows == "" ? "" : $"<color=#9b59b6>{arrows}</color>";
     }
 
-    // 単独勝利判定
+    public override void OnMurderPlayerAsTarget(MurderInfo info)
+    {
+        // ★ 陰陽師が死んでも式神は死なない（しぇとこ仕様）
+        // 何もしない
+    }
+
     public static bool CheckWinStatic(ref GameOverReason reason)
     {
         foreach (var pc in AllPlayerControls)
@@ -193,10 +291,9 @@ public sealed class Onmyoji : RoleBase, IKiller
             if (!pc.IsAlive()) continue;
             if (!onmyoji.checktaskwinflag) continue;
 
-            if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Onmyoji, pc.PlayerId, true))
+            if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Onmyoji, pc.PlayerId))
             {
                 CustomWinnerHolder.NeutralWinnerIds.Add(pc.PlayerId);
-                // 式神も追加勝利
                 foreach (var id in onmyoji.ShikigamiIds)
                     CustomWinnerHolder.WinnerIds.Add(id);
                 reason = GameOverReason.ImpostorsByKill;
@@ -208,9 +305,9 @@ public sealed class Onmyoji : RoleBase, IKiller
 
     public override string GetProgressText(bool comms = false, bool GameLog = false)
     {
-        var skCount = ShikigamiIds.Count;
         var color = checktaskwinflag ? "#9b59b6" : "#5e5e5e";
-        return $"<color={color}>式:{skCount}/{MaxShikigami}</color>";
+        var skCount = ShikigamiIds.Count;
+        return $"<color={color}>式:{skCount}/1</color>";
     }
 
     public void SendRPC()
@@ -231,15 +328,5 @@ public sealed class Onmyoji : RoleBase, IKiller
         checktaskwinflag = reader.ReadBoolean();
     }
 
-    public bool OverrideKillButton(out string text)
-    {
-        text = "Onmyoji_Kill";
-        return true;
-    }
-
-    public bool OverrideKillButtonText(out string text)
-    {
-        text = GetString("OnmyojiKillButtonText");
-        return true;
-    }
+    public override string GetAbilityButtonText() => GetString("OnmyojiAbilityButtonText");
 }

@@ -50,7 +50,7 @@ namespace TownOfHost
                         case CustomWinner.Crewmate:
                             PlayerCatch.AllPlayerControls
                                 .Where(pc => pc.Is(CustomRoleTypes.Crewmate) && !pc.GetCustomRole().IsLovers()
-                                && !pc.Is(CustomRoles.Amanojaku) && !pc.Is(CustomRoles.Jackaldoll) && !pc.Is(CustomRoles.SKMadmate)
+                                && !pc.Is(CustomRoles.Amanojaku) && !pc.Is(CustomRoles.Jackaldoll) && !pc.Is(CustomRoles.SKMadmate) && !pc.Is(CustomRoles.Tama)
                                 && ((pc.Is(CustomRoles.Staff) && (pc.GetRoleClass() as Staff).EndedTaskInAlive) || !pc.Is(CustomRoles.Staff)))
                                 .Do(pc => CustomWinnerHolder.WinnerIds.Add(pc.PlayerId));
                             if (Monochromer.CheckWin(reason)) break;
@@ -63,7 +63,7 @@ namespace TownOfHost
                             break;
                         case CustomWinner.Impostor:
                             PlayerCatch.AllPlayerControls
-                                .Where(pc => (pc.Is(CustomRoleTypes.Impostor) || pc.Is(CustomRoleTypes.Madmate) || pc.Is(CustomRoles.SKMadmate)) && (!pc.GetCustomRole().IsLovers() || !pc.Is(CustomRoles.Jackaldoll)))
+                                .Where(pc => (pc.Is(CustomRoleTypes.Impostor) || pc.Is(CustomRoleTypes.Madmate) || pc.Is(CustomRoles.SKMadmate)) && (!pc.GetCustomRole().IsLovers() || !pc.Is(CustomRoles.Jackaldoll) || !pc.Is(CustomRoles.Tama)))
                                 .Do(pc => CustomWinnerHolder.WinnerIds.Add(pc.PlayerId));
                             if (Egoist.CheckWin()) break;
                             foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -129,6 +129,7 @@ namespace TownOfHost
                     God.CheckWin(ref reason);
                     // ★ マグロの勝利判定
                     Tuna.CheckWin(ref reason);
+                    Onmyoji.CheckWinStatic(ref reason);
                 }
                 AsistingAngel.CheckAddWin();
                 foreach (var phantomthiefplayer in PlayerCatch.AllAlivePlayerControls.Where(pc => pc.GetCustomRole() is CustomRoles.PhantomThief))

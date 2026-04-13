@@ -76,9 +76,10 @@ public sealed class DoubleKiller : RoleBase, IImpostor, IUsePhantomButton
 
     bool IUsePhantomButton.IsPhantomRole => !hasUsedPhantom;
 
+    bool IUsePhantomButton.IsresetAfterKill => false;
+
     void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        // ★ キルクールに触らない
         AdjustKillCooldown = false;
         ResetCooldown = false;
 
@@ -107,12 +108,21 @@ public sealed class DoubleKiller : RoleBase, IImpostor, IUsePhantomButton
 
         if (nearest == null) return;
 
+        // ★ ファントムボタン押した瞬間の残りキルCDを取得
+        float savedKillCooldown = Player.killTimer; // ★ 残り時間はkillTimerに入っている
+
         hasUsedPhantom = true;
-
         Player.RpcSetRole(RoleTypes.Impostor);
-
         Player.RpcMurderPlayer(nearest);
-        UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+
+        _ = new LateTask(() =>
+        {
+            if (!Player.IsAlive()) return;
+            Main.AllPlayerKillCooldown[Player.PlayerId] = savedKillCooldown;
+            Player.SetKillCooldown(savedKillCooldown);
+            Player.SyncSettings();
+            Player.MarkDirtySettings();
+        }, 0.1f, "DoubleKillerRestoreCD", true);
     }
 
     public override string GetProgressText(bool comms = false, bool GameLog = false)

@@ -589,6 +589,8 @@ public static class MeetingHudPatch
             }
             if (CustomRoles.MadonnaLovers.IsPresent() && !Lovers.isMadonnaLoversDead && Lovers.MaMadonnaLoversPlayers.Find(lp => lp.PlayerId == playerId) != null)
                 Lovers.MadonnLoversSuicide(playerId, true);
+            if (!Cupid.IsCupidLoversDead && Cupid.CupidLoversPlayers.Find(lp => lp.PlayerId == playerId) != null)
+                Cupid.CupidLoversSuicide(playerId, true);
             if (CustomRoles.OneLove.IsPresent() && !Lovers.isOneLoveDead)
                 Lovers.OneLoveSuicide(playerId, true);
             //道連れチェック

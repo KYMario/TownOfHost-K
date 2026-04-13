@@ -33,10 +33,24 @@ namespace TownOfHost.Modules
 
                     var sender = PlayerCatch.GetPlayerById(senderId);
                     string playerName = sender?.Data?.PlayerName ?? "Unknown";
+                    bool isDead = sender == null || !sender.IsAlive();
 
-                    // ★ RPCを使わず直接MessagesToSendに追加
-                    Main.MessagesToSend.Add(($"{playerName}: {prompt}", byte.MaxValue, playerName));
-                    Main.MessagesToSend.Add(($"<color=#FFA500>ぴけおAI</color>: {reply}", byte.MaxValue, $"<color=#FFA500>ぴけおAI</color>"));
+                    if (isDead)
+                    {
+                        // 霊界の人だけに送信
+                        foreach (var pc in PlayerCatch.AllPlayerControls)
+                        {
+                            if (pc.IsAlive()) continue;
+                            Main.MessagesToSend.Add(($"{playerName}: {prompt}", pc.PlayerId, playerName));
+                            Main.MessagesToSend.Add(($"<color=#FFA500>ぴけおAI</color>: {reply}", pc.PlayerId, $"<color=#FFA500>ぴけおAI</color>"));
+                        }
+                    }
+                    else
+                    {
+                        // 全員に送信
+                        Main.MessagesToSend.Add(($"{playerName}: {prompt}", byte.MaxValue, playerName));
+                        Main.MessagesToSend.Add(($"<color=#FFA500>ぴけおAI</color>: {reply}", byte.MaxValue, $"<color=#FFA500>ぴけおAI</color>"));
+                    }
                 }
                 catch (System.Exception e)
                 {

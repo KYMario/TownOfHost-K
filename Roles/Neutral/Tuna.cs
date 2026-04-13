@@ -17,7 +17,7 @@ public sealed class Tuna : RoleBase
             23030,
             SetupOptionItem,
             "tn",
-            "#00CFFF",
+            "#8cffff",
             (6, 2),
             from: From.SuperNewRoles
         );

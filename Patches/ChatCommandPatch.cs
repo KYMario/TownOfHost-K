@@ -318,6 +318,8 @@ namespace TownOfHost
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalMafia);
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalAlien);
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackaldoll);
+                                CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalHadouHo);
+                                CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Tama);
                                 GameManager.Instance.RpcEndGame(GameOverReason.ImpostorsByKill, false);
                                 break;
                             case "廃村":
@@ -674,7 +676,7 @@ namespace TownOfHost
                     case "/jc":
                         if (Assassin.NowUse) break;
                         canceled = true;
-                        if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && PlayerControl.LocalPlayer.IsAlive() && PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien)
+                        if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && PlayerControl.LocalPlayer.IsAlive() && PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalHadouHo or CustomRoles.Tama)
                         {
                             var send = "";
                             foreach (var ag in args)
@@ -686,7 +688,7 @@ namespace TownOfHost
                             Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "jackalChat");
                             foreach (var jac in PlayerCatch.AllPlayerControls)
                             {
-                                if (jac && ((jac?.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || !jac.IsAlive()))
+                                if (jac && ((jac?.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalHadouHo or CustomRoles.Tama) || !jac.IsAlive()))
                                 {
                                     SendMessage(send.Mark(ModColors.JackalColor), jac.PlayerId,
                                     ColorString(ModColors.JackalColor,
@@ -1512,7 +1514,18 @@ namespace TownOfHost
         };
                         var rand = new System.Random();
                         string answer = answers[rand.Next(answers.Length)];
-                        SendMessage($"8ball {player.Data.PlayerName}「{question}」\n→ {answer}");
+                        if (!player.IsAlive())
+                        {
+                            foreach (var pc in PlayerCatch.AllPlayerControls)
+                            {
+                                if (pc.IsAlive()) continue;
+                                SendMessage($"8ball {player.Data.PlayerName}「{question}」\n→ {answer}", pc.PlayerId);
+                            }
+                        }
+                        else
+                        {
+                            SendMessage($"8ball {player.Data.PlayerName}「{question}」\n→ {answer}");
+                        }
                     }
                     break;
                 case "/rule":
@@ -1553,7 +1566,18 @@ namespace TownOfHost
                             17 => "コーラル",
                             _ => "不明な色"
                         };
-                        SendMessage($" {player.Data.PlayerName} ({colorName})が{min}〜{max}でサイコロを振りました → {result}");
+                        if (!player.IsAlive())
+                        {
+                            foreach (var pc in PlayerCatch.AllPlayerControls)
+                            {
+                                if (pc.IsAlive()) continue;
+                                SendMessage($" {player.Data.PlayerName} ({colorName})が{min}〜{max}でサイコロを振りました → {result}", pc.PlayerId);
+                            }
+                        }
+                        else
+                        {
+                            SendMessage($" {player.Data.PlayerName} ({colorName})が{min}〜{max}でサイコロを振りました → {result}");
+                        }
                     }
                     break;
                 case "/t":
@@ -1651,14 +1675,14 @@ namespace TownOfHost
                 case "/jacct":
                 case "/jc":
                     if (Assassin.NowUse) break;
-                    if (GameStates.InGame && Options.JackalHideChat.GetBool() && player.IsAlive() && player.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien)
+                    if (GameStates.InGame && Options.JackalHideChat.GetBool() && player.IsAlive() && player.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalHadouHo or CustomRoles.Tama)
                     {
                         string send = "";
                         if (GetHideSendText(ref canceled, ref send) is false) return;
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "JackalChat");
                         foreach (var jac in AllPlayerControls)
                         {
-                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || (!jac.IsAlive())) && (jac.PlayerId != player.PlayerId && !Isclient))
+                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalHadouHo or CustomRoles.Tama) || (!jac.IsAlive())) && (jac.PlayerId != player.PlayerId && !Isclient))
                             {
                                 if (AmongUsClient.Instance.AmHost)
                                 {

@@ -1,19 +1,19 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Il2CppSystem.Text;
-using UnityEngine;
-using Hazel;
-using HarmonyLib;
+using System.Linq;
 using AmongUs.GameOptions;
-
-using TownOfHost.Roles.Core.Interfaces;
-using TownOfHost.Roles.AddOns.Common;
-using TownOfHost.Roles.Ghost;
-using TownOfHost.Roles.Crewmate;
-using TownOfHost.Roles.Impostor;
-using TownOfHost.Modules;
+using HarmonyLib;
+using Hazel;
+using Il2CppSystem.Text;
 using Rewired;
+using TownOfHost.Modules;
+using TownOfHost.Roles.AddOns.Common;
+using TownOfHost.Roles.Core.Interfaces;
+using TownOfHost.Roles.Crewmate;
+using TownOfHost.Roles.Ghost;
+using TownOfHost.Roles.Impostor;
+using TownOfHost.Roles.Neutral;
+using UnityEngine;
 
 namespace TownOfHost.Roles.Core;
 
@@ -309,6 +309,7 @@ public static class CustomRoleManager
             data.LoversSuicide(attemptTarget.PlayerId);
         }
         Lovers.MadonnLoversSuicide(attemptTarget.PlayerId);
+        Cupid.CupidLoversSuicide(attemptTarget.PlayerId);
         Lovers.OneLoveSuicide(attemptTarget.PlayerId);
         OneWolf.OnMurderPlayer(info);
 
@@ -770,7 +771,10 @@ public enum CustomRoles
     NekoKabocha,
     EvilHacker,
     Insider,
-    //TOH-P
+    HadouHo,
+    SelfBomber,
+    DoubleKiller,
+    //TOH-K
     Bomber,
     TeleportKiller,
     AntiReporter,
@@ -804,10 +808,10 @@ public enum CustomRoles
     BorderKiller,
     ShapeKiller,
     Archer,
-    HadouHo,
-    SelfBomber,
-    DoubleKiller,
     Assassin,
+    //TOH-P
+    TimeSleeper,
+    StandMaster,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,
@@ -815,7 +819,7 @@ public enum CustomRoles
     MadSnitch,
     MadAvenger,
     SKMadmate,
-    //TOH-P
+    //TOH-K
     MadJester,
     MadTeller,
     MadBait,
@@ -848,7 +852,10 @@ public enum CustomRoles
     TimeManager,
     VillageChief,
     Santa,
-    //TOH-P
+    Rabbit,
+    Dancer,
+    Nimrod,
+    //TOH-K
     Gasp,
     VentMaster,
     ToiletFan,
@@ -889,6 +896,7 @@ public enum CustomRoles
     Observer,
     Satellite,
     Merlin,
+    //TOH-P
     Pukupuku,
     //DEBUG only Crewmate
     //Neutral
@@ -901,12 +909,15 @@ public enum CustomRoles
     Terrorist,
     Executioner,
     Jackal,
+    JackalHadouHo,
+    Tama,
     Freeter,
     God,
     Tuna,
     Onmyoji,
     Shikigami,
-    //TOHP
+    Cupid,
+    //TOH-K
     Remotekiller,
     Chef,
     JackalMafia,
@@ -954,7 +965,7 @@ public enum CustomRoles
     OneWolf,
     //第三属性
     Lovers, RedLovers, YellowLovers, BlueLovers, GreenLovers, WhiteLovers, PurpleLovers,
-    MadonnaLovers, OneLove, Amanojaku, Faction,
+    MadonnaLovers, CupidLovers, OneLove, Amanojaku, Faction,
     //AddMadmate,
     //バフ
     Guesser,

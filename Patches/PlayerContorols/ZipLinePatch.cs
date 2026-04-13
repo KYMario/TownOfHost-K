@@ -27,6 +27,11 @@ namespace TownOfHost
                     return false;
                 }
             }
+            if (__instance.GetRoleClass() is Roles.Neutral.JackalHadouHo jackalHo)
+            {
+                if (jackalHo.IsCharging || jackalHo.ShowBeamMark)
+                    return false;
+            }
 
             if (!fromTop && Options.CantUseZipLineTotop.GetBool()) return false;
             if (fromTop && Options.CantUseZipLineTodown.GetBool()) return false;

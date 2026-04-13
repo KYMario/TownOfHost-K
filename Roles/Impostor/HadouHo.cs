@@ -324,8 +324,16 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
 
             if (!HasHit && SelfDestructOnMiss)
             {
-                PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.etc;
+                // ★ 速度を先に戻す
+                Player.RpcSetColor((byte)PlayerColor);
+                Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+                Player.MarkDirtySettings();
+
+                // ★ 死因を自爆に変更
+                PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
+
+                // ★ IsFiringリセット
                 IsFiring = false;
                 return;
             }
@@ -459,7 +467,49 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
 
         // ★ 死亡中または会議中は表示しない
         if (!Player.IsAlive() || isForMeeting)
+            return false;
+
+        // ★ 波動砲本人かつバニラ勢のみに別名を表示
+        if (seen == seer && Is(seer) && !seer.IsModClient() && (IsCharging || IsCharging || ShowBeamMark))
         {
+            // ★ ビーム表示
+            if (ShowBeamMark && seen.PlayerId == Player.PlayerId)
+            {
+                SetRoleTextHeight(true);
+
+                bool facingLeft = BeamFacingLeft;
+                string star = "<voffset=0.35em><size=800%><color=#ffffff>★</color></size></voffset>";
+                string beamBlock = BuildBeamBlock();
+                string blank800 = "<size=1200%>　</size>";
+                string starWithBlank = facingLeft ? star + blank800 : blank800 + star;
+                string longBeam;
+
+                if (facingLeft)
+                {
+                    longBeam = "";
+                    for (int i = 0; i < 2; i++) longBeam += beamBlock;
+                    longBeam += starWithBlank;
+                }
+                else
+                {
+                    longBeam = starWithBlank;
+                    for (int i = 0; i < 2; i++) longBeam += beamBlock;
+                }
+
+                string hugeBlank = "<alpha=#00>" + new string('　', 10) + "</alpha>";
+                string lineStart = "<line-height=4300%>\n";
+                string sizeStart = "<size=5000%>";
+                string sizeEnd = "</size></line-height>";
+
+                if (facingLeft)
+                    name = lineStart + $"{sizeStart}{longBeam}{sizeEnd}" + $"{sizeStart}{hugeBlank}{sizeEnd}";
+                else
+                    name = lineStart + $"{sizeStart}{hugeBlank}{sizeEnd}" + $"{sizeStart}{longBeam}{sizeEnd}";
+
+                NoMarker = true;
+                return true;
+            }
+
             return false;
         }
 
@@ -467,7 +517,6 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         if (IsCharging && seen.PlayerId == Player.PlayerId)
         {
             bool facingLeft = BeamFacingLeft;
-            // ★ seerがホストかどうかで向きを判定
             if (seer.PlayerId == Player.PlayerId)
                 facingLeft = Player.cosmetics.FlipX;
 
@@ -479,6 +528,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             return true;
         }
 
+        // ★ ビーム表示
         if (ShowBeamMark && seen.PlayerId == Player.PlayerId)
         {
             SetRoleTextHeight(true);

@@ -180,7 +180,9 @@ namespace TownOfHost
             CustomRoles.GreenLovers or
             CustomRoles.WhiteLovers or
             CustomRoles.PurpleLovers or
-            CustomRoles.MadonnaLovers;
+            CustomRoles.MadonnaLovers or
+            CustomRoles.CupidLovers;
+
         }
         public static bool IsLovers(this PlayerControl pc, bool checkonelover = true)
         {
@@ -188,6 +190,7 @@ namespace TownOfHost
             pc.Is(CustomRoles.YellowLovers) || pc.Is(CustomRoles.BlueLovers) ||
             pc.Is(CustomRoles.GreenLovers) || pc.Is(CustomRoles.WhiteLovers) ||
             pc.Is(CustomRoles.PurpleLovers) || pc.Is(CustomRoles.MadonnaLovers) ||
+            pc.Is(CustomRoles.CupidLovers) ||
             (pc.Is(CustomRoles.OneLove) && checkonelover);
         }
         public static bool IsLovers(this CustomWinner winner)
@@ -200,6 +203,7 @@ namespace TownOfHost
                             CustomWinner.WhiteLovers or
                             CustomWinner.PurpleLovers or
                             CustomWinner.MadonnaLovers or
+                            CustomWinner.CupidLovers or
                             CustomWinner.OneLove;
         }
         public static CustomRoles GetLoverRole(this PlayerControl pc)
@@ -218,6 +222,7 @@ namespace TownOfHost
                     case CustomRoles.PurpleLovers: return CustomRoles.PurpleLovers;
                     case CustomRoles.OneLove: return CustomRoles.OneLove;
                     case CustomRoles.MadonnaLovers: return CustomRoles.MadonnaLovers;
+                    case CustomRoles.CupidLovers: return CustomRoles.CupidLovers;
                 }
             return CustomRoles.NotAssigned;
         }

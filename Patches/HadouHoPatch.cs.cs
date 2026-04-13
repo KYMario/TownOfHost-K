@@ -20,6 +20,14 @@ namespace TownOfHost.Patches
                     return false;
                 }
             }
+
+            // ★ ジャッカル波動砲
+            if (__instance.GetRoleClass() is Roles.Neutral.JackalHadouHo jackalHo)
+            {
+                if (jackalHo.IsCharging || jackalHo.ShowBeamMark)
+                    return false;
+            }
+
             return true;
         }
     }
@@ -41,6 +49,14 @@ namespace TownOfHost.Patches
                     return false;
                 }
             }
+
+            // ★ ジャッカル波動砲
+            if (player.GetRoleClass() is Roles.Neutral.JackalHadouHo jackalHo)
+            {
+                if (jackalHo.IsCharging || jackalHo.ShowBeamMark)
+                    return false;
+            }
+
             return true;
         }
     }

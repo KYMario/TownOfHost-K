@@ -2,3 +2,5 @@ bin/
 obj/
 bin/
 FodyWeavers.xsd
+.vs/
+.vscode/

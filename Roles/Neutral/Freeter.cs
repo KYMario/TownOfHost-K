@@ -36,7 +36,7 @@ public sealed class Freeter : RoleBase, IKiller, IAdditionalWinner
     static OptionItem OptBetCooldown;
 
     byte BetTargetId;
-
+    CustomRoles lastBetTargetRole;
     enum OptionName
     {
         FreeterBetCooldown,
@@ -96,6 +96,7 @@ public sealed class Freeter : RoleBase, IKiller, IAdditionalWinner
         closest ??= target;
 
         BetTargetId = closest.PlayerId;
+        lastBetTargetRole = closest.GetCustomRole();
 
         NameColorManager.Add(closest.PlayerId, Player.PlayerId, "#32cd32");
 
@@ -114,27 +115,34 @@ public sealed class Freeter : RoleBase, IKiller, IAdditionalWinner
     // ============================
 
     public override void OnFixedUpdate(PlayerControl player)
-{
-    if (BetTargetId == byte.MaxValue) return;
-    if (!AmongUsClient.Instance.AmHost) return;
-
-    var target = GetPlayerById(BetTargetId);
-
-    // 死亡していたらリセット
-    if (target == null || !target.IsAlive())
     {
-        NameColorManager.Remove(BetTargetId, Player.PlayerId);
+        if (BetTargetId == byte.MaxValue) return;
+        if (!AmongUsClient.Instance.AmHost) return;
 
-        BetTargetId = byte.MaxValue;
-        SendRPC();
-        SendMessage(GetString("Freeter_BetTargetDead"), Player.PlayerId);
-        _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.2f, "Freeter Reset");
-        return;
+        var target = GetPlayerById(BetTargetId);
+
+        if (target == null || !target.IsAlive())
+        {
+            NameColorManager.Remove(BetTargetId, Player.PlayerId);
+            BetTargetId = byte.MaxValue;
+            lastBetTargetRole = CustomRoles.NotAssigned;
+            SendRPC();
+            SendMessage(GetString("Freeter_BetTargetDead"), Player.PlayerId);
+            Player.ResetKillCooldown();
+            Player.SetKillCooldown();
+            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.2f, "Freeter Reset");
+            return;
+        }
+
+        // ★ 就職先の役職が変わっていたら色を付け直す
+        var currentRole = target.GetCustomRole();
+        if (currentRole != lastBetTargetRole)
+        {
+            lastBetTargetRole = currentRole;
+            NameColorManager.Add(BetTargetId, Player.PlayerId, "#32cd32");
+            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player), 0.2f, "Freeter ColorFix");
+        }
     }
-
-    // ★ 就職相手 → フリーター の名前色を毎フレーム再付与
-    NameColorManager.Add(BetTargetId, Player.PlayerId, "#32cd32");
-}
 
     // ============================
     //     会議後に再デシンク（重要）
@@ -147,14 +155,14 @@ public sealed class Freeter : RoleBase, IKiller, IAdditionalWinner
         if (BetTargetId == byte.MaxValue) return;
 
         var target = GetPlayerById(BetTargetId);
-        if (target != null && target.IsAlive())
-        {
-            var role = target.GetCustomRole();
-            if (role.IsImpostor())
-                target.RpcSetRoleDesync(RoleTypes.Impostor, target.GetClientId());
-            else
-                target.RpcSetRoleDesync(RoleTypes.Crewmate, target.GetClientId());
-        }
+        if (target == null) return;
+
+        // デシンク処理はそのまま
+        var role = target.GetCustomRole();
+        if (role.IsImpostor())
+            target.RpcSetRoleDesync(RoleTypes.Impostor, target.GetClientId());
+        else
+            target.RpcSetRoleDesync(RoleTypes.Crewmate, target.GetClientId());
     }
 
     // ============================

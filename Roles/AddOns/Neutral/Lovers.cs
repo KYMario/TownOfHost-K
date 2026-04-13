@@ -73,6 +73,8 @@ class Lovers
         OneLovePlayer = (byte.MaxValue, byte.MaxValue, false);
         isOneLoveDead = false;
         isMadonnaLoversDead = false;
+        Cupid.CupidLoversPlayers.Clear();
+        Cupid.IsCupidLoversDead = false;
     }
     public static void RPCSetLovers(MessageReader reader)
     {
@@ -189,7 +191,6 @@ class Lovers
                 foreach (var loversPlayer in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.OneLove)))
                 {
                     if (!loversPlayer.Data.IsDead && loversPlayer.PlayerId != deathId) continue;
-                    //isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == loversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(loversPlayer.PlayerId) || Main.meetingdeadlist.Contains(loversPlayer.PlayerId) || GameStates.IsMeeting;
                     isExiled |= ExtendedPlayerControl.GetDeadBodys().Contains(loversPlayer.Data) is false;//死体が存在していない
 
                     isOneLoveDead = true;
@@ -220,7 +221,6 @@ class Lovers
                 if (my.PlayerId != deathId && !my.Data.IsDead)
                 {
                     PlayerState.GetByPlayerId(my.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
-                    //isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == pc.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(pc.PlayerId) || Main.meetingdeadlist.Contains(pc.PlayerId) || GameStates.IsMeeting;
                     isExiled |= ExtendedPlayerControl.GetDeadBodys().Contains(pc.Data) is false;
                     if (isExiled)
                     {
@@ -240,7 +240,6 @@ class Lovers
             foreach (var MadonnaLoversPlayer in MaMadonnaLoversPlayers)
             {
                 if (!MadonnaLoversPlayer.Data.IsDead && MadonnaLoversPlayer.PlayerId != deathId) continue;
-                //isExiled |= AntiBlackout.voteresult?.Exiled ?? byte.MaxValue == MadonnaLoversPlayer.PlayerId || Main.AfterMeetingDeathPlayers.ContainsKey(MadonnaLoversPlayer.PlayerId) || Main.meetingdeadlist.Contains(MadonnaLoversPlayer.PlayerId) || GameStates.IsMeeting;
                 isExiled |= ExtendedPlayerControl.GetDeadBodys().Contains(MadonnaLoversPlayer.Data) is false;//死体が存在していない
 
                 isMadonnaLoversDead = true;
@@ -292,6 +291,9 @@ class Lovers
         {
             data.Disconnected(player);
         }
+
+        // ★ CupidLovers切断処理
+        Cupid.CupidLoversDisconnected(player);
     }
     public static void LoversSoloWin(ref GameOverReason reason)
     {
@@ -328,6 +330,9 @@ class Lovers
                     reason = GameOverReason.ImpostorsByKill;
                 }
             }
+
+        // ★ CupidLovers勝利判定追加
+        Cupid.CupidLoversWinCheck(ref reason);
     }
     public static void LoversAddWin()
     {
@@ -391,6 +396,9 @@ class Lovers
             });
             return true;
         }
+        // ★ CupidLovers人数チェック勝利追加
+        if (Cupid.CheckCupidLoversCountWin()) return true;
+
         return false;
     }
 }

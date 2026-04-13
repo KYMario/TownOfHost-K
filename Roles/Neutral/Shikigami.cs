@@ -23,7 +23,8 @@ public sealed class Shikigami : RoleBase, IKiller
             SetupOptionItem,
             "sk",
             "#9b59b6",
-            from: From.SuperNewRoles
+            from: From.SuperNewRoles,
+            isDesyncImpostor: true
         );
 
     public Shikigami(PlayerControl player)
@@ -56,29 +57,31 @@ public sealed class Shikigami : RoleBase, IKiller
         OptSuicideCooldown = FloatOptionItem.Create(RoleInfo, 11, OptionName.ShikigamiSuicideCooldown, new(0f, 60f, 2.5f), 10f, false)
             .SetValueFormat(OptionFormat.Seconds);
     }
-
     public void SetOwner(byte ownerId)
     {
         OwnerId = ownerId;
+        // ★ 陰陽師への矢印
+        TargetArrow.Add(Player.PlayerId, ownerId);
+        // ★ 名前色
+        NameColorManager.Add(Player.PlayerId, ownerId, "#9b59b6");
         SendRPC();
     }
 
     public override void ApplyGameOptions(IGameOptions opt)
     {
         AURoleOptions.ShapeshifterCooldown = ShiftCooldown;
-        AURoleOptions.ShapeshifterDuration = 99999f; // 時間無制限
+        AURoleOptions.ShapeshifterDuration = 99999f;
+        opt.SetVision(false);
     }
 
-    // 変身：陰陽師の姿に
     public override bool CheckShapeshift(PlayerControl target, ref bool animate)
     {
-        animate = false; // アニメーション不要
+        animate = false;
 
         if (OwnerId == byte.MaxValue) return false;
         var owner = GetPlayerById(OwnerId);
         if (owner == null) return false;
 
-        // 陰陽師の姿に変身
         if (!isShifted)
         {
             isShifted = true;
@@ -90,66 +93,59 @@ public sealed class Shikigami : RoleBase, IKiller
             Player.RpcShapeshift(Player, false);
         }
 
-        return false; // 変身処理は自前で行うので false
+        return false;
     }
 
-    // 自決：キルボタンで自殺
     public float CalculateKillCooldown() => SuicideCooldown;
     public bool CanUseKillButton() => Player.IsAlive();
     public bool CanUseSabotageButton() => false;
-    public bool CanUseImpostorVentButton() => false;
+    public bool CanUseImpostorVentButton() => true;
 
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
-        var (killer, target) = info.AttemptTuple;
-        // 自分自身にのみ使用可能
-        if (killer.PlayerId != target.PlayerId)
-        {
-            info.DoKill = false;
-            return;
-        }
-        // 自決
+        info.DoKill = false;
         PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
-        info.DoKill = true;
+        Player.RpcMurderPlayerV2(Player);
     }
 
-    // 死体探知：茶色矢印
+    public override void AfterMeetingTasks()
+    {
+        if (OwnerId == byte.MaxValue) return;
+        // ★ 会議後に矢印を再登録
+        TargetArrow.Add(Player.PlayerId, OwnerId);
+    }
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
         if (!Is(seer) || isForMeeting || !Player.IsAlive()) return "";
         if (seer.PlayerId != seen.PlayerId) return "";
 
-        var deadBodies = ExtendedPlayerControl.GetDeadBodys();
-        if (deadBodies.Count == 0) return "";
+        var result = "";
 
-        var arrows = "";
-        foreach (var body in deadBodies)
+        // 陰陽師への矢印
+        if (OwnerId != byte.MaxValue)
         {
-            var bodyPc = GetPlayerById(body.PlayerId);
-            if (bodyPc == null) continue;
-            arrows += GetArrow.GetArrows(seer, bodyPc.transform.position);
+            var owner = GetPlayerById(OwnerId);
+            if (owner != null && owner.IsAlive())
+                result += $"<color=#9b59b6>{TargetArrow.GetArrows(seer, OwnerId)}</color>";
         }
-        return arrows == "" ? "" : $"<color=#8B4513>{arrows}</color>";
+
+        // 死体探知
+        var deadBodies = ExtendedPlayerControl.GetDeadBodys();
+        if (deadBodies.Count > 0)
+        {
+            var arrows = "";
+            foreach (var body in deadBodies)
+            {
+                var bodyPc = GetPlayerById(body.PlayerId);
+                if (bodyPc == null) continue;
+                arrows += GetArrow.GetArrows(seer, (Vector3)bodyPc.transform.position);
+            }
+            if (arrows != "") result += $"<color=#8B4513>{arrows}</color>";
+        }
+
+        return result;
     }
-
-    // 陰陽師探知：役職色矢印
-    public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
-    {
-        seen ??= seer;
-        if (!Is(seer) || isForMeeting || !Player.IsAlive()) return "";
-        if (seer.PlayerId != seen.PlayerId) return "";
-        if (OwnerId == byte.MaxValue) return "";
-
-        var owner = GetPlayerById(OwnerId);
-        if (owner == null || !owner.IsAlive()) return "";
-
-        var arrow = GetArrow.GetArrows(seer, owner.GetTruePosition());
-        return $"<color=#9b59b6>{arrow}</color>";
-    }
-
-    // クルー陣営として判定させるためのミスidentify
-    public override CustomRoles Misidentify() => CustomRoles.Crewmate;
 
     public void SendRPC()
     {

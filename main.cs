@@ -35,7 +35,7 @@ namespace TownOfHost
         // 公開ルームを許可する / Allow Public Room (Default: true)
         public static readonly bool AllowPublicRoom = true;
         // フォークID / ForkId (Default: OriginalTOH)
-        public static readonly string ForkId = "TOH-P";
+        public static readonly string ForkId = "TOH-PKO";
         // Discordボタンを表示するか / Show Discord Button (Default: true)
         public static readonly bool ShowDiscordButton = true;
         // Discordサーバーの招待リンク / Discord Server Invite URL (Default: https://discord.gg/PQ5CrVHC25)
@@ -325,6 +325,7 @@ namespace TownOfHost
                     {CustomRoles.WhiteLovers, "#fdede4"},
                     {CustomRoles.PurpleLovers, "#af0082"},
                     {CustomRoles.MadonnaLovers, "#f09199"},
+                    {CustomRoles.CupidLovers, "#ff69b4"},
                     {CustomRoles.OneLove , "#ff7961"},
 
                     // 幽霊役職
@@ -460,6 +461,7 @@ namespace TownOfHost
         WhiteLovers = CustomRoles.WhiteLovers,
         PurpleLovers = CustomRoles.PurpleLovers,
         MadonnaLovers = CustomRoles.MadonnaLovers,
+        CupidLovers = CustomRoles.CupidLovers,
         OneLove = CustomRoles.OneLove,
         Executioner = CustomRoles.Executioner,
         Arsonist = CustomRoles.Arsonist,

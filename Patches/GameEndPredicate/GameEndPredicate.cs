@@ -3,6 +3,7 @@ using HarmonyLib;
 
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Neutral;
 
 namespace TownOfHost;
 
@@ -52,11 +53,14 @@ public abstract class GameEndPredicate
                     case CustomRoles.Jackal:
                     case CustomRoles.JackalMafia:
                     case CustomRoles.JackalAlien:
+                    case CustomRoles.JackalHadouHo:
                         CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Jackal, byte.MaxValue);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackal);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalMafia);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalAlien);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackaldoll);
+                        CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalHadouHo);
+                        CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Tama);
                         break;
                     case CustomRoles.GrimReaper:
                         CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.GrimReaper, byte.MaxValue);
@@ -121,11 +125,14 @@ public abstract class GameEndPredicate
                     case CustomRoles.Jackal:
                     case CustomRoles.JackalMafia:
                     case CustomRoles.JackalAlien:
+                    case CustomRoles.JackalHadouHo:
                         CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Jackal, byte.MaxValue);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackal);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalMafia);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalAlien);
                         CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackaldoll);
+                        CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalHadouHo);
+                        CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Tama);
                         break;
                     case CustomRoles.GrimReaper:
                         CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.GrimReaper, byte.MaxValue);
