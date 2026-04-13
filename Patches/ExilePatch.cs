@@ -166,7 +166,14 @@ namespace TownOfHost
                     }
 
                     if (Options.ExAftermeetingflash.GetBool())
-                        Utils.AllPlayerKillFlash();
+                        if (Main.NormalOptions.MapId is 4)
+                        {
+                            _ = new LateTask(() => Utils.AllPlayerKillFlash(), 3f, "AftermeetingFlash", true);
+                        }
+                        else
+                        {
+                            Utils.AllPlayerKillFlash();
+                        }
 
                     if ((Main.NormalOptions.MapId is not 4 || AntiBlackout.OverrideExiledPlayer()) && !Iscallassasin)
                     {

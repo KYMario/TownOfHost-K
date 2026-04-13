@@ -17,6 +17,7 @@ namespace TownOfHost.Patches
                 {
                     if (__instance.playerInfo._object.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                     {
+                        color = UtilsRoleText.GetRoleColor(PlayerControl.LocalPlayer.GetCustomRole());
                         __instance.NameText.text = Utils.ColorString(UtilsRoleText.GetRoleColor(PlayerControl.LocalPlayer.GetCustomRole()), PlayerControl.LocalPlayer.Data.GetLogPlayerName());
                         return;
                     }
