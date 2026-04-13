@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using AmongUs.Data;
 using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
@@ -220,6 +221,11 @@ namespace TownOfHost
                     byte targetId = reader.ReadByte();
                     byte killerId = reader.ReadByte();
                     RPC.SetRealKiller(targetId, killerId);
+                    if (killerId == PlayerControl.LocalPlayer.PlayerId && !AmongUsClient.Instance.AmHost)
+                    {
+                        var State = PlayerState.GetByPlayerId(targetId);
+                        Main.HostKill.TryAdd(targetId, State.DeathReason);
+                    }
                     break;
                 case CustomRPC.SyncYomiage:
                     Yomiage.YomiageS.Clear();
@@ -593,7 +599,8 @@ namespace TownOfHost
             SyncNextSpawn,
             SyncOneLove,
             SyncVoteResult,
-            ShowIntro
+            ShowIntro,
+            SendModSystemMessage
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -674,6 +681,17 @@ namespace TownOfHost
                         HudManagerCoShowIntroPatch.Cancel = false;
                         DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
                         DestroyableSingleton<HudManager>.Instance.HideGameLoader();
+                    }
+                    break;
+                case ModSystem.SendModSystemMessage:
+                    if (PlayerControl.LocalPlayer.PlayerId != 0)
+                    {
+                        var title = reader.ReadString();
+                        if (DestroyableSingleton<HudManager>.Instance?.Chat is null) return;
+
+                        PlayerControl.LocalPlayer.SetName(title);
+                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "");
+                        PlayerControl.LocalPlayer.SetName(DataManager.player.Customization.Name);
                     }
                     break;
             }
