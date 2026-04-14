@@ -51,6 +51,7 @@ namespace TownOfHost
 
         public static void SetIsDead(bool doSend = true, [CallerMemberName] string callerMethodName = "")
         {
+            GameStates.turntimer = 0;
             logger.Info($"SetIsDead is called from {callerMethodName}");
             if (IsCached)
             {

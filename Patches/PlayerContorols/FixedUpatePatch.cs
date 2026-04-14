@@ -199,6 +199,7 @@ namespace TownOfHost
                         HudManager.Instance.KillButton.SetTarget(target);
                     }
                 }
+                if (GameStates.task) GameStates.turntimer += Time.fixedDeltaTime;
             }
 
             if (GameStates.InGame && !GameStates.Intro)

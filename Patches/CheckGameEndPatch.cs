@@ -37,8 +37,38 @@ namespace TownOfHost
             if (CustomSpawnEditor.ActiveEditMode) return false;
 
             //後追い処理等が終わってないなら中断
-            if (predicate is NormalGameEndPredicate && Main.AfterMeetingDeathPlayers.Count is not 0) return false;
-
+            if (predicate is NormalGameEndPredicate && 0 < Main.AfterMeetingDeathPlayers.Count)
+            {
+                if (3 < GameStates.turntimer && GameStates.task)
+                {
+                    try
+                    {
+                        Main.AfterMeetingDeathPlayers.Do(x =>
+                        {
+                            var player = PlayerCatch.GetPlayerById(x.Key);
+                            var roleClass = CustomRoleManager.GetByPlayerId(x.Key);
+                            var requireResetCam = player?.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor == true;
+                            var state = PlayerState.GetByPlayerId(x.Key);
+                            Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}を{x.Value}で死亡させました", "GameEndChecker");
+                            state.DeathReason = x.Value;
+                            player?.RpcExileV3();
+                            state.SetDead();
+                            if (x.Value == CustomDeathReason.Suicide)
+                                player?.SetRealKiller(player, true);
+                            if (requireResetCam)
+                                player?.ResetPlayerCam(1f);
+                            if (roleClass is Executioner executioner && executioner.TargetId == x.Key)
+                                Executioner.ChangeRoleByTarget(x.Key);
+                        });
+                        Main.AfterMeetingDeathPlayers.Clear();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error($"{ex}", "GameEndDeath");
+                    }
+                }
+                else return false;
+            }
             //廃村用に初期値を設定
             var reason = GameOverReason.ImpostorsByKill;
 
