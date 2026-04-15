@@ -324,18 +324,6 @@ namespace TownOfHost.Modules.ChatManager
                         {
                             var seerclientid = seer.GetClientId();
 
-                            if (seer.IsModClient())
-                            {
-                                var writer = CustomRpcSender.Create("MessagesToSend", SendOption.None);
-                                writer.StartMessage(seerclientid);
-                                writer.StartRpc(senderplayer.NetId, (byte)CustomRPC.SyncModSystem)
-                                .Write((int)RPC.ModSystem.SendModSystemMessage)
-                                .Write(title)
-                                .EndRpc();
-                                writer.EndMessage();
-                                writer.SendMessage();
-                                continue;
-                            }
                             GameDataSerializePatch.SerializeMessageCount++;
                             var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
                             Nwriter.StartMessage(seerclientid);

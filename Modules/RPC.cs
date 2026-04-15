@@ -599,8 +599,7 @@ namespace TownOfHost
             SyncNextSpawn,
             SyncOneLove,
             SyncVoteResult,
-            ShowIntro,
-            SendModSystemMessage
+            ShowIntro
         }
         public static void RpcModSetting(MessageReader reader)
         {
@@ -681,17 +680,6 @@ namespace TownOfHost
                         HudManagerCoShowIntroPatch.Cancel = false;
                         DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
                         DestroyableSingleton<HudManager>.Instance.HideGameLoader();
-                    }
-                    break;
-                case ModSystem.SendModSystemMessage:
-                    if (PlayerControl.LocalPlayer.PlayerId != 0)
-                    {
-                        var title = reader.ReadString();
-                        if (DestroyableSingleton<HudManager>.Instance?.Chat is null) return;
-
-                        PlayerControl.LocalPlayer.SetName(title);
-                        DestroyableSingleton<HudManager>.Instance.Chat.AddChat(PlayerControl.LocalPlayer, "");
-                        PlayerControl.LocalPlayer.SetName(DataManager.player.Customization.Name);
                     }
                     break;
             }
