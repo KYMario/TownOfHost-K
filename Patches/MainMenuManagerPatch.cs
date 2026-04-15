@@ -11,7 +11,6 @@ using TownOfHost.Templates;
 using Object = UnityEngine.Object;
 using TownOfHost.Modules;
 using System.Linq;
-using UnityEngine.UI;
 
 namespace TownOfHost
 {
@@ -389,7 +388,7 @@ namespace TownOfHost
             OptionsMenuBehaviourStartPatch.Instance = null;
         }
         [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]
-        public static void ResetScreenPostfix()
+        public static void ResetScreenPostfix(MainMenuManager __instance)
         {
             if (CredentialsPatch.TohkLogo != null)
             {
@@ -404,7 +403,10 @@ namespace TownOfHost
             if (Statistics_ScrollStuff != null)
                 Statistics_ScrollStuff?.gameObject.SetActive(false);
             CreateStreameMenu.CloseMenu();
-            OptionsMenuBehaviourStartPatch.Instance = null;
+            _ = new LateTask(() =>
+            {
+                __instance.ejectMenu?.ejectButton?.gameObject.SetActive(true);
+            }, 0.5f, "ShowButton");
         }
         public static void DestroyButton()
         {
@@ -454,6 +456,76 @@ namespace TownOfHost
                 Date = Date
             };
             ModNewsHistory.JsonAndAllModNews.Add(news);
+        }
+    }
+    [HarmonyPatch(typeof(EjectMainMenu), nameof(EjectMainMenu.EjectCrewmate))]
+    class EjectMainMenuEjectCrewmatePatch
+    {
+        public static int i = 0;
+        public static void Postfix(EjectMainMenu __instance)
+        {
+            try
+            {
+                i++;
+                __instance.pressState.SetActive(false);
+                __instance.ejectButton.SetActive(true);
+                __instance.onCooldown = false;
+                if (10 < i && i < 60)
+                {
+                    __instance.EjectCrewmate();
+                }
+                if (80 < i)
+                {
+                    i = 0;
+                }
+
+                if (IRandom.Instance.Next(3) is 1)
+                {
+                    __instance.EjectCrewmate();
+                }
+            }
+            catch { }
+        }
+    }
+    [HarmonyPatch(typeof(EjectMainMenu), nameof(EjectMainMenu.PlacePlayer))]
+    class EjectMainMenuEjectPlacePlayerPatch
+    {
+        public static Shader Shader = null;
+        public static void Postfix(EjectMainMenu __instance, PlayerParticle part)
+        {
+            var chance = IRandom.Instance.Next(3);
+            var size = 30 + IRandom.Instance.Next(50);
+            if (Shader is null)
+            {
+                Shader = part.myRend.material.shader;
+            }
+            part.myRend.material.shader = Shader;
+            part.myRend.sharedMaterial.shader = Shader;
+            Shader shader = Shader.Find("Sprites/Default");
+            if (chance is 1)
+            {
+                var allrole = CustomRolesHelper.AllStandardRoles;
+                var role = allrole[IRandom.Instance.Next(allrole.Count())];
+                var sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.{role}.png", size);
+                if (sprite is null) return;
+                part.myRend.material.shader = shader;
+                part.myRend.sharedMaterial.shader = shader;
+                part.myRend.sprite = sprite;
+            }
+            if (chance is 2)
+            {
+                var allrole = CustomRolesHelper.AllRoles;
+                var role = allrole[IRandom.Instance.Next(allrole.Count())];
+                var sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Button.{role}_Ability.png", size);
+                if (sprite is null)
+                    sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Button.{role}_Kill.png", size);
+                if (sprite is null)
+                    sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Button.{role}_Vent.png", size);
+                if (sprite is null) return;
+                part.myRend.material.shader = shader;
+                part.myRend.sharedMaterial.shader = shader;
+                part.myRend.sprite = sprite;
+            }
         }
     }
 }
