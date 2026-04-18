@@ -216,7 +216,7 @@ class CheckGetNomalAchievement
             if (nowturnkill is 3) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_013]);
             if (nowturnkill is 5) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_014]);
         }
-        if (target.GetCustomRole().IsImpostor()) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_15]);
+        if (target.GetCustomRole().IsImpostor()) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_015]);
 
         if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.StandardHAS)
         {

@@ -406,7 +406,7 @@ namespace TownOfHost
             _ = new LateTask(() =>
             {
                 __instance.ejectMenu?.ejectButton?.gameObject.SetActive(true);
-            }, 0.5f, "ShowButton");
+            }, 0.5f, "ShowButton", true);
         }
         public static void DestroyButton()
         {
