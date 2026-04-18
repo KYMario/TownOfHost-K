@@ -2703,7 +2703,7 @@
 "Statistics.GameCount","GameCount","ゲーム数"
 "Statistics.WinCount","Win:","勝利数:"
 "Statistics.RoleWinCount","Role(win/all)","役職(勝/計)"
-"Statistics.killcount","Kill Count","死因別のキル数"
+"Statistics.Killcount","Kill Count","死因別のキル数"
 "Statistics.deadcount","Dead Count","死因別のデス数"
 "Statistics.taskcount","taskcount","合計完了タスク数"
 "Statistics.completetaskcount","Completed Count","タスクを全て完了した回数"
