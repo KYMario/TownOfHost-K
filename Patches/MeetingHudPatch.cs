@@ -364,7 +364,7 @@ public static class MeetingHudPatch
                 {
                     ChatUpdatePatch.BlockSendName = false;
                     NameColorManager.RpcMeetingColorName();
-                }, 5.5f, "SetName", true);
+                }, 7f, "SetName", true);
             }
             Main.IsActiveSabotage =
                 Utils.IsActive(SystemTypes.Reactor)

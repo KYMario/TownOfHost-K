@@ -1745,6 +1745,7 @@
 "MissioneerKillpoint","Kill point","カテゴリ:キルのポイント"
 "MissioneerMovepoint","Move point","カテゴリ:移動のポイント"
 "MissioneerTaskpoint","Task point","カテゴリ:タスクのポイント"
+"MissioneerEnabledKillTask","Enabled Category:kill","カテゴリ:キルが出る"
 
 "## Unit Role Setting"
 "BraidKillCooldown","Bread Task Complete Driver Killcool","ブレイドが全タスク完了時のキルクール"

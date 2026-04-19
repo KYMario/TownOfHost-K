@@ -264,7 +264,7 @@ namespace TownOfHost
                     Logger.Info($"{totalMessages}", "InnerNetClient");
                 }*/
             }
-            if (!Options.FixSpawnPacketSize.GetBool()) return true;
+            if (!Options.FixSpawnPacketSize.GetBool() && !Utils.IsRestriction()) return true;
             if (DontTouch || AntiBlackout.IsCached) return true;
 
             //ラージパケットを分割(9人以上部屋で落ちる現象の対策コード)

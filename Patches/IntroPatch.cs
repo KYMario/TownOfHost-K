@@ -408,26 +408,29 @@ namespace TownOfHost
             {
                 if (mapId != 4)
                 {
-                    if (SuddenDeathMode.SuddenKillcooltime.GetBool() && SuddenDeathMode.NowSuddenDeathMode)
+                    if (Options.firstturnmeeting is false)
                     {
-                        _ = new LateTask(() =>
+                        if (SuddenDeathMode.SuddenKillcooltime.GetBool() && SuddenDeathMode.NowSuddenDeathMode)
                         {
-                            PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown(SuddenDeathMode.SuddenKillcooltime.GetFloat() - 0.7f, delay: true));
-                        }, 0.7f, "FixKillCooldownTask", null);
-                    }
-                    else if (Options.FixFirstKillCooldown.GetBool())
-                    {
-                        _ = new LateTask(() =>
+                            _ = new LateTask(() =>
+                            {
+                                PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown(SuddenDeathMode.SuddenKillcooltime.GetFloat() - 0.7f, delay: true));
+                            }, 0.7f, "FixKillCooldownTask", null);
+                        }
+                        else if (Options.FixFirstKillCooldown.GetBool())
                         {
-                            PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown((Main.AllPlayerKillCooldown.TryGetValue(pc.PlayerId, out var time) ? time : Main.LastKillCooldown.Value) - 0.7f, force: true, delay: true));
-                        }, 0.7f, "FixKillCooldownTask", null);
-                    }
-                    else
-                    {
-                        _ = new LateTask(() =>
+                            _ = new LateTask(() =>
+                            {
+                                PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown((Main.AllPlayerKillCooldown.TryGetValue(pc.PlayerId, out var time) ? time : Main.LastKillCooldown.Value) - 0.7f, force: true, delay: true));
+                            }, 0.7f, "FixKillCooldownTask", null);
+                        }
+                        else
                         {
-                            PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown(10f, force: true, delay: true));
-                        }, 0.7f, "FixKillCooldownTask", null);
+                            _ = new LateTask(() =>
+                            {
+                                PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown(10f, force: true, delay: true));
+                            }, 0.7f, "FixKillCooldownTask", null);
+                        }
                     }
 
                     GameStates.Intro = false;
@@ -551,7 +554,8 @@ namespace TownOfHost
                             }
                         }
                     }
-                    ExtendedRpc.RpcResetAbilityCooldownAllPlayer();
+                    if (Options.firstturnmeeting is false)
+                        ExtendedRpc.RpcResetAbilityCooldownAllPlayer();
                     CustomButtonHud.BottonHud(true);
                 }, 0.3f, "setnames", true);
 
@@ -559,14 +563,15 @@ namespace TownOfHost
                 {
                     CustomRoleManager.AllActiveRoles.Values.Do(role => role.ChangeColor());
                     UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
-                    SuddenDeathMode.NotTeamKill();
+
                     ExtendedRpc.AllPlayerOnlySeeMePet();
+                    SuddenDeathMode.NotTeamKill();
                 }, 1.25f, "setcolorandpet", true);
 
                 if (Options.firstturnmeeting)
                 {
                     _ = new LateTask(() =>
-                        ReportDeadBodyPatch.ExReportDeadBody(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data, false, "Firstmeetinginfo", "#23dbc0"), 0.7f + Main.LagTime, "", true);
+                        ReportDeadBodyPatch.ExReportDeadBody(PlayerControl.LocalPlayer, PlayerControl.LocalPlayer.Data, false, "Firstmeetinginfo", "#23dbc0"), 1.7f + Main.LagTime, "", true);
                 }
                 else
                 {
