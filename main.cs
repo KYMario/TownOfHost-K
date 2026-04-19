@@ -67,7 +67,7 @@ namespace TownOfHost
         public static bool DebugVersion = false;
 
         // サポートされている最低のAmongUsバージョン
-        public static readonly string LowestSupportedVersion = "2025.9.9";
+        public static readonly string LowestSupportedVersion = "2026.3.31";
         // このバージョンのみで公開ルームを無効にする場合
         public static readonly bool IsPublicAvailableOnThisVersion = false;
         public Harmony Harmony { get; } = new Harmony(PluginGuid);

@@ -570,6 +570,8 @@ namespace TownOfHost
             __instance.KillButton.ToggleVisible(player.CanUseKillButton());
             __instance.ImpostorVentButton.ToggleVisible(player.CanUseImpostorVentButton());
             __instance.SabotageButton.ToggleVisible(player.CanUseSabotageButton());
+
+            CustomButtonHud.BottonHud();
         }
     }
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
