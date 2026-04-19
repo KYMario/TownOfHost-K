@@ -16,13 +16,17 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             CustomRoles.JackalHadouHo,
             () => RoleTypes.Phantom,
             CustomRoleTypes.Neutral,
-            24400,
+            26400,
             SetUpOptionItem,
             "jhh",
             "#00b4eb",
-            (1, 0),
+            (1, 4),
             true,
             countType: CountTypes.Jackal,
+            assignInfo: new RoleAssignInfo(CustomRoles.JackalHadouHo, CustomRoleTypes.Neutral)
+            {
+                AssignCountRule = new(1, 1, 1)
+            },
             from: From.SuperNewRoles
         );
 
@@ -160,7 +164,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
     public override bool CanUseAbilityButton() => true;
     bool IUsePhantomButton.IsPhantomRole => true;
-    bool IUsePhantomButton.IsresetAfterKill => false;
 
     public void SetLoaded(bool loaded)
     {

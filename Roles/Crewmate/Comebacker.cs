@@ -34,6 +34,8 @@ public sealed class Comebacker : RoleBase
         Cooldown = OptionCooldown.GetFloat();
         OldPosition = new(999f, 999f);
         ComebackPosString = "";
+        ventcount = 0;
+        pos = 0;
     }
     private static OptionItem OptionCooldown;
     enum OptionName
@@ -43,6 +45,8 @@ public sealed class Comebacker : RoleBase
     private static float Cooldown;
     private Vector2 OldPosition;
     private string ComebackPosString;
+    private int pos;
+    private int ventcount;
     private static void SetupOptionItem()
     {
         OptionCooldown = FloatOptionItem.Create(RoleInfo, 10, OptionName.Cooldown, new(0f, 180f, 0.5f), 30f, false)
@@ -59,6 +63,8 @@ public sealed class Comebacker : RoleBase
         if (OldPosition != new Vector2(999f, 999f))
         {
             var tp = OldPosition;
+            ventcount++;
+            pos += (int)Vector2.Distance(Player.GetTruePosition(), OldPosition);
             _ = new LateTask(() =>
             {
                 Player.RpcSnapToForced(tp + new Vector2(0f, 0.1f));
@@ -99,5 +105,19 @@ public sealed class Comebacker : RoleBase
     {
         text = "Comebacker_Ability";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], ventcount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], pos);
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 10, 0, 0);
+        var n2 = new Achievement(RoleInfo, 1, 500, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, n2);
     }
 }

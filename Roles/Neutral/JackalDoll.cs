@@ -263,6 +263,7 @@ public sealed class JackalDoll : RoleBase
     {
         if (!player.IsAlive()) return;
         if (!AmongUsClient.Instance.AmHost) return;
+        if (GameStates.ExiledAnimate || AntiBlackout.IsSet) return;
 
         if (BossAndSidekicks.TryGetValue(player.PlayerId, out var data))
         {
@@ -272,7 +273,7 @@ public sealed class JackalDoll : RoleBase
                 MyState.SetCountType(CountTypes.Jackal);
                 CanPromotion = true;
                 if (!Utils.RoleSendList.Contains(Player.PlayerId)) Utils.RoleSendList.Add(Player.PlayerId);
-                player.RpcSetCustomRole(data.Ownerrole, true);
+                player.RpcSetCustomRole(data.Ownerrole, true, log: null);
 
                 //徒党が存在していて、ジャッカルの徒党がON
                 if (PlayerCatch.AllPlayerControls.Any(pc => pc.Is(CustomRoles.Faction)) && Faction.OptionRole.TryGetValue(CustomRoles.Jackal, out var option))

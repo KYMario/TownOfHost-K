@@ -56,8 +56,6 @@ namespace TownOfHost
         public static ConfigEntry<string> DebugKeyInput { get; private set; }
         public static ConfigEntry<string> ExplosionKeyInput { get; private set; }
 
-        // ==========
-        //Sorry for many Japanese comments.
         public const string PluginGuid = "com.kymario.TownOfHost-Pko";
         public const string PluginVersion = "1.0.0.0";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
         public const string PluginShowVersion = "1.0.0.0";
@@ -313,10 +311,11 @@ namespace TownOfHost
                     {CustomRoles.SlowStarter,"#ff00ff"},
                     {CustomRoles.InfoPoor ,"#555647"},
                     {CustomRoles.News, "#828282"},
+                    {CustomRoles.Sunglasses , "#2e103d"},
 
                     //第三属性
                     { CustomRoles.Amanojaku,"#005243"},
-                    {CustomRoles.Faction,"#695328"},
+                    {CustomRoles.Faction,"#c6a768"},
                     {CustomRoles.Lovers, "#ff6be4"},
                     {CustomRoles.RedLovers, "#d70035"},
                     {CustomRoles.YellowLovers, "#fac559"},
@@ -440,6 +439,7 @@ namespace TownOfHost
         Trap,
         NotGather,
         Hit,
+        Suffocation,
         etc = -1
     }
     //WinData

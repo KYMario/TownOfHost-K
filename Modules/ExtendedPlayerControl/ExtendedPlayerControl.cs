@@ -83,7 +83,7 @@ namespace TownOfHost
             return PlayerState.GetByPlayerId(player.PlayerId)?.CountType ?? CountTypes.None;
         }
 
-        public static void SetKillCooldown(this PlayerControl player, float time = -1f, PlayerControl target = null, bool force = false, bool delay = false)
+        public static void SetKillCooldown(this PlayerControl player, float time = -1f, PlayerControl target = null, bool force = true, bool delay = true)
         {
             if (player == null) return;
             if (target == null) target = player;
@@ -403,7 +403,7 @@ namespace TownOfHost
 
                 var tage = playerInfo.Object;
 
-                if (tage == null || tage.inVent) continue;
+                if (tage == null || tage.inVent || !tage.IsAlive()) continue;
                 if (!SuddenDeathMode.NowSuddenDeathTemeMode && IsOneclick && tage.GetCustomRole().GetCustomRoleTypes() == roletype && roletype is CustomRoleTypes.Impostor
                 && !tage.Is(CustomRoles.OneWolf) && !pc.Is(CustomRoles.OneWolf) && !pc.Is(CustomRoles.Amnesiac)) continue;
                 if (SuddenDeathMode.NowSuddenDeathTemeMode)
@@ -713,6 +713,13 @@ namespace TownOfHost
             }
             var players = player.GetPlayersInAbilityRangeSorted(false);
             return players.Count <= 0 ? null : players[0];
+        }
+        public static bool IsWinner(this PlayerControl player, CustomWinner? team = null)
+        {
+            if (CustomWinnerHolder.WinnerIds.Contains(player.PlayerId) && !CustomWinnerHolder.CantWinPlayerIds.Contains(player.PlayerId))
+                return team.HasValue ? CustomWinnerHolder.winners.Contains(team.Value) || CustomWinnerHolder.AdditionalWinnerRoles.Contains((CustomRoles)team.Value)
+                                        : true;
+            return false;
         }
 
         //アプデ対応の参考

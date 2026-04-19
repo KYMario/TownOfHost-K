@@ -217,6 +217,7 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
         }
         sendmeg += tumari is not "" ? $"<size=40%>\n{tumari}</size>" : "";
         if (sendmeg.RemoveHtmlTags() != "") _ = new LateTask(() => Utils.SendMessage(sendmeg, title: GetString("PhantomThiefTitle").Color(UtilsRoleText.GetRoleColor(CustomRoles.PhantomThief))), 5f, "SendPhantom", true);
+        MeetingHudPatch.StartPatch.meetingsends.Add((Player.PlayerId, GetString("PhantomThiefTitle").Color(UtilsRoleText.GetRoleColor(CustomRoles.PhantomThief)), sendmeg));
     }
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
@@ -259,10 +260,10 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
                 winner = CustomWinner.Impostor;//マッドメイトは追加勝利的な判定?
             }
             else
-            if (Targetrole.IsCrewmate())
-            {
-                winner = CustomWinner.Crewmate;
-            }
+                if (Targetrole.IsCrewmate())
+                {
+                    winner = CustomWinner.Crewmate;
+                }
             if (Targetrole is CustomRoles.JackalAlien or CustomRoles.Jackaldoll or CustomRoles.JackalMafia)
             {
                 winner = CustomWinner.Jackal;

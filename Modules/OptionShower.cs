@@ -226,6 +226,11 @@ namespace TownOfHost
                     pages.Add(tmp[i] + "\n\n");
                 else pages[^1] += tmp[i] + "\n\n";
             }
+            if ((SetEverythingUpPatch.sb?.ToString() ?? "") != "")
+            {
+                var (CustomWinnerText, CustomWinnerColor, _, _, _) = UtilsGameLog.GetWinnerText();
+                pages.Add($"\n～<{CustomWinnerColor}>{CustomWinnerText}</color></color>～<size=80%>\n" + SetEverythingUpPatch.sb.ToString() + "</size>\n\n");
+            }
         }
 
         public static void Next()
@@ -269,6 +274,7 @@ namespace TownOfHost
                         case "GiveGuarding": continue;
                         case "GiveClumsy": continue;
                         case "GiveSlacker": continue;
+                        case "GiveSunglasses": continue;
                     }
                 }
                 if (!Options.IsActiveSkeld)
@@ -362,6 +368,7 @@ namespace TownOfHost
                     case "GiveGuarding": return false;
                     case "GiveClumsy": return false;
                     case "GiveSlacker": return false;
+                    case "GiveSunglasses": return false;
                 }
             }
             if (!Options.IsActiveSkeld)

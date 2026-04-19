@@ -17,10 +17,11 @@ public sealed class Tama : RoleBase, IKiller
             CustomRoles.Tama,
             () => RoleTypes.Impostor,
             CustomRoleTypes.Neutral,
-            24500,
+            26500,
             SetupOptionItem,
             "tm",
             "#00b4eb",
+            (1, 5),
             from: From.SuperNewRoles,
             isDesyncImpostor: true,
             countType: CountTypes.Crew
@@ -127,8 +128,6 @@ public sealed class Tama : RoleBase, IKiller
         var owner = GetPlayerById(OwnerId);
         if (owner?.GetRoleClass() is JackalHadouHo jhh)
             jhh.SetLoaded(true);
-
-        owner.RpcResetAbilityCooldown();
 
         SendRPC();
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);

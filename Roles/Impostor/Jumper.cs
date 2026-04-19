@@ -44,6 +44,9 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         Jumpcooltime = OptionJumpcooltime.GetFloat();
         killcool = OptionKillCoolDown.GetFloat();
         Jumpdistance = OptionJumpDistance.GetInt();
+
+        sp1count = 0;
+        n1move = 0;
     }
     static OptionItem OptionKillCoolDown;
     static OptionItem OptionJumpcount;
@@ -107,6 +110,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
             if (NowJumpcount == 1) ShowMark = true;
             UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
             player.RpcSnapToForced(NowJumpcount == Jumpcount ? JumpToPosition : new Vector2(UsePosition.x + JumpX * NowJumpcount, UsePosition.y + JumpY * NowJumpcount));
+            n1move += JumpX + JumpY;
 
             if (Jumpcount <= NowJumpcount)
             {
@@ -120,6 +124,9 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
                 player.SetKillCooldown();
                 Player.RpcSetColor((byte)PlayerColor);
                 _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(ForceLoop: true), 0.2f, "JumperEndNotify", null);
+
+                if (20 <= n1move) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (5 <= sp1count) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
             }
             else
             {
@@ -134,7 +141,10 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
                                 float Distance = Vector2.Distance(player.transform.position, target.transform.position);
                                 if (Distance <= (junpdis.TryGetValue(Jumpdistance, out var dis) ? dis : 0))
                                 {
-                                    CustomRoleManager.OnCheckMurder(player, target, target, target, true, Killpower: 3, deathReason: CustomDeathReason.Bombed);
+                                    if (CustomRoleManager.OnCheckMurder(player, target, target, target, true, Killpower: 3, deathReason: CustomDeathReason.Bombed))
+                                    {
+                                        sp1count++;
+                                    }
                                 }
                             }
                         }
@@ -177,6 +187,8 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         Jumping = true;
         ShowMark = true;
         UsePosition = Player.transform.position;
+        sp1count = 0;
+        n1move = 0;
         SendRPC();
         var X = JumpToPosition.x - UsePosition.x;
         var Y = JumpToPosition.y - UsePosition.y;
@@ -246,5 +258,22 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         Jumping = reader.ReadBoolean();
         ShowMark = reader.ReadBoolean();
         JumpToPosition = reader.ReadBoolean() ? new Vector2(999f, 999f) : NetHelpers.ReadVector2(reader);
+    }
+    public override void OnMurderPlayerAsTarget(MurderInfo info)
+    {
+        if (Jumping) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    int sp1count;
+    float n1move;
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

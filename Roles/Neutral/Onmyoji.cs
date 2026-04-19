@@ -25,7 +25,7 @@ public sealed class Onmyoji : RoleBase, ISelfVoter
             SetupOptionItem,
             "oy",
             "#9b59b6",
-            (6, 2),
+            (6, 1),
             true,
             from: From.SuperNewRoles
         );

@@ -190,7 +190,7 @@ public class Snitch : RoleBase
             update = true;
         }
 
-        if (!IsComplete && IsTaskFinished)
+        if (!IsComplete && IsTaskFinished && Player.IsAlive())
         {
             IsComplete = true;
             foreach (var targetId in TargetList)
@@ -200,9 +200,17 @@ public class Snitch : RoleBase
                 if (EnableTargetArrow)
                     TargetArrow.Add(Player.PlayerId, targetId);
             }
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
             update = true;
         }
         if (update) UtilsNotifyRoles.NotifyRoles();
         return true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

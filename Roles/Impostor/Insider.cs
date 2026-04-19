@@ -4,6 +4,7 @@ using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using System.Collections.Generic;
 
 namespace TownOfHost.Roles.Impostor
 {
@@ -32,22 +33,30 @@ namespace TownOfHost.Roles.Impostor
             canSeeAllGhostsRoles = optionCanSeeAllGhostsRoles.GetBool();
             canSeeMadmates = optionCanSeeMadmates.GetBool();
             killCountToSeeMadmates = optionKillCountToSeeMadmates.GetInt();
+            CanSeeRoles = optionCanSeeRoles.GetNowRoleValue();
+            IsSetCanSeeRole = optionSetCanSeeRoles.GetBool();
         }
         private static OptionItem optionCanSeeAllGhostsRoles;
         private static OptionItem optionCanSeeImpostorAbilities;
         private static OptionItem optionCanSeeMadmates;
         private static OptionItem optionKillCountToSeeMadmates;
+        private static OptionItem optionSetCanSeeRoles;
+        private static AssignOptionItem optionCanSeeRoles;
         private enum OptionName
         {
             InsiderCanSeeAllGhostsRoles,
             InsiderCanSeeImpostorAbilities,
             InsiderCanSeeMadmates,
             InsiderKillCountToSeeMadmates,
+            InsiderCanSeeRoles,
+            InsiderSetCanSeeRoles
         }
         private static bool canSeeAllGhostsRoles;
         private static bool canSeeImpostorAbilities;
         private static bool canSeeMadmates;
         private static int killCountToSeeMadmates;
+        private static bool IsSetCanSeeRole;
+        static List<CustomRoles> CanSeeRoles;
 
         private static void SetupOptionItem()
         {
@@ -56,6 +65,8 @@ namespace TownOfHost.Roles.Impostor
             optionCanSeeMadmates = BooleanOptionItem.Create(RoleInfo, 12, OptionName.InsiderCanSeeMadmates, false, false);
             optionKillCountToSeeMadmates = IntegerOptionItem.Create(RoleInfo, 13, OptionName.InsiderKillCountToSeeMadmates, new(0, 15, 1), 2, false, optionCanSeeMadmates)
                 .SetValueFormat(OptionFormat.Times);
+            optionSetCanSeeRoles = BooleanOptionItem.Create(RoleInfo, 14, OptionName.InsiderSetCanSeeRoles, false, false);
+            optionCanSeeRoles = AssignOptionItem.Create(RoleInfo, 15, OptionName.InsiderCanSeeRoles, 0, false, optionSetCanSeeRoles, true, true, true, true);
         }
 
         ///<summary>
@@ -94,10 +105,18 @@ namespace TownOfHost.Roles.Impostor
         private bool KnowTargetRole(PlayerControl target)
             => KnowDeadRole(target) || KnowAllyRole(target);
 
+        private bool CanSeeRole(CustomRoles role)
+            => !IsSetCanSeeRole || CanSeeRoles.Contains(role);
+
         public override void OverrideDisplayRoleNameAsSeer(PlayerControl seen, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
         {
             addon = false;
             enabled |= KnowTargetRole(seen);
+            if (Player.IsAlive() && !CanSeeRole(seen.GetCustomRole()))
+            {
+                roleColor = ModColors.NeutralGray;
+                roleText = GetString("Unknown");
+            }
         }
         public override void OverrideProgressTextAsSeer(PlayerControl seen, ref bool enabled, ref string text)
         {

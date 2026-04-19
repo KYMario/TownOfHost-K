@@ -168,10 +168,20 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
         if (t1 == t2)
         {
             Utils.SendMessage(string.Format(GetString("ShrineMaidencollect"), UtilsName.GetPlayerColor(target1, true), UtilsName.GetPlayerColor(target2, true)) + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count)) + (Votemode == VoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : ""), Player.PlayerId);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
         }
         else
         {
             Utils.SendMessage(string.Format(GetString("ShrineMaidennotcollect"), UtilsName.GetPlayerColor(target1, true), UtilsName.GetPlayerColor(target2, true)) + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count)) + (Votemode == VoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : ""), Player.PlayerId);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1]);
+
+            if (t1 == CustomRoleTypes.Impostor || t2 == CustomRoleTypes.Impostor)
+            {
+                if (t1 == CustomRoleTypes.Neutral || t2 == CustomRoleTypes.Neutral)
+                {
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+                }
+            }
         }
     }
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
@@ -179,5 +189,16 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
     {
         if (MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount)) Awakened = true;
         return true;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 3, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 3, 0, 0);
+        var l2 = new Achievement(RoleInfo, 2, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, l2);
     }
 }

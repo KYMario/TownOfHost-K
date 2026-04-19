@@ -67,6 +67,7 @@ public sealed class Egoist : RoleBase, ISidekickable, ILNKiller, ISchrodingerCat
         foreach (var impostor in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoleTypes.Impostor)))
         {
             if (impostor.Is(CustomRoles.Amnesiac)) continue;
+            if (impostor.Is(CustomRoles.OneWolf) is false) NameColorManager.Add(Player.PlayerId, impostor.PlayerId, "#ff1919");
             if (OptionNameColor.GetBool()) NameColorManager.Add(impostor.PlayerId, Player.PlayerId);
             else NameColorManager.Add(impostor.PlayerId, Player.PlayerId, "#ff1919");
         }
@@ -95,11 +96,19 @@ public sealed class Egoist : RoleBase, ISidekickable, ILNKiller, ISchrodingerCat
         {
             CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Egoist);
             CustomWinnerHolder.NeutralWinnerIds.Add(__egoist.Player.PlayerId);
+            Achievements.RpcCompleteAchievement(__egoist.Player.PlayerId, 0, achievements[0]);
         }
     }
     public bool CanMakeSidekick() => CanCreateSideKick;
     public void ApplySchrodingerCatOptions(IGameOptions option)
     {
         option.SetVision(true);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, l1);
     }
 }

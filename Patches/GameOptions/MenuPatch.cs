@@ -574,6 +574,7 @@ namespace TownOfHost
             var template = GetTeamplate();
             if (template == null) return;
             var LabelBackgroundSprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.LabelBackground.png");
+            var LabelBackgroundToolSprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.LabelBackgroundTool.png");
             var ShowOptionSprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.ShowOption.png");
 
             foreach (var option in OptionItem.AllOptions)
@@ -614,7 +615,7 @@ namespace TownOfHost
                         stringOption.Value = stringOption.oldValue = option.CurrentValue;
                         stringOption.ValueText.text = "読み込み中..";
                         stringOption.name = option.Name;
-                        stringOption.LabelBackground.sprite = LabelBackgroundSprite;
+                        stringOption.LabelBackground.sprite = option.Tooltip.Invoke() == "" ? LabelBackgroundSprite : LabelBackgroundToolSprite;
                         if (option.HideValue)
                         {
                             stringOption.PlusBtn.transform.localPosition = new Vector3(100, 100, 100);
@@ -639,7 +640,7 @@ namespace TownOfHost
                                 if (option is FilterOptionItem filterOptionItem)
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
-                                    (imp, mad, crew, neu) = filterOptionItem.roles;
+                                    (imp, mad, crew, neu, addon) = filterOptionItem.roles;
                                     ShowFilter.NowOption = option;
                                     ShowFilter.CreateFilterOptionMenu(tabtransfrom, null, notAssign, (imp, mad, crew, neu, addon));
                                     return;
@@ -693,7 +694,7 @@ namespace TownOfHost
                         stringOption.ValueText.text = "読み込み中..";
                         stringOption.name = option.Name;
 
-                        stringOption.LabelBackground.sprite = LabelBackgroundSprite;
+                        stringOption.LabelBackground.sprite = option.Tooltip.Invoke() == "" ? LabelBackgroundSprite : LabelBackgroundToolSprite;
 
                         if (option.IsHeader)
                         {
@@ -739,7 +740,7 @@ namespace TownOfHost
                                 if (option is FilterOptionItem filterOptionItem)
                                 {
                                     notAssign = filterOptionItem.NotAssin?.Invoke() ?? [];
-                                    (imp, mad, crew, neu) = filterOptionItem.roles;
+                                    (imp, mad, crew, neu, addon) = filterOptionItem.roles;
                                 }
                                 if (option is AssignOptionItem assignoptionitem)
                                 {
@@ -766,7 +767,7 @@ namespace TownOfHost
                             button.gameObject.name = $"{option.Name}OptionButton";
                             button.transform.localPosition = new Vector3(-2.46f, 0.0446f, -2);
                             button.transform.localScale = new Vector3(1.44f, 1.14f, 1f);
-                            button.activeSprites.GetComponent<SpriteRenderer>().sprite = LabelBackgroundSprite;
+                            button.activeSprites.GetComponent<SpriteRenderer>().sprite = option.Tooltip.Invoke() == "" ? LabelBackgroundSprite : LabelBackgroundToolSprite;
                             button.activeSprites.GetComponent<SpriteRenderer>().color = UtilsRoleText.GetRoleColor(option.CustomRole).ShadeColor(0.2f).SetAlpha(0.35f);
 
                             button.OnClick.AddListener((System.Action)(() =>

@@ -59,8 +59,8 @@ namespace TownOfHost
                             pc.RpcSetRoleDesync(roleinfo.BaseRoleType.Invoke(), pc.GetClientId());
                         else
                             if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                            if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType.Invoke() is not null and not RoleTypes.Impostor)
-                                RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
+                                if (roleinfo?.IsDesyncImpostor == true && roleinfo?.BaseRoleType.Invoke() is not null and not RoleTypes.Impostor)
+                                    RoleManager.Instance.SetRole(PlayerControl.LocalPlayer, roleinfo.BaseRoleType.Invoke());
 
                         pc.SyncSettings();
                         _ = new LateTask(() =>
@@ -75,6 +75,10 @@ namespace TownOfHost
             ret &= Workhorse.OnCompleteTask(pc);
             UtilsNotifyRoles.NotifyRoles();
 
+            if (taskState.IsTaskFinished && pc.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+            {
+                RemoveDisableDevicesPatch.UpdateDisableDevices();
+            }
             if (ret)
             {
                 if (taskState.CompletedTasksCount < taskState.AllTasksCount) return ret;

@@ -30,9 +30,12 @@ namespace TownOfHost
         private static ClientActionItem FpsLimitRemoval;
         private static ClientActionItem AutoSaveScreenShot;
         private static ClientActionItem PreloadMapAssets;
+        public static OptionsMenuBehaviour Instance;
 
         public static void Postfix(OptionsMenuBehaviour __instance)
         {
+            Instance = __instance;
+
             if (__instance.DisableMouseMovement == null)
             {
                 return;
@@ -176,7 +179,6 @@ namespace TownOfHost
 
             if ((!AmongUsClient.Instance.AmHost || CustomSpawnEditor.ActiveEditMode) && ForceEnd != null)
                 ForceEnd = null;
-
         }
         private static void ForceEndProcess()
         {

@@ -53,6 +53,8 @@ public sealed class Walker : RoleBase, IRoomTasker
         SendRPC_CompleteRoom(completeroom);
         CheckFin();
         MyTaskState.Update(Player);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1]);
     }
     void IRoomTasker.ChangeRoom(PlainShipRoom TaskRoom)
     {
@@ -97,5 +99,14 @@ public sealed class Walker : RoleBase, IRoomTasker
     {
         ChengeRoom,
         CompleteRoom
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 10, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 100, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

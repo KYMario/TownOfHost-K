@@ -33,12 +33,14 @@ public sealed class Snowman : RoleBase
 
         NowVision = FirstVision;
         OldProportion = 0;
+        callcount = 0;
     }
     static OptionItem OptionFirstVision; static float FirstVision;
     static OptionItem OptionMinVision; static float Minvision;//最小の視野
     static OptionItem OptionMeltedSteps; static float MeltedSteps;//完全に溶ける歩数 
     static OptionItem OptionElectricalIgnoreMelt; static bool ElectricalIgnoreMelt;//停電中に解けない
 
+    int callcount;
     enum OptionName
     {
         SnowmanFirstVision,
@@ -108,10 +110,25 @@ public sealed class Snowman : RoleBase
             NowVision = vision;
             Logger.Info($"減少率:{Proportion} 歩数:{NowWalkCount} , 現在の視野{NowVision}", "Snowman");
             Player.MarkDirtySettings();
+            callcount++;
+            if (callcount == 20) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         }
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
         opt.SetFloat(FloatOptionNames.CrewLightMod, NowVision);
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (callcount <= 2) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

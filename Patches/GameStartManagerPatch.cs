@@ -437,6 +437,7 @@ namespace TownOfHost
         [HarmonyPatch(typeof(HostInfoPanel), nameof(HostInfoPanel.Update))]
         class HostInfoPanelUpdatePatch
         {
+            static float time;
             public static bool Prefix(HostInfoPanel __instance)
             {
                 if (!__instance) return false;
@@ -458,6 +459,24 @@ namespace TownOfHost
                     var mark = "";
 
                     if (!AmongUsClient.Instance) return;
+
+                    if (AmongUsClient.Instance.AmHost)
+                    {
+                        var nowname = __instance.playerName.text;
+                        if (nowname.Contains(DataManager.player.Customization.Name) || (Main.nickName != "" && nowname.Contains(Main.nickName)))
+                        { time = 0; }
+                        else
+                        {
+                            time += Time.fixedDeltaTime;
+                            if (3 <= time)
+                            {
+                                Logger.Error("HostNameError", "HostNameError");
+                                time = 0;
+                                host.Character.RpcSetName(Main.nickName == "" ? DataManager.player.Customization.Name : Main.nickName);
+                            }
+                        }
+                    }
+
                     if (SuddenDeathMode.SuddenTeamOption.GetBool())
                     {
                         var color = "#ffffff";

@@ -271,9 +271,12 @@ namespace TownOfHost
             public string TagName { get; set; }
             [JsonPropertyName("assets")]
             public List<Asset> Assets { get; set; }
+            [JsonPropertyName("body")]
+            public string body { get; set; }
 
             public string DownloadUrl { get; set; }
             public string OpenURL { get; set; }
+            public string Info { get; set; }
 
             public class Asset
             {

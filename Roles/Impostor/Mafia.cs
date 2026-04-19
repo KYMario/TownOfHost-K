@@ -122,4 +122,18 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
     {
         SKMad = reader.ReadBoolean();
     }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if (CanUseKillButton() && exiled is not null && !(exiled?.Object?.GetCustomRole().IsNeutralKiller() ?? false))
+            f1flug++;
+        if (f1flug is 2) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+    }
+    int f1flug;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, l1);
+    }
 }

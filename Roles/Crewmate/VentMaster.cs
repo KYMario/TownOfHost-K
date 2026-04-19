@@ -27,7 +27,9 @@ public sealed class VentMaster : RoleBase
     )
     {
         CustomRoleManager.OnEnterVentOthers.Add(OnEnterVentOthers);
+        callcount = 0;
     }
+    int callcount;
     static OptionItem CanUseVent;
     static void SetUpOptionItem()
     {
@@ -49,9 +51,24 @@ public sealed class VentMaster : RoleBase
                 {
                     if (seer.IsAlive() && GameStates.IsInTask)
                         seer.KillFlash();
+                    if (seer.GetRoleClass() is VentMaster ventMaster) ventMaster.callcount++;
                 }
             }
         }
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], callcount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], callcount);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 3, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 30, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

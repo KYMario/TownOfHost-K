@@ -35,6 +35,7 @@ namespace TownOfHost.Roles.Impostor
             BomberExplosionPlayers.Clear();
             BomberExplosion = OptionBomberExplosion.GetInt();
             Cooldown = OptionCooldown.GetFloat();
+            maxbomb = 0;
         }
 
         static OptionItem OptionKillDelay;
@@ -104,15 +105,18 @@ namespace TownOfHost.Roles.Impostor
                     if (target.IsAlive())
                     {
                         var pos = target.transform.position;
+                        var count = 0;
                         foreach (var target2 in PlayerCatch.AllAlivePlayerControls)
                         {
                             var dis = Vector2.Distance(pos, target2.transform.position);
                             if (dis > Blastrange) continue;
                             if (CustomRoleManager.OnCheckMurder(Player, target2, target2, target2, true, true, 1, deathReason: CustomDeathReason.Bombed))
                             {
+                                count++;
                                 RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
                                 Logger.Info($"{target2.name}を爆発させました。", "bomber");
                             }
+                            if (maxbomb <= count) maxbomb = count;
                         }
                     }
 
@@ -147,6 +151,21 @@ namespace TownOfHost.Roles.Impostor
 
             if (isForHud) return GetString("PhantomButtonKilltargetLowertext");
             return $"<size=50%>{GetString("PhantomButtonKilltargetLowertext")}</size>";
+        }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (3 <= maxbomb) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (5 <= maxbomb) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+        }
+        int maxbomb;
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+            var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
         }
     }
 }

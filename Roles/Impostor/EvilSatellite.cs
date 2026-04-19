@@ -173,4 +173,15 @@ public sealed class EvilSatellite : RoleBase, IImpostor
     {
         usecount = reader.ReadInt32();
     }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], usecount);
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        achievements.Add(0, n1);
+    }
 }

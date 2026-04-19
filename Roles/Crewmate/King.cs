@@ -29,6 +29,7 @@ public sealed class King : RoleBase
     {
         IsDead = false;
         IsExiled = false;
+        Sp1Flug = false;
     }
     static OptionItem OptExileVoteCount;
     static OptionItem OptExiledInvolvementCrewmates;
@@ -42,6 +43,8 @@ public sealed class King : RoleBase
     };
     bool IsDead;
     bool IsExiled;
+
+    bool Sp1Flug;
     enum OptionName
     {
         KingExileVoteCount,
@@ -69,8 +72,9 @@ public sealed class King : RoleBase
     {
         if (vote.TryGetValue(Player.PlayerId, out var count))
         {
-            if (count >= OptExileVoteCount.GetInt())
+            if (OptExileVoteCount.GetInt() <= count)
             {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
                 IsTie = false;
                 Exiled = Player.Data;
                 IsExiled = true;
@@ -199,6 +203,7 @@ public sealed class King : RoleBase
 
                     Logger.Info($"{pc.name}が後追いしちゃった！", "KingEx");
                     crews.Remove(pc);
+                    if (5 <= i) Sp1Flug = true;
                 }
             }
 
@@ -268,5 +273,31 @@ public sealed class King : RoleBase
         }
         IsDead = true;
         IsExiled = false;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (Sp1Flug && reason is not GameOverReason.CrewmatesByTask && Player.IsWinner(CustomWinner.Crewmate))
+        {
+            var crewmates = PlayerCatch.AllAlivePlayerControls.Where(pc => pc.GetCustomRole().IsCrewmate());
+            if (crewmates.Count(pc => !pc.Is(CustomRoles.Crewmate)) <= 2 && 0 < crewmates.Count())
+            {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+            }
+        }
+        if (Player.IsAlive() && Player.IsWinner(CustomWinner.Crewmate))
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        }
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 3, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

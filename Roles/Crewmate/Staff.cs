@@ -45,8 +45,11 @@ public sealed class Staff : RoleBase
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : (CanUseVent.GetBool() ? CustomRoles.Engineer : CustomRoles.Crewmate);
     public override bool OnCompleteTask(uint taskid)
     {
-        if (IsTaskFinished && Player.IsAlive()) EndedTaskInAlive = true;
-
+        if (IsTaskFinished && Player.IsAlive())
+        {
+            EndedTaskInAlive = true;
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        }
         //これはFinの外にしないとタスク数での覚醒上手くいないゼ。
         if (MyTaskState.HasCompletedEnoughCountOfTasks(OptAwakeningTask.GetInt()))
         {
@@ -57,5 +60,12 @@ public sealed class Staff : RoleBase
         }
 
         return true;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

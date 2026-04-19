@@ -63,7 +63,8 @@ namespace TownOfHost
 
             var star = "★".Color(winnerColor);
             KillLog = $"{GetString("GameLog")}\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star;
-            outputLog = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star;
+            outputLog = AmongUsClient.Instance.AmHost ? "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star
+            : "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + star + meg.Mark(winnerColor, false) + "/b" + star;
 
             LastGameSave.CreateIfNotExists();
             Main.Alltask = UtilsTask.AllTaskstext(false, false, false, false, false).RemoveHtmlTags();
@@ -146,6 +147,8 @@ namespace TownOfHost
 
             Camouflage.PlayerSkins.Clear();
             Statistics.Update();
+            CheckGetNomalAchievement.OnGameEnd();
+            Achievements.UpdateAchievement();
         }
     }
     [HarmonyPatch(typeof(EndGameManager), nameof(EndGameManager.SetEverythingUp))]
@@ -155,6 +158,7 @@ namespace TownOfHost
         private static TextMeshPro roleSummary;
         private static SimpleButton showHideButton;
         public static SimpleButton ScreenShotbutton;
+        public static StringBuilder sb = new();
 
         public static void Postfix(EndGameManager __instance)
         {
@@ -183,6 +187,7 @@ namespace TownOfHost
             __instance.BackgroundBar.material.color = BackgroundBar;
 
             LastWinsText = WinnerText.text;
+            __instance.transform.SetLocalZ(20);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -190,9 +195,19 @@ namespace TownOfHost
             //           ==最終結果表示==
             //#######################################
 
+            var parent = TMPTemplate.Create(
+                "parent");
+
+            parent.alignment = TextAlignmentOptions.TopRight;
+            parent.rectTransform.pivot = new(2.1f, -10.5f);
+            var parentAspectPos = parent.gameObject.AddComponent<AspectPosition>();
+            parentAspectPos.Alignment = AspectPosition.EdgeAlignments.LeftTop;
+            parentAspectPos.DistanceFromEdge = new(5.3f, 3, 0);
+            parent.gameObject.SetActive(true);
+
             var showInitially = Main.ShowResults.Value;
             showHideButton = new SimpleButton(
-                __instance.transform,
+                parent.transform,
                 "ShowHideResultsButton",
                 new(-4.5f, 2.6f, -14f),  // BackgroundLayer(z=-13)より手前
                 new(0, 136, 209, byte.MaxValue),
@@ -200,18 +215,28 @@ namespace TownOfHost
                 () =>
                 {
                     var setToActive = !roleSummary.gameObject.activeSelf;
+                    if (setToActive is false)
+                    {
+                        if (roleSummary.text.Contains("<size=0>★</size>"))
+                        {
+                            roleSummary.text = Achievements.GetAllAchievement();
+                            showHideButton.Label.text = GetString("HideResults");
+                            return;
+                        }
+                    }
+                    roleSummary.text = sb.ToString() + "<size=0>★</size>";
                     roleSummary.gameObject.SetActive(setToActive);
                     Main.ShowResults.Value = setToActive;
-                    showHideButton.Label.text = GetString(setToActive ? "HideResults" : "ShowResults");
+                    showHideButton.Label.text = GetString(setToActive ? "ShowAward" : "ShowResults");
                 },
-                GetString(showInitially ? "HideResults" : "ShowResults"))
+                GetString(showInitially ? "ShowAward" : "ShowResults"))
             {
                 Scale = new(1.5f, 0.5f),
                 FontSize = 2f,
             };
 
             ScreenShotbutton = new SimpleButton(
-                __instance.transform,
+                parent.transform,
                 "ScreenShotButton",
                 new(-3.5f, 2.6f, -14f),
                 new(0, 245, 185, byte.MaxValue),
@@ -226,7 +251,7 @@ namespace TownOfHost
                 FontSize = 2f,
             };
 
-            StringBuilder sb = new();
+            sb = new();
             if (TaskBattle.IsRTAMode && Options.CurrentGameMode == CustomGameMode.TaskBattle)
             {
                 sb.Append(UtilsGameLog.GetRTAText());
@@ -248,7 +273,7 @@ namespace TownOfHost
             }
             roleSummary = TMPTemplate.Create(
                 "RoleSummaryText",
-                sb.ToString(),
+                sb.ToString() + "<size=0>★</size>",
                 Color.white,
                 1.25f,
                 TextAlignmentOptions.TopLeft,
@@ -257,6 +282,21 @@ namespace TownOfHost
             roleSummary.transform.localPosition = new(1.7f, -0.4f, 0f);
             roleSummary.transform.localScale = new Vector3(1.2f, 1.2f, 1f);
             roleSummary.gameObject.SetActive(!Main.AssignSameRoles);
+
+            var modtext = TMPTemplate.Create(
+                "ModText",
+                $"<b><{Main.ModColor}>{Main.ModName}</color><size=80%>v{Main.PluginShowVersion}</b>",
+                Color.white,
+                1.25f,
+                TextAlignmentOptions.TopLeft,
+                setActive: false);
+            modtext.transform.localScale = new Vector3(1.7f, 1.7f, 1f);
+            modtext.alignment = TextAlignmentOptions.TopRight;
+            modtext.rectTransform.pivot = new(0.3f, -6f);
+            var modtextAspectPos = modtext.gameObject.AddComponent<AspectPosition>();
+            modtextAspectPos.Alignment = AspectPosition.EdgeAlignments.RightTop;
+            modtextAspectPos.DistanceFromEdge = new(5f, 3f);
+            modtext.gameObject.SetActive(true);
 
             //if (Main.UseWebHook.Value) UtilsWebHook.WH_ShowLastResult();
             if (Main.IsAndroid()) return;

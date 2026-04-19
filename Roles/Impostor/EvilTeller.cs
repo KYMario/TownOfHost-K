@@ -180,6 +180,10 @@ public sealed class EvilTeller : RoleBase, IImpostor, IUsePhantomButton
                 RpcAddTarget(et_target.PlayerId);
 
                 UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player, ForceLoop: true);
+                if (et_target.GetCustomRole().IsNeutral())
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (et_target.GetCustomRole().IsMadmate())
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
             else
             {
@@ -248,5 +252,14 @@ public sealed class EvilTeller : RoleBase, IImpostor, IUsePhantomButton
     {
         SetTargetInfo,
         AddTarget
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var n2 = new Achievement(RoleInfo, 1, 1, 0, 0);
+        achievements.Add(0, n1);
+        achievements.Add(1, n2);
     }
 }

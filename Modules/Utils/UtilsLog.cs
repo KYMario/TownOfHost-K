@@ -174,6 +174,7 @@ namespace TownOfHost
                 case CustomWinner.WhiteLovers: barColor = GetRoleColor(CustomRoles.WhiteLovers); break;
                 case CustomWinner.PurpleLovers: barColor = GetRoleColor(CustomRoles.PurpleLovers); break;
                 case CustomWinner.MadonnaLovers: barColor = GetRoleColor(CustomRoles.MadonnaLovers); break;
+                case CustomWinner.CupidLovers: barColor = GetRoleColor(CustomRoles.CupidLovers); break;
                 case CustomWinner.OneLove: CustomWinnerText = ColorString(GetRoleColor(CustomRoles.OneLove), GetString("OneLoveWin")); barColor = GetRoleColor(CustomRoles.OneLove); break;
                 case CustomWinner.MilkyWay: var MilkyWayColor = StringHelper.CodeColor(Roles.Neutral.Vega.TeamColor); CustomWinnerText = ColorString(MilkyWayColor, GetString("TeamMilkyWay")); barColor = MilkyWayColor; break;
                 case CustomWinner.TaskPlayerB:
@@ -406,6 +407,40 @@ namespace TownOfHost
             }
             //SendMessage(/*EndGamePatch.KillLog*/, PlayerId);
         }
+        public static void ShowAchievement(byte playerid)
+        {
+            if (GameStates.IsInGame)
+            {
+                SendMessage(GetString("CantUse.Achievement"), playerid);
+                return;
+            }
+            var key = playerid.GetPlayerControl().GetClient()?.ProductUserId ?? $"{GetPlayerInfoById(playerid).GetLogPlayerName()}";
+            if (Achievements.AllPlayerAchievements.TryGetValue(key, out var achievements) && achievements?.Count is not null and not 0)
+            {
+                var text = GetString("Achievement") + "<size=80%>";
+                foreach (var achievement in achievements)
+                {
+                    var mark = "";
+                    var color = "";
+                    switch (achievement.Difficulty)
+                    {
+                        case 0: mark += "◎"; color = "<#674020>"; break;
+                        case 1: mark += "◆"; color = "<#aacbf7>"; break;
+                        case 2: mark += "★"; color = "<#ffea4e>"; break;
+                        case 3: mark += "ф"; color = "<#17f7aa>"; break;
+                    }
+                    text += $"\n{color}{mark}" + "  ";
+                    text += $"～{Achievements.GetAchievementNames(achievement, "Title")}～</color>" +
+                    (achievement.role is CustomRoles.NotAssigned ? "" : $"<size=60%>({GetRoleColorAndtext(achievement.role)})</size>");
+                    text += $"<size=60%>{Achievements.GetAchievementNames(achievement, "Info")}</size>";
+                }
+                SendMessage(text, playerid);
+            }
+            else
+            {
+                SendMessage(GetString("Null.Achievement"), playerid);
+            }
+        }
         public static void Reset()
         {
             Main.showkillbutton = false;
@@ -544,4 +579,4 @@ namespace TownOfHost
         }
     }
 }
-#endregion
+    #endregion

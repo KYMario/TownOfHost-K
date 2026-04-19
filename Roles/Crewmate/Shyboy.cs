@@ -2,6 +2,7 @@ using AmongUs.GameOptions;
 using UnityEngine;
 using System;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.AddOns.Common;
 namespace TownOfHost.Roles.Crewmate;
 
 public sealed class Shyboy : RoleBase
@@ -63,7 +64,18 @@ public sealed class Shyboy : RoleBase
         AURoleOptions.EngineerCooldown = (float)Coold;
         AURoleOptions.EngineerInVentMaxTime = 0;
     }
-    public override void StartGameTasks() => Shydeathdi = MathF.Min(Player.Is(CustomRoles.Lighting) ? 4.5f * Main.DefaultImpostorVision : 4.5f * Main.DefaultCrewmateVision, 4);
+    public override void StartGameTasks()
+    {
+        Shydeathdi = Player.Is(CustomRoles.Lighting) ? Main.DefaultImpostorVision : Main.DefaultCrewmateVision;
+        if (Player.Is(CustomRoles.Sunglasses))
+        {
+            Shydeathdi *= Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f;
+        }
+
+
+        Shydeathdi *= 4.5f;
+        Shydeathdi = Mathf.Min(Shydeathdi, 4);
+    }
     public override void OnStartMeeting()
     {
         Notify = true;
@@ -137,6 +149,8 @@ public sealed class Shyboy : RoleBase
                 Player.RpcMurderPlayer(Player);//一定時間周囲に人がいたら恥ずかしくて死ぬ。
                 Shydeath = -1;//0sの無限キル防止(おきないだろうけど)
                 if ((Event.April || Event.Special) && OptionShyDieBom.GetBool())
+                {
+                    var bombcount = 0;
                     foreach (var pc in PlayerCatch.AllAlivePlayerControls)
                     {
                         if (pc != player)
@@ -146,11 +160,17 @@ public sealed class Shyboy : RoleBase
                             float dis = vector.magnitude;
                             if (HitoDistance <= Shydeathdi && !PhysicsHelpers.AnyNonTriggersBetween(GSpos, pc.transform.position, dis, Constants.ShipAndObjectsMask))
                             {
+                                bombcount++;
                                 CustomRoleManager.OnCheckMurder(Player, pc, pc, pc, true, true, 10, CustomDeathReason.Bombed);
                                 Logger.Info($"Booooooooooooom! => {pc.Data.GetLogPlayerName()}", "ShyboyDie");
                             }
                         }
                     }
+                    if (3 <= bombcount)
+                    {
+                        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[3]);
+                    }
+                }
             }
         }
     }
@@ -161,5 +181,27 @@ public sealed class Shyboy : RoleBase
     {
         text = "ShyBoy_Ability";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (Player.IsAlive())
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (Shytime <= 3 && Notshy <= 5)
+            {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+            }
+        }
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 2, 2);
+        var l1 = new Achievement(RoleInfo, 2, 1, 1, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
+        achievements.Add(2, l1);
     }
 }

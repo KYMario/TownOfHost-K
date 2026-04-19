@@ -100,7 +100,8 @@ namespace TownOfHost
                 CustomRoles.Clumsy or
                 CustomRoles.SlowStarter or
                 CustomRoles.InfoPoor or
-                CustomRoles.News
+                CustomRoles.News or
+                CustomRoles.Sunglasses
                 ;
         }
         public static bool IsBuffAddon(this CustomRoles roles)
@@ -138,7 +139,8 @@ namespace TownOfHost
                 CustomRoles.Clumsy or
                 CustomRoles.SlowStarter or
                 CustomRoles.InfoPoor or
-                CustomRoles.News
+                CustomRoles.News or
+                CustomRoles.Sunglasses
                 ;
         }
         public static bool IsCombinationRole(this CustomRoles role) => role is
@@ -248,6 +250,9 @@ namespace TownOfHost
                         or CustomRoles.AsistingAngel
                         ;
         }
+        public static bool IsStartedRole(this CustomRoles role) => role is not
+            CustomRoles.NotAssigned and not CustomRoles.TaskPlayerB and not CustomRoles.HASFox and not
+             CustomRoles.HASTroll and not CustomRoles.MMArcher;
         static System.Collections.Generic.List<CustomRoles> GiveGuesserrole =
         [
             CustomRoles.Cakeshop,
@@ -285,7 +290,8 @@ namespace TownOfHost
         {
             if (role.IsVanilla())
             {
-                var roleOpt = Main.NormalOptions.RoleOptions;
+                var roleOpt = Main.NormalOptions?.RoleOptions;
+                if (roleOpt is null) return 0;
                 return role switch
                 {
                     CustomRoles.GuardianAngel => roleOpt.GetNumPerGame(RoleTypes.GuardianAngel),

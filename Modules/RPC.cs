@@ -1,14 +1,14 @@
 using System;
 using System.Collections;
 using System.Linq;
-using System.Threading.Tasks;
 using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
 using Hazel;
 using TownOfHost.Modules;
-using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Crewmate;
+using TownOfHost.Roles.Impostor;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -28,7 +28,15 @@ namespace TownOfHost
         SetRealKiller,
         SetLoversPlayers,
         SetMadonnaLovers,
-        ModUnload = 111,
+        SetCupidLovers,
+
+        ModUnload = 240,
+        SetInvisible = 241,
+        SendAIMessage = 242,
+        SendAIReply = 243,
+        GetAchievement = 244,
+        PublicRoleSync = 245,
+
         SyncYomiage,
         MeetingInfo,
         CustomRoleSync,
@@ -37,10 +45,8 @@ namespace TownOfHost
         ClientSendHideMessage,
         SyncModSystem,
         SyncAssassinState,
-        SendAIMessage,
-        SendAIReply = 230,
-        SetInvisible = 200
     }
+
     public enum Sounds
     {
         KillSound,
@@ -77,6 +83,10 @@ namespace TownOfHost
                 case RpcCalls.StartMeeting:
                     PlayerControl p = PlayerCatch.GetPlayerById(subReader.ReadByte());
                     Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()} => {p?.GetNameWithRole().RemoveHtmlTags() ?? "null"}", "StartMeeting");
+                    if (AmongUsClient.Instance.AmHost is false && p is null)
+                    {
+                        __instance.GetPlayerState().NumberOfRemainingButtons--;
+                    }
                     break;
                 case RpcCalls.CheckVanish:
                 case RpcCalls.StartVanish:
@@ -211,6 +221,16 @@ namespace TownOfHost
                         Lovers.HaveLoverDontTaskPlayers.Add(targetid);
                     }
                     break;
+                case CustomRPC.SetCupidLovers:
+                    Lovers.CuCupidLoversPlayers.Clear();
+                    int CuCount = reader.ReadInt32();
+                    for (int i = 0; i < CuCount; i++)
+                    {
+                        var targetid = reader.ReadByte();
+                        Lovers.CuCupidLoversPlayers.Add(PlayerCatch.GetPlayerById(targetid));
+                        Lovers.HaveLoverDontTaskPlayers.Add(targetid);
+                    }
+                    break;
                 case CustomRPC.SetRealKiller:
                     byte targetId = reader.ReadByte();
                     byte killerId = reader.ReadByte();
@@ -251,6 +271,30 @@ namespace TownOfHost
                     byte assassinId = reader.ReadByte();
                     if (CustomRoleManager.GetByPlayerId(assassinId) is not Roles.Impostor.Assassin assassinRole) break;
                     assassinRole.ReceiveStateRPC(reader);
+                    break;
+                case CustomRPC.GetAchievement:
+                    byte id = reader.ReadByte();
+                    int flug = reader.ReadInt32();
+                    int achiid = reader.ReadInt32();
+                    Achievements.RpcCompleteAchievement(id, flug, achiid);
+                    break;
+                case CustomRPC.PublicRoleSync:
+                    {
+                        byte playerid = reader.ReadByte();
+                        if (playerid == PlayerControl.LocalPlayer.PlayerId)
+                        {
+                            var recrole = (CustomRoles)reader.ReadPackedInt32();
+                            switch (recrole)
+                            {
+                                case CustomRoles.Cakeshop:
+                                    Cakeshop.ReceivePublickRPC(reader);
+                                    break;
+                                case CustomRoles.EvilBlender:
+                                    EvilBlender.ReceivePublickRpc(reader);
+                                    break;
+                            }
+                        }
+                    }
                     break;
             }
         }
@@ -462,6 +506,15 @@ namespace TownOfHost
                 writer.Write(lp.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+        public static void SyncCupidLoversPlayers()
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetCupidLovers, SendOption.Reliable, -1);
+            writer.Write(Lovers.CuCupidLoversPlayers.Count);
+            foreach (PlayerControl lp in Lovers.CuCupidLoversPlayers)
+                writer.Write(lp.PlayerId);
+            AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
         public static void SendRpcLogger(uint targetNetId, byte callId, int targetClientId = -1)
         {
             if (!DebugModeManager.AmDebugger) return;
@@ -495,6 +548,13 @@ namespace TownOfHost
             writer.Write(targetId);
             writer.Write(killerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
+        }
+        public static MessageWriter RpcPublicRoleSync(byte playerid, CustomRoles role)
+        {
+            MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PublicRoleSync, SendOption.None, -1);
+            writer.Write(playerid);
+            writer.WritePacked((int)role);
+            return writer;
         }
         //参考元→SuperNewRoles様
         public static void RpcSyncAllNetworkedPlayer(int TargetClientId = -1, SendOption sendOption = SendOption.None)
@@ -556,13 +616,16 @@ namespace TownOfHost
             SyncMuderMystery,
             SyncNextSpawn,
             SyncOneLove,
-            SyncVoteResult
+            SyncVoteResult,
+            ShowIntro
         }
         public static void RpcModSetting(MessageReader reader)
         {
             if (AmongUsClient.Instance.AmHost) return;
 
-            switch ((ModSystem)reader.ReadInt32())
+            var type = (ModSystem)reader.ReadInt32();
+            Logger.Info($"Rpc-SyncModSystem-{type}", "RPC");
+            switch (type)
             {
                 case ModSystem.SyncDeviceTimer:
                     DisableDevice.ReadMessage(reader);
@@ -618,6 +681,23 @@ namespace TownOfHost
                         var result = new MeetingVoteManager.VoteResult(exileId, Istie);
                         AntiBlackout.voteresult = result;
                         MeetingVoteManager.Voteresult = reader.ReadString();
+                    }
+                    break;
+                case ModSystem.ShowIntro:
+                    if (PlayerControl.LocalPlayer.PlayerId != 0)
+                    {
+                        if (GameStates.IsInGame) return;
+
+                        Logger.Warn("イントロの強制表示", "OnStartGame");
+                        PlayerControl.AllPlayerControls.ForEach((Action<PlayerControl>)(pc =>
+                        {
+                            PlayerNameColor.Set(pc);
+                            if (pc != null) pc.Data.Disconnected = false;
+                        }));
+                        PlayerControl.LocalPlayer.StopAllCoroutines();
+                        HudManagerCoShowIntroPatch.Cancel = false;
+                        DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
+                        DestroyableSingleton<HudManager>.Instance.HideGameLoader();
                     }
                     break;
             }

@@ -65,4 +65,26 @@ public sealed class Stolener : RoleBase
             }
         UtilsOption.SyncAllSettings();
     }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (Killer == byte.MaxValue)
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            return;
+        }
+        var role = Killer.GetPlayerControl()?.GetCustomRole() ?? CustomRoles.Crewmate;
+        if (role.IsCrewmate() || role.IsMadmate()) return;
+        if (role.IsImpostor()) role = CustomRoles.Impostor;
+        if (role is CustomRoles.JackalAlien or CustomRoles.JackalMafia) role = CustomRoles.Jackal;
+        if (CustomWinnerHolder.winners.Contains((CustomWinner)role)) Achievements.RpcCompleteAchievement(Killer, 0, achievements[1]);
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+    }
 }

@@ -147,7 +147,9 @@ public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         {
             Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}(成功)", "MadTeller");
             var role = target.GetTellResults(Player); //結果を変更するかチェック
-            var lasttext = "です" + (role.IsImpostorTeam() ? "!" : "...");
+            var lasttext = role.IsImpostorTeam() ? "!" : "...";
+            if (role.IsImpostor()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (role.IsNeutralKiller()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), srole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
         }
         else
@@ -164,5 +166,14 @@ public sealed class MadTeller : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         }
 
         return true;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

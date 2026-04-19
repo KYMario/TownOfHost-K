@@ -31,6 +31,7 @@ class ColorLovers
     {
         CustomRoles.Limiter,
         CustomRoles.Madonna,
+        CustomRoles.Cupid,
         CustomRoles.King,
         CustomRoles.GM,
         CustomRoles.Vega,

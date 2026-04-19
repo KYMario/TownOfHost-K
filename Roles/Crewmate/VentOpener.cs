@@ -122,6 +122,7 @@ public sealed class VentOpener : RoleBase
             {
                 pc.MyPhysics?.RpcBootFromVent(id);
                 expelledPlayers.Add(pc.PlayerId);
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
                 check = true;
             }
         }
@@ -186,6 +187,11 @@ public sealed class VentOpener : RoleBase
         }
         return true;
     }
+    public override void OnMurderPlayerAsTarget(MurderInfo info)
+    {
+        if (expelledPlayers.Contains(info.AttemptKiller.PlayerId))
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
 
     //public override bool OnSabotage(PlayerControl player, SystemTypes systemType) => !BlockSabotage || !expelledPlayers.Contains(player.PlayerId);
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target) => expelledPlayers.Clear();
@@ -201,5 +207,14 @@ public sealed class VentOpener : RoleBase
     {
         text = "VentOpener_Ability";
         return true;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

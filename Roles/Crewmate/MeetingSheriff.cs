@@ -42,6 +42,8 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
         MeetingSheriffCanKillNeutrals = OptionMeetingSheriffCanKillNeutrals.GetBool();
         cantaskcount = Optioncantaskcount.GetFloat();
         OneMeetingMaximum = Option1MeetingMaximum.GetFloat();
+
+        onemeetingkill = 0;
     }
 
     private static OptionItem OptionSheriffShotLimit;
@@ -58,6 +60,8 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
     static float OneMeetingMaximum;
     int MeetingUsedcount;
 
+
+    int onemeetingkill;
     enum Option
     {
         SheriffShotLimit,
@@ -86,7 +90,11 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
     {
         Usedcount = reader.ReadInt32();
     }
-    public override void OnStartMeeting() => MeetingUsedcount = 0;
+    public override void OnStartMeeting()
+    {
+        onemeetingkill = 0;
+        MeetingUsedcount = 0;
+    }
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(MyTaskState.CompletedTasksCount < cantaskcount ? Color.gray : Max <= Usedcount ? Color.gray : Color.cyan, $"({Max - Usedcount})");
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
@@ -163,7 +171,9 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
             }
 
             MeetingVoteManager.ResetVoteManager(target.PlayerId);
-            Player.RpcMeetingKill(target);
+            if (target != PlayerControl.LocalPlayer) Player.RpcMeetingKill(target);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
+            onemeetingkill++;
             return;
         }
         Player.RpcExileV3();
@@ -188,7 +198,7 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
         }
 
         MeetingVoteManager.ResetVoteManager(Player.PlayerId);
-        Player.RpcMeetingKill(Player);
+        if (Player != PlayerControl.LocalPlayer) Player.RpcMeetingKill(Player);
     }
     bool CanBeKilledBy(CustomRoles role)
     {
@@ -203,8 +213,26 @@ public sealed class MeetingSheriff : RoleBase, ISelfVoter
             CustomRoleTypes.Crewmate => role is CustomRoles.WolfBoy,
             _ => false
         };
-    }// ↓改良したの作っちゃった☆ 動くかはわかんない byけーわい
-     //ｶｲﾘｮｳｼﾃﾓﾗｯﾀﾅﾗﾂｶﾜﾅｲﾜｹｶﾞﾅｲ!!(大狼の処理とマッドの処理が出来てたからニュートラルもできるはず!!)
+    }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if (exiled == null || exiled?.Object == null)
+        {
+            if (3 <= onemeetingkill) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+            return;
+        }
+        if (exiled.Object.GetCustomRole().IsCrewmate() is false) onemeetingkill++;
 
+        if (3 <= onemeetingkill) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+    }
 }
 //コード多分改良できるけど動いてるからヨシ。(´・ω・｀)

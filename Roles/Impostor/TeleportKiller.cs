@@ -143,7 +143,7 @@ public sealed class TeleportKiller : RoleBase, IImpostor
             if (!TPCheck(target, true))
             {
                 Logger.Info($"ターゲットはキル可能な状態ではないためキルがブロックされました Killer:{Player.name} Target:{target.name}", "TeleportKiller");
-                Player.RpcProtectedMurderPlayer();
+                Player.SetKillCooldown();
                 if ((target.inVent || target.MyPhysics.Animations.IsPlayingEnterVentAnimation())
                         && TeleportKillerVentgaaa)
                 {

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
 using TMPro;
@@ -12,6 +11,7 @@ using TownOfHost.Templates;
 using Object = UnityEngine.Object;
 using TownOfHost.Modules;
 using System.Linq;
+using UnityEngine.UI;
 
 namespace TownOfHost
 {
@@ -26,7 +26,7 @@ namespace TownOfHost
         private static SimpleButton gitHubButton;
         private static SimpleButton TwitterXButton;
         private static SimpleButton TOHPBOTButton;
-        //private static SimpleButton VersionChangeButton;
+        private static SimpleButton RoleInfoButton;
         private static SimpleButton betaversionchange;
         public static TextMeshPro Statistics_TMP;
         public static GameObject VersionMenu;
@@ -37,6 +37,20 @@ namespace TownOfHost
         public static void StartPostfix(MainMenuManager __instance)
         {
             SimpleButton.SetBase(__instance.quitButton);
+            if (SimpleButton.IsNullOrDestroyed(RoleInfoButton))
+            {
+                RoleInfoButton = CreateButton(
+                    "RoleInfoButton",
+                    new(2.4f, 1, 1f),
+                    new Color32(51, 156, 126, byte.MaxValue),
+                    new Color32(103, 224, 190, byte.MaxValue),
+                    () =>
+                    {
+                        RoleInfoShower.CreateMenu(__instance);
+                    },
+                    "Role/Achivement"
+                );
+            }
             //Discordボタンを生成
             if (SimpleButton.IsNullOrDestroyed(discordButton))
             {
@@ -58,7 +72,7 @@ namespace TownOfHost
                     new(-0.8f, -1f, 1f),//-1f
                     new(153, 153, 153, byte.MaxValue),
                     new(209, 209, 209, byte.MaxValue),
-                    () => Application.OpenURL("https://github.com/KYMario/TownOfHost-Pko"),
+                    () => Application.OpenURL("https://github.com/"),
                     "GitHub");
             }
 
@@ -70,7 +84,7 @@ namespace TownOfHost
                     new(0.9f, -1f, 1f),
                     new(0, 202, 255, byte.MaxValue),
                     new(60, 255, 255, byte.MaxValue),
-                    () => Application.OpenURL("https://twitter.com/TOHPserver_k"),
+                    () => Application.OpenURL("https://twitter.com/"),
                     "Twitter(X)");
             }
             // TOHPBOTボタンを生成
@@ -81,7 +95,7 @@ namespace TownOfHost
                     new(2.6f, -1f, 1f),
                     new(0, 201, 87, byte.MaxValue),
                     new(60, 201, 87, byte.MaxValue),
-                    () => Application.OpenURL("https://discord.com/api/oauth2/authorize?client_id=1198276538563567716&permissions=8&scope=bot"),
+                    () => Application.OpenURL("https://discord.com/"),
                     "TOHPBOT");
             }
             if (SimpleButton.IsNullOrDestroyed(StatisticsButton))
@@ -220,6 +234,8 @@ namespace TownOfHost
                             },
                             "v" + release.TagName.TrimStart('v').Trim('S').Trim('s') + (release.DownloadUrl == null ? "(ERROR)" : ""));
                             i++;
+                            button2.Button.OnMouseOver.AddListener((Action)(() => ToolTip.Show(button2.Button, release.Info, null)));
+                            button2.Button.OnMouseOut.AddListener((Action)ToolTip.Hide);
                         }
                     },
                     Translator.GetString("versionchangebutton"));
@@ -351,8 +367,8 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
-            if (Statistics_TMP.gameObject != null)
-                Statistics_TMP.gameObject.SetActive(false);
+            if (Statistics_TMP?.gameObject != null)
+                Statistics_TMP?.gameObject.SetActive(false);
             if (Statistics_ScrollStuff?.gameObject != null)
                 Statistics_ScrollStuff?.gameObject.SetActive(false);
 
@@ -369,6 +385,7 @@ namespace TownOfHost
                 _ = new LateTask(() => TMP.SetText(text), 0.05f, "Set", true);
                 if (text == "") warning.SetActive(false);
             }
+            OptionsMenuBehaviourStartPatch.Instance = null;
         }
         [HarmonyPatch(nameof(MainMenuManager.ResetScreen)), HarmonyPostfix]
         public static void ResetScreenPostfix()
@@ -381,7 +398,12 @@ namespace TownOfHost
                 VersionMenu.SetActive(false);
             if (betaVersionMenu != null)
                 betaVersionMenu.SetActive(false);
+            if (Statistics_TMP != null)
+                Statistics_TMP?.gameObject.SetActive(false);
+            if (Statistics_ScrollStuff != null)
+                Statistics_ScrollStuff?.gameObject.SetActive(false);
             CreateStreameMenu.CloseMenu();
+            OptionsMenuBehaviourStartPatch.Instance = null;
         }
         public static void DestroyButton()
         {

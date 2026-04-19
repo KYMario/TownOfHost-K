@@ -39,6 +39,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
     {
         limit = Optionlimit.GetInt();
         LoverChenge = ChangeRoles[OptionLoverChenge.GetValue()];
+        IsKnowRole = MaLoversKnowRole.GetBool();
         IsNonLover = true;
         Vindictive = false;
         Breakup = false;
@@ -49,7 +50,9 @@ public sealed class Madonna : RoleBase, ISelfVoter
     public static CustomRoles LoverChenge;
     public static OptionItem MadonnaLoverAddwin;
     public static OptionItem MaLoversSolowin3players;
+    static OptionItem MaLoversKnowRole;
     public static int limit;
+    public static bool IsKnowRole;
     bool IsNonLover;
     bool Vindictive;
     bool Breakup;
@@ -78,6 +81,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         var cRolesString = ChangeRoles.Select(x => x.ToString()).ToArray();
         Optionlimit = IntegerOptionItem.Create(RoleInfo, 10, Option.Madonnalimit, new(1, 10, 1), 3, false).SetValueFormat(OptionFormat.day);
         OptionLoverChenge = StringOptionItem.Create(RoleInfo, 11, Option.MadonnaFallChenge, cRolesString, 4, false);
+        MaLoversKnowRole = BooleanOptionItem.Create(RoleInfo, 14, "LoversRole", false, false);
         MadonnaLoverAddwin = BooleanOptionItem.Create(RoleInfo, 12, Option.LoversRoleAddwin, false, false);
         MaLoversSolowin3players = BooleanOptionItem.Create(RoleInfo, 13, Option.LoverSoloWin3players, false, false);
     }
@@ -154,7 +158,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
                     Lovers.HaveLoverDontTaskPlayers.Add(target.PlayerId);
                     RPC.SyncMadonnaLoversPlayers();
                     UtilsGameLog.AddGameLog($"Madonna", string.Format(GetString("Log.MadonnaCo"), UtilsName.GetPlayerColor(Player, true), UtilsName.GetPlayerColor(target, true)));
-
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
                     target.RpcProtectedMurderPlayer();
                 }
                 else
@@ -196,6 +200,7 @@ public sealed class Madonna : RoleBase, ISelfVoter
         if (Vindictive)
         {
             Vindictive = false;
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             Player.RpcSetCustomRole(LoverChenge, true, log: true);
         }
         else
@@ -225,5 +230,23 @@ public sealed class Madonna : RoleBase, ISelfVoter
     public override void ReceiveRPC(MessageReader reader)
     {
         IsNonLover = reader.ReadBoolean();
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (limit != Optionlimit.GetInt())
+        {
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+        }
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 5, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var l2 = new Achievement(RoleInfo, 2, 1, 0, 1, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, l2);
     }
 }

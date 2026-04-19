@@ -11,7 +11,6 @@ using TownOfHost.Modules.ChatManager;
 using TownOfHost.Roles;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Neutral;
-using UnityEngine;
 using static TownOfHost.Translator;
 
 namespace TownOfHost
@@ -102,6 +101,8 @@ namespace TownOfHost
         public static void Prefix(InnerNetClient __instance, DisconnectReasons reason, string stringReason)
         {
             StreamerInfo.DisconnectInternal();
+            // 部屋変わる時のみ更新
+            OnPlayerJoinedPatch.kickpuidlist = [];
             Logger.Info($"切断(理由:{reason}:{stringReason}, ping:{__instance.Ping},FriendCode:{__instance?.GetClient(__instance.ClientId)?.FriendCode},PUID:{__instance?.GetClient(__instance.ClientId)?.ProductUserId})", "Session");
 
             if (GameStates.IsFreePlay && CustomSpawnEditor.ActiveEditMode)
@@ -123,6 +124,7 @@ namespace TownOfHost
     [HarmonyPatch(typeof(AmongUsClient), nameof(AmongUsClient.OnPlayerJoined))]
     class OnPlayerJoinedPatch
     {
+        public static ICollection<string> kickpuidlist = [];
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ClientData client)
         {
             checkjoin(client);
@@ -130,27 +132,63 @@ namespace TownOfHost
         }
         public static void checkjoin(ClientData client)
         {
+            if (4 < kickpuidlist.Count(id => id == client.ProductUserId))
+            {
+                Logger.seeingame(string.Format(GetString("Message.KickedByKickPlayer"), client.PlayerName));
+                Logger.Info($"キック者の連続入室:{client?.PlayerName}をBANしました。", "Kick");
+                AmongUsClient.Instance.KickPlayer(client.Id, true);
+                return;
+            }
             Logger.Info($"{client.PlayerName}(ClientID:{client.Id})(FriendCode:{client?.FriendCode ?? "???"})(PuId:{client?.ProductUserId ?? "???"})が参加", "Session");
             if (AmongUsClient.Instance.AmHost && client.FriendCode == "" && Options.KickPlayerFriendCodeNotExist.GetBool() && !GameStates.IsLocalGame && !Main.IsCs() && !BanManager.CheckWhiteList(client?.FriendCode, client?.ProductUserId))
             {
                 AmongUsClient.Instance.KickPlayer(client.Id, false);
+                kickpuidlist.Add(client.ProductUserId);
                 Logger.seeingame(string.Format(GetString("Message.KickedByNoFriendCode"), client.PlayerName));
-                Logger.Info($"フレンドコードがないプレイヤーを{client?.PlayerName}をキックしました。", "Kick");
+                Logger.Info($"フレンドコードがないプレイヤーを{client?.PlayerName}をキックしました。(NonFriendCode)", "Kick");
                 return;
             }
             if (DestroyableSingleton<FriendsListManager>.Instance.IsPlayerBlockedUsername(client.FriendCode) && AmongUsClient.Instance.AmHost)
             {
                 AmongUsClient.Instance.KickPlayer(client.Id, true);
+                Logger.seeingame(string.Format(GetString("Message.KickedByBlocked"), client.PlayerName));
                 Logger.seeingame($"{client?.PlayerName}({client.FriendCode})はブロック済みのため、BANしました");
-                Logger.Info($"ブロック済みのプレイヤー{client?.PlayerName}({client.FriendCode})をBANしました。", "BAN");
+                Logger.Info($"ブロック済みのプレイヤー{client?.PlayerName}({client.FriendCode})をBANしました。(block)", "BAN");
                 return;
             }
             if (Options.KiclHotNotFriend.GetBool() && !GameStates.IsLocalGame && !Main.IsCs() && !(DestroyableSingleton<FriendsListManager>.Instance.IsPlayerFriend(client.ProductUserId) || client.FriendCode == PlayerControl.LocalPlayer.GetClient().FriendCode || Main.IsCs()) && AmongUsClient.Instance.AmHost && !BanManager.CheckWhiteList(client?.FriendCode, client?.ProductUserId))
             {
                 AmongUsClient.Instance.KickPlayer(client.Id, false);
-                Logger.seeingame($"{client?.PlayerName}({client.FriendCode})はフレンドではないため、kickしました");
-                Logger.Info($"プレイヤー{client?.PlayerName}({client.FriendCode})をKickしました。", "Kick");
+                kickpuidlist.Add(client.ProductUserId);
+                Logger.seeingame(string.Format(GetString("Message.KickedByNoFriend"), $"{client?.PlayerName}({(client.FriendCode is "" ? "???" : client.FriendCode)})"));
+                Logger.Info($"プレイヤー{client?.PlayerName}({client.FriendCode})をKickしました。(NotFriend)", "Kick");
                 return;
+            }
+            if (Options.KickInitialName.GetBool() && !BanManager.CheckWhiteList(client?.FriendCode, client?.ProductUserId))
+            {
+                //一文字目が大文字 かつ 2文字目以降が小文字
+                if (client.PlayerName.Substring(0, 1).ToString().RemoveDeltext("[A-Z]", "") == ""
+                && client.PlayerName.Substring(1).ToString().RemoveDeltext("[a-z]", "") == "")
+                {
+                    List<string> wordlist = RandomNameGeneratorParsePatch.wordlist.OrderByDescending(x => x.Length).ToList();
+                    var first = wordlist.FirstOrDefault(ward => client.PlayerName.ToLower().Contains(ward), null);
+                    if (first is not null)
+                    {
+                        var name = client.PlayerName.ToLower().RemoveDeltext(first.ToString(), "");
+                        var second = wordlist.FirstOrDefault(ward => name.Contains(ward), null);
+
+                        if (second is not null)
+                        {
+                            if (name.RemoveDeltext(second) == "")
+                            {
+                                kickpuidlist.Add(client.ProductUserId);
+                                AmongUsClient.Instance.KickPlayer(client.Id, false);
+                                Logger.seeingame($"{client?.PlayerName}({client.FriendCode})は初期ネームと判断されたため、kickしました");
+                                Logger.Info($"プレイヤー{client?.PlayerName}({client.FriendCode})をKickしました。(初期ネーム)", "Kick");
+                            }
+                        }
+                    }
+                }
             }
             BanManager.CheckBanPlayer(client);
             if (!BanManager.CheckWhiteList(client?.FriendCode, client?.ProductUserId))
@@ -326,6 +364,23 @@ namespace TownOfHost
                     }
                     Utils.ApplySuffix(client.Character, true);
                 }, 3.0f, "Welcome Meg");
+            }
+        }
+    }
+
+    [HarmonyPatch(typeof(RandomNameGenerator), nameof(RandomNameGenerator.Parse))]
+    class RandomNameGeneratorParsePatch
+    {
+        public static ICollection<string> wordlist = [];
+        public static void Postfix(RandomNameGenerator __instance)
+        {
+            foreach (var data in __instance.WordGroups.Values)
+            {
+                foreach (var text in data)
+                {
+                    var ward = text.Replace(" Of", "").Replace(" The", "").ToString();
+                    wordlist.Add(text);
+                }
             }
         }
     }

@@ -18,6 +18,7 @@ namespace TownOfHost.Roles.Crewmate
                 SetupOptionItem,
                 "Pukupuku",
                 "#55ccff",
+                (7, 0),
                 isDesyncImpostor: false
             );
 

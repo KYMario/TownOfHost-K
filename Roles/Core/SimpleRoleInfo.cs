@@ -231,7 +231,7 @@ public class SimpleRoleInfo
             case RoleTypes.Detective:
                 roleName = CustomRoles.Detective;
                 customRoleType = CustomRoleTypes.Crewmate;
-                configId = 23050;
+                configId = 23100;
                 OptionSort = (0, 5);
                 break;
             case RoleTypes.GuardianAngel:
@@ -263,7 +263,7 @@ public class SimpleRoleInfo
                 roleName = CustomRoles.Viper;
                 customRoleType = CustomRoleTypes.Impostor;
                 countType = CountTypes.Impostor;
-                configId = 23100;
+                configId = 23050;
                 OptionSort = (0, 2);
                 break;
             default:

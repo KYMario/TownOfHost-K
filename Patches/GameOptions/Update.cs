@@ -79,25 +79,7 @@ namespace TownOfHost
 
             if (ShowFilter.IsShowFilter)
             {
-                foreach (var buttongameobject in ShowFilter.buttons.Values)
-                {
-                    if (buttongameobject is null) continue;
-                    bool IsActive = true;
-                    if ((buttongameobject.transform.position.y - ShowFilter.CloseButtonY) > -0.2f ||
-                    (buttongameobject.transform.position.y - ShowFilter.CloseButtonY) < -4.2f)
-                    {
-                        IsActive = false;
-                    }
-                    if (!buttongameobject.active && IsActive)
-                    {
-                        buttongameobject.SetActive(true);
-                    }
-                    else
-                        if (buttongameobject.active && !IsActive)
-                        {
-                            buttongameobject.SetActive(false);
-                        }
-                }
+                ShowFilter.FixUpdate();
             }
 
             if (NowRoleTab is not CustomRoles.NotAssigned)

@@ -43,6 +43,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         SecondsWin = false;
         Seconds = 0;
         Count = 0;
+        IsKilled = false;
         win = false;
     }
 
@@ -60,6 +61,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
     int Count;
     byte Target;
     bool win;
+    bool IsKilled;
     public TeamType SchrodingerCatChangeTo => TeamType.DoppelGanger;
 
     enum OptionName
@@ -135,6 +137,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
         if (info.CanKill && info.DoKill)
         {
             Afterkill = true;
+            IsKilled = true;
             SendRPC();
         }
     }
@@ -172,11 +175,11 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
             Seconds += Time.fixedDeltaTime;
         }
         else
-        if (Target != byte.MaxValue)
-        {
-            UseingShape = true;
-            Seconds += Time.fixedDeltaTime * shapecountup;
-        }
+            if (Target != byte.MaxValue)
+            {
+                UseingShape = true;
+                Seconds += Time.fixedDeltaTime * shapecountup;
+            }
 
         if (UseingShape is false) return;
 
@@ -191,6 +194,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
             if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.DoppelGanger, Player.PlayerId, false))
             {
                 CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
+                if (IsKilled is false) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
             Cankill = false;
             Target = byte.MaxValue;
@@ -226,5 +230,21 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
     {
         text = "DoppelGanger_Ability";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], Count);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[2], Count);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 100, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 500, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

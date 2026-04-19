@@ -39,29 +39,30 @@ namespace TownOfHost
         }
 
         // 不正キル防止チェック
-        public static bool CheckForInvalidMurdering(MurderInfo info, bool? force = false)
+        public static bool CheckForInvalidMurdering(MurderInfo info, bool force = false)
         {
             (var killer, var target) = info.AttemptTuple;
             // Killerが既に死んでいないかどうか
             if (force == false)
+            {
                 if (!killer.IsAlive())
                 {
                     Logger.Info($"{killer.GetNameWithRole().RemoveHtmlTags()}は死亡しているためキャンセルされました。", "CheckMurder");
                     return false;
                 }
-            // targetがキル可能な状態か
-            if (force == false)
-            {
-                if (// PlayerDataがnullじゃないか確認
-                    target.Data == null ||
-                    // targetの状態をチェック
-                    target.inVent ||
-                    target.MyPhysics.Animations.IsPlayingEnterVentAnimation() ||
-                    target.MyPhysics.Animations.IsPlayingAnyLadderAnimation() ||
-                    target.inMovingPlat)
+                // targetがキル可能な状態か
                 {
-                    Logger.Info("targetは現在キルできない状態です。", "CheckMurder");
-                    return false;
+                    if (// PlayerDataがnullじゃないか確認
+                        target.Data == null ||
+                        // targetの状態をチェック
+                        target.inVent ||
+                        target.MyPhysics.Animations.IsPlayingEnterVentAnimation() ||
+                        target.MyPhysics.Animations.IsPlayingAnyLadderAnimation() ||
+                        target.inMovingPlat)
+                    {
+                        Logger.Info("targetは現在キルできない状態です。", "CheckMurder");
+                        return false;
+                    }
                 }
             }
             // targetが既に死んでいないか
@@ -175,14 +176,13 @@ namespace TownOfHost
             // 処理は全てCustomRoleManager側で行う
             CustomRoleManager.OnMurderPlayer(__instance, target);
         }
-    }
-    /*
+    }/*
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.ProtectPlayer))]
     class PlayerControlProtectPlayerPatch
     {
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
         {
-            if (__instance == target) return;
+            //if (__instance == target) return;
             Logger.Info($"{__instance.GetNameWithRole().RemoveHtmlTags()} => {target.GetNameWithRole().RemoveHtmlTags()}", "ProtectPlayer");
         }
     }

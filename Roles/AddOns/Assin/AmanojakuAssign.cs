@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using TownOfHost.Roles.Core;
 using static TownOfHost.Options;
 using static TownOfHost.Translator;
+using TownOfHost.Roles.AddOns.Neutral;
 
 
 namespace TownOfHost.Roles.AddOns.Common
@@ -81,6 +82,7 @@ namespace TownOfHost.Roles.AddOns.Common
                 {
                     UtilsGameLog.AddGameLog($"Amanojaku", string.Format(GetString("Log.Amanojaku"), UtilsName.GetPlayerColor(pc)));
                     PlayerState.GetByPlayerId(pc.PlayerId).SetSubRole(role);
+                    if (0 < UtilsGameLog.day) pc.RpcSetCustomRole(CustomRoles.Amanojaku);
                     Logger.Info("役職設定:" + pc?.Data?.GetLogPlayerName() + " = " + pc.GetCustomRole().ToString() + " + " + role.ToString(), "AssignCustomSubRoles");
                     Amanojaku.Add(pc.PlayerId);
                     UtilsGameLog.LastLogRole[pc.PlayerId] = Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Amanojaku), GetString("Amanojaku") + GetString($"{pc.GetCustomRole()}"));

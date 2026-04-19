@@ -76,6 +76,8 @@ public sealed class Merlin : RoleBase, IRoomTasker
         SendRPC_CompleteRoom(completeroom);
         CheckFin();
         MyTaskState.Update(Player);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, Walker.achievements[0]);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, Walker.achievements[1]);
     }
     void IRoomTasker.ChangeRoom(PlainShipRoom TaskRoom)
     {

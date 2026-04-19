@@ -46,6 +46,7 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
         IsSetting = false;
         timer = 0;
         Teleporttimer = 0;
+        movevalue = 0;
     }
     Vector2 ArrowPosition; Vector2 ArrowLastPos; Vector2 PlayerPosition;
     bool IsUseing; float timer; float Teleporttimer;
@@ -208,6 +209,7 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
             {
                 Player.RpcSnapToForced(ArrowLastPos + new Vector2(0, 0.1f));
                 Teleporttimer = 0;
+                movevalue += Vector2.Distance(ArrowLastPos, Player.GetTruePosition());
             }
         }
         {
@@ -230,6 +232,9 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
             {
                 if (Player.IsModClient()) RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
                 else Player.KillFlash();
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                spflug = true;
+                _ = new LateTask(() => spflug = false, 3f, "", true);
             }
             if (IsMyArrow && IsShipRoom(i, true))
                 Player.RpcSnapToForced(ArrowLastPos + new Vector2(0, 0.1f));
@@ -255,6 +260,7 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
         SendRpc();
         Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
         Player.MarkDirtySettings();
+        if (15f < movevalue) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
     }
 
     void SendRpc()
@@ -294,6 +300,24 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
     {
         text = "Archer_Ability";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (spflug && Player.IsWinner(CustomWinner.Impostor))
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+    }
+    float movevalue;
+    bool spflug;
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }
 

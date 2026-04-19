@@ -1,3 +1,4 @@
+using System.Linq;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
@@ -51,6 +52,10 @@ public sealed class MadJester : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
         if (!AmongUsClient.Instance.AmHost || Player.PlayerId != exiled.PlayerId) return;
         if (!IsTaskFinished) return;
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        if (PlayerCatch.AllAlivePlayerControls.Any(pc => pc.Is(CustomRoles.Impostor)) is false)
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+
         CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Impostor, Player.PlayerId, hantrole: CustomRoles.MadJester);
         DecidedWinner = true;
     }
@@ -62,5 +67,14 @@ public sealed class MadJester : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         }
 
         return true;
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        achievements.Add(0, l1);
+        achievements.Add(1, sp1);
     }
 }

@@ -23,6 +23,7 @@ public sealed class Shikigami : RoleBase, IKiller
             SetupOptionItem,
             "sk",
             "#9b59b6",
+            (6, 1),
             from: From.SuperNewRoles,
             isDesyncImpostor: true
         );

@@ -39,6 +39,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
         () => HasTask.False
     )
     {
+        Flug3 = 0;
         ShotLimit = ShotLimitOpt.GetInt();
         CurrentKillCooldown = KillCooldown.GetFloat();
     }
@@ -69,6 +70,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
     };
 
     public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Crew;
+    int Flug3;
 
     private static void SetupOptionItem()
     {
@@ -181,6 +183,7 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
                             (target.Is(CustomRoles.JackalAlien) && JackalAlien.TairoDeathReason ? CustomDeathReason.Counter :
                             (target.Is(CustomRoles.AlienHijack) && Alien.TairoDeathReason ? CustomDeathReason.Counter : CustomDeathReason.Misfire));
                 killer.RpcMurderPlayer(killer);
+                Flug3 = Utils.IsActive(Main.SabotageType) && Main.SabotageType.IsCriticalSabotage() ? 1 : 0;
                 UtilsGameLog.AddGameLog("Sheriff", string.Format(GetString("SheriffMissLog"), UtilsName.GetPlayerColor(target.PlayerId)));
                 if (!MisfireKillsTarget.GetBool())
                 {
@@ -190,6 +193,8 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
             }
 
             killer.ResetKillCooldown();
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, SheriffAchievement.achievements[0]);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, SheriffAchievement.achievements[1]);
         }
         return;
     }
@@ -237,5 +242,50 @@ public sealed class Sheriff : RoleBase, IKiller, ISchrodingerCatOwner
     {
         text = "Sheriff_Kill";
         return true;
+    }
+    public override void AfterSabotage(SystemTypes systemType) => Flug3 = 0;
+    public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
+    {
+        if (target is null) return;
+        if (target.PlayerId == Player.Data.PlayerId && Flug3 == 1)
+        {
+            if (Utils.IsActive(Main.SabotageType) && Main.SabotageType.IsCriticalSabotage())
+            {
+                var systems = ShipStatus.Instance.Systems;
+                LifeSuppSystemType LifeSupp;
+                if (systems.ContainsKey(SystemTypes.LifeSupp) &&
+                    (LifeSupp = systems[SystemTypes.LifeSupp].TryCast<LifeSuppSystemType>()) != null &&
+                    LifeSupp.Countdown <= 15f)
+                {
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, SheriffAchievement.achievements[2]);
+                }
+                ISystemType sys = null;
+                if (systems.ContainsKey(SystemTypes.Reactor)) sys = systems[SystemTypes.Reactor];
+                else if (systems.ContainsKey(SystemTypes.Laboratory)) sys = systems[SystemTypes.Laboratory];
+                else if (systems.ContainsKey(SystemTypes.HeliSabotage)) sys = systems[SystemTypes.HeliSabotage];
+                ICriticalSabotage critical;
+                if (sys != null &&
+                (critical = sys.TryCast<ICriticalSabotage>()) != null &&
+                critical.Countdown <= 15f)
+                {
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, SheriffAchievement.achievements[2]);
+                }
+            }
+        }
+    }
+}
+
+class SheriffAchievement
+{
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(Sheriff.RoleInfo, 0, 1, 0, 0);
+        var l2 = new Achievement(Sheriff.RoleInfo, 1, 10, 0, 1);
+        var sp3 = new Achievement(Sheriff.RoleInfo, 2, 1, 0, 3, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l2);
+        achievements.Add(2, sp3);
     }
 }

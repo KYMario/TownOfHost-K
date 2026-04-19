@@ -40,6 +40,8 @@ namespace TownOfHost.Roles.Crewmate
         Vector2 LogPos;
         Dictionary<int, PlayerControl> Log = new();
         static HashSet<NiceLogger> NiceLoggers = new();
+        int l1count;
+        List<int> n1count;
         enum Option
         {
             NiceLoggerCoolTime
@@ -51,13 +53,15 @@ namespace TownOfHost.Roles.Crewmate
             Log.Clear();
             Cooltime = 0f;
             SetRoom = "";
+            l1count = 0;
+            n1count = new();
 
             NiceLoggers.Add(this);
         }
         public override void OnDestroy() => NiceLoggers.Clear();
         private static void SetupOptionItem()
         {
-            OptionCoolTime = FloatOptionItem.Create(RoleInfo, 10, Option.NiceLoggerCoolTime, new(0f, 60f, 0.5f), 3f, false).SetValueFormat(OptionFormat.Seconds);
+            OptionCoolTime = FloatOptionItem.Create(RoleInfo, 10, Option.NiceLoggerCoolTime, new(0.5f, 60f, 0.5f), 3f, false).SetValueFormat(OptionFormat.Seconds);
         }
         public bool CanUseImpostorVentButton() => false;
         public bool CanUseSabotageButton() => false;
@@ -85,6 +89,7 @@ namespace TownOfHost.Roles.Crewmate
             LogPos = logdoor.Key.transform.position;
             Cooltime = 0;
             SetRoom = GetString($"{logdoor.Key.Room}");
+            n1count.Add(logdoor.Key.Id);
 
             if (AmongUsClient.Instance.AmHost)
             {
@@ -129,6 +134,7 @@ namespace TownOfHost.Roles.Crewmate
                 else Send += string.Format(GetString("NiceLoggerAbility2"), SetRoom);
 
                 _ = new LateTask(() => Utils.SendMessage(Send, Player.PlayerId, Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.NiceLogger), GetString("NiceLoggerTitle"))), 4f, "NiceLoggerSned");
+                MeetingHudPatch.StartPatch.meetingsends.Add((Player.PlayerId, Send, Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.NiceLogger), GetString("NiceLoggerTitle"))));
             }
         }
         public override void AfterMeetingTasks()
@@ -164,10 +170,11 @@ namespace TownOfHost.Roles.Crewmate
                 float targetDistance = Vector2.Distance(logger.LogPos, playerpos);
                 if (targetDistance <= 0.5f && player.CanMove)
                 {
-                    if (logger.Cooltime >= OptionCoolTime.GetFloat())
+                    if (OptionCoolTime.GetFloat() <= logger.Cooltime)
                     {
                         logger.Log.Add(logger.Log.Count, player);
                         logger.Cooltime = 0f;
+                        logger.l1count++;
                     }
                 }
             }
@@ -188,6 +195,20 @@ namespace TownOfHost.Roles.Crewmate
         public override void ReceiveRPC(MessageReader reader)
         {
             Taskmode = reader.ReadBoolean();
+        }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (5 <= n1count.Count) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], l1count);
+        }
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+            var l1 = new Achievement(RoleInfo, 1, 100, 0, 1);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
         }
     }
 }

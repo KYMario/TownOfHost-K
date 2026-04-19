@@ -1,3 +1,4 @@
+using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
 using TownOfHost.Modules;
@@ -129,15 +130,15 @@ namespace TownOfHost.Roles.Neutral
             }
             CanSideKick = false;
             SendRPC();
+            if (target.Is(CustomRoleTypes.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             Player.RpcProtectedMurderPlayer(target);
             target.RpcProtectedMurderPlayer(Player);
             target.RpcProtectedMurderPlayer(target);
             UtilsGameLog.AddGameLog($"SideKick", string.Format(GetString("log.Sidekick"), UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})", UtilsName.GetPlayerColor(Player, true)));
-            target.RpcSetCustomRole(CustomRoles.Jackaldoll);
+            target.RpcSetCustomRole(CustomRoles.Jackaldoll, log: null);
             JackalDoll.Sidekick(target, Player);
             if (!Utils.RoleSendList.Contains(target.PlayerId)) Utils.RoleSendList.Add(target.PlayerId);
             UtilsOption.MarkEveryoneDirtySettings();
-            UtilsGameLog.LastLogRole[target.PlayerId] += "<b>⇒" + Utils.ColorString(UtilsRoleText.GetRoleColor(target.GetCustomRole()), GetString($"{target.GetCustomRole()}")) + "</b>";
         }
         public override string GetAbilityButtonText() => GetString("Sidekick");
         public override bool OverrideAbilityButton(out string text)
@@ -153,16 +154,37 @@ namespace TownOfHost.Roles.Neutral
             if (isForHud) return GetString("PhantomButtonSideKick");
             return $"<size=50%>{GetString("PhantomButtonSideKick")}</size>";
         }
-
         public void SendRPC()
         {
             using var sender = CreateSender();
             sender.Writer.Write(CanSideKick);
         }
-
         public override void ReceiveRPC(MessageReader reader)
         {
             CanSideKick = reader.ReadBoolean();
+        }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (3 <= MyState.GetKillCount()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            if (Player.IsWinner(CustomWinner.Jackal) && !Player.IsLovers())
+            {
+                foreach (var j in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CountTypes.Jackal)))
+                {
+                    if (j.GetPlayerState().GetKillCount() > 0) return;
+                }
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+            }
+        }
+        public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+            var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+            var sp1 = new Achievement(RoleInfo, 2, 1, 0, 3, true);
+            achievements.Add(0, n1);
+            achievements.Add(1, l1);
+            achievements.Add(2, sp1);
         }
     }
 }

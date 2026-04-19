@@ -129,6 +129,7 @@ namespace TownOfHost
                 UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[__instance.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
                 RpcSyncMeetingInfo(__instance, target);
             }
+            DisableDevice.CheckAddtime();
             DisableDevice.SendMessage();
 
             foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -265,6 +266,8 @@ namespace TownOfHost
                 UtilsNotifyRoles.ExtendedMeetingText = $"<color={colorcode}><u>★" + info + "</u></color>";
                 RpcSyncMeetingInfo(reporter, target, meetingInfo: Meetinginfo, infoColor: colorcode);
             }
+            DisableDevice.CheckAddtime();
+            DisableDevice.SendMessage();
             reporternetid = reporter.NetId;
             targetid = target?.PlayerId ?? byte.MaxValue;
 

@@ -110,7 +110,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         SoloWinOption.Create(RoleInfo, 11);
         OptionCanCallMeetingKill = BooleanOptionItem.Create(RoleInfo, 10, OptionName.AssasinCanCallMeetingKill, false, false);
         OptionHasOtherRole = BooleanOptionItem.Create(RoleInfo, 13, OptionName.AssasinHasOtherRole, false, false);
-        OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, () => InvalidRoles());
+        OptionHaveRole = FilterOptionItem.Create(RoleInfo, 12, OptionName.AssassinHaveRole, 0, false, OptionHasOtherRole, true, false, false, false, false, () => InvalidRoles());
         OptionAssassinMeetingTime = IntegerOptionItem.Create(RoleInfo, 25, OptionName.AssassinMeetingTime, new(10, 180, 1), 35, false).SetValueFormat(OptionFormat.Seconds);
 
         ObjectOptionitem.Create(RoleInfo, 26, "AssassinMerlin", true, null).SetOptionName(() => "Merlin Setting").SetColor(Merlin.RoleInfo.RoleColor);
@@ -372,6 +372,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
                 Player.RpcSetName(string.Format(GetString("AssassinGuessCollect"), tage) + "<size=0>");
                 MeetingVoteManager.Voteresult = string.Format(GetString("AssassinGuessCollect"), tage);
                 Logger.Info($"{GuessId}マーリンだ!", "Assassin");
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
             }
             else
             {
@@ -480,7 +481,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     }
     public override CustomRoles TellResults(PlayerControl player) => AddRole?.TellResults(player) ?? CustomRoles.NotAssigned;
     public override RoleTypes? AfterMeetingRole => AddRole?.AfterMeetingRole ?? null;
-    public override void CheckWinner() => AddRole?.CheckWinner();
+    public override void CheckWinner(GameOverReason reason) => AddRole?.CheckWinner(reason);
 
 
     bool IImpostor.CanBeLastImpostor => AddRole is IImpostor impostor ? impostor.CanBeLastImpostor : true;
@@ -538,6 +539,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
     public void ReceiveStateRPC(MessageReader reader)
     {
         NowState = (AssassinMeeting)reader.ReadInt32();
+        NowUse = NowState is AssassinMeeting.Guessing;
     }
 
     public void SendStateRPC() //一時用、いつか別の方法で実装する //いい案なんかないかな、
@@ -556,5 +558,12 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         {
             iusephantom.OnClick(ref AdjustKillCooldown, ref ResetCooldown);
         }
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, l1);
     }
 }

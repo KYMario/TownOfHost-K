@@ -151,7 +151,7 @@ namespace TownOfHost
                     var tageId = IRandom.Instance.Next(players.Count);
                     var pl = players.OrderBy(x => Guid.NewGuid()).ToArray()[tageId];
                     Logger.Info($"{pc?.Data?.PlayerName} => {pl?.Data?.PlayerName}", "Shuffle");
-                    UtilsGameLog.AddGameLogsub($"{pc?.Data?.PlayerName}のシャッフル先 : {pl?.Data?.PlayerName}");
+                    UtilsGameLog.AddGameLogsub($"\n{pc?.Data?.PlayerName}のシャッフル先 : {pl?.Data?.PlayerName}");
 
                     var colorId = pl.Data.DefaultOutfit.ColorId;
 
@@ -197,17 +197,6 @@ namespace TownOfHost
                 if (Options.IsStandardHAS)
                 {
                     Options.HideAndSeekKillDelayTimer = Options.StandardHASWaitingTime.GetFloat();
-                }
-                if (IsPlayerSkinShuffleMode)
-                {
-                    PlayerCatch.AllPlayerControls.Do(pc =>
-                    {
-                        Camouflage.RpcSetSkin(pc);
-                        if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
-
-                        if (Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
-                        else pc.RpcSetName(outfit.PlayerName);
-                    });
                 }
             }
 
@@ -339,6 +328,7 @@ namespace TownOfHost
         {
             //Logger.Warn("!!!2", "SR");
             if (!AmongUsClient.Instance.AmHost) return;
+
             RpcSetRoleReplacer.Release(); //保存していたSetRoleRpcを一気に書く
             RpcSetRoleReplacer.senders.Do(kvp => kvp.Value.SendMessage());
 
@@ -500,8 +490,8 @@ namespace TownOfHost
                 AddOnsAssignDataTeamImp.AssignAddOnsFromList();
                 AddOnsAssignData.AssignAddOnsFromList();
                 Twins.AssingAndReset();
-                Faction.AssingFaction();
                 if (Amanojaku.AssingDay.GetInt() == 0) AmanojakuAssing.AssignAddOnsFromList();
+                Faction.AssingFaction();
 
                 foreach (var pair in PlayerState.AllPlayerStates)
                 {
@@ -552,7 +542,7 @@ namespace TownOfHost
             }
 
             //コネクティングが1ならコネクティングを削除
-            if (PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.Connecting)).Count() == 1)
+            if (PlayerCatch.AllPlayerControls.Count(x => x.Is(CustomRoles.Connecting)) == 1)
             {
                 PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.Connecting)).ToArray().Do(
                             pc => PlayerState.GetByPlayerId(pc.PlayerId).RemoveSubRole(CustomRoles.Connecting));
@@ -560,8 +550,9 @@ namespace TownOfHost
             UtilsRoleInfo.SetRoleLists();
 
             if (GameModeManager.IsStandardClass())
+            {
                 StandardIntro.CoResetRoleY();
-            //RPC.RpcSyncAllNetworkedPlayer();
+            }//RPC.RpcSyncAllNetworkedPlayer();
 
             PlayerCatch.CountAlivePlayers(true);
             UtilsOption.SyncAllSettings();

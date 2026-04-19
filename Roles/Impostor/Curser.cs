@@ -32,6 +32,7 @@ public sealed class Curser : RoleBase, IImpostor
         CurseCount = OptionCurseCount.GetInt();
 
         TargetId = byte.MaxValue;
+        count = 0;
     }
     private static OptionItem OptionCurseKillCooldown;
     private static OptionItem OptionKillCooldown;
@@ -98,6 +99,9 @@ public sealed class Curser : RoleBase, IImpostor
                 TargetId = byte.MaxValue;
                 Player.SyncSettings(); // キルクールダウンを同期
                 SendRPC();
+                count++;
+                if (count is 1) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (count is 3) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
             else
             {
@@ -129,5 +133,15 @@ public sealed class Curser : RoleBase, IImpostor
     {
         text = "Curser_Ability";
         return true;
+    }
+    int count;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

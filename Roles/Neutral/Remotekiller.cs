@@ -1,6 +1,7 @@
 using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using UnityEngine;
 
 namespace TownOfHost.Roles.Neutral
 {
@@ -91,6 +92,7 @@ namespace TownOfHost.Roles.Neutral
             {
                 var target = PlayerCatch.GetPlayerById(ReamoteTargetId);
                 if (!target.IsAlive()) return true;
+                if (30 <= Vector2.Distance(Player.GetTruePosition(), target.GetTruePosition())) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
                 if (OptionKillAnimation.GetBool())
                 {
                     _ = new LateTask(() =>
@@ -128,6 +130,20 @@ namespace TownOfHost.Roles.Neutral
         {
             text = "Remotekiller_Vent";
             return ReamoteTargetId is not byte.MaxValue;
+        }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (Player.IsWinner(CustomWinner.Remotekiller))
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        }
+        public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+            var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2, true);
+            achievements.Add(0, n1);
+            achievements.Add(1, sp1);
         }
     }
 }

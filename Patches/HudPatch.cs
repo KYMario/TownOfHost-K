@@ -124,11 +124,11 @@ namespace TownOfHost
                         if (roleClass.HasAbility)
                         {
                             bool Visible = roleClass.CanUseAbilityButton() && GameStates.IsInTask;
-                            if ((roleClass as IUsePhantomButton)?.IsPhantomRole is false) Visible = false;
+                            if ((roleClass as IUsePhantomButton)?.IsPhantomRole is false && player.Data.RoleType is RoleTypes.Phantom) Visible = false;
                             __instance.AbilityButton.ToggleVisible(Visible);
                         }
                     }
-                    if (Main.CustomSprite.Value && CustomButtonHud.CantJikakuIsPresent is not true)
+                    if (Main.CustomSprite.Value && CustomButtonHud.CantJikakuIsPresent is not true && !player.Is(CustomRoles.Amnesia))
                     {
                         if (roleClass != null)
                         {
@@ -345,15 +345,21 @@ namespace TownOfHost
                             return;
                         }
                     }
-                    if (CustomRoles.Amnesia.IsPresent()) return;
+                    if (CustomRoles.Amnesia.IsPresent() && (customrole.IsVanilla() || player.Is(CustomRoles.Amnesia))) return;
+                    var missrole = CustomRoles.NotAssigned;
                     if (CantJikakuIsPresent == null)
                         foreach (var pc in PlayerCatch.AllPlayerControls)
                         {
-                            if (pc.GetMisidentify(out _)) CantJikakuIsPresent = true;
+                            if (pc.GetMisidentify(out var role))
+                            {
+                                CantJikakuIsPresent = true;
+                                if (pc.PlayerId == player.PlayerId) missrole = role;
+                            }
                         }
-                    if (CantJikakuIsPresent == true) return;
+                    if (CantJikakuIsPresent == true && (customrole.IsVanilla() || missrole.IsVanilla())) return;
                     if (customrole.IsVanilla()) return;
                     if (roleClass == null) return;
+                    CantJikakuIsPresent = false;
                     if (Main.CustomSprite.Value)
                     {
                         if (roleClass != null)
@@ -381,7 +387,8 @@ namespace TownOfHost
                             // キルボタンがバグってもなんかスイッチシェリフのキルボだけ大丈夫なことが多い。
                             if ((roleClass as IKiller)?.OverrideKillButton(out string name) == true && Main.CustomSprite.Value)
                             {
-                                __instance.KillButton.graphic.sprite = CustomButton.Get(name);
+                                __instance.KillButton.ChangeGraphic(CustomButton.Get(name));
+                                //__instance.KillButton.graphic.sprite = CustomButton.Get(name);
                             }
                             else if (MotoKillButton)
                             {
@@ -447,12 +454,12 @@ namespace TownOfHost
                 Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(targetlover), "♥"));
             }
             else
-            if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
-            || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
-            || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seer.Is(CustomRoles.OneLove)))
-            {
-                Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
-            }
+                if ((Lovers.OneLovePlayer.BelovedId == target.PlayerId && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
+                || (target.Is(CustomRoles.OneLove) && target.PlayerId != seer.PlayerId && seer.Is(CustomRoles.OneLove))
+                || (seer.Data.IsDead && target.Is(CustomRoles.OneLove) && !seer.Is(CustomRoles.OneLove)))
+                {
+                    Mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.OneLove), "♡"));
+                }
 
             if (target.Is(CustomRoles.Connecting) && PlayerControl.LocalPlayer.Is(CustomRoles.Connecting)
             && !target.Is(CustomRoles.WolfBoy) && !PlayerControl.LocalPlayer.Is(CustomRoles.WolfBoy))
@@ -470,23 +477,23 @@ namespace TownOfHost
                 //プログレスキラー
                 if (seer.Is(CustomRoles.ProgressKiller) && target.Is(CustomRoles.Workhorse) && ProgressKiller.ProgressWorkhorseseen)
                 {
-                    Mark.Append($"<#0000ff>lue>♦</color>");
+                    Mark.Append($"<#0000ff>♦</color>");
                 }
                 //エーリアン
                 if ((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<#0000ff>lue>♦</color>");
+                        Mark.Append($"<#0000ff>♦</color>");
                     }
                 if ((seerRole as JackalAlien)?.mode == Alien.AlienMode.ProgressKiller == true && JackalAlien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<#0000ff>lue>♦</color>");
+                        Mark.Append($"<#0000ff>♦</color>");
                     }
                 if ((seerRole as AlienHijack)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))
                     {
-                        Mark.Append($"<#0000ff>lue>♦</color>");
+                        Mark.Append($"<#0000ff>♦</color>");
                     }
                 //seer役職が対象のSuffix
                 Suffix.Append(seerRole?.GetSuffix(seer, target));
@@ -620,16 +627,16 @@ namespace TownOfHost
                     desc += $"<size=70%>{inforoleinfo?.Desc()}";
                 }
                 else
-                if (inforole.IsVanilla() && inforole is not CustomRoles.GuardianAngel)
-                {
-                    text += $"<size=100%>{inforoleinfo.Description.Blurb}" + "\n\n</size>";
-                    desc += $"<size=70%>{inforoleinfo.Description.Description}";
-                }
-                else
-                {
-                    text += "<size=100%>" + GetString($"{inforole}Info") + "\n\n</size>";
-                    desc += "<size=70%>" + GetString($"{inforole}InfoLong");
-                }
+                    if (inforole.IsVanilla() && inforole is not CustomRoles.GuardianAngel)
+                    {
+                        text += $"<size=100%>{inforoleinfo.Description.Blurb}" + "\n\n</size>";
+                        desc += $"<size=70%>{inforoleinfo.Description.Description}";
+                    }
+                    else
+                    {
+                        text += "<size=100%>" + GetString($"{inforole}Info") + "\n\n</size>";
+                        desc += "<size=70%>" + GetString($"{inforole}InfoLong");
+                    }
                 desc = desc.RemoveDeltext("、", "、\n");
                 desc = desc.RemoveDeltext("。", "。\n");
 
@@ -718,6 +725,7 @@ namespace TownOfHost
                 Logger.Warn("イントロの表示をキャンセルしました", "CoShowIntro");
                 return false;
             }
+            if (AmongUsClient.Instance.AmHost is false) GameStates.InGame = true;
             Cancel = true;
             return true;
         }

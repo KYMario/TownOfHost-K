@@ -129,7 +129,7 @@ namespace TownOfHost.Roles.AddOns.Neutral
             if (reason.Equals(GameOverReason.CrewmatesByTask) && !CanTaskWin.GetBool()) return false;
             if (reason.Equals(GameOverReason.CrewmatesByVote) && !CanCrewWin.GetBool()) return false;
 
-            if (pc.GetCustomRole() is CustomRoles.Terrorist or CustomRoles.Madonna) return false;
+            if (pc.GetCustomRole() is CustomRoles.Terrorist or CustomRoles.Madonna or CustomRoles.CupidLovers) return false;
 
             if (pc.IsAlive() && !pc.IsLovers())
             {

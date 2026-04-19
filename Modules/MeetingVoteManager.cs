@@ -59,6 +59,24 @@ public class MeetingVoteManager
         allVotes[voter] = vote;
         EndMeeting(false, true);
     }
+
+    /// <summary>
+    /// 今までに行われた投票をすべて削除し，特定の投票先に1票投じられた状態で会議を強制終了します
+    /// </summary>
+    /// <param name="voters">投票を行う人</param>
+    /// <param name="exiled">追放先</param>
+    public void ClearAndExiles(byte[] voters, byte exiled)
+    {
+        logger.Info($"ClearAndExilesにより、{GetVoteName(exiled)} が追放されます");
+        ClearVotes();
+        foreach (var voter in voters)
+        {
+            var vote = new VoteData(voter);
+            vote.DoVote(exiled, 1);
+            allVotes[voter] = vote;
+        }
+        EndMeeting(false, true);
+    }
     public void ClearAndEndMeeting()
     {
         logger.Info($"削除して会議を終了します");
@@ -74,6 +92,7 @@ public class MeetingVoteManager
     /// <param name="isIntentional">投票者自身の投票操作による自発的な投票かどうか</param>
     public void SetVote(byte voter, byte voteFor, int numVotes = 1, bool isIntentional = true, bool isoverride = true)
     {
+        if (GameStates.ExiledAnimate) return;
         if (!allVotes.TryGetValue(voter, out var vote))
         {
             logger.Warn($"ID: {voter}の投票データがありません。新規作成します");
@@ -574,15 +593,22 @@ public class MeetingVoteManager
             pc.RpcExileV3();
         }
         PlayerState.GetByPlayerId(killtargetid).SetDead();
-        PlayerState.AllPlayerStates[killtargetid].SetDead();
 
         MeetingHud meetingHud = MeetingHud.Instance;
         HudManager hudManager = DestroyableSingleton<HudManager>.Instance;
+        bool ResetVote = (meetingHud.discussionTimer - (float)Main.NormalOptions.DiscussionTime - (float)Main.NormalOptions.VotingTime) > 3;
+
+        /* ホストにキルアニメーション,全員にリアフラ*/
+        meetingHud.playerStates.Do(x => x.MaskArea.gameObject.SetActive(false));
+        hudManager.KillOverlay.ShowKillAnimation(pc.Data, pc.Data);
+        _ = new LateTask(() => meetingHud?.playerStates?.Do(x => x?.MaskArea?.gameObject?.SetActive(true)), 2f, "ResetMask");
+        if (AmongUsClient.Instance.AmHost) Utils.AllPlayerKillFlash();
+
         if (amOwner)
         {
             hudManager.ShadowQuad.gameObject.SetActive(false);
             pc.NameText().GetComponent<MeshRenderer>().material.SetInt("_Mask", 0);
-            if (AmongUsClient.Instance.AmHost) pc.RpcSetScanner(false);
+            //if (AmongUsClient.Instance.AmHost) pc.RpcSetScanner(false);
             ImportantTextTask importantTextTask = new GameObject("_Player").AddComponent<ImportantTextTask>();
             importantTextTask.transform.SetParent(AmongUsClient.Instance.transform, false);
             meetingHud.SetForegroundForDead();
@@ -590,25 +616,28 @@ public class MeetingVoteManager
         PlayerVoteArea voteArea = meetingHud.playerStates.First(x => x.TargetPlayerId == pc.PlayerId);
         if (voteArea is not null)
         {
-            if (voteArea.DidVote) voteArea.UnsetVote();
-            voteArea.AmDead = true;
-            voteArea.Overlay.gameObject.SetActive(true);
-            voteArea.Overlay.color = Color.white;
-            voteArea.XMark.gameObject.SetActive(true);
-            voteArea.XMark.transform.localScale = Vector3.one;
-            if (AmongUsClient.Instance.AmHost)
+            if (ResetVote)
             {
-                int client = pc.GetClientId();
-                meetingHud.CastVote(pc.PlayerId, NoVote);
-                meetingHud.RpcClearVote(client);
-                meetingHud.ClearVote();
-                voteArea.UnsetVote();
+                if (voteArea.DidVote) voteArea.UnsetVote();
+                voteArea.AmDead = true;
+                voteArea.Overlay.gameObject.SetActive(true);
+                voteArea.Overlay.color = Color.white;
+                voteArea.XMark.gameObject.SetActive(true);
+                voteArea.XMark.transform.localScale = Vector3.one;
+                if (AmongUsClient.Instance.AmHost)
+                {
+                    int client = pc.GetClientId();
+                    meetingHud.CastVote(pc.PlayerId, NoVote);
+                    meetingHud.RpcClearVote(client);
+                    meetingHud.ClearVote();
+                    voteArea.UnsetVote();
+                }
+            }
+            else
+            {
+                Instance.SetVote(pc.PlayerId, NoVote);
             }
         }
-
-        /* ホストにキルアニメーション,全員にリアフラ*/
-        hudManager.KillOverlay.ShowKillAnimation(pc.Data, pc.Data);
-        if (AmongUsClient.Instance.AmHost) Utils.AllPlayerKillFlash();
 
         foreach (var playerVoteArea in meetingHud.playerStates)
         {
@@ -617,16 +646,22 @@ public class MeetingVoteManager
 
             if (AmongUsClient.Instance.AmHost)
             {
-                meetingHud.CastVote(pc.PlayerId, NoVote);
-                meetingHud.RpcClearVote(voteAreaPlayer.GetClientId());
-                meetingHud.ClearVote();
-                playerVoteArea.UnsetVote();
+                if (ResetVote)
+                {
+                    meetingHud.CastVote(pc.PlayerId, NoVote);
+                    meetingHud.RpcClearVote(voteAreaPlayer.GetClientId());
+                    meetingHud.ClearVote();
+                    playerVoteArea.UnsetVote();
+                }
+                else
+                {
+                    Instance?.SetVote(pc.PlayerId, NoVote);
+                }
             }
         }
         if (AmongUsClient.Instance.AmHost)
         {
-            meetingHud.CheckForEndVoting();
-            _ = new LateTask(() => meetingHud?.CheckForEndVoting(), 3f, "CheckForEndVoteing", true);
+            _ = new LateTask(() => Instance?.CheckAndEndMeeting(), 3f, "CheckForEndVoteing", true);
         }
     }
 }

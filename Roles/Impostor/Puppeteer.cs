@@ -159,6 +159,8 @@ public sealed class Puppeteer : RoleBase, IImpostor
                 if (CustomRoleManager.OnCheckMurder(Player, target, puppet, target, true, false, 1))
                 {
                     RPC.PlaySoundRPC(Player.PlayerId, Sounds.KillSound);
+                    if (target.GetCustomRole() is CustomRoles.Bait or CustomRoles.Insider or CustomRoles.Gasp)
+                        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
                 }
                 UtilsOption.MarkEveryoneDirtySettings();
                 Puppets.Remove(puppet.PlayerId);
@@ -185,5 +187,21 @@ public sealed class Puppeteer : RoleBase, IImpostor
     {
         text = "Puppeteer_Kill";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (2 <= MyState.GetKillCount()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], MyState.GetKillCount());
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 20, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

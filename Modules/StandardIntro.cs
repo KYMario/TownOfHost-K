@@ -193,6 +193,18 @@ class StandardIntro
         }
         void Intoro()
         {
+            bool IsPlayerSkinShuffleMode = Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special);
+            if (IsPlayerSkinShuffleMode)
+            {
+                PlayerCatch.AllPlayerControls.Do(pc =>
+                {
+                    Camouflage.RpcSetSkin(pc);
+                    if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
+
+                    if (Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
+                    else pc.RpcSetName(outfit.PlayerName);
+                });
+            }
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId) continue;
@@ -236,6 +248,10 @@ class StandardIntro
                 DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
                 DestroyableSingleton<HudManager>.Instance.HideGameLoader();
                 UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+
+                var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None);
+                sender.Write((int)RPC.ModSystem.ShowIntro);
+                AmongUsClient.Instance.FinishRpcImmediately(sender);
             }, 0.2f, "", true);
 
             new LateTask(() =>
@@ -278,7 +294,7 @@ class StandardIntro
                 var send = false;
                 foreach (var dis in Disconnected)
                 {
-                    var client = GameData.Instance.AllPlayers.ToArray().Where(data => data.PlayerId == dis).FirstOrDefault();
+                    var client = GameData.Instance.AllPlayers.ToArray().FirstOrDefault(data => data.PlayerId == dis);
                     if (client == null) continue;
                     client.Disconnected = true;
                     send = true;

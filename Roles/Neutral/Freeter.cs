@@ -186,7 +186,6 @@ public sealed class Freeter : RoleBase, IKiller, IAdditionalWinner
 
     public bool CheckWin(ref CustomRoles winnerRole)
     {
-        if (!Player.IsAlive()) return false;
         if (BetTargetId == byte.MaxValue) return false;
         return CustomWinnerHolder.WinnerIds.Contains(BetTargetId);
     }

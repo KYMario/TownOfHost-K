@@ -220,6 +220,8 @@ namespace TownOfHost
                 PlayerControl.LocalPlayer.Data.Role.IntroSound = introSound;
             }
 
+            if (teamToDisplay.Contains(pc) is false) teamToDisplay.Add(pc);
+
             switch (role.GetCustomRoleTypes())
             {
                 case CustomRoleTypes.Neutral:
@@ -313,8 +315,7 @@ namespace TownOfHost
             }
             if (pc.Is(CustomRoles.Amnesia))
             {
-                PlayerControl.LocalPlayer.Data.Role.IntroSound = Amnesia.dontcanUseability ?
-                (role.IsImpostor() ? RoleBase.GetIntrosound(RoleTypes.Impostor) : RoleBase.GetIntrosound(RoleTypes.Crewmate)) : RoleBase.GetIntrosound(role.GetRoleInfo().BaseRoleType.Invoke());
+                PlayerControl.LocalPlayer.Data.Role.IntroSound = role.IsImpostor() ? RoleBase.GetIntrosound(RoleTypes.Impostor) : RoleBase.GetIntrosound(RoleTypes.Crewmate);
             }
         }
         private static async void StartFadeIntro(IntroCutscene __instance, Color start, Color end, int t = 1000)
@@ -342,7 +343,8 @@ namespace TownOfHost
     {
         public static bool Prefix(IntroCutscene __instance, ref Il2CppSystem.Collections.Generic.List<PlayerControl> yourTeam)
         {
-            if (PlayerControl.LocalPlayer.Is(CustomRoles.Sheriff) || PlayerControl.LocalPlayer.Is(CustomRoles.WolfBoy) || PlayerControl.LocalPlayer.Is(CustomRoles.BakeCat) || PlayerControl.LocalPlayer.Is(CustomRoles.Amnesiac) || (PlayerControl.LocalPlayer.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor == true) && PlayerControl.LocalPlayer.Is(CustomRoles.Amnesia))
+            if (PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Sheriff or CustomRoles.WolfBoy or CustomRoles.BakeCat or CustomRoles.NiceLogger
+            || PlayerControl.LocalPlayer.Is(CustomRoles.Amnesiac) || (PlayerControl.LocalPlayer.GetCustomRole().GetRoleInfo()?.IsDesyncImpostor == true) && PlayerControl.LocalPlayer.Is(CustomRoles.Amnesia))
             {
                 //シェリフの場合はキャンセルしてBeginCrewmateに繋ぐ
                 yourTeam = new Il2CppSystem.Collections.Generic.List<PlayerControl>();

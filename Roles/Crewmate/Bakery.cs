@@ -81,16 +81,15 @@ public sealed class Bakery : RoleBase
                     RouteNumber = 1;
                     return GetString("Message.Bakery1");
                 }
-                else
-                if (dore <= 35)//20%
+                else if (dore <= 35)//20%
                 {
                     RouteNumber = 2;
                     return string.Format(GetString("Message.Bakery2"), GetString($"{kisetu}"));
                 }
-                else
-                if (dore <= 65)//30%
+                else if (dore <= 65)//30%
                 {
                     RouteNumber = 3;
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
                     return string.Format(GetString("Message.Bakery3"), (MapNames)Main.NormalOptions.MapId, GetString($"{kisetu}.Ba"));
                 }
                 else//35%
@@ -143,5 +142,18 @@ public sealed class Bakery : RoleBase
         if (bakerys.Count() <= 0) return "";
 
         return $" <#8f6121><rotate=-20>§</rotate></color>{(bakerys.Count() > 1 ? $"×{bakerys.Count()}" : "")}";
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (Player.IsAlive()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var n2 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, n2);
     }
 }

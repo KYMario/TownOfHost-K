@@ -42,6 +42,7 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
         srole = OptionRole.GetBool();
         cantaskcount = OptionCanTaskcount.GetFloat();
         onemeetingmaximum = Option1MeetingMaximum.GetFloat();
+        impostorteams = new();
     }
 
     public static OptionItem OptionMaximum;
@@ -149,6 +150,12 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
         SendRPC(votedForId, role);
         Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), srole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
         Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}", "FortuneTeller");
+        if (role.IsCrewmate() is false) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        if (role.IsImpostorTeam() && !impostorteams.Contains(votedForId))
+        {
+            impostorteams.Add(votedForId);
+            if (impostorteams.Count == 3) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+        }
     }
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
     public override bool OnCompleteTask(uint taskid)
@@ -171,5 +178,15 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
             return isForHud ? mes : $"<size=40%>{mes}</size>";
         }
         return "";
+    }
+    public List<byte> impostorteams = new();
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var sp1 = new Achievement(RoleInfo, 1, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, sp1);
     }
 }

@@ -186,6 +186,7 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
                 if (CustomRoleManager.OnCheckMurder(killer, connecttarget, connecttarget, connecttarget, true, Killpower: 10, deathReason: deathReasons[OptionDeathReason.GetValue()]))//一応殺した判定は貰うしガードとかいうの知らない。
                 {
                     connecttarget.SetRealKiller(killer);
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
                 }
             }
             target1 = byte.MaxValue;
@@ -217,5 +218,12 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
         target2 = byte.MaxValue;
         IsUseing = false;
         SendRPC();
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
     }
 }

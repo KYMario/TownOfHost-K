@@ -1,6 +1,7 @@
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
+using UnityEngine;
 
 namespace TownOfHost.Roles.Crewmate;
 
@@ -28,6 +29,7 @@ public sealed class Trapper : RoleBase
     {
         BlockMoveTime = OptionBlockMoveTime.GetFloat();
         Awakened = !Awakening.GetBool() || AwakeningTask.GetInt() < 1;
+        IsTraping = false;
     }
     static OptionItem Awakening;
     static OptionItem AwakeningTask;
@@ -39,6 +41,7 @@ public sealed class Trapper : RoleBase
     }
 
     private static float BlockMoveTime;
+    bool IsTraping;
 
     private static void SetupOptionItem()
     {
@@ -57,8 +60,11 @@ public sealed class Trapper : RoleBase
         Main.AllPlayerSpeed[killer.PlayerId] = Main.MinSpeed;
         ReportDeadBodyPatch.CanReport[killer.PlayerId] = false;
         killer.MarkDirtySettings();
+        IsTraping = true;
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         _ = new LateTask(() =>
         {
+            IsTraping = false;
             Main.AllPlayerSpeed[killer.PlayerId] = tmpSpeed;
             ReportDeadBodyPatch.CanReport[killer.PlayerId] = true;
             killer.MarkDirtySettings();
@@ -76,5 +82,19 @@ public sealed class Trapper : RoleBase
             Awakened = true;
         }
         return true;
+    }
+    public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
+    {
+        if (IsTraping && (target?.PlayerId ?? byte.MaxValue) == Player.PlayerId)
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
@@ -76,6 +77,7 @@ public sealed class Fool : RoleBase, IKiller, IAdditionalWinner
         if (Is(killer) && (target.IsNeutralKiller() || target.GetCustomRole().IsImpostor()))
         {
             IsKillerKilled = true;
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievement);
             Logger.Info($"{target.Data.GetLogPlayerName()}はニュートラルキラー", "Fool");
         }
     }
@@ -86,5 +88,11 @@ public sealed class Fool : RoleBase, IKiller, IAdditionalWinner
             return (Player.IsAlive() && winalive) || IsKillerKilled;
         }
         return false;
+    }
+    public static Achievement achievement;
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        achievement = new Achievement(RoleInfo, 0, 1, 0, 0);
     }
 }

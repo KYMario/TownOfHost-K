@@ -262,9 +262,12 @@ namespace TownOfHost
             foreach (var arrowInfo in arrowList)
             {
                 var position = arrowInfo.To;
+                position.z = 0;
+                var seerpos = seer.transform.position;
+                seerpos.z = 0;
 
                 //対象の方角ベクトルを取る
-                var dir = position - seer.transform.position;
+                var dir = position - seerpos;
                 int index;
                 if (dir.magnitude < 2)
                 {

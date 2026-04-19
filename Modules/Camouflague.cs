@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-
+using System.Linq;
 using TownOfHost.Roles.Core;
 
 namespace TownOfHost
@@ -146,6 +146,7 @@ namespace TownOfHost
                 .EndRpc();
 
             sender.SendMessage();
+            if (ventplayr.Contains(target.PlayerId)) ventplayr.Remove(target.PlayerId);
         }
     }
 }

@@ -73,6 +73,9 @@ public sealed class MadGuardian : RoleBase, IKillFlashSeeable, IDeathReasonSeeab
             if (CanSeeWhoTriedToKill)
                 NameColorManager.Add(target.PlayerId, killer.PlayerId, RoleInfo.RoleColorCode);
             UtilsNotifyRoles.NotifyRoles();
+
+            if (killer.Is(CustomRoles.Impostor))
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
         }
 
         return false;
@@ -80,4 +83,11 @@ public sealed class MadGuardian : RoleBase, IKillFlashSeeable, IDeathReasonSeeab
     public bool? CheckKillFlash(MurderInfo info) => MadmateCanSeeKillFlash.GetBool();
     public bool? CheckSeeDeathReason(PlayerControl seen) => MadmateCanSeeDeathReason.GetBool();
     public override CustomRoles TellResults(PlayerControl player) => MadTellOpt();
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        achievements.Add(0, n1);
+    }
 }

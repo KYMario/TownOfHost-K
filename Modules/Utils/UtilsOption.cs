@@ -194,15 +194,15 @@ namespace TownOfHost
                         if (opt.Name is "RoleAssigningAlgorithm" or "LimitMeetingTime" or "LowerLimitVotingTime")
                             sb.Append($"\n▶{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
                         else
-                        if (opt.Name is "KillFlashDuration" or "DefaultShapeshiftCooldown" or "DefaultShapeshiftDuration" or "DefaultEngineerCooldown" or "DefaultEngineerInVentMaxTime")
-                            sb.Append($"\n◇{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
-                        else
-                        if (opt.Name is "KickModClient" or "KickPlayerFriendCodeNotExist" or "ApplyDenyNameList" or "ApplyBanList")
-                            sb.Append($"\n◆{opt.GetName(true)}\n");
-                        else if (opt.Name is "TaskBattleSet" or "ONspecialMode" or "ExperimentalMode" or "MadmateOption" or "GhostRoleOptions"
-                                or "MapModification" or "TaskOption" or "Sabotage" or "RandomMapsMode" or "GhostOptions" or "MeetingAndVoteOpt" or "DevicesOption" or "ConvenientOptions")
-                            sb.Append($"\n■{opt.GetName(false)}\n");
-                        else sb.Append($"\n・{opt.GetName(true)}\n");
+                            if (opt.Name is "KillFlashDuration" or "DefaultShapeshiftCooldown" or "DefaultShapeshiftDuration" or "DefaultEngineerCooldown" or "DefaultEngineerInVentMaxTime")
+                                sb.Append($"\n◇{opt.GetName(true)}: {opt.GetString().RemoveSN()}\n");
+                            else
+                                if (opt.Name is "KickModClient" or "KickPlayerFriendCodeNotExist" or "ApplyDenyNameList" or "ApplyBanList")
+                                    sb.Append($"\n◆{opt.GetName(true)}\n");
+                                else if (opt.Name is "TaskBattleSet" or "ONspecialMode" or "ExperimentalMode" or "MadmateOption" or "GhostRoleOptions"
+                                        or "MapModification" or "TaskOption" or "Sabotage" or "RandomMapsMode" or "GhostOptions" or "MeetingAndVoteOpt" or "DevicesOption" or "ConvenientOptions")
+                                    sb.Append($"\n■{opt.GetName(false)}\n");
+                                else sb.Append($"\n・{opt.GetName(true)}\n");
                         ShowChildrenSettings(opt, ref sb, 1, getbool: true);
                         CheckPageChange(PlayerId, sb);
                     }
@@ -236,6 +236,7 @@ namespace TownOfHost
             {
                 if (date.Key.IsEnable() || date.Key is CustomRoles.Impostor or CustomRoles.Crewmate ||
                 (date.Key is CustomRoles.MadonnaLovers && CustomRoles.Madonna.IsEnable()) ||
+                (date.Key is CustomRoles.CupidLovers && CustomRoles.Cupid.IsEnable()) ||
                 (date.Key is CustomRoles.Jackal) && (CustomRoles.JackalAlien.IsEnable() || CustomRoles.JackalMafia.IsEnable()))
                 {
                     sort.Add(date.Key, date.Value.OptionWin.GetInt());
@@ -429,7 +430,7 @@ namespace TownOfHost
             SendMessage(sb.ToString(), PlayerId);
         }
 
-        public static void ShowChildrenSettings(OptionItem option, ref StringBuilder sb, int deep = 0, bool Askesu = false, PlayerControl pc = null, bool getbool = false)
+        public static void ShowChildrenSettings(OptionItem option, ref StringBuilder sb, int deep = 0, bool Askesu = false, PlayerControl pc = null, bool getbool = false, bool IsOmitted = true)
         {
             foreach (var opt in option.Children.Select((v, i) => new { Value = v, Index = i + 1 }))
             {
@@ -462,6 +463,7 @@ namespace TownOfHost
                         case "GiveGuarding": continue;
                         case "GiveClumsy": continue;
                         case "GiveSlacker": continue;
+                        case "GiveSunglasses": continue;
                         default: if (getbool) continue; break;
                     }
                 }
@@ -522,7 +524,8 @@ namespace TownOfHost
                 if (Askesu && opt.Value.Name == "%roleTypes%Maximum") continue;
                 if (opt.Value.ParentRole is CustomRoles.Alien or CustomRoles.JackalAlien or CustomRoles.AllArounder)
                 {
-                    if (opt.Value.GetBool() is false) continue;
+                    if (IsOmitted && opt.Value.GetBool() is false) continue;
+                    if (deep > 0) continue;
                 }
 
                 if (pc != null)
@@ -685,6 +688,7 @@ namespace TownOfHost
             if (player.Is(CustomRoles.Water)) sb.Append(juncture + AddonInfo(CustomRoles.Water, "Ｗ", pc: player) + "\n");
             if (player.Is(CustomRoles.Clumsy)) sb.Append(juncture + AddonInfo(CustomRoles.Clumsy, "Ｃ", From.TownOfHost_Y, pc: player) + "\n");
             if (player.Is(CustomRoles.Slacker)) sb.Append(juncture + AddonInfo(CustomRoles.Slacker, "ＳＬ", pc: player) + "\n");
+            if (player.Is(CustomRoles.Sunglasses)) sb.Append(juncture + AddonInfo(CustomRoles.Sunglasses, "Ｓ", From.TheOtherRoles, pc: player) + "\n");
 
             CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             //第三
@@ -751,16 +755,18 @@ namespace TownOfHost
                 CustomRoles.Clumsy => AddonInfo(role, "Ｃ", From.TownOfHost_Y),
                 CustomRoles.Slacker => AddonInfo(role, "ＳＬ"),
                 CustomRoles.News => AddonInfo(role, "Ｎ"),
+                CustomRoles.Sunglasses => AddonInfo(role, "Ｓ", From.TheOtherRoles),
                 //第三属性
                 CustomRoles.Amanojaku => AddonInfo(role),
                 CustomRoles.Lovers or CustomRoles.RedLovers or CustomRoles.BlueLovers or CustomRoles.YellowLovers or CustomRoles.GreenLovers
-                or CustomRoles.WhiteLovers or CustomRoles.PurpleLovers or CustomRoles.MadonnaLovers => AddonInfo(role, "♥", role != CustomRoles.Lovers ? From.None : From.Love_Couple_Mod),
+                or CustomRoles.WhiteLovers or CustomRoles.PurpleLovers or CustomRoles.MadonnaLovers or CustomRoles.CupidLovers => AddonInfo(role, "♥", role != CustomRoles.Lovers ? From.None : From.Love_Couple_Mod),
                 CustomRoles.OneLove => AddonInfo(role),
                 //ラスト系
                 CustomRoles.LastImpostor => AddonInfo(role, from: From.TownOfHost),
                 CustomRoles.LastNeutral => AddonInfo(role),
                 CustomRoles.Workhorse => AddonInfo(role, from: From.TownOfHost),
                 CustomRoles.OneWolf => AddonInfo(role),
+                CustomRoles.Stack => AddonInfo(role),
                 //幽霊役職
                 CustomRoles.Ghostbuttoner => AddonInfo(role),
                 CustomRoles.GhostNoiseSender => AddonInfo(role),
@@ -773,7 +779,7 @@ namespace TownOfHost
                 CustomRoles.DemonicVenter => AddonInfo(role),
                 CustomRoles.AsistingAngel => AddonInfo(role),
 
-                _ => $"{role.GetRoleInfo()?.ConfigId ?? -100}...?(´・ω・｀)"
+                _ => $"{role}-{role.GetRoleInfo()?.ConfigId ?? -100}...?(´・ω・｀)"
             });
         }
         public static string AddonInfo(CustomRoles role, string Mark = "", From from = From.None, PlayerControl pc = null)
@@ -874,10 +880,10 @@ namespace TownOfHost
     #region  Option
     public static class UtilsOption
     {
-        public static string GetFrom(SimpleRoleInfo info) => GetFrom(info.From, info.RoleName);
-        public static string GetFrom(From from, CustomRoles role = CustomRoles.NotAssigned)
+        public static string GetFrom(SimpleRoleInfo info, bool isblock = true) => GetFrom(info.From, info.RoleName, isblock);
+        public static string GetFrom(From from, CustomRoles role = CustomRoles.NotAssigned, bool isblock = true)
         {
-            string Fromtext = "<#000000>From:</color>";
+            string Fromtext = $"<#{(isblock ? "000000" : "ffffff")}>From:</color>";
             switch (from)
             {
                 case From.None: Fromtext = ""; break;

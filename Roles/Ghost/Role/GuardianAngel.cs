@@ -14,7 +14,7 @@ namespace TownOfHost.Roles.Ghost
         public static OptionItem CoolDown;
         public static OptionItem GuardTime;
         public static bool MeetingNotify;
-        public static Dictionary<byte, float> Guarng = new();
+        public static Dictionary<byte, (float timer, byte owner)> GuardianAngelGuarding = new();
         static OptionItem AssingMadmate;
         public static void SetupCustomOption()
         {
@@ -32,7 +32,7 @@ namespace TownOfHost.Roles.Ghost
         {
             playerIdList = new();
             MeetingNotify = false;
-            Guarng.Clear();
+            GuardianAngelGuarding.Clear();
             CustomRoleManager.OnFixedUpdateOthers.Add(FixUpdata);
             Data.SubRoleType = AssingMadmate.GetBool() ? CustomRoleTypes.Madmate : CustomRoleTypes.Crewmate;
         }
@@ -43,18 +43,21 @@ namespace TownOfHost.Roles.Ghost
         public static void FixUpdata(PlayerControl player)
         {
             if (player.PlayerId != 0) return;//ホストだけに処理させる
-            if (Guarng.Count == 0) return;
+            if (GuardianAngelGuarding.Count == 0) return;
             List<byte> dellist = new();
-            foreach (var guardingpc in Guarng)
+            foreach (var guardingdata in GuardianAngelGuarding)
             {
-                if (GuardTime.GetFloat() < guardingpc.Value)
+                if (GuardTime.GetFloat() < guardingdata.Value.timer)
                 {
-                    dellist.Add(guardingpc.Key);
+                    Logger.Info($"{guardingdata.Key}ガードの削除", "GuardianAngel");
+                    dellist.Add(guardingdata.Key);
                     continue;
                 }
-                Guarng[guardingpc.Key] += Time.fixedDeltaTime;
+                var timer = guardingdata.Value.timer;
+                timer += Time.fixedDeltaTime;
+                GuardianAngelGuarding[guardingdata.Key] = (timer, guardingdata.Value.owner);
             }
-            dellist.ForEach(task => Guarng.Remove(task));
+            dellist.ForEach(task => GuardianAngelGuarding.Remove(task));
         }
         public static void UseAbility(PlayerControl pc, PlayerControl target)
         {
@@ -62,7 +65,7 @@ namespace TownOfHost.Roles.Ghost
             {
                 if (!target.IsAlive()) return;
 
-                if (!Guarng.TryAdd(target.PlayerId, 0)) Guarng[target.PlayerId] = 0;
+                if (!GuardianAngelGuarding.TryAdd(target.PlayerId, (0, pc.PlayerId))) GuardianAngelGuarding[target.PlayerId] = (0, pc.PlayerId);
                 pc.RpcResetAbilityCooldown();
             }
         }

@@ -31,6 +31,10 @@ namespace TownOfHost
         //カメラ検知用
         public static int UseCount;
 
+        //制限時間の追加
+        public static int addplayercount;
+        public static bool IsAdded;
+
         //設定
         public static bool optTimeLimitDevices;
         public static bool optTurnTimeLimitDevice;
@@ -45,6 +49,8 @@ namespace TownOfHost
         public static bool DisableDevicesIgnoreNeutrals;
         public static bool DisableDevicesIgnoreCrewmates;
         public static bool DisableDevicesIgnoreAfterAnyoneDied;
+        public static bool DisableForceRecordsAdomin;
+        public static bool DisableDevicesIgnoreCompleteTask;
         [Attributes.GameModuleInitializer]
         public static void Reset()
         {
@@ -62,6 +68,9 @@ namespace TownOfHost
             DisableDevicesIgnoreNeutrals = Options.DisableDevicesIgnoreNeutrals.GetBool();
             DisableDevicesIgnoreCrewmates = Options.DisableDevicesIgnoreCrewmates.GetBool();
             DisableDevicesIgnoreAfterAnyoneDied = Options.DisableDevicesIgnoreAfterAnyoneDied.GetBool();
+            DisableForceRecordsAdomin = Options.DisableForceRecordsAdomin.GetBool();
+            DisableDevicesIgnoreCompleteTask = Options.DisableDevicesIgnoreCompleteTask.GetBool();
+            addplayercount = Options.ReviveTimelimitplayercount.GetInt();
             CloseVitals.Ability = false;
             AdminPoss.Clear();
             LogPoss.Clear();
@@ -73,6 +82,7 @@ namespace TownOfHost
             TurnLogAndCamTimer = 0;
             TurnVitalTimer = 0;
             UseCount = 0;
+            IsAdded = false;
         }
         public static void StartMeeting()
         {
@@ -97,6 +107,17 @@ namespace TownOfHost
             TurnAdminTimer = 0;
             TurnLogAndCamTimer = 0;
             TurnVitalTimer = 0;
+        }
+        public static void CheckAddtime()
+        {
+            //生存人数が設定数以下
+            if (!IsAdded && PlayerCatch.AllAlivePlayersCount <= addplayercount)
+            {
+                IsAdded = false;
+                GameAdminTimer -= Options.ReviveAddAdmin.GetFloat();
+                GameLogAndCamTimer -= Options.ReviveAddCamAndLog.GetFloat();
+                GameVitalTimer -= Options.ReviveAddVital.GetFloat();
+            }
         }
         public static string GetAddminTimer(bool showmark = true)
         {
@@ -298,7 +319,8 @@ namespace TownOfHost
                     if (DisableDevicesIgnoreImpostors && pc.Is(CustomRoleTypes.Impostor)) check |= true;
                     if (DisableDevicesIgnoreMadmates && pc.Is(CustomRoleTypes.Madmate)) check |= true;
                     if (DisableDevicesIgnoreNeutrals && pc.Is(CustomRoleTypes.Neutral)) check |= true;
-                    if (DisableDevicesIgnoreCrewmates && pc.Is(CustomRoleTypes.Crewmate)) check |= true;
+                    if (DisableDevicesIgnoreCrewmates && pc.Is(CustomRoleTypes.Crewmate) &&
+                        (!DisableDevicesIgnoreCompleteTask || pc.GetPlayerTaskState().IsTaskFinished)) check |= true;
                     if (DisableDevicesIgnoreAfterAnyoneDied && GameStates.AlreadyDied) check |= true;
 
                     if (pc.IsAlive() && !IsComms)
@@ -362,6 +384,7 @@ namespace TownOfHost
                                 if (Vector2.Distance(PlayerPos, DevicePos["AirshipRecordsAdmin"]) <= usableDistance)
                                 {
                                     doComms |= Options.DisableAirshipRecordsAdmin.GetBool();
+                                    check &= DisableForceRecordsAdomin is false;
                                     RoleDisable |= AdminUsecheck(pc);
                                     if (!pc.inVent && !doComms && !RoleDisable) AdminTimer(pc, PlayerPos);
                                 }
@@ -491,7 +514,8 @@ namespace TownOfHost
                 (DisableDevicesIgnoreImpostors && player.Is(CustomRoleTypes.Impostor)) ||
                 (DisableDevicesIgnoreMadmates && player.Is(CustomRoleTypes.Madmate)) ||
                 (DisableDevicesIgnoreNeutrals && player.Is(CustomRoleTypes.Neutral)) ||
-                (DisableDevicesIgnoreCrewmates && player.Is(CustomRoleTypes.Crewmate)) ||
+                (DisableDevicesIgnoreCrewmates && player.Is(CustomRoleTypes.Crewmate)
+                && (player.GetPlayerTaskState().IsTaskFinished || !DisableDevicesIgnoreCompleteTask)) ||
                 (DisableDevicesIgnoreAfterAnyoneDied && GameStates.AlreadyDied);
             var admins = GameObject.FindObjectsOfType<MapConsole>(true);
             var consoles = GameObject.FindObjectsOfType<SystemConsole>(true);
@@ -521,9 +545,15 @@ namespace TownOfHost
                 case 4:
                     admins.Do(x =>
                     {
-                        if (((Options.DisableAirshipCockpitAdmin.GetBool() || AdminUsecheck(player) || forceSync) && x.name == "panel_cockpit_map") ||
-                            ((Options.DisableAirshipRecordsAdmin.GetBool() || AdminUsecheck(player) || forceSync) && x.name == "records_admin_map"))
+                        if ((Options.DisableAirshipCockpitAdmin.GetBool() || AdminUsecheck(player) || forceSync) && x.name == "panel_cockpit_map")
+                        {
                             x.gameObject.GetComponent<BoxCollider2D>().enabled = AdminUsecheck(player, ignore);
+                        }
+                        if ((Options.DisableAirshipRecordsAdmin.GetBool() || AdminUsecheck(player) || forceSync) && x.name == "records_admin_map")
+                        {
+                            ignore &= DisableForceRecordsAdomin is false;
+                            x.gameObject.GetComponent<BoxCollider2D>().enabled = AdminUsecheck(player, ignore);
+                        }
                     });
                     if (Options.DisableAirshipCamera.GetBool() || LogAndCamUsecheck(player) || forceSync)
                         consoles.DoIf(x => x.name == "task_cams", x => x.gameObject.GetComponent<BoxCollider2D>().enabled = LogAndCamUsecheck(player, ignore));

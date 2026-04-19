@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AmongUs.GameOptions;
 
 using TownOfHost.Roles.Core;
@@ -27,6 +28,7 @@ public sealed class Bait : RoleBase
     )
     {
         Awakened = !OptAwakening.GetBool();
+        killerid = byte.MaxValue;
     }
     enum OptionName
     {
@@ -38,6 +40,7 @@ public sealed class Bait : RoleBase
     static OptionItem OptReportDelay;
     static OptionItem OptMaxDelay;
     bool Awakened;
+    byte killerid;
     private static void SetupOptionItem()
     {
         OptCanUseActiveComms = BooleanOptionItem.Create(RoleInfo, 9, GeneralOption.CanUseActiveComms, true, false);
@@ -58,8 +61,9 @@ public sealed class Bait : RoleBase
             Logger.Info($"{tien}sの追加遅延発生!!", "Bait");
         }
         var (killer, target) = info.AttemptTuple;
+        killerid = killer.PlayerId;
         if (target.Is(CustomRoles.Bait) && !info.IsSuicide && !info.IsFakeSuicide && (OptCanUseActiveComms.GetBool() || !Utils.IsActive(SystemTypes.Comms)))
-            _ = new LateTask(() => killer.CmdReportDeadBody(target.Data), 0.15f + OptReportDelay.GetFloat() + tien, "Bait Self Report");
+            _ = new LateTask(() => ReportDeadBodyPatch.ExReportDeadBody(killer, target.Data), 0.15f + OptReportDelay.GetFloat() + tien, "Bait Self Report");
     }
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : CustomRoles.Crewmate;
     public override bool OnCompleteTask(uint taskid)
@@ -72,5 +76,17 @@ public sealed class Bait : RoleBase
             Awakened = true;
         }
         return true;
+    }
+    public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
+    {
+        if ((exiled?.PlayerId ?? byte.MaxValue) == killerid && killerid is not byte.MaxValue) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        killerid = byte.MaxValue;
+    }
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
+        achievements.Add(0, l1);
     }
 }

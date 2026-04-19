@@ -5,6 +5,7 @@ using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
+using System.Linq;
 
 namespace TownOfHost.Roles.Neutral
 {
@@ -145,15 +146,15 @@ namespace TownOfHost.Roles.Neutral
             }
             CanSideKick = false;
             SendRPC();
+            if (target.Is(CustomRoleTypes.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, Jackal.achievements[1]);
             Player.RpcProtectedMurderPlayer(target);
             target.RpcProtectedMurderPlayer(Player);
             target.RpcProtectedMurderPlayer(target);
             UtilsGameLog.AddGameLog($"SideKick", string.Format(GetString("log.Sidekick"), UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})", UtilsName.GetPlayerColor(Player, true)));
-            target.RpcSetCustomRole(CustomRoles.Jackaldoll);
+            target.RpcSetCustomRole(CustomRoles.Jackaldoll, log: null);
             if (!Utils.RoleSendList.Contains(target.PlayerId)) Utils.RoleSendList.Add(target.PlayerId);
             JackalDoll.Sidekick(target, Player);
             UtilsOption.MarkEveryoneDirtySettings();
-            UtilsGameLog.LastLogRole[target.PlayerId] += "<b>⇒" + Utils.ColorString(UtilsRoleText.GetRoleColor(target.GetCustomRole()), GetString($"{target.GetCustomRole()}")) + "</b>";
         }
 
         public bool CanUseKillButton()
@@ -215,6 +216,18 @@ namespace TownOfHost.Roles.Neutral
         public override void ReceiveRPC(MessageReader reader)
         {
             CanSideKick = reader.ReadBoolean();
+        }
+        public override void CheckWinner(GameOverReason reason)
+        {
+            if (3 <= MyState.GetKillCount()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, Jackal.achievements[0]);
+            if (Player.IsWinner(CustomWinner.Jackal) && !Player.IsLovers())
+            {
+                foreach (var j in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CountTypes.Jackal)))
+                {
+                    if (j.GetPlayerState().GetKillCount() > 0) return;
+                }
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, Jackal.achievements[2]);
+            }
         }
     }
 }

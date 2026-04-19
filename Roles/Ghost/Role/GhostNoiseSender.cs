@@ -42,5 +42,12 @@ namespace TownOfHost.Roles.Ghost
                 }
             }
         }
+        public static Dictionary<int, Achievement> achievements = new();
+        [Attributes.PluginModuleInitializer]
+        public static void Load()
+        {
+            var n1 = new Achievement(CustomRoles.GhostNoiseSender, Id + 0, 1, 0, 0);
+            achievements.Add(0, n1);
+        }
     }
 }

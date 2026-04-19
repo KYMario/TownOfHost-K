@@ -12,6 +12,7 @@ class ToolTip
     public static SimpleButton button = null;
     public static MonoBehaviour obj;
     public static Coroutine coTimer;
+    public static Sprite Sprite;
     public static float defaultdelay = 0.35f;
 
     public static void Setup()
@@ -25,7 +26,12 @@ class ToolTip
         button.Button.ClickSound = null;
         button.Button.transform.localScale = new Vector3(0.5f, 0.5f, 1);
         button.Label.alignment = TMPro.TextAlignmentOptions.Left;
-        button.NormalSprite.sprite = button.HoverSprite.sprite;
+        if (Sprite == null)
+        {
+            var originalSprite = button.NormalSprite.sprite;
+            Sprite = Sprite.Create(originalSprite.texture, originalSprite.rect, new Vector2(0, 1), originalSprite.pixelsPerUnit, 0, SpriteMeshType.Tight, originalSprite.border);
+        }
+        button.NormalSprite.sprite = Sprite;
         GameObject.Destroy(button.HoverSprite.gameObject);
 
         foreach (var collider in button.Button.Colliders)
@@ -55,15 +61,15 @@ class ToolTip
         yield return new WaitForSeconds(delay);
 
         button.Label.text = text;
-        button.Label.alignment = TMPro.TextAlignmentOptions.Center;
+        button.Label.alignment = TMPro.TextAlignmentOptions.TopLeft;
         button.Label.ForceMeshUpdate(true);
+
+        var objpos = obj.transform.position;
         var textBounds = button.Label.GetRenderedValues(true);
-
-        pos ??= GetMoucePos(new Vector3(0, -(textBounds.y / 2), obj.transform.position.z - 5f));
-        button.Button.transform.position = pos.Value;
+        pos ??= GetMoucePos(new(0.2f, -0.2f, objpos.z - 5));
+        button.Button.transform.position = pos.Value + new Vector3(0, -0.2f);
         button.NormalSprite.size = textBounds + new Vector2(0.1f, 0.1f);
-        // button.Label.rectTransform.pivot = new((textBounds.x - 1.1f) / 2, 0.5f);
-
+        button.NormalSprite.transform.localPosition = new Vector3(-0.8f, 0.3f, 0);
         button.Button.gameObject.SetActive(true);
         button.Button.StartCoroutine(CoCheckObject().WrapToIl2Cpp());
         coTimer = null;

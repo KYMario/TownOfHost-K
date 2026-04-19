@@ -3,6 +3,7 @@ using AmongUs.GameOptions;
 using Hazel;
 using InnerNet;
 using Il2CppInterop.Runtime.InteropTypes.Arrays;
+using UnityEngine;
 
 namespace TownOfHost
 {
@@ -197,8 +198,6 @@ namespace TownOfHost
             }
             if (currentRpcTarget != targetClientId)
             {
-                //Logger.Warn($"{currentRpcTarget} - {targetClientId}前回とClientIdが異なります。", "AuteStartRpc");
-                //StartMessage処理
                 if (currentState == State.InRootMessage) this.EndMessage();
                 this.StartMessage(targetClientId);
             }
@@ -246,6 +245,7 @@ namespace TownOfHost
         public CustomRpcSender WritePacked(int val) => Write(w => w.WritePacked(val));
         public CustomRpcSender WritePacked(uint val) => Write(w => w.WritePacked(val));
         public CustomRpcSender WriteNetObject(InnerNetObject obj) => Write(w => w.WriteNetObject(obj));
+        public CustomRpcSender WriteVector2(Vector2 vec) => Write(w => NetHelpers.WriteVector2(vec, w));
         #endregion
 
         public CustomRpcSender Write(Action<MessageWriter> action, bool check = false)
@@ -269,11 +269,11 @@ namespace TownOfHost
 
         public enum State
         {
-            BeforeInit = 0, //初期化前 何もできない
-            Ready, //送信準備完了 StartMessageとSendMessageを実行可能
-            InRootMessage, //StartMessage～EndMessageの間の状態 StartRpcとEndMessageを実行可能
-            InRpc, //StartRpc～EndRpcの間の状態 WriteとEndRpcを実行可能
-            Finished, //送信後 何もできない
+            BeforeInit = 0,
+            Ready,
+            InRootMessage,
+            InRpc,
+            Finished,
         }
     }
 

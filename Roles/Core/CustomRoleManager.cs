@@ -14,6 +14,8 @@ using TownOfHost.Roles.Ghost;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Neutral;
 using UnityEngine;
+using TownOfHost.Roles.Vanilla;
+using TownOfHost.Roles.AddOns.Neutral;
 
 namespace TownOfHost.Roles.Core;
 
@@ -28,6 +30,7 @@ public static class CustomRoleManager
     public static RoleBase GetByPlayerId(byte playerId) => AllActiveRoles.TryGetValue(playerId, out var roleBase) ? roleBase : null;
     public static void Do<T>(this List<T> list, Action<T> action) => list.ToArray().Do(action);
     public static Dictionary<int, CustomRoles> CustomRoleIds = new();
+    public static List<CustomRoles> SortCustomRoles = new();
     // == CheckMurder関連処理 ==
     public static Dictionary<byte, MurderInfo> CheckMurderInfos = new();
 
@@ -81,7 +84,7 @@ public static class CustomRoleManager
                             return true;
                 }
 
-                if (targetRole != null)
+                if (targetRole != null && info.DontRoleAbility is not true)
                 {
                     if (Amnesia.CheckAbility(attemptTarget))
                     {
@@ -100,10 +103,11 @@ public static class CustomRoleManager
                     {
                         GuardreasonNumber = 2;
                         info.GuardPower = 1;
+                        Achievements.RpcCompleteAchievement(AsistingAngel.AsistingAngelId, 0, AsistingAngel.achievements[0]);
                     }
                 }
                 //守護天使ちゃんの天使チェック
-                if (GuardianAngel.Guarng.ContainsKey(attemptTarget.PlayerId))
+                if (GuardianAngel.GuardianAngelGuarding.ContainsKey(attemptTarget.PlayerId))
                 {
                     GuardreasonNumber = 1;
                     info.GuardPower = 1;
@@ -119,6 +123,10 @@ public static class CustomRoleManager
                         info.GuardPower = CanuseGuards.First().Key;
                         GuardreasonNumber = 0;
                     }
+                }
+                if (info.AttemptKiller.Is(CustomRoles.Faction) && info.AttemptTarget.Is(CustomRoles.Faction) && deathReason is CustomDeathReason.Kill && Faction.CantKillFaction.GetBool())
+                {
+                    info.CanKill = false;
                 }
                 OneWolf.OnCheckMurder(info);
             }
@@ -161,16 +169,22 @@ public static class CustomRoleManager
                         break;
                     case 1: //Guardianangel
                             //死んでる人にはパリーン見せる
+                        var owner = GuardianAngel.GuardianAngelGuarding[attemptTarget.PlayerId].owner;
                         PlayerCatch.AllPlayerControls.Where(pc => pc is not null && !pc.IsAlive())
-                            .Do(pc => attemptKiller.RpcProtectedMurderPlayer(pc, attemptTarget));
+                            .Do(pc =>
+                            {
+                                attemptKiller.RpcProtectedMurderPlayer(pc, attemptTarget);
+                                if (pc.PlayerId == owner) pc.RpcProtectedMurderPlayer();
+                            });
                         GuardianAngel.MeetingNotify |= true;
-                        UtilsGameLog.AddGameLog($"GuardianAngel", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
+                        UtilsGameLog.AddGameLog($"GuardianAngel", UtilsName.GetPlayerColor(attemptTarget) + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)
+                            + $"({UtilsName.GetPlayerColor(owner)}"));
                         Logger.Info($"{attemptKiller.GetNameWithRole().RemoveHtmlTags()} => {attemptTarget.GetNameWithRole().RemoveHtmlTags()}守護天使ちゃんのガード!", "GuardianAngel");
-                        if (GuardianAngel.Guarng.ContainsKey(attemptTarget.PlayerId))
-                            GuardianAngel.Guarng[attemptTarget.PlayerId] = 999f;
+                        if (GuardianAngel.GuardianAngelGuarding.ContainsKey(attemptTarget.PlayerId))
+                            GuardianAngel.GuardianAngelGuarding[attemptTarget.PlayerId] = (999f, owner);
                         break;
                     case 2://AsistingAngel
-                        UtilsGameLog.AddGameLog($"AsistingAngel", UtilsName.GetPlayerColor(PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.AsistingAngel)).FirstOrDefault())
+                        UtilsGameLog.AddGameLog($"AsistingAngel", UtilsName.GetPlayerColor(PlayerCatch.AllPlayerControls.FirstOrDefault(x => x.Is(CustomRoles.AsistingAngel)))
                         + ":  " + string.Format(Translator.GetString("GuardMaster.Guard"), UtilsName.GetPlayerColor(attemptKiller, true)));
                         break;
                     case 3://Role
@@ -196,11 +210,13 @@ public static class CustomRoleManager
                     {
                         appearanceKiller.RpcSetRoleDesync(RoleTypes.Viper, pc.GetClientId());
                     }
+                Achievements.RpcCompleteAchievement(appearanceKiller.PlayerId, 1, Viper.achievements[0]);
             }
             if (info.DontRoleAbility is false)
             {
                 if (appearanceTarget.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() == RoleTypes.Noisemaker)
                 {
+                    Achievements.RpcCompleteAchievement(appearanceTarget.PlayerId, 0, Noisemaker.achievements[0]);
                     if (AmongUsClient.Instance.AmHost)
                         foreach (var pc in PlayerCatch.AllPlayerControls)
                         {
@@ -214,6 +230,11 @@ public static class CustomRoleManager
             if (GhostNoiseSender.Nois.ContainsValue(appearanceTarget.PlayerId))
             {
                 if (AmongUsClient.Instance.AmHost)
+                {
+                    foreach (var gn in GhostNoiseSender.Nois.Where(n => n.Value == appearanceTarget.PlayerId))
+                    {
+                        Achievements.RpcCompleteAchievement(gn.Key, 0, GhostNoiseSender.achievements[0]);
+                    }
                     foreach (var pc in PlayerCatch.AllPlayerControls)
                     {
                         if (pc == PlayerControl.LocalPlayer)
@@ -222,6 +243,7 @@ public static class CustomRoleManager
                             appearanceTarget.RpcSetRoleDesync(RoleTypes.Noisemaker, pc.GetClientId());
                         appearanceTarget.SyncSettings();
                     }
+                }
             }
 
             if (info.DontRoleAbility is false)
@@ -309,7 +331,7 @@ public static class CustomRoleManager
             data.LoversSuicide(attemptTarget.PlayerId);
         }
         Lovers.MadonnLoversSuicide(attemptTarget.PlayerId);
-        Cupid.CupidLoversSuicide(attemptTarget.PlayerId);
+        Lovers.CupidLoversSuicide(attemptTarget.PlayerId);
         Lovers.OneLoveSuicide(attemptTarget.PlayerId);
         OneWolf.OnMurderPlayer(info);
 
@@ -340,12 +362,22 @@ public static class CustomRoleManager
             appearanceKiller.ResetKillCooldown();
         UtilsOption.SyncAllSettings();
         UtilsNotifyRoles.NotifyRoles();
+        CheckGetNomalAchievement.OnMurderPlayer(info);
         //サブロールは表示めんどいしながいから省略★
         if (PlayerState.GetByPlayerId(appearanceTarget.PlayerId).DeathReason != CustomDeathReason.Guess && !GameStates.CalledMeeting)
         {
             UtilsGameLog.AddGameLog($"Kill", $"{UtilsName.GetPlayerColor(appearanceTarget, true)}({UtilsRoleText.GetTrueRoleName(appearanceTarget.PlayerId, false).RemoveSizeTags()}) [{Utils.GetVitalText(appearanceTarget.PlayerId, true)}]〔{roomName}〕");
             if (appearanceKiller != appearanceTarget) UtilsGameLog.AddGameLogsub($"\n\t⇐ {UtilsName.GetPlayerColor(appearanceKiller, true)}({UtilsRoleText.GetTrueRoleName(appearanceKiller.PlayerId, false)})");
         }
+
+        if (Options.CurrentGameMode is CustomGameMode.HideAndSeek && targetState.MainRole is CustomRoles.HASTroll)
+        {
+            CustomWinnerHolder.ResetAndSetWinner(CustomWinner.HASTroll);
+            CustomWinnerHolder.WinnerIds.Add(appearanceTarget.PlayerId);
+        }
+
+        if (info.IsFakeSuicide || info.IsSuicide) return;
+
         //if (info.AppearanceKiller.PlayerId == info.AttemptKiller.PlayerId)
         if (killerrole is IUsePhantomButton usePhantomButton)
         {
@@ -354,19 +386,12 @@ public static class CustomRoleManager
         }
         var roleinfo = appearanceKiller.GetCustomRole().GetRoleInfo();
 
-        if (Options.CurrentGameMode is CustomGameMode.HideAndSeek && targetState.MainRole is CustomRoles.HASTroll)
-        {
-            CustomWinnerHolder.ResetAndSetWinner(CustomWinner.HASTroll);
-            CustomWinnerHolder.WinnerIds.Add(appearanceTarget.PlayerId);
-        }
-
         if (appearanceKiller.Is(CustomRoles.Amnesia) && Amnesia.OptionCanRealizeKill.GetBool())
         {
             if (Amnesia.OptionRealizeKillcount.GetInt() <= killerstate.Killcount)
             {
                 if (!Utils.RoleSendList.Contains(appearanceKiller.PlayerId)) Utils.RoleSendList.Add(appearanceKiller.PlayerId);
                 Amnesia.RemoveAmnesia(appearanceKiller.PlayerId, true);
-
 
                 if (AmongUsClient.Instance.AmHost)
                 {
@@ -511,6 +536,7 @@ public static class CustomRoleManager
                 case CustomRoles.Elector: Elector.Add(pc.PlayerId); break;
                 case CustomRoles.Amnesia: Amnesia.Add(pc.PlayerId); break;
                 case CustomRoles.News: News.Add(pc.PlayerId); break;
+                case CustomRoles.Sunglasses: Sunglasses.Add(pc.PlayerId); break;
 
                 case CustomRoles.Amanojaku: Amanojaku.Add(pc.PlayerId); break;
                 case CustomRoles.OneWolf: OneWolf.Add(pc.PlayerId); break;
@@ -809,9 +835,11 @@ public enum CustomRoles
     ShapeKiller,
     Archer,
     Assassin,
+    UnFortuner,
     //TOH-P
     TimeSleeper,
     StandMaster,
+    EvilBlender,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,
@@ -853,7 +881,6 @@ public enum CustomRoles
     VillageChief,
     Santa,
     Rabbit,
-    Dancer,
     Nimrod,
     //TOH-K
     Gasp,
@@ -899,6 +926,7 @@ public enum CustomRoles
     //TOH-P
     Pukupuku,
     //DEBUG only Crewmate
+    Analyzer,
     //Neutral
     Arsonist,
     Egoist,
@@ -917,6 +945,7 @@ public enum CustomRoles
     Onmyoji,
     Shikigami,
     Cupid,
+    Oblivion,
     //TOH-K
     Remotekiller,
     Chef,
@@ -998,6 +1027,7 @@ public enum CustomRoles
     SlowStarter,
     InfoPoor,
     News,
+    Sunglasses,
 
     //GhostRoles
 

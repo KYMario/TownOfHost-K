@@ -159,6 +159,7 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
             IsBetray = true;
             SendRPC();
             UtilsGameLog.AddGameLog("MadBetrayer", GetString("MadBetrayerLog"));
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
 
             _ = new LateTask(() => Player.SetKillCooldown(force: true), 0.2f, "SetImpostorKillCool", true);
         }
@@ -173,5 +174,22 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
     public override void ReceiveRPC(MessageReader reader)
     {
         IsBetray = reader.ReadBoolean();
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (IsBetray is false && Player.IsWinner(CustomWinner.Impostor)) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        if (IsBetray && Player.IsWinner(CustomWinner.MadBetrayer) && !CustomWinnerHolder.winners.Contains(CustomWinner.Impostor))
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

@@ -38,6 +38,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         TaskMode = true;
         HaveCoin = FarstCoin.GetInt();
         IsDead = false;
+        ac_coins = (0, 0);
     }
     static OptionItem FarstCoin;
     static OptionItem KillCoolDown;
@@ -63,6 +64,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
     }
     bool TaskMode;
     int HaveCoin;
+    (int addcoin, int removecoin) ac_coins;
     bool IsDead;
     static void SetUpOptionItem()
     {
@@ -89,6 +91,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         if (!Player.IsAlive()) return true;
 
         HaveCoin += TaskAddCoin.GetInt();
+        ac_coins.addcoin += TaskAddCoin.GetInt();
         return true;
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false)
@@ -115,6 +118,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         if (Is(killer))
         {
             HaveCoin += KillAddCoin.GetInt();
+            ac_coins.addcoin += KillAddCoin.GetInt();
             SendRPC();
         }
     }
@@ -124,14 +128,16 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         {
             IsDead = true;
             HaveCoin -= DieRemoveCoin.GetInt();
+            ac_coins.removecoin += DieRemoveCoin.GetInt();
             _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), Main.LagTime, "Bankerdie");
         }
     }
     public override RoleTypes? AfterMeetingRole => TaskMode ? RoleTypes.Engineer : RoleTypes.Impostor;
     public override void AfterMeetingTasks()
     {
-        if (Player.IsAlive()) HaveCoin -= TurnRemoveCoin.GetInt();
-        else HaveCoin -= DieRemoveTurn.GetInt();
+        if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
+        HaveCoin -= Player.IsAlive() ? TurnRemoveCoin.GetInt() : DieRemoveTurn.GetInt();
+        ac_coins.removecoin += Player.IsAlive() ? TurnRemoveCoin.GetInt() : DieRemoveTurn.GetInt();
 
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
     }
@@ -143,6 +149,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
 
             if (AmongUsClient.Instance.AmHost)
             {
+                if (Player.IsAlive() is false) return false;
                 foreach (var pc in PlayerCatch.AllPlayerControls)
                 {
                     Player.RpcSetRoleDesync(pc == Player && TaskMode ? RoleTypes.Impostor : RoleTypes.Engineer, pc.GetClientId());
@@ -150,6 +157,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
                 TaskMode = !TaskMode;
             }
             HaveCoin -= ChengeCoin.GetInt();
+            ac_coins.removecoin += ChengeCoin.GetInt();
             SendRPC();
             _ = new LateTask(() =>
             {
@@ -184,5 +192,22 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
     {
         text = "Banker_Vent";
         return true;
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], ac_coins.addcoin);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], ac_coins.addcoin);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[2], ac_coins.removecoin);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 100, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1000, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1000, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

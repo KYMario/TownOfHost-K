@@ -126,8 +126,8 @@ namespace TownOfHost.Roles.Ghost
         {
             var rnd = IRandom.Instance;
             var candidates = new List<PlayerControl>();
-            var AP = new List<PlayerControl>(PlayerCatch.AllPlayerControls.Where(x => !x.IsGhostRole() && !x.IsAlive() && (x.Is(data.RoleType) || x.Is(data.SubRoleType))));
-            var APc = new List<PlayerControl>(PlayerCatch.AllPlayerControls.Where(x => !x.IsGhostRole() && !x.IsAlive() && (x.Is(data.RoleType) || x.Is(data.SubRoleType))));
+            var AP = new List<PlayerControl>(PlayerCatch.AllPlayerControls.Where(x => !x.IsGhostRole() && !x.IsAlive() && (x.Is(data.RoleType) || x.Is(data.SubRoleType)) && !x.CanUseSabotageButton()));
+            var APc = new List<PlayerControl>(PlayerCatch.AllPlayerControls.Where(x => !x.IsGhostRole() && !x.IsAlive() && (x.Is(data.RoleType) || x.Is(data.SubRoleType)) && !x.CanUseSabotageButton()));
 
             if (!GhostAssingCount.ContainsKey(data.Role))//データ内なら0
             {

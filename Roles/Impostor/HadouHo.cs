@@ -16,7 +16,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             CustomRoles.HadouHo,
             () => RoleTypes.Phantom,
             CustomRoleTypes.Impostor,
-            24200,
+            26200,
             SetUpOptionItem,
             "hh",
             OptionSort: (3, 12),
@@ -26,6 +26,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
     public HadouHo(PlayerControl player)
         : base(RoleInfo, player)
     {
+        KillCooldown = OptionKillCoolDown.GetFloat();
         Cooldown = OptionCoolDown.GetFloat();
         ChargeTime = OptionChargeTime.GetFloat();
         SelfDestructOnMiss = OptionSelfDestructOnMiss.GetBool();
@@ -60,6 +61,9 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
     static float Cooldown;
     public static float CooldownValue => Cooldown;
 
+    static OptionItem OptionKillCoolDown;
+    static float KillCooldown;
+
     static OptionItem OptionChargeTime;
     static float ChargeTime;
 
@@ -87,6 +91,8 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
 
     static void SetUpOptionItem()
     {
+        OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 14, GeneralOption.KillCooldown, OptionBaseCoolTime, 30f, false)
+            .SetValueFormat(OptionFormat.Seconds);
         OptionCoolDown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.Cooldown, OptionBaseCoolTime, 30f, false)
             .SetValueFormat(OptionFormat.Seconds);
         OptionChargeTime = FloatOptionItem.Create(RoleInfo, 11, OptionName.HadouHoChargeTime, new(0.5f, 10f, 0.5f), 3f, false)
@@ -115,6 +121,8 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         AURoleOptions.PhantomCooldown = Cooldown;
     }
 
+    public float CalculateKillCooldown() => KillCooldown;
+
     public override bool OnEnterVent(PlayerPhysics physics, int ventId)
     {
         if (IsCharging || ShowBeamMark) return false;
@@ -127,23 +135,18 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         AdjustKillCooldown = false;
         ResetCooldown = false;
 
-        // ★ IsFiring中はボタン無効（連打防止）
         if (IsFiring) return;
-        // ★ ShowBeamMark中もボタン無効（ビーム中の連打防止）
         if (ShowBeamMark) return;
         if (!Player.IsAlive() || IsCharging) return;
 
-        // ★ ボタンを押した瞬間にIsFiringをtrueにして連打を完全にブロック
         IsFiring = true;
 
         IsCharging = true;
         chargeTimer = 0f;
         colorchange = 0f;
 
-        // ★ チャージ開始時に全員にキルフラッシュ
         Utils.AllPlayerKillFlash();
 
-        // ★ チャージ中はクールダウンを60sに設定
         Main.AllPlayerKillCooldown[Player.PlayerId] = 60f;
         Player.SetKillCooldown(60f);
         _ = new LateTask(() =>
@@ -214,7 +217,6 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             return;
         }
 
-        // ★ 死亡判定時に状態をリセット
         if (!Player.IsAlive() && (IsCharging || ShowBeamMark))
         {
             IsCharging = false;
@@ -252,7 +254,6 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             else if (colorchange is >= 17 and < 18) player.RpcSetColor(16);
             colorchange += Time.fixedDeltaTime * 1.5f;
 
-            // ★ ホスト・バニラ問わず全員に通知
             UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
         }
 
@@ -324,16 +325,13 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
 
             if (!HasHit && SelfDestructOnMiss)
             {
-                // ★ 速度を先に戻す
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
 
-                // ★ 死因を自爆に変更
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
 
-                // ★ IsFiringリセット
                 IsFiring = false;
                 return;
             }
@@ -349,13 +347,11 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
                     IsFiring = false;
                     return;
                 }
-                // ★ クールダウンを設定値に戻す
-                Main.AllPlayerKillCooldown[Player.PlayerId] = Cooldown;
-                Player.SetKillCooldown(Cooldown);
+                Main.AllPlayerKillCooldown[Player.PlayerId] = KillCooldown;
+                Player.SetKillCooldown(KillCooldown);
                 Player.RpcResetAbilityCooldown(Sync: true);
                 UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
 
-                // ★ クールタイムが完全にリセットされた後にIsFiringをリセット
                 _ = new LateTask(() =>
                 {
                     IsFiring = false;
@@ -425,6 +421,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         Player.RpcSetColor((byte)PlayerColor);
         SetRoleTextHeight(false);
     }
+
     public override void AfterMeetingTasks()
     {
         if (!AmongUsClient.Instance.AmHost) return;
@@ -465,14 +462,11 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
     {
         seen ??= seer;
 
-        // ★ 死亡中または会議中は表示しない
         if (!Player.IsAlive() || isForMeeting)
             return false;
 
-        // ★ 波動砲本人かつバニラ勢のみに別名を表示
-        if (seen == seer && Is(seer) && !seer.IsModClient() && (IsCharging || IsCharging || ShowBeamMark))
+        if (seen == seer && Is(seer) && !seer.IsModClient() && (IsCharging || ShowBeamMark))
         {
-            // ★ ビーム表示
             if (ShowBeamMark && seen.PlayerId == Player.PlayerId)
             {
                 SetRoleTextHeight(true);
@@ -513,7 +507,6 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             return false;
         }
 
-        // ★ チャージ中の★を波動砲本人以外の全員に表示
         if (IsCharging && seen.PlayerId == Player.PlayerId)
         {
             bool facingLeft = BeamFacingLeft;
@@ -528,7 +521,6 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             return true;
         }
 
-        // ★ ビーム表示
         if (ShowBeamMark && seen.PlayerId == Player.PlayerId)
         {
             SetRoleTextHeight(true);
@@ -609,17 +601,14 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         seen ??= seer;
         if (seen != seer) return "";
         if (isForMeeting) return "";
-        // ★ 波動砲が生存していない場合は表示しない
         if (!Player.IsAlive()) return "";
 
-        // ★ 波動砲がチャージ中なら表示（赤色）
         if (IsCharging && seer.PlayerId != Player.PlayerId)
         {
             var remaining = ChargeTime - chargeTimer;
             return $"<color=#ff0000>チャージ中... {(int)remaining}s</color>";
         }
 
-        // ★ 波動砲がビーム中なら表示（赤色）
         if (ShowBeamMark && seer.PlayerId != Player.PlayerId)
         {
             return "<color=#ff0000>ビーム中</color>";

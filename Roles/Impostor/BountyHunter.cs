@@ -39,6 +39,8 @@ public sealed class BountyHunter : RoleBase, IImpostor
         ShowTargetArrow = OptionShowTargetArrow.GetBool();
 
         ChangeTimer = OptionTargetChangeTime.GetFloat();
+        spcount = 0;
+        count = 0;
     }
 
     private static OptionItem OptionTargetChangeTime;
@@ -128,9 +130,15 @@ public sealed class BountyHunter : RoleBase, IImpostor
                 Main.AllPlayerKillCooldown[killer.PlayerId] = SuccessKillCooldown;
                 killer.SyncSettings();//キルクール処理を同期
                 ResetTarget();
+                count++;
+                spcount++;
+                if (count is 1) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (count is 3) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+                if (2 <= spcount) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
             }
             else
             {
+                spcount = -10;
                 Logger.Info($"{killer?.Data?.GetLogPlayerName()}:ターゲット以外をキル", "BountyHunter");
                 Main.AllPlayerKillCooldown[killer.PlayerId] = FailureKillCooldown;
                 killer.SyncSettings();//キルクール処理を同期
@@ -225,6 +233,7 @@ public sealed class BountyHunter : RoleBase, IImpostor
         {
             ChangeTimer = 0f;
         }
+        spcount = 0;
     }
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
     {
@@ -272,5 +281,17 @@ public sealed class BountyHunter : RoleBase, IImpostor
         {
             ResetTarget();
         }
+    }
+    int count; int spcount;
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

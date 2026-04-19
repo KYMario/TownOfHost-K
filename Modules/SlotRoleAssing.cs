@@ -38,12 +38,12 @@ namespace TownOfHost
         public SlotBaseOptionInfo(AssignOptionItem assignOptionItem)
         {
             AssignOption = assignOptionItem;
-            //AssignRole = CustomRoles.NotAssigned;
+            AssignRole = CustomRoles.NotAssigned;
         }
 
         public void Reset()
         {
-            //AssignRole = CustomRoles.NotAssigned;
+            AssignRole = CustomRoles.NotAssigned;
         }
         /// <summary>
         /// 
@@ -76,7 +76,7 @@ namespace TownOfHost
                     }
                     if (list.Count <= 0) return 0;
                     var select = list[IRandom.Instance.Next(list.Count)];
-                    AssignRole = role;
+                    AssignRole = select;
                     role = AssignRole;
                     return 2;
                 }

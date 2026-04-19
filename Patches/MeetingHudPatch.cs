@@ -19,6 +19,7 @@ using TownOfHost.Roles.AddOns.Neutral;
 using TownOfHost.Roles.AddOns.Common;
 using static TownOfHost.Translator;
 using TownOfHost.Modules.ChatManager;
+using System;
 
 namespace TownOfHost;
 
@@ -95,9 +96,11 @@ public static class MeetingHudPatch
     [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.Start))]
     public class StartPatch
     {
+        public static ICollection<(byte sentto, string title, string text)> meetingsends = [];
         public static void Prefix()
         {
             Logger.Info($"------------会議開始　day:{UtilsGameLog.day}------------", "Phase");
+            GameStates.introDestroyed = true;
             ChatUpdatePatch.DoBlockChat = true;
             ChatUpdatePatch.BlockSendName = true;
             MeetingStates.Sending = true;
@@ -105,9 +108,10 @@ public static class MeetingHudPatch
             InnerNetClientPatch.DontTouch = false;
             GameStates.AlreadyDied |= !PlayerCatch.IsAllAlive;
             PlayerCatch.OldAlivePlayerControles.Clear();
+            CheckGetNomalAchievement.OnMeeting();
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
-                pc.GetPlayerState().IsBlackOut = false;
+                //pc.GetPlayerState().IsBlackOut = false;
                 pc.Data.Role.NameColor = Palette.White;
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId].Clear();
 
@@ -227,8 +231,8 @@ public static class MeetingHudPatch
             Send = "<size=80%>";
             Title = "";
 
-            if (!Options.firstturnmeeting || !MeetingStates.FirstMeeting) Title += string.Format(GetString("Message.Day"), UtilsGameLog.day).Color(Palette.Orange) + "\n";
-            else Title += GetString("Message.first").Color(Palette.Orange) + "\n";
+            if (!Options.firstturnmeeting || !MeetingStates.FirstMeeting) Title += string.Format(GetString("Message.Day"), UtilsGameLog.day).Color(Palette.Orange);
+            else Title += GetString("Message.first").Color(Palette.Orange);
 
             foreach (var roleClass in CustomRoleManager.AllActiveRoles.Values)
             {
@@ -267,7 +271,7 @@ public static class MeetingHudPatch
                 if (Send.RemoveHtmlTags() != "") Send += "\n";
                 Send += "<size=120%>【" + GetString("LastMeetingre") + "】\n</size>" + MeetingVoteManager.Voteresult;
             }
-            Send += $"\n{GetString("MeetingHelp")}";
+            Send += $"\n<size=50%>{GetString("MeetingHelp")}</size>";
             TemplateManager.SendTemplate("OnMeeting", noErr: true);
             if (MeetingStates.FirstMeeting) TemplateManager.SendTemplate("OnFirstMeeting", noErr: true);
             if (Send != "") Utils.SendMessage(Send, title: Title);
@@ -292,6 +296,7 @@ public static class MeetingHudPatch
                     if (Options.CanseeCrewTimeLimit.GetBool() && Options.CanseeImpTimeLimit.GetBool()
                     && Options.CanseeMadTimeLimit.GetBool() && Options.CanseeNeuTimeLimit.GetBool())
                     {
+                        meetingsends.Add((byte.MaxValue, "", limittext));
                         Utils.SendMessage(limittext + lt);
                     }
                     else
@@ -302,6 +307,7 @@ public static class MeetingHudPatch
                             if ((team == CustomRoleTypes.Impostor && Options.CanseeImpTimeLimit.GetBool()) || (team == CustomRoleTypes.Crewmate && Options.CanseeCrewTimeLimit.GetBool())
                                     || (team == CustomRoleTypes.Neutral && Options.CanseeNeuTimeLimit.GetBool()) || (team == CustomRoleTypes.Madmate && Options.CanseeMadTimeLimit.GetBool()))
                             {
+                                meetingsends.Add((pc.PlayerId, "", limittext));
                                 Utils.SendMessage(limittext + lt + $"\n{GetString("LimitSendInfo")}", pc.PlayerId);
                             }
                         }
@@ -351,7 +357,7 @@ public static class MeetingHudPatch
                             else if (Utils.RoleSendList.Contains(pva.TargetPlayerId)) UtilsShowOption.SendRoleInfo(pc);
                         }
                     }, 1, "sendroleinfo");
-                }, 2.5f, "Send to Chat", true);
+                }, 3f, "Send to Chat", true);
                 _ = new LateTask(() =>
                 {
                     ChatUpdatePatch.BlockSendName = false;
@@ -542,6 +548,7 @@ public static class MeetingHudPatch
     {
         public static void Postfix()
         {
+            StartPatch.meetingsends = [];
             MeetingStates.FirstMeeting = false;
             Logger.Info("------------会議終了------------", "Phase");
             if (AmongUsClient.Instance.AmHost)
@@ -589,7 +596,7 @@ public static class MeetingHudPatch
             }
             if (CustomRoles.MadonnaLovers.IsPresent() && !Lovers.isMadonnaLoversDead && Lovers.MaMadonnaLoversPlayers.Find(lp => lp.PlayerId == playerId) != null)
                 Lovers.MadonnLoversSuicide(playerId, true);
-            if (!Cupid.IsCupidLoversDead && Cupid.CupidLoversPlayers.Find(lp => lp.PlayerId == playerId) != null)
+            if (CustomRoles.CupidLovers.IsPresent() && !Cupid.IsCupidLoversDead && Cupid.CupidLoversPlayers.Find(lp => lp.PlayerId == playerId) != null)
                 Cupid.CupidLoversSuicide(playerId, true);
             if (CustomRoles.OneLove.IsPresent() && !Lovers.isOneLoveDead)
                 Lovers.OneLoveSuicide(playerId, true);
@@ -638,6 +645,7 @@ public static class MeetingHudPatch
                     {
                         // ここにINekomata未適用の道連れ役職を追加
                         default:
+                            bool IsAddRoleAddon = false;
                             if (RoleAddAddons.GetRoleAddon(role, out var data, exiledplayer, subrole: CustomRoles.Revenger))
                             {
                                 if (deathReason == CustomDeathReason.Vote && data.GiveRevenger.GetBool())
@@ -647,35 +655,39 @@ public static class MeetingHudPatch
                                         (candidate.Is(CustomRoleTypes.Crewmate) && data.RevengeToCrewmate.GetBool()) ||
                                         (candidate.Is(CustomRoleTypes.Madmate) && data.RevengeToMadmate.GetBool()))
                                         TargetList.Add(candidate);
+                                    IsAddRoleAddon = true;
                                 }
                             }
-                            else
-                                if (isMadmate && deathReason == CustomDeathReason.Vote && Options.MadmateRevengePlayer.GetBool())
+
+                            if (isMadmate && !IsAddRoleAddon && deathReason == CustomDeathReason.Vote && Options.MadmateRevengePlayer.GetBool())
+                            {
+                                if ((candidate.Is(CustomRoleTypes.Impostor) && Options.MadmateRevengeCanImpostor.GetBool()) ||
+                                (candidate.Is(CustomRoleTypes.Neutral) && Options.MadmateRevengeNeutral.GetBool()) ||
+                                (candidate.Is(CustomRoleTypes.Crewmate) && Options.MadmateRevengeCrewmate.GetBool()) ||
+                                (candidate.Is(CustomRoleTypes.Madmate) && Options.MadmateRevengeMadmate.GetBool()))
+                                    TargetList.Add(candidate);
+                                IsAddRoleAddon = true;
+                            }
+                            if (!IsAddRoleAddon)
+                            {
+                                foreach (var subRole in exiledplayer.GetCustomSubRoles())
                                 {
-                                    if ((candidate.Is(CustomRoleTypes.Impostor) && Options.MadmateRevengeCanImpostor.GetBool()) ||
-                                    (candidate.Is(CustomRoleTypes.Neutral) && Options.MadmateRevengeNeutral.GetBool()) ||
-                                    (candidate.Is(CustomRoleTypes.Crewmate) && Options.MadmateRevengeCrewmate.GetBool()) ||
-                                    (candidate.Is(CustomRoleTypes.Madmate) && Options.MadmateRevengeMadmate.GetBool()))
-                                        TargetList.Add(candidate);
-                                }
-                                else
-                                    foreach (var subRole in exiledplayer.GetCustomSubRoles())
+                                    switch (subRole)
                                     {
-                                        switch (subRole)
-                                        {
-                                            case CustomRoles.Revenger:
-                                                if (exiledplayer.Is(CustomRoles.Revenger) && deathReason == CustomDeathReason.Vote)
-                                                {
-                                                    if (
-                                                    (candidate.Is(CustomRoleTypes.Impostor) && Revenger.RevengeToImpostor.GetBool()) ||
-                                                    (candidate.Is(CustomRoleTypes.Neutral) && Revenger.RevengeToNeutral.GetBool()) ||
-                                                    (candidate.Is(CustomRoleTypes.Crewmate) && Revenger.RevengeToCrewmate.GetBool()) ||
-                                                    (candidate.Is(CustomRoleTypes.Madmate) && Revenger.RevengeToMadmate.GetBool()))
-                                                        TargetList.Add(candidate);
-                                                }
-                                                break;
-                                        }
+                                        case CustomRoles.Revenger:
+                                            if (exiledplayer.Is(CustomRoles.Revenger) && deathReason == CustomDeathReason.Vote)
+                                            {
+                                                if (
+                                                (candidate.Is(CustomRoleTypes.Impostor) && Revenger.RevengeToImpostor.GetBool()) ||
+                                                (candidate.Is(CustomRoleTypes.Neutral) && Revenger.RevengeToNeutral.GetBool()) ||
+                                                (candidate.Is(CustomRoleTypes.Crewmate) && Revenger.RevengeToCrewmate.GetBool()) ||
+                                                (candidate.Is(CustomRoleTypes.Madmate) && Revenger.RevengeToMadmate.GetBool()))
+                                                    TargetList.Add(candidate);
+                                            }
+                                            break;
                                     }
+                                }
+                            }
                             break;
                     }
                 }
@@ -696,5 +708,14 @@ class SetHighlightedPatch
         if (!__instance.HighlightedFX) return false;
         __instance.HighlightedFX.enabled = value;
         return false;
+    }
+}
+[HarmonyPatch(typeof(CheckClassicText), nameof(CheckClassicText.OnEnable))]
+public static class CheckClassicTexOnEnabletPatch
+{
+    public static void Postfix(CheckClassicText __instance)
+    {
+        if (DateTime.Now.Month is 4 && AprilFoolsMode.IsAprilFoolsModeToggledOn && AprilFoolsMode.ShouldClassicMode())
+            __instance.reportedText.gameObject.SetActive(false);
     }
 }

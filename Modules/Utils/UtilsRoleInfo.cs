@@ -95,10 +95,12 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.Elector, "El");
                 roleCommands.Add(CustomRoles.Amnesia, "am");
                 roleCommands.Add(CustomRoles.InfoPoor, "IP");
+                roleCommands.Add(CustomRoles.Sunglasses, "Sun");
                 //第三
                 roleCommands.Add(CustomRoles.Lovers, "lo");
                 roleCommands.Add(CustomRoles.OneLove, "ol");
                 roleCommands.Add(CustomRoles.MadonnaLovers, "Ml");
+                roleCommands.Add(CustomRoles.CupidLovers, "Cl");
                 roleCommands.Add(CustomRoles.Amanojaku, "Ama");
 
                 roleCommands.Add((CustomRoles)(-7), $"== {GetString("GhostRole")} ==");  // 区切り用

@@ -104,6 +104,7 @@ public sealed class ProBowler : RoleBase, IImpostor
             killer.SetKillCooldown();
             Rollscount = 0;
             Bowltarget = target;
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
             if (Bowling)
             {
                 var tagepos = target.transform.position;
@@ -199,5 +200,18 @@ public sealed class ProBowler : RoleBase, IImpostor
     public override void ReceiveRPC(MessageReader reader)
     {
         NowUseCount = reader.ReadInt32();
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], NowUseCount);
+    }
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 20, 0, 1);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
     }
 }

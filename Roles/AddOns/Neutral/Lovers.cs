@@ -15,7 +15,9 @@ class Lovers
 {
     public static List<byte> HaveLoverDontTaskPlayers = new();
     public static List<PlayerControl> MaMadonnaLoversPlayers = new();
+    public static List<PlayerControl> CuCupidLoversPlayers = new();
     public static bool isMadonnaLoversDead = false;
+    public static bool isCupidLoversDead = false;
     public static (byte OneLove, byte BelovedId, bool doublelove) OneLovePlayer = new();
     public static bool isOneLoveDead;
     public static OptionItem OneLoveSolowin3players;
@@ -31,6 +33,7 @@ class Lovers
     {
         CustomRoles.Limiter,
         CustomRoles.Madonna,
+        CustomRoles.Cupid,
         CustomRoles.King,
         CustomRoles.GM,
         CustomRoles.Vega,
@@ -70,11 +73,13 @@ class Lovers
         ColorLovers.Alldatas.Values.Do(data => data.Reset());
         HaveLoverDontTaskPlayers.Clear();
         MaMadonnaLoversPlayers.Clear();
+        CuCupidLoversPlayers.Clear();
         OneLovePlayer = (byte.MaxValue, byte.MaxValue, false);
         isOneLoveDead = false;
         isMadonnaLoversDead = false;
-        Cupid.CupidLoversPlayers.Clear();
-        Cupid.IsCupidLoversDead = false;
+        isCupidLoversDead = false;
+        CuCupidLoversPlayers.Clear();
+
     }
     public static void RPCSetLovers(MessageReader reader)
     {
@@ -102,6 +107,7 @@ class Lovers
         {
             if (player.Is(CustomRoles.GM)) continue;
             if (player.Is(CustomRoles.Madonna)) continue;
+            if (player.Is(CustomRoles.Cupid)) continue;
             if (player.Is(CustomRoles.Limiter)) continue;
             if (player.Is(CustomRoles.King)) continue;
             if (player.Is(CustomRoles.Vega)) continue;
@@ -261,6 +267,34 @@ class Lovers
             }
         }
     }
+    public static void CupidLoversSuicide(byte deathId = 0x7f, bool isExiled = false)
+    {
+        if (CustomRoles.Cupid.IsPresent() && isCupidLoversDead == false)
+        {
+            foreach (var CupidLoversPlayer in CuCupidLoversPlayers)
+            {
+                if (!CupidLoversPlayer.Data.IsDead && CupidLoversPlayer.PlayerId != deathId) continue;
+                isExiled |= ExtendedPlayerControl.GetDeadBodys().Contains(CupidLoversPlayer.Data) is false;//死体が存在していない
+
+                isCupidLoversDead = true;
+                foreach (var partnerPlayer in CuCupidLoversPlayers)
+                {
+                    if (CupidLoversPlayer.PlayerId == partnerPlayer.PlayerId) continue;
+                    if (partnerPlayer.PlayerId != deathId && !partnerPlayer.Data.IsDead)
+                    {
+                        PlayerState.GetByPlayerId(partnerPlayer.PlayerId).DeathReason = CustomDeathReason.FollowingSuicide;
+                        if (isExiled)
+                        {
+                            MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.FollowingSuicide, partnerPlayer.PlayerId);
+                            ReportDeadBodyPatch.IgnoreBodyids[CupidLoversPlayer.PlayerId] = false;
+                        }
+                        else
+                            partnerPlayer.RpcMurderPlayer(partnerPlayer, true);
+                    }
+                }
+            }
+        }
+    }
     public static void LoverDisconnected(PlayerControl player)
     {
         var one = PlayerCatch.AllPlayerControls.Where(x => x.Is(CustomRoles.OneLove));
@@ -286,6 +320,15 @@ class Lovers
             }
             MaMadonnaLoversPlayers.Clear();
         }
+        if (player.Is(CustomRoles.CupidLovers) && !player.Data.IsDead)
+        {
+            isCupidLoversDead = true;
+            foreach (var lv in CuCupidLoversPlayers)
+            {
+                lv.GetPlayerState().RemoveSubRole(CustomRoles.CupidLovers);
+            }
+            CuCupidLoversPlayers.Clear();
+        }
 
         foreach (var data in ColorLovers.Alldatas.Values)
         {
@@ -308,6 +351,20 @@ class Lovers
             {
                 PlayerCatch.AllPlayerControls
                 .Where(p => p.Is(CustomRoles.MadonnaLovers) && p.IsAlive())
+                .Do(p =>
+                {
+                    CustomWinnerHolder.WinnerIds.Add(p.PlayerId);
+                    CustomWinnerHolder.CantWinPlayerIds.Remove(p.PlayerId);
+                });
+                reason = GameOverReason.ImpostorsByKill;
+            }
+        }
+        if (!Cupid.CupidLoverAddwin.GetBool() && CustomWinnerHolder.WinnerTeam is not CustomWinner.CupidLovers && CuCupidLoversPlayers.Count > 0 && (CuCupidLoversPlayers.ToArray().All(p => p.IsAlive()) || CuCupidLoversPlayers.Any(pc => CustomWinnerHolder.NeutralWinnerIds.Contains(pc.PlayerId))))
+        {
+            if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.CupidLovers, byte.MaxValue))
+            {
+                PlayerCatch.AllPlayerControls
+                .Where(p => p.Is(CustomRoles.CupidLovers) && p.IsAlive())
                 .Do(p =>
                 {
                     CustomWinnerHolder.WinnerIds.Add(p.PlayerId);
@@ -343,6 +400,18 @@ class Lovers
             CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.MadonnaLovers);
             PlayerCatch.AllPlayerControls
                 .Where(p => p.Is(CustomRoles.MadonnaLovers))
+                .Do(p =>
+                {
+                    CustomWinnerHolder.WinnerIds.Add(p.PlayerId);
+                    CustomWinnerHolder.CantWinPlayerIds.Remove(p.PlayerId);
+                });
+        }
+        if (CustomWinnerHolder.WinnerTeam != CustomWinner.CupidLovers && Cupid.CupidLoverAddwin.GetBool()
+        && CuCupidLoversPlayers.Count > 0 && CuCupidLoversPlayers.Count > 0 && (CuCupidLoversPlayers.ToArray().All(p => p.IsAlive()) || CuCupidLoversPlayers.Any(pc => CustomWinnerHolder.NeutralWinnerIds.Contains(pc.PlayerId))))
+        {
+            CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.CupidLovers);
+            PlayerCatch.AllPlayerControls
+                .Where(p => p.Is(CustomRoles.CupidLovers))
                 .Do(p =>
                 {
                     CustomWinnerHolder.WinnerIds.Add(p.PlayerId);
@@ -389,6 +458,19 @@ class Lovers
             CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.MadonnaLovers, byte.MaxValue);
             PlayerCatch.AllPlayerControls
             .Where(p => p.Is(CustomRoles.MadonnaLovers) && p.IsAlive())
+            .Do(p =>
+            {
+                CustomWinnerHolder.WinnerIds.Add(p.PlayerId);
+                CustomWinnerHolder.CantWinPlayerIds.Remove(p.PlayerId);
+            });
+            return true;
+        }
+        if (PlayerCatch.AllAlivePlayerControls.All(p => p.Is(CustomRoles.CupidLovers)) ||
+        (Cupid.CuLoversSolowin3players.GetBool() && PlayerCatch.AllAlivePlayersCount <= 3 && Lovers.CuCupidLoversPlayers.Count != 0 && Lovers.CuCupidLoversPlayers.All(pc => pc.IsAlive())))
+        {
+            CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.CupidLovers, byte.MaxValue);
+            PlayerCatch.AllPlayerControls
+            .Where(p => p.Is(CustomRoles.CupidLovers) && p.IsAlive())
             .Do(p =>
             {
                 CustomWinnerHolder.WinnerIds.Add(p.PlayerId);

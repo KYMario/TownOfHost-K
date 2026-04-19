@@ -40,6 +40,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
         MagicCount = 0;
         HaveKillCount = 0;
         MagicTarget = new();
+        magiccount = 0;
     }
 
     static OptionItem OptionMagicCooldown;
@@ -136,7 +137,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             SendRPC();
             check = (Maximum <= MagicCount && Maximum > 0) || MagicCooldown != DefaultCooldown;
             MagicTarget.Add(target.PlayerId);
-            Player.RpcProtectedMurderPlayer(target);
+            Player.SetKillCooldown(target: target);
             MagicCooldown = (Maximum <= MagicCount && Maximum > 0) ? 999 : DefaultCooldown;
             _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(), 0.1f);
         }
@@ -161,7 +162,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             var target = PlayerCatch.GetPlayerById(id);
             if (!target.IsAlive()) continue;
             var state = PlayerState.GetByPlayerId(target.PlayerId);
-            Player.RpcProtectedMurderPlayer(target);
+            Player.SetKillCooldown(target: target);
             if (ShowDeadbody)
             {
                 var position = target.transform.position;
@@ -173,8 +174,17 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             {
                 target.RpcExileV3();
             }
+            if (Eraser.Erasedtargets.Contains(target.PlayerId))
+            {
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+            }
+            magiccount++;
             state.DeathReason = CustomDeathReason.Magic;
             state.SetDead();
+            var roomName = target.GetShipRoomName();
+            target.GetPlayerState().KillRoom = roomName;
+            UtilsGameLog.AddGameLog($"Magic", $"{UtilsName.GetPlayerColor(target.PlayerId, true)}({UtilsRoleText.GetTrueRoleName(target.PlayerId, false).RemoveSizeTags()}) [{Utils.GetVitalText(target.PlayerId, true)}]〔{roomName}〕");
+            UtilsGameLog.AddGameLogsub($"\n\t⇐ {UtilsName.GetPlayerColor(Player.PlayerId, true)}({UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)})");
         }
         MagicTarget.Clear();
         HaveKillCount -= MagicUseKillCount;
@@ -223,5 +233,22 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
     {
         MagicCount = reader.ReadInt32();
         HaveKillCount = reader.ReadInt32();
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0], magiccount);
+        Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[1], magiccount);
+    }
+    int magiccount;
+    public static Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 3, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 15, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2, true);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

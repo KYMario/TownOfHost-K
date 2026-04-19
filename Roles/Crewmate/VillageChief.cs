@@ -25,6 +25,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             SetupOptionItem,
             "vc",
             "#f5a623",
+            (2, 0),
             from: From.SuperNewRoles
         );
 

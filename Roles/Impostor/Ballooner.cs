@@ -33,6 +33,9 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
         MaxBoomDis = OptionMaxBoomDis.GetFloat();
         chargewakl = OptionChargeWalk.GetFloat();
         chargestep = OptionChargeStep.GetFloat();
+
+        n1flug = false;
+        l1move = 0;
         ResetBalloon();
     }
     static OptionItem OptionKillCoolDown;
@@ -87,6 +90,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
         }
 
         var distance = Vector2.Distance(OldPosition, player.GetTruePosition());
+        l1move += distance;
         OldPosition = player.GetTruePosition();
         //歩数計の確認
         NowWalkCount += distance;
@@ -96,6 +100,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
             NowBoomDis = Mathf.Clamp(NowBoomDis + chargestep, MinBoomDis, MaxBoomDis);
             NowBoomDis = Mathf.Round(NowBoomDis * 100) / 100;
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: player);
+            if (MaxBoomDis <= NowBoomDis) n1flug = true;
         }
     }
 
@@ -142,6 +147,7 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
         AdjustKillCooldown = false;
         ResetCooldown = true;
 
+        var count = 0;
         foreach (var target in PlayerCatch.AllAlivePlayerControls)
         {
             if (target.PlayerId == Player.PlayerId && !OptionSuicide.GetBool()) continue;//自殺が無効なら除外
@@ -150,9 +156,11 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
             var dis = Vector2.Distance(target.GetTruePosition(), Player.GetTruePosition());
             if (dis <= NowBoomDis)
             {
+                count++;
                 CustomRoleManager.OnCheckMurder(Player, target, target, target, true, false, 2, CustomDeathReason.Bombed);
             }
         }
+        if (3 <= count) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
         if (OptionSuicide.GetBool() is false)
         {
             ResetBalloon();
@@ -184,5 +192,23 @@ public sealed class Ballooner : RoleBase, IImpostor, IUsePhantomButton
     public override void ReceiveRPC(MessageReader reader)
     {
         ResetBalloon();
+    }
+    public override void CheckWinner(GameOverReason reason)
+    {
+        if (n1flug) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+        if (1000 <= l1move) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
+    }
+    bool n1flug;
+    float l1move;
+    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+    [Attributes.PluginModuleInitializer]
+    public static void Load()
+    {
+        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
+        var l1 = new Achievement(RoleInfo, 1, 1, 0, 1);
+        var sp1 = new Achievement(RoleInfo, 2, 1, 0, 2);
+        achievements.Add(0, n1);
+        achievements.Add(1, l1);
+        achievements.Add(2, sp1);
     }
 }

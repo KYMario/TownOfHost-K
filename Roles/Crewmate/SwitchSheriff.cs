@@ -42,6 +42,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
         Taskmode = true;
         nowcool = CurrentKillCooldown;
         LastCooltime = 0;
+        Flug3 = 0;
     }
 
     public static OptionItem KillCooldown;
@@ -71,6 +72,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
     public static Dictionary<ISchrodingerCatOwner.TeamType, OptionItem> SchrodingerCatKillTargetOptions = new();
     public int ShotLimit = 0;
     public float CurrentKillCooldown = 30;
+    int Flug3;
     public static readonly string[] KillOption =
     {
         "SheriffCanKillAll", "SheriffCanKillSeparately"
@@ -213,6 +215,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
 
                 UtilsGameLog.AddGameLog("Sheriff", string.Format(GetString("SheriffMissLog"), UtilsName.GetPlayerColor(target.PlayerId)));
                 _ = new LateTask(() => killer.RpcMurderPlayer(killer), Main.LagTime, "SwSheMiss");
+                Flug3 = Utils.IsActive(Main.SabotageType) && Main.SabotageType.IsCriticalSabotage() ? 1 : 0;
                 if (!MisfireKillsTarget.GetBool())
                 {
                     info.DoKill = false;
@@ -224,12 +227,41 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
             SendRPC();
             //Player.SetKillCooldown(nowcool);
             killer.RpcResetAbilityCooldown(/*Sync: true*/);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 0, SheriffAchievement.achievements[0]);
+            Achievements.RpcCompleteAchievement(Player.PlayerId, 1, SheriffAchievement.achievements[1]);
         }
         return;
     }
+    public override void AfterSabotage(SystemTypes systemType) => Flug3 = 0;
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
+        if (target is null) return;
+        if (target.PlayerId == Player.Data.PlayerId && Flug3 == 1)
+        {
+            if (Utils.IsActive(Main.SabotageType) && Main.SabotageType.IsCriticalSabotage())
+            {
+                var systems = ShipStatus.Instance.Systems;
+                LifeSuppSystemType LifeSupp;
+                if (systems.ContainsKey(SystemTypes.LifeSupp) &&
+                    (LifeSupp = systems[SystemTypes.LifeSupp].TryCast<LifeSuppSystemType>()) != null &&
+                    LifeSupp.Countdown <= 15f)
+                {
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, SheriffAchievement.achievements[2]);
+                }
+                ISystemType sys = null;
+                if (systems.ContainsKey(SystemTypes.Reactor)) sys = systems[SystemTypes.Reactor];
+                else if (systems.ContainsKey(SystemTypes.Laboratory)) sys = systems[SystemTypes.Laboratory];
+                else if (systems.ContainsKey(SystemTypes.HeliSabotage)) sys = systems[SystemTypes.HeliSabotage];
+                ICriticalSabotage critical;
+                if (sys != null &&
+                (critical = sys.TryCast<ICriticalSabotage>()) != null &&
+                critical.Countdown <= 15f)
+                {
+                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, SheriffAchievement.achievements[2]);
+                }
+            }
+        }
         if (Player.IsAlive())
         {
             ModeSwitching(true);
@@ -354,6 +386,7 @@ public sealed class SwitchSheriff : RoleBase, IKiller, ISchrodingerCatOwner
         //ロール変更
         if (!Is(PlayerControl.LocalPlayer))
         {
+            if (Player.IsAlive() is false) return true;
             foreach (var pc in PlayerCatch.AllAlivePlayerControls)
             {
                 var role = pc.GetCustomRole();

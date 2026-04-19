@@ -14,6 +14,7 @@ namespace TownOfHost
     public static class Translator
     {
         public static Dictionary<string, Dictionary<int, string>> translateMaps;
+        public static Dictionary<string, Dictionary<int, string>> achievementMaps;
         public const string LANGUAGE_FOLDER_NAME = "Language";
 
         [PluginModuleInitializer]
@@ -21,6 +22,7 @@ namespace TownOfHost
         {
             Logger.Info("Language Dictionary Initialize...", "Translator");
             LoadLangs();
+            LoadAchievementLangs();
             Logger.Info("Language Dictionary Initialize Finished", "Translator");
         }
         public static void LoadLangs()
@@ -64,6 +66,37 @@ namespace TownOfHost
             {
                 if (File.Exists(@$"./{LANGUAGE_FOLDER_NAME}/{lang}.dat"))
                     LoadCustomTranslation($"{lang}.dat", lang);
+            }
+        }
+        public static void LoadAchievementLangs()
+        {
+            var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+            var stream = assembly.GetManifestResourceStream("TownOfHost.Resources.achievements.csv");
+            achievementMaps = new Dictionary<string, Dictionary<int, string>>();
+
+            var options = new CsvOptions()
+            {
+                HeaderMode = HeaderMode.HeaderPresent,
+                AllowNewLineInEnclosedFieldValues = false,
+            };
+            foreach (var line in CsvReader.ReadFromStream(stream, options))
+            {
+                if (line.Values[0][0] == '#') continue;
+                try
+                {
+                    Dictionary<int, string> dic = new();
+                    for (int i = 1; i < line.ColumnCount; i++)
+                    {
+                        int id = int.Parse(line.Headers[i]);
+                        dic[id] = line.Values[i].Replace("\\n", "\n").Replace("\\r", "\r");
+                    }
+                    if (!achievementMaps.TryAdd(line.Values[0], dic))
+                        Logger.Warn($"実績用CSVに重複があります。{line.Index}行目: \"{line.Values[0]}\"", "Translator");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Warn(ex.ToString(), "Translator");
+                }
             }
         }
 
@@ -178,7 +211,23 @@ namespace TownOfHost
                         "ShyboyInfo" => "ﾁｮ...ﾁｮｺ...!?",
                         "EfficientInfo" => "チョコいっぱい食べないと!",
                         "JumperInfo" => "そこどきなさぁい!!!",
-                        "BomberInfo" => "僕からも...",
+                        "BomberInfo" => "僕からもプレゼントだヨ...",
+                        "ArsonistInfo" => "今日は良く燃えそうだ...",
+                        "MadonnaInfo" => "はいこれっ...",
+                        "MadoonnaMyCollect" => "{0}に本命チョコを渡した...\n{0}とマドンナラバーズになりました!",
+                        "MadoonnaCollect" => "{0}から本命チョコを受け取った!\n{0}とマドンナラバーズになった!",
+                        "FoxAliveMeg3" => "テーブルにあるチョコに油揚げが入っていた。妖狐がいるに違いない",
+                        "SantaClausMeetingMeg1" => "{0}にサンタさんからチョコのプレゼント!!",
+                        "PhantomThiefRole.Lovers" => "チョコを貰い、浮かれている",
+                        "PhantomThiefStolenMessage_1" => "怪盗がチョコを盗んでいった...",
+                        "Message.Bakery" => "パン屋によってチョコクロワッサンが配られました",
+                        "LoversInfo" => "あま～いひと時",
+                        "ManagementInfo" => "みんなチョコ貰いすぎ!!",
+                        "StackInfo" => "チョコの大袋",
+                        "VultureInfo" => "チョコだけじゃ物足りない",
+                        "StrawdollInfo" => "チョコ貰っている奴が妬ましい",
+                        "WhiteLoversInfo" => "初めての手作りチョコ",
+                        "RedLoversInfo" => "お返しはチョコの詰め合わせ",
                         _ => res
                     };
                 }
@@ -198,6 +247,7 @@ namespace TownOfHost
                         "QuickKillerInfo" => "3分前のバスに...",
                         "WalkerInfo" => "歩き疲れたよ!",
                         "OneLoveInfo" => "今度...水族館行かない?",
+                        "FoxAliveMeg3" => "桜餅の中に油揚げが入っていた。妖狐がいるに違いない",
                         _ => res
                     };
                 }

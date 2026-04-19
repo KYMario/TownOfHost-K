@@ -157,7 +157,7 @@ public sealed class Amnesiac : RoleBase, IImpostor
 
         if (!Utils.RoleSendList.Contains(Player.PlayerId))
             Utils.RoleSendList.Add(Player.PlayerId);
-        Player.RpcProtectedMurderPlayer();
+        Player.SetKillCooldown();
         UtilsNotifyRoles.NotifyRoles();
     }
     public override void OnFixedUpdate(PlayerControl player)

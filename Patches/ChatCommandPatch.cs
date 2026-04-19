@@ -57,7 +57,7 @@ namespace TownOfHost
             var text = __instance.freeChatField.textArea.text;
             if (ChatHistory.Count == 0 || ChatHistory[^1] != text) ChatHistory.Add(text);
             ChatControllerUpdatePatch.CurrentHistorySelection = ChatHistory.Count;
-            string[] args = text.Split(' ');
+            string[] args = text/*.ToLower()*/.Split(' ');
             string subArgs = "";
             var canceled = false;
             var cancelVal = "";
@@ -109,10 +109,8 @@ namespace TownOfHost
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
             // ★ switch を args[0] ではなく cmd に変更する ★
-            switch (cmd)
+            switch (args[0])
             {
-
-
                 case "/dump":
                     canceled = true;
                     UtilsOutputLog.DumpLog();
@@ -153,12 +151,62 @@ namespace TownOfHost
                         sender.SendMessage();
                     }
                     break;
-               
             }
             if (AmongUsClient.Instance.AmHost)
             {
                 switch (args[0])
                 {
+                    case "/nc":
+                        canceled = true;
+
+                        if (args.Length < 2)
+                            break;
+
+                        string col = args[1];
+                        string hexColor = col.ToLower() switch
+                        {
+                            "レッド" or "赤" or "red" => "#ff0000",
+                            "ブルー" or "青" or "blue" => "#0000ff",
+                            "グリーン" or "緑" or "green" => "#00ff00",
+                            "ピンク" or "pink" => "#ff69b4",
+                            "オレンジ" or "orange" => "#ffa500",
+                            "イエロー" or "黄" or "yellow" => "#ffff00",
+                            "パープル" or "紫" or "purple" => "#800080",
+                            "ブラック" or "黒" or "black" => "#000000",
+                            "ホワイト" or "白" or "white" => "#ffffff",
+                            "シアン" or "cyan" => "#00ffff",
+                            "ライム" or "lime" => "#00ff80",
+                            "グレー" or "gray" => "#808080",
+                            "ブラウン" or "brown" => "#8b4513",
+                            "ローズ" or "rose" => "#ff007f",
+                            "バナナ" or "banana" => "#ffe135",
+                            "コーラル" or "coral" => "#ff7f50",
+                            "タン" or "tan" => "#d2b48c",
+                            _ => null
+                        };
+
+                        if (hexColor == null)
+                            break;
+
+                        string rawNameRC = PlayerControl.LocalPlayer.Data.PlayerName;
+                        string newNameRC = $"<color={hexColor}>{rawNameRC}</color>";
+
+                        PlayerControl.LocalPlayer.RpcSetName(newNameRC);
+                        break;
+                    case "/ns":
+                        canceled = true;
+
+                        if (args.Length < 2)
+                            break;
+
+                        if (!float.TryParse(args[1], out float size))
+                            break;
+
+                        string rawName = PlayerControl.LocalPlayer.Data.PlayerName;
+                        string newName = $"<size={size}%>{rawName}</size>";
+
+                        PlayerControl.LocalPlayer.RpcSetName(newName);
+                        break;
                     case "/pko":
                         {
                             canceled = true;
@@ -353,7 +401,10 @@ namespace TownOfHost
                         canceled = true;
                         ShowKillLog();
                         break;
-
+                    case "/ach":
+                    case "/achievements":
+                        ShowAchievement(PlayerControl.LocalPlayer.PlayerId);
+                        break;
                     case "/r":
                     case "/rename":
                         canceled = true;
@@ -665,8 +716,7 @@ namespace TownOfHost
                             foreach (var sendplayer in sendplayers)
                             {
                                 SendMessage(send.Mark(ModColors.ImpostorRed), sendplayer.PlayerId,
-                                ColorString(ModColors.ImpostorRed,
-                                $"\n★{PlayerControl.LocalPlayer.GetPlayerColor()}★"));
+                                ColorString(ModColors.ImpostorRed, $"★{PlayerControl.LocalPlayer.GetPlayerColor()}★"));
                             }
                         }
                         break;
@@ -691,8 +741,7 @@ namespace TownOfHost
                                 if (jac && ((jac?.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalHadouHo or CustomRoles.Tama) || !jac.IsAlive()))
                                 {
                                     SendMessage(send.Mark(ModColors.JackalColor), jac.PlayerId,
-                                    ColorString(ModColors.JackalColor,
-                                    $"\nΦ{PlayerControl.LocalPlayer.GetPlayerColor()}Φ"));
+                                    ColorString(ModColors.JackalColor, $"Φ{PlayerControl.LocalPlayer.GetPlayerColor()}Φ"));
                                 }
                             }
                         }
@@ -724,8 +773,7 @@ namespace TownOfHost
                                     var clientid = lover.GetClientId();
                                     if (clientid == -1) continue;
                                     SendMessage(send.Mark(GetRoleColor(loverrole)), lover.PlayerId,
-                                    ColorString(GetRoleColor(loverrole),
-                                    $"\n♥{PlayerControl.LocalPlayer.GetPlayerColor()}♥"));
+                                    ColorString(GetRoleColor(loverrole), $"♥{PlayerControl.LocalPlayer.GetPlayerColor()}♥"));
                                 }
                             }
                         }
@@ -759,8 +807,7 @@ namespace TownOfHost
                                         var clientid = twins.GetClientId();
                                         if (clientid == -1) continue;
                                         SendMessage(send.Mark(GetRoleColor(CustomRoles.Twins)), twins.PlayerId,
-                                        ColorString(GetRoleColor(CustomRoles.Twins),
-                                        $"\n∈{PlayerControl.LocalPlayer.GetPlayerColor()}∈"));
+                                        ColorString(GetRoleColor(CustomRoles.Twins), $"∈{PlayerControl.LocalPlayer.GetPlayerColor()}∈"));
                                     }
                                 }
                             }
@@ -795,8 +842,7 @@ namespace TownOfHost
                                         var clientid = connect.GetClientId();
                                         if (clientid == -1) continue;
                                         SendMessage(send.Mark(GetRoleColor(CustomRoles.Connecting)), connect.PlayerId,
-                                        ColorString(GetRoleColor(CustomRoles.Connecting),
-                                        $"\nΨ{PlayerControl.LocalPlayer.GetPlayerColor()}Ψ"));
+                                        ColorString(GetRoleColor(CustomRoles.Connecting), $"Ψ{PlayerControl.LocalPlayer.GetPlayerColor()}Ψ"));
                                     }
                                 }
                             }
@@ -985,6 +1031,10 @@ namespace TownOfHost
                         if (GameStates.InGame)
                         {
                             SendMessage(MeetingHudPatch.Send, title: MeetingHudPatch.Title);
+                            foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                            {
+                                SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                            }
                         }
                         break;
 
@@ -1372,9 +1422,12 @@ namespace TownOfHost
                 SendMessage(GetString("Error.CommandFailed"), player.PlayerId);
             }
             if (args[0] != "/cmd" || args.Length <= 1) return;//cmdが無い場合は処理をしない
-            args = args.Skip(1).ToArray();
 
             if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
+
+            /*
+            args = text.ToLower().Split(' ');*/
+            args = args.Skip(1).ToArray();
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
 
             canceled = true;
@@ -1389,6 +1442,11 @@ namespace TownOfHost
                 case "/killlog":
                     canceled = true;
                     ShowKillLog(player.PlayerId);
+                    break;
+                case "/ach":
+                case "/achievement":
+                    canceled = true;
+                    ShowAchievement(player.PlayerId);
                     break;
                 case "/n":
                 case "/now":
@@ -1476,6 +1534,57 @@ namespace TownOfHost
                             }
                         GetAddonsHelp(player);
                     }
+                    break;
+                case "/nc":
+                    canceled = true;
+
+                    if (args.Length < 2)
+                        break;
+
+                    string col = args[1];
+                    string hexColor = col.ToLower() switch
+                    {
+                        "レッド" or "赤" or "red" => "#ff0000",
+                        "ブルー" or "青" or "blue" => "#0000ff",
+                        "グリーン" or "緑" or "green" => "#00ff00",
+                        "ピンク" or "pink" => "#ff69b4",
+                        "オレンジ" or "orange" => "#ffa500",
+                        "イエロー" or "黄" or "yellow" => "#ffff00",
+                        "パープル" or "紫" or "purple" => "#800080",
+                        "ブラック" or "黒" or "black" => "#000000",
+                        "ホワイト" or "白" or "white" => "#ffffff",
+                        "シアン" or "cyan" => "#00ffff",
+                        "ライム" or "lime" => "#00ff80",
+                        "グレー" or "gray" => "#808080",
+                        "ブラウン" or "brown" => "#8b4513",
+                        "ローズ" or "rose" => "#ff007f",
+                        "バナナ" or "banana" => "#ffe135",
+                        "コーラル" or "coral" => "#ff7f50",
+                        "タン" or "tan" => "#d2b48c",
+                        _ => null
+                    };
+
+                    if (hexColor == null)
+                        break;
+
+                    string rawNameRC = player.Data.PlayerName;
+                    string newNameRC = $"<color={hexColor}>{rawNameRC}</color>";
+
+                    player.RpcSetName(newNameRC);
+                    break;
+                case "/ns":
+                    canceled = true;
+
+                    if (args.Length < 2)
+                        break;
+
+                    if (!float.TryParse(args[1], out float size))
+                        break;
+
+                    string rawNameRS = player.Data.PlayerName;
+                    string newNameRS = $"<size={size}%>{rawNameRS}</size>";
+
+                    player.RpcSetName(newNameRS);
                     break;
                 case "/pko":
                     canceled = true;
@@ -1619,6 +1728,11 @@ namespace TownOfHost
                     if (GameStates.InGame)
                     {
                         SendMessage(MeetingHudPatch.Send, player.PlayerId, title: MeetingHudPatch.Title);
+                        foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                        {
+                            if (messagedata.sentto is byte.MaxValue || messagedata.sentto == player.PlayerId)
+                                SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                        }
                     }
                     break;
                 case "/voice":
@@ -1662,7 +1776,7 @@ namespace TownOfHost
                             {
                                 var clientid = sendplayer.GetClientId();
                                 if (clientid == -1) continue;
-                                string title = $"\n<#ff1919>☆{player.GetPlayerColor()}☆</line-height>";
+                                string title = $"<#ff1919>☆{player.GetPlayerColor()}☆</line-height>";
                                 string sendtext = send.Mark(Palette.ImpostorRed);
                                 SendMessage(sendtext, sendplayer.PlayerId, title);
                             }
@@ -1684,11 +1798,12 @@ namespace TownOfHost
                         {
                             if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalHadouHo or CustomRoles.Tama) || (!jac.IsAlive())) && (jac.PlayerId != player.PlayerId && !Isclient))
                             {
+                                if (jac.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = jac.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = $"\n<#00b4eb>Φ{player.GetPlayerColor()}Φ</line-height>";
+                                    string title = $"<#00b4eb>Φ{player.GetPlayerColor()}Φ</line-height>";
                                     string sendtext = send.Mark(ModColors.JackalColor);
                                     SendMessage(sendtext, jac.PlayerId, title);
                                 }
@@ -1720,13 +1835,14 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "LoversChat");
                         foreach (var lover in AllPlayerControls)
                         {
-                            if (lover && (lover.GetLoverRole() == loverrole || (!lover.IsAlive())) && (lover.PlayerId != player.PlayerId && !Isclient))
+                            if (lover && (lover.GetLoverRole() == loverrole || (!lover.IsAlive())))
                             {
+                                if (lover.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = lover.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = ColorString(GetRoleColor(loverrole), $"\n♥{player.GetPlayerColor()}♥</line-height>");
+                                    string title = ColorString(GetRoleColor(loverrole), $"♥{player.GetPlayerColor()}♥</line-height>");
                                     string sendtext = send.Mark(GetRoleColor(loverrole));
                                     SendMessage(sendtext, lover.PlayerId, title);
                                 }
@@ -1749,11 +1865,12 @@ namespace TownOfHost
                         {
                             if (twins && (twins.PlayerId == twinsid || (!twins.IsAlive())) && (twins.PlayerId != player.PlayerId && !Isclient))
                             {
+                                if (twins.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = twins.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = ColorString(GetRoleColor(CustomRoles.Twins), $"\n∈{player.GetPlayerColor()}∋</line-height>");
+                                    string title = ColorString(GetRoleColor(CustomRoles.Twins), $"∈{player.GetPlayerColor()}∋</line-height>");
                                     string sendtext = send.Mark(GetRoleColor(CustomRoles.Twins));
                                     SendMessage(sendtext, twins.PlayerId, title);
                                 }
@@ -1773,13 +1890,14 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "Connectingchat");
                         foreach (var connect in AllPlayerControls)
                         {
-                            if (connect && ((connect.Is(CustomRoles.Connecting) && !connect.Is(CustomRoles.WolfBoy)) || (!connect.IsAlive())) && (connect.PlayerId != player.PlayerId && !Isclient))
+                            if (connect && ((connect.Is(CustomRoles.Connecting) && !connect.Is(CustomRoles.WolfBoy)) || (!connect.IsAlive())))
                             {
+                                if (connect.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
                                 {
                                     var clientid = connect.GetClientId();
                                     if (clientid == -1) continue;
-                                    string title = ColorString(GetRoleColor(CustomRoles.Connecting), $"\nΨ{player.GetPlayerColor()}Ψ</line-height>");
+                                    string title = ColorString(GetRoleColor(CustomRoles.Connecting), $"Ψ{player.GetPlayerColor()}Ψ</line-height>");
                                     string sendtext = send.Mark(GetRoleColor(CustomRoles.Connecting));
                                     SendMessage(sendtext, connect.PlayerId, title);
                                 }

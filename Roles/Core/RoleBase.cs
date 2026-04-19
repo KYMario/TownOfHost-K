@@ -533,7 +533,7 @@ public abstract class RoleBase : IDisposable
     /// 勝利処理がほぼ終わった後に処理される<br/>
     /// [ホストのみ]
     /// </summary>
-    public virtual void CheckWinner()
+    public virtual void CheckWinner(GameOverReason reason)
     { }
 
     /// <summary>

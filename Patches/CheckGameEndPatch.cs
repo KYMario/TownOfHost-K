@@ -74,7 +74,8 @@ namespace TownOfHost
                             }
                             break;
                         default:
-                            Faction.CheckWin();
+                            //ラバー勝利以外の時にラバーをしめt...勝利を剥奪する処理。
+                            //どーせ追加なら追加勝利するやろし乗っ取りなら乗っ取りやし。
                             if (CustomWinnerHolder.WinnerTeam.IsLovers())
                                 break;
                             PlayerCatch.AllPlayerControls
@@ -142,15 +143,17 @@ namespace TownOfHost
                 foreach (var player in PlayerCatch.AllPlayerControls)
                 {
                     var roleclass = player.GetRoleClass();
-                    roleclass?.CheckWinner();
+                    roleclass?.CheckWinner(reason);
                 }
                 Twins.CheckAddWin();
+                Faction.CheckWin();
 
                 ShipStatus.Instance.enabled = false;
                 if (CustomWinnerHolder.WinnerTeam != CustomWinner.Crewmate && (reason.Equals(GameOverReason.CrewmatesByTask) || reason.Equals(GameOverReason.CrewmatesByVote)))
                     reason = GameOverReason.ImpostorsByKill;
 
                 Logger.Info($"{CustomWinnerHolder.WinnerTeam} ({reason})", "Winner");
+                CustomWinnerHolder.winners.Do(winner => Logger.Info($"winnerteam:{winner} ({reason})", "Winner"));
 
                 if (Options.OutroCrewWinreasonchenge.GetBool() && (reason.Equals(GameOverReason.CrewmatesByTask) || reason.Equals(GameOverReason.CrewmatesByVote)))
                     reason = GameOverReason.ImpostorsByVote;
@@ -241,6 +244,7 @@ namespace TownOfHost
             {
                 nav.NextGame();
             }
+            CheckGetNomalAchievement.CallEndGame(reason);
         }
         private static void SetRoleSummaryText(CustomRpcSender sender = null)
         {
@@ -282,7 +286,7 @@ namespace TownOfHost
                 if (pc == null) continue;
                 var target = (winnerList.Contains(pc.PlayerId) ? pc : (winnerList.Count == 0 ? pc : PlayerCatch.GetPlayerById(winnerList.OrderBy(pc => pc).FirstOrDefault()) ?? pc)) ?? pc;
                 var targetname = Main.AllPlayerNames[target.PlayerId].Color(UtilsRoleText.GetRoleColor(target.GetCustomRole()));
-                var text = $"<voffset=25>{CustomWinnerText}\n<voffset=24>{targetname}";
+                var text = $"<voffset=25>{CustomWinnerText}\n<voffset=0>{targetname}\n\n<voffset=24><size=40%><{Main.ModColor}>TownOfHost-PKO</color><#ffffff>v.{Main.PluginShowVersion}</size>";// sb.ToString() +$"\n</align><voffset=23>{CustomWinnerText}\n<voffset=45><size=1.75>{targetname}";
                 if (sender == null)
                 {
                     target.RpcSetNamePrivate(text, true, pc, true);

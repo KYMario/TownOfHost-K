@@ -96,11 +96,11 @@ namespace TownOfHost
         };
 
         // MapActive
-        public static bool IsActiveSkeld => AddedTheSkeld.GetBool() || Main.NormalOptions.MapId == 0;
-        public static bool IsActiveMiraHQ => AddedMiraHQ.GetBool() || Main.NormalOptions.MapId == 1;
-        public static bool IsActivePolus => AddedPolus.GetBool() || Main.NormalOptions.MapId == 2;
-        public static bool IsActiveAirship => AddedTheAirShip.GetBool() || Main.NormalOptions.MapId == 4;
-        public static bool IsActiveFungle => AddedTheFungle.GetBool() || Main.NormalOptions.MapId == 5;
+        public static bool IsActiveSkeld => AddedTheSkeld.GetBool() || Main.NormalOptions?.MapId is 0 or null;
+        public static bool IsActiveMiraHQ => AddedMiraHQ.GetBool() || Main.NormalOptions?.MapId is 1 or null;
+        public static bool IsActivePolus => AddedPolus.GetBool() || Main.NormalOptions?.MapId is 2 or null;
+        public static bool IsActiveAirship => AddedTheAirShip.GetBool() || Main.NormalOptions?.MapId is 4 or null;
+        public static bool IsActiveFungle => AddedTheFungle.GetBool() || Main.NormalOptions?.MapId is 5 or null;
 
         // 役職数・確率
         public static Dictionary<CustomRoles, OptionItem> CustomRoleCounts;
@@ -237,6 +237,8 @@ namespace TownOfHost
         public static OptionItem DisableDevicesIgnoreNeutrals;
         public static OptionItem DisableDevicesIgnoreCrewmates;
         public static OptionItem DisableDevicesIgnoreAfterAnyoneDied;
+        public static OptionItem DisableDevicesIgnoreCompleteTask;
+        public static OptionItem DisableForceRecordsAdomin;
 
         public static OptionItem TimeLimitDevices;
         public static OptionItem TimeLimitAdmin;
@@ -247,6 +249,10 @@ namespace TownOfHost
         public static OptionItem CanseeMadTimeLimit;
         public static OptionItem CanseeCrewTimeLimit;
         public static OptionItem CanseeNeuTimeLimit;
+        public static OptionItem ReviveTimelimitplayercount;
+        public static OptionItem ReviveAddAdmin;
+        public static OptionItem ReviveAddCamAndLog;
+        public static OptionItem ReviveAddVital;
 
         public static OptionItem TurnTimeLimitDevice;
         public static OptionItem TurnTimeLimitAdmin;
@@ -530,6 +536,8 @@ namespace TownOfHost
         public static OptionItem KickPlayerFriendCodeNotExist;
         public static OptionItem ApplyBanList;
         public static OptionItem KiclHotNotFriend;
+        public static OptionItem KickInitialName;
+        public static OptionItem BANKickjoinplayer;
 
         public static readonly string[] suffixModes =
         {
@@ -869,22 +877,26 @@ namespace TownOfHost
             DisableDevicesIgnoreImpostors = BooleanOptionItem.Create(104101, "IgnoreImpostors", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#ff1919");
             DisableDevicesIgnoreMadmates = BooleanOptionItem.Create(104102, "IgnoreMadmates", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
-                .SetColorcode("#ff1919");
+                .SetColorcode("#ff7f50");
             DisableDevicesIgnoreNeutrals = BooleanOptionItem.Create(104103, "IgnoreNeutrals", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#808080");
             DisableDevicesIgnoreCrewmates = BooleanOptionItem.Create(104104, "IgnoreCrewmates", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#8cffff");
+            DisableDevicesIgnoreCompleteTask = BooleanOptionItem.Create(104106, "DisableDevicesIgnoreComleteTask", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreCrewmates)
+                .SetColorcode("#00ffff");
             DisableDevicesIgnoreAfterAnyoneDied = BooleanOptionItem.Create(104105, "IgnoreAfterAnyoneDied", false, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
                 .SetColorcode("#666699");
+            DisableForceRecordsAdomin = BooleanOptionItem.Create(104107, "DisableForceRecordsAdomin", true, TabGroup.MainSettings, false).SetParent(DisableDevicesIgnoreConditions)
+                .SetColorcode("#00ff99");
 
             TimeLimitDevices = BooleanOptionItem.Create(104200, "TimeLimitDevices", false, TabGroup.MainSettings, false)
                 .SetColorcode("#948e50")
                 .SetParent(DevicesOption);
-            TimeLimitAdmin = FloatOptionItem.Create(104201, "TimeLimitAdmin", new(0f, 300f, 1), 20f, TabGroup.MainSettings, false)
+            TimeLimitAdmin = FloatOptionItem.Create(104201, "TimeLimitAdmin", new(-1f, 300f, 1), 20f, TabGroup.MainSettings, false)
                 .SetColorcode("#00ff99").SetValueFormat(OptionFormat.Seconds).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(TimeLimitDevices);
-            TimeLimitCamAndLog = FloatOptionItem.Create(104202, "TimeLimitCamAndLog", new(0f, 300f, 1), 20f, TabGroup.MainSettings, false)
+            TimeLimitCamAndLog = FloatOptionItem.Create(104202, "TimeLimitCamAndLog", new(-1f, 300f, 1), 20f, TabGroup.MainSettings, false)
                 .SetColorcode("#cccccc").SetValueFormat(OptionFormat.Seconds).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(TimeLimitDevices);
-            TimeLimitVital = FloatOptionItem.Create(104203, "TimeLimitVital", new(0f, 300f, 1), 20f, TabGroup.MainSettings, false)
+            TimeLimitVital = FloatOptionItem.Create(104203, "TimeLimitVital", new(-1f, 300f, 1), 20f, TabGroup.MainSettings, false)
                 .SetColorcode("#33ccff").SetValueFormat(OptionFormat.Seconds).SetZeroNotation(OptionZeroNotation.Infinity).SetParent(TimeLimitDevices);
             CanSeeTimeLimit = BooleanOptionItem.Create(104204, "CanSeeTimeLimit", false, TabGroup.MainSettings, false)
                 .SetColorcode("#cc8b60").SetParent(TimeLimitDevices);
@@ -896,6 +908,11 @@ namespace TownOfHost
             .SetColor(ModColors.CrewMateBlue).SetParent(CanSeeTimeLimit);
             CanseeNeuTimeLimit = BooleanOptionItem.Create(104208, "CanseeNeuTimeLimit", false, TabGroup.MainSettings, false)
             .SetColor(Palette.DisabledGrey).SetParent(CanSeeTimeLimit);
+            ReviveTimelimitplayercount = IntegerOptionItem.Create(104210, "ReviveTimelimitplayercount", new(0, 15, 1), 0, TabGroup.MainSettings, false)
+                .SetParent(TimeLimitDevices).SetValueFormat(OptionFormat.Players).SetZeroNotation(OptionZeroNotation.Off).SetColor(ModColors.Tan).SetTooltip(() => Translator.GetString("ReviveTimelimitplayercount_Info"));
+            ReviveAddAdmin = FloatOptionItem.Create(104211, "ReviveAddAdmin", new(-100, 100, 1), 20, TabGroup.MainSettings, false).SetColorcode("#00ff99").SetValueFormat(OptionFormat.Seconds).SetParent(ReviveTimelimitplayercount);
+            ReviveAddCamAndLog = FloatOptionItem.Create(104212, "ReviveAddCamAndLog", new(-100, 100, 1), 20, TabGroup.MainSettings, false).SetColorcode("#cccccc").SetValueFormat(OptionFormat.Seconds).SetParent(ReviveTimelimitplayercount);
+            ReviveAddVital = FloatOptionItem.Create(104213, "ReviveAddVital", new(-100, 100, 1), 20, TabGroup.MainSettings, false).SetColorcode("#33ccff").SetValueFormat(OptionFormat.Seconds).SetParent(ReviveTimelimitplayercount);
 
             TurnTimeLimitDevice = BooleanOptionItem.Create(104300, "TurnTimeLimitDevice", false, TabGroup.MainSettings, false)
                 .SetColorcode("#b06927")
@@ -1179,6 +1196,12 @@ namespace TownOfHost
             KiclHotNotFriend = BooleanOptionItem.Create(1_000_111, "KiclHotNotFriend", false, TabGroup.MainSettings, true)
                 .SetInfo(Translator.GetString("KickBanOptionWhiteList"))
                 .SetColor(Color.red);
+            KickInitialName = BooleanOptionItem.Create(1_000_125, "KickInitialName", false, TabGroup.MainSettings, true)
+                .SetColor(Color.red)
+                .SetInfo(Translator.GetString("KickBanOptionWhiteList"));
+            BANKickjoinplayer = BooleanOptionItem.Create(1_000_126, "BanKickjoinplayer", false, TabGroup.MainSettings, true)
+                .SetColor(Color.red)
+                .SetInfo(Translator.GetString("BanKickjoinplayerInfo"));
 
             VanillaOptionHolder.Initialize();
             DebugModeManager.SetupCustomOption();
@@ -1243,6 +1266,8 @@ namespace TownOfHost
                 case CustomGameMode.HideAndSeek: tag = CustomOptionTags.HideAndSeek; break;
                 case CustomGameMode.MurderMystery: tag = CustomOptionTags.MurderMystery; break;
             }
+            CustomRoleManager.SortCustomRoles.Add(role);
+            if (role.GetCombination() is not CustomRoles.NotAssigned) CustomRoleManager.SortCustomRoles.Add(role.GetCombination());
             var spawnOption = IntegerOptionItem.Create(id, combination == CombinationRoles.None ? role.ToString() : combination.ToString(), new(0, 100, 10), 0, tab, false, from)
                     .SetColorcode(UtilsRoleText.GetRoleColorCode(role))
                     .SetColor(UtilsRoleText.GetRoleColor(role, true))

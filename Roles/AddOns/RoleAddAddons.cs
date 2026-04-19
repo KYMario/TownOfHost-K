@@ -72,6 +72,9 @@ namespace TownOfHost
         public OptionItem GiveMoon;
         //ライティング
         public OptionItem GiveLighting;
+        // サングラス
+        public OptionItem GiveSunglasses;
+        public OptionItem SunglassesVisionmagnification;
         public RoleAddAddons(int idStart, TabGroup tab, CustomRoles role, CustomRoles RoleName = CustomRoles.NotAssigned, bool NeutralKiller = false, bool MadMate = false, bool DefaaultOn = false)
         {
             this.IsImpostor = role.IsImpostor();
@@ -124,11 +127,13 @@ namespace TownOfHost
             GiveInfoPoor = BooleanOptionItem.Create(idStart++, "GiveInfoPoor", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveNonReport = BooleanOptionItem.Create(idStart++, "GiveNonReport", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
             OptionNonReportMode = StringOptionItem.Create(idStart++, "ConverMode", EnumHelper.GetAllNames<NonReportMode>().Where(name => name is not "nullpo").ToArray(), 0, tab, false).SetParentRole(role).SetParent(GiveNonReport);
-
             GiveTransparent = BooleanOptionItem.Create(idStart++, "GiveTransparent", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveWater = BooleanOptionItem.Create(idStart++, "GiveWater", MadMate, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveClumsy = BooleanOptionItem.Create(idStart++, "GiveClumsy", MadMate, tab, false).SetParentRole(role).SetParent(GiveAddons);
             GiveSlacker = BooleanOptionItem.Create(idStart++, "GiveSlacker", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
+            GiveSunglasses = BooleanOptionItem.Create(idStart++, "GiveSunglasses", false, tab, false).SetParentRole(role).SetParent(GiveAddons);
+            SunglassesVisionmagnification = FloatOptionItem.Create(idStart++, "SunglassesVisionmagnification", new(1f, 100f, 1f), 75, tab, false).SetParent(GiveSunglasses).SetParentRole(role).SetValueFormat(OptionFormat.Percent)
+                    .SetTooltip(() => string.Format(Translator.GetString("SunglassesVisionmagnification_Info"), Main.NormalOptions.CrewLightMod, Main.NormalOptions.CrewLightMod * SunglassesVisionmagnification.GetFloat() * 0.01f, Main.NormalOptions.ImpostorLightMod, Main.NormalOptions.ImpostorLightMod * SunglassesVisionmagnification.GetFloat() * 0.01f));
 
             role = RoleName == CustomRoles.NotAssigned ? role : RoleName;
 
@@ -223,8 +228,7 @@ namespace TownOfHost
                 olddata.GiveMoon = olddata.GiveMoon.InfoGetBool() == false ? newdata.GiveMoon : olddata.GiveMoon;
                 olddata.GiveLighting = olddata.GiveLighting.InfoGetBool() == false ? newdata.GiveLighting : olddata.GiveLighting;
             }
-            else
-            if (olddata.IsImpostor && !newdata.IsImpostor)
+            else if (olddata.IsImpostor && !newdata.IsImpostor)
             {
                 olddata.IsImpostor = false;
                 olddata.GiveMoon = newdata.GiveMoon;
@@ -296,6 +300,13 @@ namespace TownOfHost
                             {
                                 olddata.OptionNonReportMode = newdata.OptionNonReportMode;
                                 break;
+                            }
+                            break;
+                        case CustomRoles.Sunglasses:
+                            olddata.GiveSunglasses = olddata.GiveSunglasses.InfoGetBool() == false ? newdata.GiveSunglasses : olddata.GiveSunglasses;
+                            if (olddata.SunglassesVisionmagnification.GetFloat() > newdata.SunglassesVisionmagnification.GetFloat())
+                            {
+                                olddata.SunglassesVisionmagnification = newdata.SunglassesVisionmagnification;
                             }
                             break;
                         case CustomRoles.Watching: olddata.GiveWatching = olddata.GiveWatching.InfoGetBool() == false ? newdata.GiveWatching : olddata.GiveWatching; break;

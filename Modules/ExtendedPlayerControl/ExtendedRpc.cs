@@ -50,7 +50,7 @@ namespace TownOfHost
                 //マッドメイトの最初からの内通
                 if (role.IsMadmate() && Options.MadCanSeeImpostor.GetBool())
                 {
-                    if (PlayerCatch.AllPlayerFirstTypes.Where(x => x.Value is CustomRoleTypes.Impostor).Any())
+                    if (PlayerCatch.AllPlayerFirstTypes.Any(x => x.Value is CustomRoleTypes.Impostor))
                         foreach (var imp in PlayerCatch.AllPlayerFirstTypes.Where(x => x.Value is CustomRoleTypes.Impostor))
                         {
                             var iste = PlayerState.GetByPlayerId(imp.Key);
@@ -94,6 +94,7 @@ namespace TownOfHost
 
                 if (role.IsGhostRole() || role < CustomRoles.NotAssigned)
                 {
+                    player.ResetKillCooldown();
                     player.SetKillCooldown(delay: true, force: true);
                     player.RpcResetAbilityCooldown();
                     UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
@@ -271,7 +272,7 @@ namespace TownOfHost
 
             if (player == null) return;
 
-            var pc = AmongUsClient.Instance.allClients.ToArray().Where(x => x.Id == clientId).FirstOrDefault();
+            var pc = AmongUsClient.Instance.allClients.ToArray().FirstOrDefault(x => x.Id == clientId);
 
             //Logger.Info($"({pc?.PlayerName ?? "???"}){player?.Data?.GetLogPlayerName() ?? "( ᐛ )"} =>  {role}", "RpcSetRoleDesync");
 
@@ -460,7 +461,8 @@ namespace TownOfHost
             {//道連れ、マジシャン等で死んでいないのにIsDeadを変更する場合はモーションを入れる。
                 if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                 {
-                    DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(player.Data, player.Data);
+                    if (GameStates.IsMeeting is false)
+                        DestroyableSingleton<HudManager>.Instance.KillOverlay.ShowKillAnimation(player.Data, player.Data);
                 }
                 else
                 {
