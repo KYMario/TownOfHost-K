@@ -167,6 +167,10 @@ class CheckGetNomalAchievement
             var (imp, crew, mad, neu) = (0, 0, 0, 0);
             foreach (var roledata in statistics.Rolecount)
             {
+                if (roledata.Key > CustomRoles.NotAssigned)
+                {
+                    continue;
+                }
                 switch (roledata.Key.GetCustomRoleTypes())
                 {
                     case CustomRoleTypes.Impostor: imp += roledata.Value.Item2; break;

@@ -66,7 +66,7 @@ namespace TownOfHost
                     RoleTypes role = (RoleTypes)subReader.ReadUInt16();
                     Logger.Info("役職:" + __instance.GetRealName().RemoveHtmlTags() + " => " + role, "SetRole");
                     if (AmongUsClient.Instance.AmHost is false && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId)
-                        CustomButtonHud.BottonHud();
+                        _ = new LateTask(() => CustomButtonHud.BottonHud(), 1f, "setbutton", true);
                     break;
                 case RpcCalls.SendChat:
                     var text = subReader.ReadString();
