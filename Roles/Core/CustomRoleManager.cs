@@ -948,6 +948,7 @@ public enum CustomRoles
     Cupid,
     Oblivion,
     Eater,
+    Spelunker,
     //TOH-K
     Remotekiller,
     Chef,

@@ -507,6 +507,7 @@ namespace TownOfHost
         Tuna = CustomRoles.Tuna,
         Onmyoji = CustomRoles.Onmyoji,
         Eater = CustomRoles.Eater,
+        Spelunker = CustomRoles.Spelunker,
 
         HASTroll = CustomRoles.HASTroll,
         TaskPlayerB = CustomRoles.TaskPlayerB,

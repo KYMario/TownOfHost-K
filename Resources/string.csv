@@ -213,6 +213,7 @@
 "Cupid","Cupid","キューピッド","丘比特","丘比特","Купидон","Cupido","Cupido"
 "CupidLovers","CupidLovers","キューピッドラバーズ","丘比特恋人","丘比特恋人","КупидонЛюбовники","CupidoAmantes","CupidoAmantes"
 "Eater","Eater","イーター"
+"Spelunker","Spelunker","スペランカー"
 "#NeutralName"
 
 "#コンビネーション役職"
@@ -530,6 +531,7 @@
 "FoolInfo","Great power demands great justice","大いなる力は大いなる正義のために"
 "CupidInfo","Let's tie the red thread of fate.","運命の赤い糸を結ぼう"
 "EaterInfo","Consume it all","全てを食らい尽くせ"
+"SpelunkerInfo","Watch your step.","足元に気をつけろ。"
 "#NeutralInfo"
 
 "# HideAndSeek"
@@ -781,6 +783,7 @@
 "FoolInfoLong","A combination role with <#be7c35>Nue</color>.\n\n- Kill a killable role once and the Crewmates win\n- If enabled in settings and you are alive when the Crewmates win\n\nMeeting either condition grants an additional victory.\nA neutral role whose body becomes an Impostor, gaining Kill and vent abilities.\n\nIf guessed by Nue, you die and Nue gains a self-destruct attack ability.\nFortune-telling results will show you as an Impostor.","<#be7c35>鵺(ぬえ)</color>とのコンビネーション役職。\n\n・キル可能役職を1度キルし,クルーが勝利\n・設定有効かつ,自身が生存した状態でクルーが勝利\nのどちらかの条件を満たすと追加勝利。\n体がインポスターになってしまいキル、ベントが解放されたニュートラル\n\n鵺に推測されると死亡し、鵺が自爆特攻能力を持つようになってしまう。\n占い結果がインポスターになる。"
 "CupidInfoLong","","キルボタンで別々のプレイヤーにクリックすることでその２人のプレイヤーをラバーズにすることができる。\nクリックしたプレイヤーがラバーズ,マドンナ,片思い,片思いの想い人のいずれかだった場合設定の役職に変化する。"
 "EaterInfoLong","Use the Phantom button to toggle Eat/Report mode. Eat consumes corpses to prevent reports; Swallow starts consuming a player (takes time) and also kills a nearby player. Win by using Eat+Swallow specified times or if no killers remain.","能力:【丸呑み|食らう】を使用しクルーをキルすることができる。\n\nファントムボタンで<b>食らう</b>モードと<b>レポート</b>モードを切り替えることができます。\n食らうモード中に死体を通報すると死体を食べることができます。\nレポートモード中に死体を通報すると通常通りレポートすることができます。\nキルボタンでプレイヤーを丸呑みすることができ、丸呑みにかかる時間の間ずっと丸呑みするプレイヤーの近くにいないと丸呑みすることはできず、キャンセルされます。\n丸呑みを行うと死体が残らずプレイヤーをキルすることができます。\n勝利条件は【食らう|丸呑み】の合計回数が設定値に満たした時、\n自分以外の生存者が一人で他の人がクルーかキルボタンを持たない第三陣営の場合。\nそしてイーターはキル陣営判定であるのでインポスターやジャッカルと1対1盤面でも試合は終わりません。"
+"SpelunkerInfoLong","You may die from accidents: doors, vents, ladders, lifts, and ziplines. If you survive until the game ends, you take over and win solo.","ドアを開ける・ベント付近を通る・はしご/リフト/ジップラインで転落するなどの事故で死亡する可能性がある。生存した状態で試合が終了すると乗っ取り単独勝利。"
 "#NeutralInfoLong"
 
 "# ImpostorDescInfos"
@@ -1849,6 +1852,13 @@
 "EaterResetCooldownOnMeeting","Reset cooldown on meeting start","会議開始時にクールタイムをリセットする"
 "EaterShowArrow","Show arrow to corpses","死体への矢印を表示する"
 "Swallowed","Swallowed","丸呑み"
+"SpelunkerVentDeathChance","Vent Death Chance","ベント死の確率"
+"SpelunkerLadderFallChance","Ladder Fall Death Chance","はしごで転落死する確率"
+"SpelunkerLiftZiplineFallChance","Lift / Zipline Fall Death Chance","リフト・ジップラインで転落死する確率"
+"SpelunkerDoorDeathChance","Door Death Chance","ドアを開けて死ぬ確率"
+"SpelunkerDieBySabotage","Can Die By Sabotage","サボタージュで死亡する"
+"SpelunkerLightSabotageDeathTime","Lights Death Time","停電で死亡するまでの時間"
+"SpelunkerCommsSabotageDeathTime","Comms Death Time","コミュ障害で死亡するまでの時間"
 
 "## Unit Role Setting"
 "BraidKillCooldown","Bread Task Complete Driver Killcool","ブレイドが全タスク完了時のキルクール"
@@ -2346,6 +2356,7 @@
 "DeathReason.NotGather","NotGather","集えず",
 "DeathReason.Hit","Hit","命中"
 "DeathReason.Suffocation","Suffocation","窒息"
+"DeathReason.Swallowed","Swallowed","丸呑み"
 "DeathReason.etc","Other","その他","其他","其他","Другое","Outros",""
 "Alive","Alive","生存","存活","存活","Выжил","Vivo",""
 "Win","Wins","勝利","胜利","勝利"," Победили","Vitória",""

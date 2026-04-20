@@ -1,32 +1,23 @@
 # Town Of Host-Pko
 
-[English version here](https://github.com/KYMario/TownOfHost-Pko/blob/main/README-EN.md)<br>
-
-[![Discord](./Images/TownOfHostPko_readme.png)](https://discord.gg/5DPqH8seFq)
-
-<p align="center"><a href="https://github.com/KYMario/TownOfHost-Pko/releases/"><img src="https://badgen.net/github/release/KYMario/TownOfHost-Pko"></a></p>
-
 ## この Mod について
 
 この Mod は非公式のものであり、この Mod の開発に関して Among Us の開発元である"Innersloth"は一切関与していません。<br>
 この Mod の問題などに関して公式に問い合わせないでください。<br>
 
-この Mod はTOHに役職や機能など追加したModです
+この Mod はTOH,TOHKに役職や機能など追加したModです
 TOH-Pで起きたバグは本家や他MODには報告しないでまずはkに報告してください。<br>
 
-また、TOH-Pに関する質問、バグ報告は基本、[DiscordServer](https://discord.gg/5DPqH8seFq)でのみ受け付けております。<br>
-
-機能面などを開発者にDMで聞くのは超大迷惑なので基本おやめください。<br>
+また、TOH-Pに関する質問、バグ報告は基本、[DiscordServer](https://discord.gg/PQ5CrVHC25)でのみ受け付けております。<br>
 
 [本家TOHはこちら](https://github.com/tukasa0001/TownOfHost)<br>
-
-## [Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)もあるよ!
+[TOHKはこちら](https://github.com/KYMario/TownOfHost-K)<br>
 
 ## リリース
 AmongUsバージョン : **17.0.0**~<br>
 
-**最新版は[こちら](https://github.com/KYMario/TownOfHost-Pko/releases/latest)**<br>
-過去バージョンは[こちら](https://github.com/KYMario/TownOfHost-Pko/releases)<br>
+**最新版は[こちら](https://github.com/satokazoku/TownOfHost-Pko/releases/latest)**<br>
+過去バージョンは[こちら](https://github.com/satokazoku/TownOfHost-Pko/releases)<br>
 
 ## 公開ルームについて
 > [!Note]
@@ -92,69 +83,17 @@ Modが使えなくなるよ!<br>
 その処罰に値する利用方法をしないよ！！<br>
 ってことです。
 
-## TownOfHost-Pkoってなんだい?
-他のAmongUsのModとはまた一味違った、斬新で独特な機能や役職が多いModです。<br>
-
-HostModなので部屋主のみModを導入すれば、<br>
-参加者はModを導入する必要もカスタムサーバー追加等の面倒な手間なしで<br>
-導入者が部屋を建て、その部屋に入ることでTownOfHost-Pkoを遊ぶことができます！<br>
-
-詳しい仕様などは[Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)やゲーム内確認できます<br>
-
-## 役職について
-かなりの数があるので[Wiki](https://github.com/KYMario/TownOfHost-Pko/wiki)をご確認ください。
-
-## 機能,モードについて
-
-<details>
-
-<summary>モード</summary>
-
-- [スタンダード](https://github.com/KYMario/TownOfHost-Pko/wiki/スタンダード)
-- - [役職入りかくれんぼ](https://github.com/KYMario/TownOfHost-Pko/wiki/役職入りかくれんぼ)
-- - [サドンデスモード](https://github.com/KYMario/TownOfHost-Pko/wiki/サドンデスモード)
-- [かくれんぼ](https://github.com/KYMario/TownOfHost-Pko/wiki/かくれんぼ)
-- [タスクバトル](https://github.com/KYMario/TownOfHost-Pko/wiki/タスクバトル)
-
-</details>
-
-その他機能、変更点などは基本wikiをご覧ください。<br>
-
-> **Note**
-> - 棒読みちゃんを起動してる時のみ読み上げ設定をONにしてください (自動でOFFになります)
-> - [TOHP_DATA\options.txt](#オプションファイル)からポートを設定できます。
-
-#### 外部リンク
-　TownOfHost-Pko<br>
-　　[Twitter(X)](https://x.com/TOHPserver_k)<br>
-
 **TownOfHost-Pkoの開発者**<br>
-　暇な人 KY/けーわい<br>
-　　[Youtube](https://www.youtube.com/@MTGC_KY)<br>
-　　[Twitter(X)](https://x.com/ky_mario_ky) ・ [Bluesky](https://bsky.app/profile/kymario.bsky.social)<br>
-
-　タイガー<br>
-　　[Youtube](https://www.youtube.com/@torataiga-)<br>
-　　[Twitter(X)](https://x.com/TVppJ90s9G2sPkq) ・ [Bluesky](https://bsky.app/profile/taiga1.bsky.social)<br>
-
-　夜藍<br>
-　　[Youtube](https://www.youtube.com/@Yoran_Furan)<br>
-　　[Twitter(X)](https://x.com/Yoran_FuranOshi) ・ [Bluesky](https://bsky.app/profile/yoran-furanoshi.bsky.social)<br>
-
-　ねむa<br>
-　　[Twitter(X)](https://x.com/nemu_adatoomou)<br>
-
-　はろん<br>
-　　[Twitter(X)](https://x.com/HellWeen11)<br>
-
-**TownOfHost-Pkoのサポーター**<br>
-　りぃりぃ<br>
-　　[Twitter(X)](https://x.com/rixirixi0202)<br>
+　しぇとこ<br>
+　　[Youtube](https://youtube.com/channel/UCM1gs89uwjOJF3EcVc1ZEOA?si=a1ffdwsBjGbJKig6)<br>
 
 ※本家TownOfHost様の開発者はここでは省略させていただきます
 #### クレジット
 [Town Of Host](https://github.com/tukasa0001/TownOfHost)<br>
 　Fork元の本家です。<br>TownOfHost様にある機能はTownOfHost-Pkoでも大体実装されています<br>
+
+[Town Of Host_K](https://github.com/KYMario/TownOfHost-K)<br>
+　Fork元です。<br>TownOfHost_K様にある機能はTownOfHost-Pkoでも大体実装されています<br>
 
 [Town Of Host_Y](https://github.com/Yumenopai/TownOfHost_Y)<br>
 　会議時の役職表示、会議拡張、ワーカホリック,属性名、一部役職を参考/移植させて頂きました！<br>
@@ -169,7 +108,7 @@ HostModなので部屋主のみModを導入すれば、<br>
 　10.24アプデの対応で参考にさせていただきました！<br>
 
 [SuperNewRoles](https://github.com/ykundesu/SuperNewRoles) <br>
-　天秤、ミーティングシェリフ、トイレファン、イビルギャンブラー、ペンギン、マッドスーサイドを移植/参考<br>
+　スペランカー、神、フリーター、マグロ、陰陽師、忘却者、波動砲ジャッカル、弾、波動砲、ダブルキラー、自爆魔、サンタ、村長、天秤、ミーティングシェリフ、トイレファン、イビルギャンブラー、ペンギン、マッドスーサイドを移植/参考<br>
 　ブラックリスト等や様々な部分を参考にさせて頂きました！<br>
 
 [TheOtherRoles](https://github.com/TheOtherRolesAU/TheOtherRoles)<br>
