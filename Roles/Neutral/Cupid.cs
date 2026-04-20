@@ -127,6 +127,21 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
         if (!CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId)) return "";
         return $"<color={RoleInfo.RoleColorCode}>♥</color>";
     }
+    public override void OnFixedUpdate(PlayerControl player)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (hasDesignated) return;
+        if (target1 == byte.MaxValue) return;
+
+        var t1 = GetPlayerById(target1);
+        if (t1 == null || !t1.IsAlive())
+        {
+            target1 = byte.MaxValue;
+            SendRPC();
+            Utils.SendMessage(GetString("CupidTarget1Dead"), Player.PlayerId);
+            UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
+        }
+    }
 
     public void OnCheckMurderAsKiller(MurderInfo info)
     {

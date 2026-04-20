@@ -222,6 +222,15 @@ namespace TownOfHost
                                 case 4: Main.Preset5.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
                                 case 5: Main.Preset6.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
                                 case 6: Main.Preset7.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 7: Main.Preset8.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 8: Main.Preset9.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 9: Main.Preset10.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 10: Main.Preset11.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 11: Main.Preset12.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 12: Main.Preset13.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 13: Main.Preset14.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 14: Main.Preset15.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
+                                case 15: Main.Preset16.Value = GameSettingMenuStartPatch.priset.textArea.text; break;
                             }
                             GameSettingMenuStartPatch.priset.textArea.Clear();
                         }

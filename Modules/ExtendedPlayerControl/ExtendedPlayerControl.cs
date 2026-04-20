@@ -435,10 +435,12 @@ namespace TownOfHost
                 CustomRoles.Jackal or
                 CustomRoles.JackalMafia or
                 CustomRoles.JackalAlien or
+                CustomRoles.JackalHadouHo or
                 CustomRoles.Remotekiller or
                 CustomRoles.CountKiller or
                 CustomRoles.Fool or
-                CustomRoles.Altair;
+                CustomRoles.Altair or
+                CustomRoles.Eater;
         }
         public static bool IsNeutralKiller(this PlayerControl player)
         {

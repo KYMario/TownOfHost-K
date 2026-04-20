@@ -60,7 +60,6 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
     bool Awakened;
     int Receivedcount;
 
-    // ★ 霊魂オプション・管理
     static OptionItem OptionShowSoul;
     static bool ShowSoul;
     private readonly List<SoulObject> SoulObjects;
@@ -86,7 +85,6 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
         OptionFirstMaxdelay = FloatOptionItem.Create(RoleInfo, 13, OptionName.SeerFirstMaxdelay, new(0, 60, 0.5f), 7f, false, OptionDelay).SetValueFormat(OptionFormat.Seconds);
         OptionLastMindelay = FloatOptionItem.Create(RoleInfo, 14, OptionName.SeerLastMindelay, new(0, 60, 0.5f), 0f, false, OptionDelay).SetValueFormat(OptionFormat.Seconds);
         OptionLastMaxdelay = FloatOptionItem.Create(RoleInfo, 15, OptionName.SeerLastMaxdelay, new(0, 60, 0.5f), 5f, false, OptionDelay).SetValueFormat(OptionFormat.Seconds);
-        // ★ 霊魂表示オプション（ID:18）
         OptionShowSoul = BooleanOptionItem.Create(RoleInfo, 18, OptionName.SeerShowSoul, true, false);
     }
 
@@ -153,7 +151,6 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
-        // ★ 既存のキルフラッシュ遅延処理
         bool IsCalled = (!Utils.IsActive(SystemTypes.Comms) || ActiveComms) is false || !Player.IsAlive();
         foreach (var data in lateTaskdatas)
         {
@@ -167,10 +164,9 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
         }
         lateTaskdatas.Clear();
 
-        // ★ 霊魂記録処理
         if (!ShowSoul) return;
         if (!Player.IsAlive()) return;
-        if (target == null) return; // 緊急会議ボタン
+        if (target == null) return;
 
         var deadBody = UnityEngine.Object.FindObjectsOfType<DeadBody>()
             .FirstOrDefault(db => db.ParentId == target.PlayerId);
@@ -186,12 +182,16 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
             PendingDeadBodies.Add((pos, colorId, playerName));
     }
 
-    // ★ 会議終了後に霊魂を設置
     public override void AfterMeetingTasks()
     {
         if (!ShowSoul) return;
         if (!AmongUsClient.Instance.AmHost) return;
         if (!Player.IsAlive()) return;
+
+        // ★ 前のターンの霊魂を全部消す
+        foreach (var soul in SoulObjects) soul?.Despawn();
+        SoulObjects.Clear();
+
         if (PendingDeadBodies.Count == 0) return;
 
         foreach (var (pos, colorId, playerName) in PendingDeadBodies)
@@ -200,7 +200,6 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
         PendingDeadBodies.Clear();
     }
 
-    // ★ シーアが死んだら霊魂を全部消す
     public override void OnMurderPlayerAsTarget(MurderInfo info)
     {
         foreach (var soul in SoulObjects) soul?.Despawn();
@@ -216,7 +215,7 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
         if (MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) is false) return "";
 
         string soulText = ShowSoul && SoulObjects.Count > 0
-            ? $"<color=#c8a2c8> 👻{SoulObjects.Count}</color>"
+            ? $"<color=#c8a2c8> 霊魂{SoulObjects.Count}</color>"
             : "";
 
         if (DelayMode)
@@ -252,61 +251,59 @@ public sealed class Seer : RoleBase, IKillFlashSeeable
 }
 
 // ======================================================
-// ★ 霊魂ダミーオブジェクト
+// ★ 霊魂ダミーオブジェクト（新しいCustomNetObject APIに対応）
 // ======================================================
 public sealed class SoulObject : CustomNetObject
 {
     private static readonly string[] ColorCodes =
     {
-        "#c51111", // 0  Red
-        "#132ed1", // 1  Blue
-        "#117f2d", // 2  Green
-        "#ed54ba", // 3  Pink
-        "#ef7d0d", // 4  Orange
-        "#f5f557", // 5  Yellow
-        "#3f474e", // 6  Black
-        "#d6e0f0", // 7  White
-        "#6b2fbb", // 8  Purple
-        "#71491e", // 9  Brown
-        "#38fedc", // 10 Cyan
-        "#50ef39", // 11 Lime
-        "#ff0000", // 12 Maroon
-        "#ffff00", // 13 Rose
-        "#fffebe", // 14 Banana
-        "#c8a2c8", // 15 Coral
-        "#4d2b6e", // 16 Sunset
-        "#00c3fc", // 17 Teal
+        "#c51111", "#132ed1", "#117f2d", "#ed54ba",
+        "#ef7d0d", "#f5f557", "#3f474e", "#d6e0f0",
+        "#6b2fbb", "#71491e", "#38fedc", "#50ef39",
+        "#ff0000", "#ffff00", "#fffebe", "#c8a2c8",
+        "#4d2b6e", "#00c3fc",
     };
+
+    private readonly int _colorId;
+    private readonly string _playerName;
+    private readonly PlayerControl _seer;
+    private readonly Vector2 _spawnPos;
 
     public SoulObject(Vector2 position, int colorId, string playerName, PlayerControl seer)
     {
-        string color = colorId >= 0 && colorId < ColorCodes.Length
-            ? ColorCodes[colorId]
-            : "#ffffff";
+        _colorId = colorId;
+        _playerName = playerName;
+        _seer = seer;
+        _spawnPos = position;
 
-        // ★ スプライト: 死者のカラーで霊魂を表現
-        string sprite = $"<size=150%><color={color}>👻</color></size>";
-
-        CreateNetObject(sprite, position);
-
-        _ = new LateTask(() =>
-        {
-            // ★ シーア以外を非表示
-            foreach (var pc in AllPlayerControls)
-            {
-                if (pc.PlayerId != seer.PlayerId)
-                    Hide(pc);
-            }
-
-            // ★ 名前を「霊魂\n(プレイヤー名)」にする
-            if (PlayerControl != null && PlayerControl.cosmetics?.nameText != null)
-            {
-                PlayerControl.cosmetics.nameText.text =
-                    $"<color={color}>霊魂\n<size=70%>({playerName})</size></color>";
-            }
-        }, 0.5f, "SoulObject.Setup", true);
+        // ★ 新API: 位置だけ渡す
+        CreateNetObject(position);
     }
 
-    // ★ 霊魂は会議をまたいでも消えない（累積して残る）
+    // ★ スポーン後に外見・名前・位置・表示制限をまとめて設定
+    protected override void OnCreated()
+    {
+        string color = _colorId >= 0 && _colorId < ColorCodes.Length
+            ? ColorCodes[_colorId]
+            : "#ffffff";
+
+        // ★ 死者のカラーで胴体を染める
+        SetAppearance(_colorId);
+
+        // ★ 名前を「霊魂\n(プレイヤー名)」にする
+        SetName($"<color={color}>霊魂\n<size=70%>({_playerName})</size></color>");
+
+        // ★ 位置を固定
+        SnapToPosition(_spawnPos);
+
+        // ★ シーア以外を非表示
+        foreach (var pc in AllPlayerControls)
+        {
+            if (_seer == null || pc.PlayerId != _seer.PlayerId)
+                Hide(pc);
+        }
+    }
+
+    // ★ 霊魂は会議をまたいでも消えない
     public override void OnMeeting() { }
 }

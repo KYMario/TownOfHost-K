@@ -83,7 +83,9 @@ namespace TownOfHost
         {
             Main.Preset1.Value, Main.Preset2.Value, Main.Preset3.Value,
             Main.Preset4.Value, Main.Preset5.Value,Main.Preset6.Value,
-            Main.Preset7.Value
+            Main.Preset7.Value, Main.Preset8.Value, Main.Preset9.Value, Main.Preset10.Value,
+            Main.Preset11.Value, Main.Preset12.Value,Main.Preset13.Value,
+            Main.Preset14.Value, Main.Preset15.Value, Main.Preset16.Value,
         };
 
         // ゲームモード
@@ -276,6 +278,15 @@ namespace TownOfHost
         public static OptionItem AddedPreset5;
         public static OptionItem AddedPreset6;
         public static OptionItem AddedPreset7;
+        public static OptionItem AddedPreset8;
+        public static OptionItem AddedPreset9;
+        public static OptionItem AddedPreset10;
+        public static OptionItem AddedPreset11;
+        public static OptionItem AddedPreset12;
+        public static OptionItem AddedPreset13;
+        public static OptionItem AddedPreset14;
+        public static OptionItem AddedPreset15;
+        public static OptionItem AddedPreset16;
 
         // ランダムスポーン
         public static OptionItem EnableRandomSpawn;
@@ -1153,6 +1164,33 @@ namespace TownOfHost
                 .SetParent(RandomPreset);
             AddedPreset7 = BooleanOptionItem.Create(113507, "RandomPreset", false, TabGroup.MainSettings, true)
                 .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset7.Value))
+                .SetParent(RandomPreset);
+            AddedPreset8 = BooleanOptionItem.Create(113508, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset8.Value))
+                .SetParent(RandomPreset);
+            AddedPreset9 = BooleanOptionItem.Create(113509, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset9.Value))
+                .SetParent(RandomPreset);
+            AddedPreset10 = BooleanOptionItem.Create(113510, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset10.Value))
+                .SetParent(RandomPreset);
+            AddedPreset11 = BooleanOptionItem.Create(113511, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset11.Value))
+                .SetParent(RandomPreset);
+            AddedPreset12 = BooleanOptionItem.Create(113512, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset12.Value))
+                .SetParent(RandomPreset);
+            AddedPreset13 = BooleanOptionItem.Create(113513, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset13.Value))
+                .SetParent(RandomPreset);
+            AddedPreset14 = BooleanOptionItem.Create(113514, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset14.Value))
+                .SetParent(RandomPreset);
+            AddedPreset15 = BooleanOptionItem.Create(113515, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset15.Value))
+                .SetParent(RandomPreset);
+            AddedPreset16 = BooleanOptionItem.Create(113516, "RandomPreset", false, TabGroup.MainSettings, true)
+                .SetOptionName(() => string.Format(Translator.GetString("AddedPreset"), Main.Preset16.Value))
                 .SetParent(RandomPreset);
 
             DisableTaskWin = BooleanOptionItem.Create(1_000_200, "DisableTaskWin", false, TabGroup.MainSettings, false)

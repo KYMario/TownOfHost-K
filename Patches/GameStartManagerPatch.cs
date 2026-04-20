@@ -409,6 +409,15 @@ namespace TownOfHost
                     if (Options.AddedPreset5.GetBool()) randompresets.Add(4);
                     if (Options.AddedPreset6.GetBool()) randompresets.Add(5);
                     if (Options.AddedPreset7.GetBool()) randompresets.Add(6);
+                    if (Options.AddedPreset8.GetBool()) randompresets.Add(7);
+                    if (Options.AddedPreset9.GetBool()) randompresets.Add(8);
+                    if (Options.AddedPreset10.GetBool()) randompresets.Add(9);
+                    if (Options.AddedPreset11.GetBool()) randompresets.Add(10);
+                    if (Options.AddedPreset12.GetBool()) randompresets.Add(11);
+                    if (Options.AddedPreset13.GetBool()) randompresets.Add(12);
+                    if (Options.AddedPreset14.GetBool()) randompresets.Add(13);
+                    if (Options.AddedPreset15.GetBool()) randompresets.Add(14);
+                    if (Options.AddedPreset16.GetBool()) randompresets.Add(15);
 
                     if (randompresets.Count <= 0) return;
                     var presetId = randompresets[rand.Next(randompresets.Count)];

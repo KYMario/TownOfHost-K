@@ -840,6 +840,7 @@ public enum CustomRoles
     TimeSleeper,
     StandMaster,
     EvilBlender,
+    DummySpawner,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,
@@ -946,6 +947,7 @@ public enum CustomRoles
     Shikigami,
     Cupid,
     Oblivion,
+    Eater,
     //TOH-K
     Remotekiller,
     Chef,

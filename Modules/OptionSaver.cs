@@ -102,6 +102,15 @@ public static class OptionSaver
             Main.Preset5.Value = Translator.GetString("Preset_5");
             Main.Preset6.Value = Translator.GetString("Preset_6");
             Main.Preset7.Value = Translator.GetString("Preset_7");
+            Main.Preset8.Value = Translator.GetString("Preset_8");
+            Main.Preset9.Value = Translator.GetString("Preset_9");
+            Main.Preset10.Value = Translator.GetString("Preset_10");
+            Main.Preset11.Value = Translator.GetString("Preset_11");
+            Main.Preset12.Value = Translator.GetString("Preset_12");
+            Main.Preset13.Value = Translator.GetString("Preset_13");
+            Main.Preset14.Value = Translator.GetString("Preset_14");
+            Main.Preset15.Value = Translator.GetString("Preset_15");
+            Main.Preset16.Value = Translator.GetString("Preset_16");
             return;
         }
         Dictionary<int, int> singleOptions = serializableOptionsData.SingleOptions;

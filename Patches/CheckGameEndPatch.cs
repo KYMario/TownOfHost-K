@@ -126,11 +126,6 @@ namespace TownOfHost
                 {
                     CurseMaker.CheckWin();
                     Fox.SFoxCheckWin(ref reason);
-                    // ★ 神の勝利判定
-                    God.CheckWin(ref reason);
-                    // ★ マグロの勝利判定
-                    Tuna.CheckWin(ref reason);
-                    Onmyoji.CheckWinStatic(ref reason);
                 }
                 AsistingAngel.CheckAddWin();
                 foreach (var phantomthiefplayer in PlayerCatch.AllAlivePlayerControls.Where(pc => pc.GetCustomRole() is CustomRoles.PhantomThief))

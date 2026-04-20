@@ -7,41 +7,47 @@ namespace TownOfHost.Patches
     public static class AutoStartPatch
     {
         private static float timer = 0f;
+        private static int lastPlayerCount = 0;
 
         public static void Postfix()
         {
-            // ホスト以外は実行しない
             if (!AmongUsClient.Instance.AmHost) return;
-
-            // GMがONのときだけ動作
             if (!Options.EnableGM.GetBool()) return;
 
-            // ロビー以外では動作しない
             if (!GameStates.IsLobby)
             {
                 timer = 0f;
+                lastPlayerCount = 0;
                 return;
             }
 
-            // 現在の人数
             int playerCount = PlayerControl.AllPlayerControls.Count;
 
-            // ★ 人数によって制限時間を変える
-            float limit = (playerCount == 15) ? 180f : 420f;
+            // ★ 基本は7分（420秒）
+            float limit = 420f;
 
-            // タイマー進行
+            // ★ 途中参加で15人になった瞬間
+            if (lastPlayerCount < 15 && playerCount == 15)
+            {
+                // カウント中なら残り1分に調整
+                if (timer > 0f && timer < limit)
+                {
+                    timer = limit - 60f; // 420 - 60 = 360秒 → 残り1分
+                }
+            }
+
+            lastPlayerCount = playerCount;
+
             timer += Time.deltaTime;
 
-            // 規定時間経過で開始
             if (timer >= limit)
             {
                 timer = 0f;
 
-                // ★ TOH-P 正式のゲーム開始処理
                 var gsm = DestroyableSingleton<GameStartManager>.Instance;
                 if (gsm != null)
                 {
-                    gsm.countDownTimer = 0.1f; // 即開始
+                    gsm.countDownTimer = 0.1f;
                     gsm.startState = GameStartManager.StartingStates.Countdown;
                 }
             }

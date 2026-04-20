@@ -213,21 +213,6 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             $"{UtilsName.GetPlayerColor(target)}({UtilsRoleText.GetRoleName(previousRole)})をシェリフに任命した"
         );
 
-        string msg = NotifyTarget.GetValue() >= 1
-            ? $"{Player.Data.PlayerName}(村長)が{target.Data.PlayerName}をシェリフに任命しました！"
-            : "";
-
-        switch (NotifyTarget.GetValue())
-        {
-            case 0: break;
-            case 1: SendMessage(msg); break;
-            case 2: SendMessage(msg, Player.PlayerId); break;
-            case 3: SendMessage(msg, target.PlayerId); break;
-            case 4:
-                SendMessage(msg, Player.PlayerId);
-                SendMessage(msg, target.PlayerId);
-                break;
-        }
 
         SendRPC();
         UtilsNotifyRoles.NotifyRoles();

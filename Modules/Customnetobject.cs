@@ -16,69 +16,15 @@ public class CustomNetObject
     public static readonly List<CustomNetObject> AllObjects = new();
     private static int MaxId = -1;
 
+    // ★ スポーンキュー（複数同時スポーン時の競合を防ぐ）
+    private static readonly Queue<Action> SpawnQueue = new();
+    private static bool IsSpawning = false;
+
     protected int Id;
     public PlayerControl PlayerControl;
     public Vector2 Position;
-    private string Sprite;
 
-    // ★ EHRと全く同じRpcChangeSpriteの実装
-    public void RpcChangeSprite(string sprite)
-    {
-        if (!AmongUsClient.Instance.AmHost) return;
-        Sprite = sprite;
-
-        var outfit = PlayerControl.LocalPlayer.Data.Outfits[PlayerOutfitType.Default];
-        string origName = outfit.PlayerName;
-        int origColor = outfit.ColorId;
-        string origHat = outfit.HatId;
-        string origSkin = outfit.SkinId;
-        string origPet = outfit.PetId;
-        string origVisor = outfit.VisorId;
-
-        var sender = CustomRpcSender.Create("CNO.RpcChangeSprite", SendOption.Reliable);
-        MessageWriter writer = sender.stream;
-        sender.StartMessage();
-
-        outfit.PlayerName = "<size=14><br></size>" + sprite;
-        outfit.ColorId = 0;
-        outfit.HatId = "";
-        outfit.SkinId = "";
-        outfit.PetId = "";
-        outfit.VisorId = "";
-
-        writer.StartMessage(1);
-        writer.WritePacked(PlayerControl.LocalPlayer.Data.NetId);
-        PlayerControl.LocalPlayer.Data.Serialize(writer, false);
-        writer.EndMessage();
-
-        try { PlayerControl.Shapeshift(PlayerControl.LocalPlayer, false); }
-        catch (Exception e) { Logger.Error(e.ToString(), "CNO.RpcChangeSprite"); }
-
-        sender.StartRpc(PlayerControl.NetId, RpcCalls.Shapeshift)
-            .WriteNetObject(PlayerControl.LocalPlayer)
-            .Write(false)
-            .EndRpc();
-
-        outfit.PlayerName = origName;
-        outfit.ColorId = origColor;
-        outfit.HatId = origHat;
-        outfit.SkinId = origSkin;
-        outfit.PetId = origPet;
-        outfit.VisorId = origVisor;
-
-        writer.StartMessage(1);
-        writer.WritePacked(PlayerControl.LocalPlayer.Data.NetId);
-        PlayerControl.LocalPlayer.Data.Serialize(writer, false);
-        writer.EndMessage();
-
-        sender.EndMessage();
-        sender.SendMessage();
-    }
-
-    public void TP(Vector2 position)
-    {
-        Position = position;
-    }
+    protected virtual bool IsDynamic => false;
 
     public void Despawn()
     {
@@ -114,11 +60,7 @@ public class CustomNetObject
         {
             _ = new LateTask(() =>
             {
-                try
-                {
-                    PlayerControl.transform.FindChild("Names")
-                        .FindChild("NameText_TMP").gameObject.SetActive(false);
-                }
+                try { PlayerControl.transform.FindChild("Names").FindChild("NameText_TMP").gameObject.SetActive(false); }
                 catch { }
                 PlayerControl.Visible = false;
             }, 0.1f, "CNO.Hide.Local", true);
@@ -137,34 +79,90 @@ public class CustomNetObject
         writer.Recycle();
     }
 
-    protected virtual void OnFixedUpdate()
+    protected virtual void OnFixedUpdate() { }
+
+    // ★ 外見を設定（Data.Serializeで全員に送る）
+    protected void SetAppearance(int colorId, string skinId = "", string hatId = "", string petId = "", string visorId = "")
     {
-        try
-        {
-            if (!AmongUsClient.Instance.AmHost) return;
+        if (PlayerControl == null) return;
 
-            if (AmongUsClient.Instance.AmClient)
-            {
-                try { PlayerControl.NetTransform.SnapTo(Position, (ushort)(PlayerControl.NetTransform.lastSequenceId + 1U)); }
-                catch { }
-            }
+        var outfit = PlayerControl.Data.Outfits[PlayerOutfitType.Default];
+        outfit.ColorId = colorId;
+        outfit.SkinId = skinId ?? "";
+        outfit.HatId = hatId ?? "";
+        outfit.PetId = petId ?? "";
+        outfit.VisorId = visorId ?? "";
 
-            ushort num = (ushort)(PlayerControl.NetTransform.lastSequenceId + 2U);
-            MessageWriter mw = AmongUsClient.Instance.StartRpcImmediately(
-                PlayerControl.NetTransform.NetId, 21, SendOption.None);
-            NetHelpers.WriteVector2(Position, mw);
-            mw.Write(num);
-            AmongUsClient.Instance.FinishRpcImmediately(mw);
-        }
-        catch { }
+        PlayerControl.RpcSetColor((byte)colorId);
+
+        // Data同期
+        MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
+        writer.StartMessage(5);
+        writer.Write(AmongUsClient.Instance.GameId);
+        writer.StartMessage(1);
+        writer.WritePacked(PlayerControl.Data.NetId);
+        PlayerControl.Data.Serialize(writer, false);
+        writer.EndMessage();
+        writer.EndMessage();
+        AmongUsClient.Instance.SendOrDisconnect(writer);
+        writer.Recycle();
     }
 
-    // ★ EHRと全く同じCreateNetObjectの実装
-    protected void CreateNetObject(string sprite, Vector2 position)
+    // ★ 名前を設定
+    protected void SetName(string name)
+    {
+        if (PlayerControl == null) return;
+
+        // ローカル
+        if (PlayerControl.cosmetics?.nameText != null)
+            PlayerControl.cosmetics.nameText.text = name;
+
+        // RPC（SetNameの正しい引数: playerName のみ）
+        var writer = AmongUsClient.Instance.StartRpcImmediately(
+            PlayerControl.NetId, (byte)RpcCalls.SetName, SendOption.Reliable);
+        writer.Write(PlayerControl.Data.NetId);
+        writer.Write(name);
+        writer.Write(false);
+        AmongUsClient.Instance.FinishRpcImmediately(writer);
+    }
+
+    // ★ 位置固定
+    protected void SnapToPosition(Vector2 position)
+    {
+        if (PlayerControl == null) return;
+        Position = position;
+
+        try { PlayerControl.NetTransform.SnapTo(position); }
+        catch { }
+
+        ushort sid = (ushort)(PlayerControl.NetTransform.lastSequenceId + 100U);
+        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
+            PlayerControl.NetTransform.NetId, (byte)RpcCalls.SnapTo, SendOption.Reliable);
+        NetHelpers.WriteVector2(position, writer);
+        writer.Write(sid);
+        AmongUsClient.Instance.FinishRpcImmediately(writer);
+    }
+
+    // ★ キューに追加してスポーン（競合防止）
+    protected void CreateNetObject(Vector2 position)
     {
         if (!AmongUsClient.Instance.AmHost) return;
         if (GameStates.IsLobby || GameStates.IsEnded) return;
 
+        SpawnQueue.Enqueue(() => DoCreate(position));
+        ProcessQueue();
+    }
+
+    private static void ProcessQueue()
+    {
+        if (IsSpawning || SpawnQueue.Count == 0) return;
+        IsSpawning = true;
+        var action = SpawnQueue.Dequeue();
+        action();
+    }
+
+    private void DoCreate(Vector2 position)
+    {
         PlayerControl = UnityEngine.Object.Instantiate(
             AmongUsClient.Instance.PlayerPrefab, Vector2.zero, Quaternion.identity);
         PlayerControl.PlayerId = 254;
@@ -172,11 +170,11 @@ public class CustomNetObject
         PlayerControl.notRealPlayer = true;
 
         try { PlayerControl.NetTransform.SnapTo(new Vector2(50f, 50f)); }
-        catch (Exception e) { Logger.Error(e.ToString(), "CNO.Create.SnapTo"); }
+        catch { }
 
         AmongUsClient.Instance.NetIdCnt += 1U;
 
-        // ★ EHRと同じSpawnGameDataMessage方式
+        // スポーンメッセージ
         MessageWriter msg = MessageWriter.Get(SendOption.Reliable);
         msg.StartMessage(5);
         msg.Write(AmongUsClient.Instance.GameId);
@@ -184,6 +182,21 @@ public class CustomNetObject
         SpawnGameDataMessage item = AmongUsClient.Instance.CreateSpawnMessage(PlayerControl, -2, SpawnFlags.None);
         item.SerializeValues(msg);
         msg.EndMessage();
+
+        // バニラ向け追加コンポーネント
+        for (uint i = 1; i <= 3; ++i)
+        {
+            msg.StartMessage(4);
+            msg.WritePacked(2U);
+            msg.WritePacked(-2);
+            msg.Write((byte)SpawnFlags.None);
+            msg.WritePacked(1);
+            msg.WritePacked(AmongUsClient.Instance.NetIdCnt - i);
+            msg.StartMessage(1);
+            msg.EndMessage();
+            msg.EndMessage();
+        }
+
         msg.EndMessage();
         AmongUsClient.Instance.SendOrDisconnect(msg);
         msg.Recycle();
@@ -191,87 +204,23 @@ public class CustomNetObject
         if (PlayerControl.AllPlayerControls.Contains(PlayerControl))
             PlayerControl.AllPlayerControls.Remove(PlayerControl);
 
-        PlayerControl.cosmetics.currentBodySprite.BodySprite.color = Color.clear;
         PlayerControl.cosmetics.colorBlindText.color = Color.clear;
 
         Position = position;
-        Sprite = sprite;
         ++MaxId;
         Id = MaxId;
         if (MaxId == int.MaxValue) MaxId = -1;
 
         AllObjects.Add(this);
 
-        // ★ EHRと同じ: LateTask内でSenderを使ってスプライト・位置を送信
-        _ = new LateTask(() =>
-        {
-            var outfit = PlayerControl.LocalPlayer.Data.Outfits[PlayerOutfitType.Default];
-            string origName = outfit.PlayerName;
-            int origColor = outfit.ColorId;
-            string origHat = outfit.HatId;
-            string origSkin = outfit.SkinId;
-            string origPet = outfit.PetId;
-            string origVisor = outfit.VisorId;
-
-            var sender = CustomRpcSender.Create("CNO.CreateNetObject", SendOption.Reliable);
-            MessageWriter writer = sender.stream;
-            sender.StartMessage();
-
-            outfit.PlayerName = "<size=14><br></size>" + sprite;
-            outfit.ColorId = 0;
-            outfit.HatId = "";
-            outfit.SkinId = "";
-            outfit.PetId = "";
-            outfit.VisorId = "";
-
-            writer.StartMessage(1);
-            writer.WritePacked(PlayerControl.LocalPlayer.Data.NetId);
-            PlayerControl.LocalPlayer.Data.Serialize(writer, false);
-            writer.EndMessage();
-
-            try { PlayerControl.Shapeshift(PlayerControl.LocalPlayer, false); }
-            catch (Exception e) { Logger.Error(e.ToString(), "CNO.Create.Shapeshift"); }
-
-            sender.StartRpc(PlayerControl.NetId, RpcCalls.Shapeshift)
-                .WriteNetObject(PlayerControl.LocalPlayer)
-                .Write(false)
-                .EndRpc();
-
-            outfit.PlayerName = origName;
-            outfit.ColorId = origColor;
-            outfit.HatId = origHat;
-            outfit.SkinId = origSkin;
-            outfit.PetId = origPet;
-            outfit.VisorId = origVisor;
-
-            writer.StartMessage(1);
-            writer.WritePacked(PlayerControl.LocalPlayer.Data.NetId);
-            PlayerControl.LocalPlayer.Data.Serialize(writer, false);
-            writer.EndMessage();
-
-            try { PlayerControl.NetTransform.SnapTo(position); }
-            catch (Exception e) { Logger.Error(e.ToString(), "CNO.Create.SnapTo2"); }
-
-            // ★ SnapToはStartRpcImmediatelyで送信（TOH-PのCustomRpcSenderにSnapTo用メソッドがないため）
-            sender.EndMessage();
-            sender.SendMessage();
-
-            MessageWriter snapWriter = AmongUsClient.Instance.StartRpcImmediately(
-                PlayerControl.NetTransform.NetId, (byte)RpcCalls.SnapTo, SendOption.Reliable);
-            NetHelpers.WriteVector2(position, snapWriter);
-            snapWriter.Write(PlayerControl.NetTransform.lastSequenceId);
-            AmongUsClient.Instance.FinishRpcImmediately(snapWriter);
-
-        }, 0.25f, "CNO.CreateSprite", true);
-
-        // ★ EHRと同じ: 各クライアントにPlayerId書き込みとMurderPlayer送信
+        // PlayerId割り当て（0.1秒後）
         _ = new LateTask(() =>
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 if (pc.AmOwner) continue;
 
-                var sender = CustomRpcSender.Create("CNO.CreateNetObject2", SendOption.Reliable);
+                var sender = CustomRpcSender.Create("CNO.AssignId", SendOption.Reliable);
                 MessageWriter writer = sender.stream;
                 sender.StartMessage(pc.OwnerId);
 
@@ -296,7 +245,19 @@ public class CustomNetObject
 
             PlayerControl.CachedPlayerData = PlayerControl.LocalPlayer.Data;
         }, 0.1f, "CNO.AssignId", true);
+
+        // ★ 外見・名前・位置設定（0.4秒後）
+        // ★ 終わったら次のキューを処理
+        _ = new LateTask(() =>
+        {
+            OnCreated();
+            IsSpawning = false;
+            ProcessQueue(); // 次のダミーをスポーン
+        }, 0.4f, "CNO.OnCreated", true);
     }
+
+    // ★ サブクラスで外見・名前・位置を設定
+    protected virtual void OnCreated() { }
 
     public virtual void OnMeeting()
     {
@@ -317,33 +278,51 @@ public class CustomNetObject
     {
         try
         {
+            SpawnQueue.Clear();
+            IsSpawning = false;
             foreach (var obj in AllObjects.ToArray())
                 obj?.Despawn();
             AllObjects.Clear();
         }
         catch (Exception e) { Logger.Error(e.ToString(), "CNO.Reset"); }
     }
+
+    // ★ キル可能ダミーかチェック（キラーとの距離判定）
+    public static CustomNetObject GetKillableTarget(PlayerControl killer, float range = 1.0f)
+    {
+        if (killer == null) return null;
+        var pos = killer.GetTruePosition();
+        return AllObjects
+            .Where(o => o is IKillableDummy)
+            .OrderBy(o => Vector2.Distance(pos, o.Position))
+            .FirstOrDefault(o => Vector2.Distance(pos, o.Position) <= range);
+    }
 }
 
-// ======================================================
-// ★ 使用例: マーカーオブジェクト
-// ======================================================
+// ★ キル可能ダミーのマーカーインターフェース
+public interface IKillableDummy
+{
+    void OnKilled(PlayerControl killer);
+}
+
 public sealed class MarkerObject : CustomNetObject
 {
     public MarkerObject(Vector2 position, List<byte> visibleTo = null)
     {
-        CreateNetObject("<size=200%><color=#ff0000>★</color></size>", position);
-
+        CreateNetObject(position);
         if (visibleTo != null)
         {
             _ = new LateTask(() =>
             {
                 foreach (var pc in PlayerCatch.AllPlayerControls)
-                {
-                    if (!visibleTo.Contains(pc.PlayerId))
-                        Hide(pc);
-                }
-            }, 0.4f, "MarkerObject.Hide", true);
+                    if (!visibleTo.Contains(pc.PlayerId)) Hide(pc);
+            }, 0.5f, "MarkerObject.Hide", true);
         }
+    }
+
+    protected override void OnCreated()
+    {
+        SetName("<color=#ff0000>★</color>");
+        SnapToPosition(Position);
     }
 }

@@ -259,7 +259,7 @@ namespace TownOfHost
                     button.GetComponent<PassiveButton>().OnClick = new();
                     button.GetComponent<PassiveButton>().OnClick.AddListener((Action)(() =>
                     {
-                        Application.OpenURL(OpenURL == "" ? "https://github.com/KYMario/TownOfHost-Pko/releases/latest" : OpenURL);
+                        Application.OpenURL(OpenURL == "" ? "https://github.com/satokazoku/TownOfHost-Pko/releases/latest" : OpenURL);
                         Application.Quit();
                     }));
                 }

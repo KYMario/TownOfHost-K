@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using AmongUs.GameOptions;
@@ -8,12 +9,11 @@ using BepInEx.Configuration;
 using BepInEx.Unity.IL2CPP;
 using HarmonyLib;
 using Il2CppInterop.Runtime.Injection;
-using UnityEngine;
-
 using TownOfHost.Attributes;
-using TownOfHost.Roles.Core;
 using TownOfHost.Modules;
-using System.IO;
+using TownOfHost.Roles.Core;
+using UnityEngine;
+using static Unity.Services.LevelPlay.LevelPlayBannerPosition;
 
 [assembly: AssemblyFileVersionAttribute(TownOfHost.Main.PluginVersion)]
 [assembly: AssemblyInformationalVersionAttribute(TownOfHost.Main.PluginVersion)]
@@ -57,8 +57,8 @@ namespace TownOfHost
         public static ConfigEntry<string> ExplosionKeyInput { get; private set; }
 
         public const string PluginGuid = "com.kymario.TownOfHost-Pko";
-        public const string PluginVersion = "1.0.0.0";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
-        public const string PluginShowVersion = "1.0.0.0";
+        public const string PluginVersion = "1.0.0.1";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
+        public const string PluginShowVersion = "1.0.0.1";
         public const string ModVersion = ".1.1";//リリースver用バージョン変更
 
         /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
@@ -109,6 +109,15 @@ namespace TownOfHost
         public static ConfigEntry<string> Preset5 { get; private set; }
         public static ConfigEntry<string> Preset6 { get; private set; }
         public static ConfigEntry<string> Preset7 { get; private set; }
+        public static ConfigEntry<string> Preset8 { get; private set; }
+        public static ConfigEntry<string> Preset9 { get; private set; }
+        public static ConfigEntry<string> Preset10 { get; private set; }
+        public static ConfigEntry<string> Preset11 { get; private set; }
+        public static ConfigEntry<string> Preset12 { get; private set; }
+        public static ConfigEntry<string> Preset13 { get; private set; }
+        public static ConfigEntry<string> Preset14 { get; private set; }
+        public static ConfigEntry<string> Preset15 { get; private set; }
+        public static ConfigEntry<string> Preset16 { get; private set; }
         public static ConfigEntry<string> SKey { get; private set; }
         public static ConfigEntry<string> JoinWord { get; private set; }
         public static ConfigEntry<string> RemoveWord { get; private set; }
@@ -241,6 +250,15 @@ namespace TownOfHost
             Preset5 = Config.Bind("Preset Name Options", "Preset5", "Preset_5");
             Preset6 = Config.Bind("Preset Name Options", "Preset6", "Preset_6");
             Preset7 = Config.Bind("Preset Name Options", "Preset7", "Preset_7");
+            Preset8 = Config.Bind("Preset Name Options", "Preset8", "Preset_8");
+            Preset9 = Config.Bind("Preset Name Options", "Preset9", "Preset_9");
+            Preset10 = Config.Bind("Preset Name Options", "Preset10", "Preset_10");
+            Preset11 = Config.Bind("Preset Name Options", "Preset11", "Preset_11");
+            Preset12 = Config.Bind("Preset Name Options", "Preset12", "Preset_12");
+            Preset13 = Config.Bind("Preset Name Options", "Preset13", "Preset_13");
+            Preset14 = Config.Bind("Preset Name Options", "Preset14", "Preset_14");
+            Preset15 = Config.Bind("Preset Name Options", "Preset15", "Preset_15");
+            Preset16 = Config.Bind("Preset Name Options", "Preset16", "Preset_16");
             SKey = Config.Bind("Other", "countdata", "141c2e1c");
             BetaBuildURL = Config.Bind("Other", "BetaBuildURL", "");
             MessageWait = Config.Bind("Other", "MessageWait", 1f);
@@ -440,6 +458,7 @@ namespace TownOfHost
         NotGather,
         Hit,
         Suffocation,
+        Swallowed,
         etc = -1
     }
     //WinData
@@ -487,6 +506,7 @@ namespace TownOfHost
         God = CustomRoles.God,
         Tuna = CustomRoles.Tuna,
         Onmyoji = CustomRoles.Onmyoji,
+        Eater = CustomRoles.Eater,
 
         HASTroll = CustomRoles.HASTroll,
         TaskPlayerB = CustomRoles.TaskPlayerB,

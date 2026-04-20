@@ -7,8 +7,6 @@ namespace TownOfHost.Roles.Neutral;
 
 public sealed class Jester : RoleBase, IKiller
 {
-    //Memo
-    //エンジニア置き換えのベントをいつかする。
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(Jester),
@@ -16,7 +14,7 @@ public sealed class Jester : RoleBase, IKiller
             CustomRoles.Jester,
             () => CanUseShape.GetBool() ? RoleTypes.Shapeshifter : (CanUseVent.GetBool() ? RoleTypes.Impostor : RoleTypes.Crewmate),
             CustomRoleTypes.Neutral,
-            14200,
+            44200,
             SetupOptionItem,
             "je",
             "#ec62a5",
@@ -28,22 +26,28 @@ public sealed class Jester : RoleBase, IKiller
             },
             from: From.Jester
         );
+
     public Jester(PlayerControl player)
-    : base(
-        RoleInfo,
-        player
-    )
+    : base(RoleInfo, player)
     {
+        NeedTaskComplete = OptionNeedTaskComplete.GetBool();
     }
+
     static OptionItem CanUseShape;
     static OptionItem CanUseVent;
     static OptionItem Cooldown;
     static OptionItem Duration;
     static OptionItem CanVentMove;
+    static OptionItem OptionNeedTaskComplete;
+    static bool NeedTaskComplete;
+
     enum Option
     {
-        JesterCanUseShapeshift, MadmateCanMovedByVent
+        JesterCanUseShapeshift,
+        MadmateCanMovedByVent,
+        JesterNeedTaskComplete,
     }
+
     private static void SetupOptionItem()
     {
         SoloWinOption.Create(RoleInfo, 8, defo: 1);
@@ -52,7 +56,10 @@ public sealed class Jester : RoleBase, IKiller
         Duration = FloatOptionItem.Create(RoleInfo, 5, GeneralOption.Duration, new(0f, 180f, 0.5f), 5f, false, CanUseShape).SetZeroNotation(OptionZeroNotation.Infinity).SetValueFormat(OptionFormat.Seconds);
         CanUseVent = BooleanOptionItem.Create(RoleInfo, 6, GeneralOption.CanVent, false, false);
         CanVentMove = BooleanOptionItem.Create(RoleInfo, 7, Option.MadmateCanMovedByVent, false, false, CanUseVent);
+        OptionNeedTaskComplete = BooleanOptionItem.Create(RoleInfo, 9, Option.JesterNeedTaskComplete, false, false);
+        OverrideTasksData.Create(RoleInfo, 200);
     }
+
     public bool CanUseImpostorVentButton() => CanUseVent.GetBool();
     public override bool CanUseAbilityButton() => CanUseShape.GetBool();
     public bool CanUseSabotageButton() => false;
@@ -60,6 +67,7 @@ public sealed class Jester : RoleBase, IKiller
     public bool CanKill { get; private set; } = false;
     public bool CanUseKillButton() => false;
     float IKiller.CalculateKillCooldown() => 0f;
+
     public override void ApplyGameOptions(IGameOptions opt)
     {
         AURoleOptions.ShapeshifterCooldown = Cooldown.GetFloat();
@@ -68,11 +76,14 @@ public sealed class Jester : RoleBase, IKiller
         AURoleOptions.EngineerInVentMaxTime = 0f;
         opt.SetVision(false);
     }
+
     public override bool CanVentMoving(PlayerPhysics physics, int ventId) => CanVentMove.GetBool();
+
     public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
     {
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
         if (!AmongUsClient.Instance.AmHost || Player.PlayerId != exiled.PlayerId) return;
+        if (NeedTaskComplete && !MyTaskState.IsTaskFinished) return;
 
         if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Jester, Player.PlayerId))
         {
@@ -82,7 +93,9 @@ public sealed class Jester : RoleBase, IKiller
         if (10 <= UtilsGameLog.LastLogRole.Count && PlayerCatch.AllAlivePlayersCount <= 3)
             DecidedWinner = true;
     }
+
     public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
+
     [Attributes.PluginModuleInitializer]
     public static void Load()
     {

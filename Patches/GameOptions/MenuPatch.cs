@@ -249,6 +249,16 @@ namespace TownOfHost
                                 case 4: Main.Preset5.Value = priset.textArea.text; break;
                                 case 5: Main.Preset6.Value = priset.textArea.text; break;
                                 case 6: Main.Preset7.Value = priset.textArea.text; break;
+                                case 7: Main.Preset8.Value = priset.textArea.text; break;
+                                case 8: Main.Preset9.Value = priset.textArea.text; break;
+                                case 9: Main.Preset10.Value = priset.textArea.text; break;
+                                case 10: Main.Preset11.Value = priset.textArea.text; break;
+                                case 11: Main.Preset12.Value = priset.textArea.text; break;
+                                case 12: Main.Preset13.Value = priset.textArea.text; break;
+                                case 13: Main.Preset14.Value = priset.textArea.text; break;
+                                case 14: Main.Preset15.Value = priset.textArea.text; break;
+                                case 15: Main.Preset16.Value = priset.textArea.text; break;
+
                             }
                             priset.textArea.Clear();
                         }
@@ -486,6 +496,16 @@ namespace TownOfHost
                         case 4: Main.Preset5.Value = GetString("Preset_5"); break;
                         case 5: Main.Preset6.Value = GetString("Preset_6"); break;
                         case 6: Main.Preset7.Value = GetString("Preset_7"); break;
+                        case 7: Main.Preset8.Value = GetString("Preset_8"); break;
+                        case 8: Main.Preset9.Value = GetString("Preset_9"); break;
+                        case 9: Main.Preset10.Value = GetString("Preset_10"); break;
+                        case 10: Main.Preset11.Value = GetString("Preset_11"); break;
+                        case 11: Main.Preset12.Value = GetString("Preset_12"); break;
+                        case 12: Main.Preset13.Value = GetString("Preset_13"); break;
+                        case 13: Main.Preset14.Value = GetString("Preset_14"); break;
+                        case 14: Main.Preset15.Value = GetString("Preset_15"); break;
+                        case 15: Main.Preset16.Value = GetString("Preset_16"); break;
+
                     }
                     GameSettingMenuChangeTabPatch.meg = GetString("OptionResetMeg");
                     timer = 3;
