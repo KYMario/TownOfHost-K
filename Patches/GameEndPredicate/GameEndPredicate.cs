@@ -3,6 +3,7 @@ using HarmonyLib;
 
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Neutral;
 
 namespace TownOfHost;
 
@@ -17,7 +18,7 @@ public abstract class GameEndPredicate
     public virtual bool CheckGameEndByTask(out GameOverReason reason)
     {
         reason = GameOverReason.ImpostorsByKill;
-        if (Options.DisableTaskWin.GetBool() || TaskState.InitialTotalTasks == 0) return false;
+        if (Options.DisableTaskWin.GetBool() || TaskState.InitialTotalTasks == 0 || Fox.BlockTaskWin()) return false;
 
         if (GameData.Instance.TotalTasks <= GameData.Instance.CompletedTasks)
         {

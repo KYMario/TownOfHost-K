@@ -32,7 +32,6 @@ namespace TownOfHost
             int Remotekiller = 0;
             int GrimReaper = 0;
             int MilkyWay = 0;
-            int Fox = 0;
             int FoxAndCrew = 0;
             int MadBetrayer = 0;
 
@@ -45,19 +44,13 @@ namespace TownOfHost
                 }
                 switch (pc.GetCountTypes())
                 {
+                    case CountTypes.Fox:
                     case CountTypes.Crew: Crew++; FoxAndCrew++; break;
                     case CountTypes.Impostor: Imp++; break;
                     case CountTypes.Jackal: Jackal++; break;
                     case CountTypes.Remotekiller: Remotekiller++; break;
                     case CountTypes.GrimReaper: GrimReaper++; break;
                     case CountTypes.MilkyWay: MilkyWay++; break;
-                    case CountTypes.Fox:
-                        if (pc.GetRoleClass() is Fox fox)
-                        {
-                            Fox++;
-                            FoxAndCrew += fox.FoxCount();
-                        }
-                        break;
                 }
             }
             if (Jackal == 0 && (CustomRoles.Jackal.IsPresent() || CustomRoles.JackalMafia.IsPresent() || CustomRoles.JackalAlien.IsPresent()))
