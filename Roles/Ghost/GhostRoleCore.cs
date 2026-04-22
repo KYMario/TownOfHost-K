@@ -60,6 +60,7 @@ class GhostRoleCore
         Twins.Init();
         Stack.Init();
         Sunglasses.Init();
+        Powerful.Init();
     }
     public static void SetupCustomOptionAddonAndIsGhostRole()
     {
@@ -76,6 +77,7 @@ class GhostRoleCore
         Guesser.SetupCustomOption();
         Serial.SetupCustomOption();
         MagicHand.SetupCustomOption();
+        Powerful.SetupCustomOption();
         Connecting.SetupCustomOption();
         Watching.SetupCustomOption();
         PlusVote.SetupCustomOption();

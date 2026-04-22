@@ -68,6 +68,7 @@ public sealed class Fortuner : RoleBase, IKiller
         CustomRoles.Speeding,CustomRoles.Speeding,
         CustomRoles.MagicHand,CustomRoles.MagicHand,
         CustomRoles.Serial,CustomRoles.Serial,
+        CustomRoles.Powerful, CustomRoles.Powerful,
         CustomRoles.PlusVote,
         CustomRoles.Seeing,
         CustomRoles.Sunglasses,

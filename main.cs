@@ -299,6 +299,7 @@ namespace TownOfHost
                     {CustomRoles.Tiebreaker,"#00552e"},
                     {CustomRoles.Guarding, "#7b68ee"},
                     {CustomRoles.MagicHand , "#dea785"},
+                    {CustomRoles.Powerful , "#f08e39"},
                     {CustomRoles.Stack , "#b55f47"},
                     //{CustomRoles.AntiTeleporter,"#dea785"},
                     //デバフ
