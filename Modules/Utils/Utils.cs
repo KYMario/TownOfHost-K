@@ -896,6 +896,7 @@ namespace TownOfHost
             return roundvalue * digit;
         }
         public const string AdditionalWinnerMark = "<#dddd00>★</color>";
+        public const string AdditionalAliveWinnerMark = "<#349121>★</color>";
 
         public static void SyncAllSettings()
         {

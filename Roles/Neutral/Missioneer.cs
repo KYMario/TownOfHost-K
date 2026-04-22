@@ -440,7 +440,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     {
         seen ??= seer;
         if (seen != seer) return "";
-        var mark = AddWin ? Utils.AdditionalWinnerMark : "";
+        var mark = AddWin ? Utils.AdditionalAliveWinnerMark : "";
         if (isForMeeting || NowMission is not MissionList.GoVent) return mark;
         return GetArrow.GetArrows(Player, ventpos.ventpos) + mark;
     }
@@ -499,7 +499,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         Room = room is -5 ? null : (SystemTypes)room;
         AddWin = reader.ReadBoolean();
         var id = reader.ReadInt32();
-        ventpos = id is -1 ? (Vector3.zero, -1) : (ShipStatus.Instance.AllVents.Where(vent => vent.Id == id).FirstOrDefault().transform.position, id);
+        ventpos = id is -1 ? (Vector3.zero, -1) : (ShipStatus.Instance.AllVents.FirstOrDefault(vent => vent.Id == id).transform.position, id);
     }
 
     public bool CheckWin(ref CustomRoles winnerRole) => AddWin && Player.IsAlive();

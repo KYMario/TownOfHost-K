@@ -117,7 +117,7 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if ((seen == seer) && WinFlag && OptionAddWin.GetBool()) return "<color=#dddd00>★</color>";
+        if ((seen == seer) && WinFlag && OptionAddWin.GetBool()) return Utils.AdditionalWinnerMark;
         return "";
     }
     public void Win()

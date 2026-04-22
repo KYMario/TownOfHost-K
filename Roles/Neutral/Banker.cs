@@ -102,7 +102,7 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
         if (Player.IsAlive() || DieCanWin.GetBool())
             if (seen == seer && Is(seen))
             {
-                if (AddWinCoin.GetInt() <= HaveCoin) return Utils.AdditionalWinnerMark;
+                if (AddWinCoin.GetInt() <= HaveCoin) return DieCanWin.GetBool() ? Utils.AdditionalWinnerMark : Utils.AdditionalAliveWinnerMark;
             }
         return "";
     }

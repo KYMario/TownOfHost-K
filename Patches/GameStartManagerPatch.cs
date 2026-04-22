@@ -466,7 +466,7 @@ namespace TownOfHost
                         else
                         {
                             time += Time.fixedDeltaTime;
-                            if (3 <= time)
+                            if (3 <= time && Main.MessagesToSend.Count is 0)
                             {
                                 Logger.Error("HostNameError", "HostNameError");
                                 time = 0;

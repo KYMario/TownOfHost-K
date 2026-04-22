@@ -59,7 +59,7 @@ public sealed class Opportunist : RoleBase, IAdditionalWinner
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if ((seen == seer) && Player.IsAlive()) return "<color=#dddd00>★</color>";
+        if ((seen == seer) && Player.IsAlive()) return Utils.AdditionalAliveWinnerMark;
         return "";
     }
     public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
