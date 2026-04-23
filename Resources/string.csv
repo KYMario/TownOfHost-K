@@ -1720,6 +1720,7 @@
 "AnalyzerUseto","Can Use to %roleTypes%","%roleTypes%の残り人数を調べられる"
 "FortunerAddGiveAddon","Set AddGiveAddoneList","付与する属性を上書きする"
 "FortunerGiveOne","One use Give oneaddon","1回使用で属性を1つ渡す"
+"MediumShowDeathReason","Display the cause of death","死因を表示する"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""

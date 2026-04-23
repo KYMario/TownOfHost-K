@@ -222,7 +222,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     {
         if (hasUsedAbility) return "<color=#f5a623>(任命済)</color>";
         if (NextAppointCandidate != byte.MaxValue) return "<color=#f5a623>(候補選択中)</color>";
-        return "<color=#f5a623>(未任命)</color>";
+        return "<color=#808080>(未任命)</color>";
     }
 
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null,

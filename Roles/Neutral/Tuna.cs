@@ -1,6 +1,7 @@
 using AmongUs.GameOptions;
 using UnityEngine;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.Translator;
 
 namespace TownOfHost.Roles.Neutral;
@@ -12,7 +13,7 @@ public sealed class Tuna : RoleBase
             typeof(Tuna),
             player => new Tuna(player),
             CustomRoles.Tuna,
-            () => RoleTypes.Crewmate,
+            () => OptionCanVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate,
             CustomRoleTypes.Neutral,
             23030,
             SetupOptionItem,
@@ -30,19 +31,20 @@ public sealed class Tuna : RoleBase
         isStopped = false;
         lastPosition = Vector2.zero;
         positionInitialized = false;
-
-        spawnTimer = 0f;   // ★ スポーン後の無敵タイマー
+        spawnTimer = 0f;
     }
 
     static OptionItem OptStopTime;
     static float StopTime;
+    static OptionItem OptionCanVent;
+    static OptionItem OptionVentCooldown;
+    static OptionItem OptionVentMaxTime;
 
     float stopTimer;
     bool isStopped;
     Vector2 lastPosition;
     bool positionInitialized;
-
-    float spawnTimer;   // ★ スポーン後の無敵時間（5秒）
+    float spawnTimer;
 
     enum OptionName
     {
@@ -54,6 +56,31 @@ public sealed class Tuna : RoleBase
         SoloWinOption.Create(RoleInfo, 9, defo: 15);
         OptStopTime = FloatOptionItem.Create(RoleInfo, 10, OptionName.TunaStopTime, new(0.5f, 5f, 0.5f), 3f, false)
             .SetValueFormat(OptionFormat.Seconds);
+        OptionCanVent = BooleanOptionItem.Create(RoleInfo, 11, GeneralOption.CanVent, false, false);
+        OptionVentCooldown = FloatOptionItem.Create(RoleInfo, 12, GeneralOption.Cooldown, new(0f, 180f, 0.5f), 15f, false, OptionCanVent)
+            .SetValueFormat(OptionFormat.Seconds);
+        OptionVentMaxTime = FloatOptionItem.Create(RoleInfo, 13, GeneralOption.EngineerInVentCooldown, new(0f, 180f, 0.5f), 0f, false, OptionCanVent)
+            .SetZeroNotation(OptionZeroNotation.Infinity)
+            .SetValueFormat(OptionFormat.Seconds);
+    }
+
+    public override void ApplyGameOptions(IGameOptions opt)
+    {
+        AURoleOptions.EngineerCooldown = OptionVentCooldown.GetFloat();
+        AURoleOptions.EngineerInVentMaxTime = OptionVentMaxTime.GetFloat();
+    }
+
+    public override bool CanVentMoving(PlayerPhysics physics, int ventId) => OptionCanVent.GetBool();
+
+    static bool IsUsingMovingPlatform(PlayerControl pc)
+    {
+        if (pc.MyPhysics.Animations.IsPlayingAnyLadderAnimation()) return true;
+        if (pc.onLadder) return true;
+        if ((MapNames)Main.NormalOptions.MapId == MapNames.Airship
+            && Vector2.Distance(pc.GetTruePosition(), new Vector2(7.76f, 8.56f)) <= 1.9f) return true;
+        if (pc.MyPhysics.Animations.Animator.GetCurrentAnimation()?.name?.Contains("Zipline") == true) return true;
+        if (pc.MyPhysics.Animations.Animator.GetCurrentAnimation()?.name?.Contains("Platform") == true) return true;
+        return false;
     }
 
     public override void OnFixedUpdate(PlayerControl player)
@@ -62,7 +89,6 @@ public sealed class Tuna : RoleBase
         if (!player.IsAlive()) return;
         if (GameStates.CalledMeeting || GameStates.Intro) return;
 
-        // ★ スポーン後 5 秒間はカウントしない
         spawnTimer += Time.fixedDeltaTime;
         if (spawnTimer < 5f)
         {
@@ -72,9 +98,17 @@ public sealed class Tuna : RoleBase
             return;
         }
 
+        // ★ 梯子・ぬーん・ジップラインはカウントしない
+        if (IsUsingMovingPlatform(player))
+        {
+            stopTimer = 0f;
+            isStopped = false;
+            lastPosition = player.GetTruePosition();
+            return;
+        }
+
         var currentPos = player.GetTruePosition();
 
-        // 初回は位置を記録するだけ
         if (!positionInitialized)
         {
             lastPosition = currentPos;
@@ -87,7 +121,6 @@ public sealed class Tuna : RoleBase
 
         if (moved < 0.01f)
         {
-            // 止まっている
             if (!isStopped)
                 isStopped = true;
 
@@ -95,7 +128,6 @@ public sealed class Tuna : RoleBase
 
             if (stopTimer >= StopTime)
             {
-                // 自爆
                 PlayerState.GetByPlayerId(player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 player.RpcMurderPlayerV2(player);
                 stopTimer = 0f;
@@ -104,23 +136,19 @@ public sealed class Tuna : RoleBase
         }
         else
         {
-            // 動いたらリセット
             stopTimer = 0f;
             isStopped = false;
         }
     }
 
-    // 会議後リセット
     public override void AfterMeetingTasks()
     {
         stopTimer = 0f;
         isStopped = false;
         positionInitialized = false;
-
-        spawnTimer = 0f;   // ★ 会議後も 5 秒の猶予を再付与
+        spawnTimer = 0f;
     }
 
-    // 勝利判定
     public static bool CheckWin(ref GameOverReason reason)
     {
         foreach (var pc in PlayerCatch.AllPlayerControls)

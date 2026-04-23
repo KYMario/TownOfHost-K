@@ -74,5 +74,6 @@ public interface ISchrodingerCatOwner
         /// ベトレイヤーに所属する状態
         /// </summary>
         Betrayer,
+        Pavlov,
     }
 }

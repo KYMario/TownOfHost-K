@@ -28,8 +28,7 @@ public sealed class PavlovDog : PavlovDogBase
             {
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = [CustomRoles.PavlovOwner]
-            },
-            from: From.SuperNewRoles
+            }
         );
 
     public PavlovDog(PlayerControl player)
@@ -148,7 +147,7 @@ public sealed class PavlovDog : PavlovDogBase
     public static bool GetResetRampageTimerOnMeeting() => OptionResetRampageTimerOnMeeting?.GetBool() ?? true;
 }
 
-public sealed class PavlovOwner : RoleBase, IKiller, IAdditionalWinner
+public sealed class PavlovOwner : RoleBase, IKiller, IAdditionalWinner, ISchrodingerCatOwner
 {
     static RoleTypes GetOwnerBaseRoleType()
         => CanAnyOwnerImprintNow() ? RoleTypes.Impostor : RoleTypes.Crewmate;
@@ -196,6 +195,8 @@ public sealed class PavlovOwner : RoleBase, IKiller, IAdditionalWinner
     int RemainingImprintCount;
     bool LastCanImprintState;
 
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Pavlov;
+
     bool CanImprintNow()
         => Player.IsAlive() &&
            RemainingImprintCount > 0 &&
@@ -242,6 +243,7 @@ public sealed class PavlovOwner : RoleBase, IKiller, IAdditionalWinner
         info.DoKill = false;
 
         if (!AmongUsClient.Instance.AmHost) return;
+        if (!info.CanKill) return;
         if (!CanImprintNow()) return;
         if (RemainingImprintCount <= 0) return;
         if (!Player.IsAlive()) return;
@@ -372,7 +374,7 @@ public sealed class PavlovDogImprint : PavlovDogBase
     }
 }
 
-public abstract class PavlovDogBase : RoleBase, IKiller, IAdditionalWinner
+public abstract class PavlovDogBase : RoleBase, IKiller, IAdditionalWinner, ISchrodingerCatOwner
 {
     protected PavlovDogBase(SimpleRoleInfo roleInfo, PlayerControl player)
         : base(roleInfo, player, () => HasTask.False)
@@ -385,6 +387,8 @@ public abstract class PavlovDogBase : RoleBase, IKiller, IAdditionalWinner
     protected byte OwnerId;
     bool IsRampage;
     float? RampageTimer;
+
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Pavlov;
 
     public void SetOwner(byte ownerId)
     {
@@ -418,6 +422,8 @@ public abstract class PavlovDogBase : RoleBase, IKiller, IAdditionalWinner
             info.DoKill = false;
             return;
         }
+
+        if (!info.CanKill) return;
 
         if (!IsRampage) return;
 

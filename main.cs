@@ -57,8 +57,8 @@ namespace TownOfHost
         public static ConfigEntry<string> ExplosionKeyInput { get; private set; }
 
         public const string PluginGuid = "com.kymario.TownOfHost-Pko";
-        public const string PluginVersion = "1.0.0.2";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
-        public const string PluginShowVersion = "1.0.0.2";
+        public const string PluginVersion = "1.0.0.4";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
+        public const string PluginShowVersion = "1.0.0.4";
         public const string ModVersion = ".1.1";//リリースver用バージョン変更
 
         /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
@@ -509,6 +509,7 @@ namespace TownOfHost
         Eater = CustomRoles.Eater,
         Spelunker = CustomRoles.Spelunker,
         Pavlov = CustomRoles.PavlovDog,
+        Moira = CustomRoles.Moira,
 
         HASTroll = CustomRoles.HASTroll,
         TaskPlayerB = CustomRoles.TaskPlayerB,

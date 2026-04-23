@@ -26,8 +26,7 @@ namespace TownOfHost.Roles.Neutral
                 "#ededc7",
                 (7, 3),
                 true,
-                countType: CountTypes.Crew,
-                from: From.TownOfHost_K
+                countType: CountTypes.Crew
             );
         public BakeCat(PlayerControl player)
         : base(
@@ -261,6 +260,7 @@ namespace TownOfHost.Roles.Neutral
                 TeamType.DoppelGanger => CustomWinnerHolder.winners.Contains(CustomWinner.DoppelGanger),
                 TeamType.MilkyWay => CustomWinnerHolder.winners.Contains(CustomWinner.MilkyWay),
                 TeamType.Betrayer => CustomWinnerHolder.winners.Contains(CustomWinner.MadBetrayer),
+                TeamType.Pavlov => CustomWinnerHolder.winners.Contains(CustomWinner.Pavlov),
                 _ => null,
             };
             if (!won.HasValue)
@@ -306,6 +306,7 @@ namespace TownOfHost.Roles.Neutral
                 TeamType.DoppelGanger => UtilsRoleText.GetRoleColor(CustomRoles.DoppelGanger),
                 TeamType.MilkyWay => StringHelper.CodeColor(Vega.TeamColor),
                 TeamType.Betrayer => UtilsRoleText.GetRoleColor(CustomRoles.MadBetrayer),
+                TeamType.Pavlov => UtilsRoleText.GetRoleColor(CustomRoles.PavlovDog),
                 _ => null,
             };
             if (!color.HasValue)

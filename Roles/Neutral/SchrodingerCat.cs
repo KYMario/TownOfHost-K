@@ -208,6 +208,10 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
         {
             candidates.Add(TeamType.Jackal);
         }
+        if (CustomRoles.PavlovDog.IsPresent() || CustomRoles.PavlovOwner.IsPresent() || CustomRoles.PavlovDogImprint.IsPresent())
+        {
+            candidates.Add(TeamType.Pavlov);
+        }
         var team = candidates[rand.Next(candidates.Count)];
         RpcSetTeam(team);
     }
@@ -225,6 +229,7 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
             TeamType.DoppelGanger => CustomWinnerHolder.winners.Contains(CustomWinner.DoppelGanger),
             TeamType.MilkyWay => CustomWinnerHolder.winners.Contains(CustomWinner.MilkyWay),
             TeamType.Betrayer => CustomWinnerHolder.winners.Contains(CustomWinner.MadBetrayer),
+            TeamType.Pavlov => CustomWinnerHolder.winners.Contains(CustomWinner.Pavlov),
             _ => null,
         };
         if (!won.HasValue)
@@ -272,6 +277,7 @@ public sealed class SchrodingerCat : RoleBase, IAdditionalWinner, IDeathReasonSe
             TeamType.DoppelGanger => UtilsRoleText.GetRoleColor(CustomRoles.DoppelGanger),
             TeamType.MilkyWay => StringHelper.CodeColor(Vega.TeamColor),
             TeamType.Betrayer => UtilsRoleText.GetRoleColor(CustomRoles.MadBetrayer),
+            TeamType.Pavlov => UtilsRoleText.GetRoleColor(CustomRoles.PavlovDog),
             _ => null,
         };
         if (!color.HasValue)

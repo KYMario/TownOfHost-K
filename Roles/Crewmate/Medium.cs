@@ -40,6 +40,20 @@ public sealed class Medium : RoleBase
     private static float cantaskcount;
     private static float onemeetingmaximum;
 
+    private readonly Dictionary<byte, DivinationResult> divinationResults = new();
+
+    private readonly struct DivinationResult
+    {
+        public CustomRoles Role { get; }
+        public CustomDeathReason DeathReason { get; }
+
+        public DivinationResult(CustomRoles role, CustomDeathReason deathReason)
+        {
+            Role = role;
+            DeathReason = deathReason;
+        }
+    }
+
     private enum OptionName
     {
         TellMaximum,
@@ -55,6 +69,7 @@ public sealed class Medium : RoleBase
         awakened = !OptAwakening.GetBool() || OptionCanTaskcount.GetInt() < 1;
         cantaskcount = OptionCanTaskcount.GetFloat();
         onemeetingmaximum = Option1MeetingMaximum.GetFloat();
+        divinationResults.Clear();
     }
 
     private static void SetupOptionItem()
@@ -71,16 +86,23 @@ public sealed class Medium : RoleBase
 
     private int RemainingCount => Math.Max(0, OptionMaximum.GetInt() - usedCount);
 
-    private void SendRPC()
+    private void SendRPC(byte targetId, CustomRoles role, CustomDeathReason deathReason)
     {
         if (!AmongUsClient.Instance.AmHost) return;
         using var sender = CreateSender();
         sender.Writer.Write(usedCount);
+        sender.Writer.Write(targetId);
+        sender.Writer.WritePacked((int)role);
+        sender.Writer.WritePacked((int)deathReason);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
         usedCount = reader.ReadInt32();
+        var targetId = reader.ReadByte();
+        var role = (CustomRoles)reader.ReadPackedInt32();
+        var deathReason = (CustomDeathReason)reader.ReadPackedInt32();
+        divinationResults[targetId] = new DivinationResult(role, deathReason);
     }
 
     public override void OnStartMeeting() => meetingUsedCount = 0;
@@ -127,6 +149,38 @@ public sealed class Medium : RoleBase
         if (seer.PlayerId != Player.PlayerId) return "";
         if (seen.PlayerId == seer.PlayerId || seen.IsAlive()) return "";
         return Utils.ColorString(Color.yellow, $" {seen.PlayerId}");
+    }
+
+    private static string GetTeamText(CustomRoleTypes roleType)
+    {
+        return roleType switch
+        {
+            CustomRoleTypes.Crewmate => "<#8cffff>クルー陣営</color>",
+            CustomRoleTypes.Impostor or CustomRoleTypes.Madmate => "<#ff1919>インポスター陣営</color>",
+            CustomRoleTypes.Neutral => "<#cccccc>ニュートラル陣営</color>",
+            _ => "<#cccccc>ニュートラル陣営</color>",
+        };
+    }
+
+    public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    {
+        seen ??= seer;
+
+        if (seer == null || seen == null) return "";
+        if (seer.PlayerId != Player.PlayerId) return "";
+        if (!divinationResults.TryGetValue(seen.PlayerId, out var result)) return "";
+
+        var infoText = OptionRole.GetBool()
+            ? $"<color={UtilsRoleText.GetRoleColorCode(result.Role)}>{GetString(result.Role.ToString())}</color>"
+            : GetTeamText(result.Role.GetCustomRoleTypes());
+
+        if (OptionShowDeathReason.GetBool())
+        {
+            var deathReason = Utils.GetDeathReason(result.DeathReason);
+            return $"<size=65%><#ffffff>({deathReason})</color></size><size=80%>({infoText})</size>";
+        }
+
+        return $"\n<size=80%>({infoText})</size>";
     }
 
     private bool CanUseAbility(out string error)
@@ -184,20 +238,24 @@ public sealed class Medium : RoleBase
 
         usedCount++;
         meetingUsedCount++;
-        SendRPC();
 
         var role = target.GetTellResults(Player);
+        var deathReason = target.GetPlayerState()?.DeathReason ?? CustomDeathReason.etc;
+
+        divinationResults[target.PlayerId] = new DivinationResult(role, deathReason);
+        SendRPC(target.PlayerId, role, deathReason);
+
         string roleText;
         if (OptionRole.GetBool())
             roleText = $"<b>{Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString(role.ToString()))}</b>";
         else
-            roleText = GetString(role.GetCustomRoleTypes().ToString());
+            roleText = GetTeamText(role.GetCustomRoleTypes());
 
         string deathInfo = "";
         if (OptionShowDeathReason.GetBool())
         {
-            var deathReason = Utils.GetVitalText(target.PlayerId);
-            deathInfo = $"\n死因：{deathReason}";
+            var deathText = Utils.GetDeathReason(deathReason);
+            deathInfo = $"\n死因：{deathText}";
         }
 
         var remaining = onemeetingmaximum > 0
@@ -218,7 +276,7 @@ public sealed class Medium : RoleBase
         if (args[0] != "/cmd") return false;
         var command = args[1].StartsWith("/") ? args[1] : $"/{args[1]}";
         if (command != "/sp") return false;
-        if (args.Length < 3 || !byte.TryParse(args[2], out targetId))
+        if (args.Length < 1.0 || !byte.TryParse(args[2], out targetId))
         {
             invalidFormat = true;
             return true;

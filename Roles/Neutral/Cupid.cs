@@ -115,31 +115,24 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
     {
         opt.SetVision(false);
     }
-
-    // ★★★ ここから追加・修正版 GetTemporaryName ★★★
     public override bool GetTemporaryName(
-    ref string name,
-    ref bool NoMarker,
-    bool isForMeeting,
-    PlayerControl seer,
-    PlayerControl seen = null)
+        ref string name,
+        ref bool NoMarker,
+        bool isForMeeting,
+        PlayerControl seer,
+        PlayerControl seen = null)
     {
         seen ??= seer;
 
-        // --- Cupid視点：CupidLovers の名前色変更 ---
-        // seer が Cupid でなくても、Cupid が生きていて seen が CupidLovers なら色変更
-        if (CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId))
+        // --- ① Cupid視点：CupidLovers の名前に ♥ を追加 ---
+        if (Is(seer) && CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId))
         {
-            // Cupid が生存している場合のみ色変更
-            var cupid = Player; // このクラスの Player は Cupid 本人
-            if (cupid != null && cupid.IsAlive())
-            {
-                name = $"<color=#ff66cc>{seen.Data.PlayerName}</color>";
-                return true;
-            }
+            // 名前をピンク色にし、右側に赤いハートを表示
+            name = $"<color=#ff66cc>{seen.Data.PlayerName}</color> <color=#ff0000>♥</color>";
+            return true;
         }
 
-        // --- ② CupidLovers視点：Cupid の名前に [Cupid] 表示 ---
+        // --- ② CupidLovers視点：Cupid の名前に [キューピッド] 表示 ---
         if (CupidLoversPlayers.Any(p => p.PlayerId == seer.PlayerId)
             && seen.PlayerId == Player.PlayerId) // Cupid本人
         {
@@ -149,7 +142,6 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
 
         return false;
     }
-    // ★★★ ここまで追加 ★★★
 
     public override void OnFixedUpdate(PlayerControl player)
     {
