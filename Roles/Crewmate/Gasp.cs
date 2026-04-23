@@ -17,7 +17,8 @@ public sealed class Gasp : RoleBase
             SetupOptionItem,
             "gp",
             "#ab9d44",
-            (5, 3)
+            (5, 3),
+            from: From.TownOfHost_K
         );
     public Gasp(PlayerControl player)
     : base(

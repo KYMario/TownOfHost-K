@@ -14,7 +14,7 @@ namespace TownOfHost.Roles.Ghost
         public static OptionItem CoolDown;
         public static void SetupCustomOption()
         {
-            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.DemonicVenter);
+            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.DemonicVenter, fromtext: UtilsOption.GetFrom(From.TownOfHost_K));
             GhostRoleAssingData.Create(Id + 1, CustomRoles.DemonicVenter, CustomRoleTypes.Madmate);
             CoolDown = FloatOptionItem.Create(Id + 2, "Cooldown", new(0f, 180f, 0.5f), 25f, TabGroup.GhostRoles, false)
                 .SetValueFormat(OptionFormat.Seconds).SetParent(CustomRoleSpawnChances[CustomRoles.DemonicVenter]).SetParentRole(CustomRoles.DemonicVenter);

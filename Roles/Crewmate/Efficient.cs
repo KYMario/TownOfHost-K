@@ -24,7 +24,8 @@ public sealed class Efficient : RoleBase
             (7, 2),
             SetupOptionItem,
             "ef",
-            "#a68b96"
+            "#a68b96",
+from: From.TownOfHost_K
         );
     public Efficient(PlayerControl player)
     : base(

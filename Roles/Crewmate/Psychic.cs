@@ -20,7 +20,7 @@ public sealed class Psychic : RoleBase
             "#a34fee",
             (6, 3),
             false,
-            from: From.None
+            from: From.TownOfHost_K
         );
     public Psychic(PlayerControl player)
     : base(

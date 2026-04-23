@@ -25,7 +25,8 @@ public sealed class ConnectSaver : RoleBase, IImpostor, ISelfVoter
             4500,
             SetupOptionItem,
             "Cs",
-            OptionSort: (3, 7)
+            OptionSort: (3, 7),
+            from: From.TownOfHost_K
         );
     public ConnectSaver(PlayerControl player)
     : base(

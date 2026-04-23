@@ -21,7 +21,8 @@ public sealed class Monochromer : RoleBase
             assignInfo: new RoleAssignInfo(CustomRoles.Monochromer, CustomRoleTypes.Neutral)
             {
                 AssignCountRule = new(0, 15, 1)
-            }
+            },
+            from: From.TownOfHost_K
         );
     public Monochromer(PlayerControl player)
     : base(

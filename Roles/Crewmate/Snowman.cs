@@ -18,7 +18,8 @@ public sealed class Snowman : RoleBase
             SetupOptionItem,
             "snm",
             "#c4d6e3",
-            (8, 1)
+            (8, 1),
+            from: From.TownOfHost_K
         );
     public Snowman(PlayerControl player)
     : base(

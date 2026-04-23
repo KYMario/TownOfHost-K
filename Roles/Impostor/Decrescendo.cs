@@ -32,7 +32,8 @@ public sealed class Decrescendo : RoleBase, IImpostor
                 }
 
                 return string.Format(GetString("DecrescendDesc"), OptionDecKillcount.GetInt(), killcool, (killcool * killx).Round(0.1f), (killcool * killx * killx).Round(0.1f), OptionMaxKillCool.GetFloat(), visiondesc);
-            }
+            },
+            from: From.TownOfHost_K
 );
     public Decrescendo(PlayerControl player)
     : base(

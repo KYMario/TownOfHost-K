@@ -275,7 +275,7 @@ namespace TownOfHost
         {
             var tpinfo = "";
             var text = "";
-            if (GameStates.IsLobby && Main.IsCs())
+            if (GameStates.IsLobby)
             {
                 tpinfo += $"\n/cmd tp o - {GetString("Command.tpo")}";
                 tpinfo += $"\n/cmd tp i - {GetString("Command.tpi")}";

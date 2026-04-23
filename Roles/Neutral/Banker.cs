@@ -26,7 +26,8 @@ public sealed class Banker : RoleBase, IKiller, IAdditionalWinner
             Desc: () =>
             {
                 return string.Format(GetString("BankerDesc"), AddWinCoin.GetInt(), TaskAddCoin.GetInt(), KillAddCoin.GetInt(), ChengeCoin.GetInt(), TurnRemoveCoin.GetInt());
-            }
+            },
+            from: From.TownOfHost_K
         );
     public Banker(PlayerControl player)
     : base(

@@ -23,7 +23,8 @@ namespace TownOfHost.Roles.Crewmate
                 "NL",
                 "#4a5c59",
                 (1, 2),
-                true
+                true,
+                from: From.TownOfHost_K
             );
         public NiceLogger(PlayerControl player)
         : base(

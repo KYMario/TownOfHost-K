@@ -17,7 +17,8 @@ namespace TownOfHost.Roles.Crewmate
                 SetupOptionItem,
                 "NA",
                 "#87cefa",
-                (1, 1)
+                (1, 1),
+                from: From.TownOfHost_K
             );
         public NiceAddoer(PlayerControl player)
         : base(

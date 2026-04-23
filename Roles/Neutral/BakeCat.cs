@@ -26,7 +26,8 @@ namespace TownOfHost.Roles.Neutral
                 "#ededc7",
                 (7, 3),
                 true,
-                countType: CountTypes.Crew
+                countType: CountTypes.Crew,
+                from: From.TownOfHost_K
             );
         public BakeCat(PlayerControl player)
         : base(

@@ -28,7 +28,8 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                 null,
                 "HAl",
                 OptionSort: (1, 1),
-                introSound: () => GetIntroSound(RoleTypes.Shapeshifter)
+                introSound: () => GetIntroSound(RoleTypes.Shapeshifter),
+                from: From.TownOfHost_K
             );
     public AlienHijack(PlayerControl player)
 : base(

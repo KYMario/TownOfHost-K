@@ -19,7 +19,8 @@ public sealed class King : RoleBase
             SetupOptionItem,
             "k",
             "#FFD700",
-            (5, 4)
+            (5, 4),
+            from: From.TownOfHost_K
         );
     public King(PlayerControl player)
     : base(

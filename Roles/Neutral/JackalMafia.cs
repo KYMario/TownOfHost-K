@@ -32,7 +32,8 @@ namespace TownOfHost.Roles.Neutral
                 Desc: () =>
                 {
                     return GetString("JackalMafiaInfoLong") + (OptionCanMakeSidekick.GetBool() ? string.Format(GetString("JackalDescSidekick"), !OptionImpostorCanSidekick.GetBool() ? GetString("JackalDescImpostorSideKick") : "") : "");
-                }
+                },
+                from: From.TownOfHost_K
             );
         public JackalMafia(PlayerControl player)
         : base(

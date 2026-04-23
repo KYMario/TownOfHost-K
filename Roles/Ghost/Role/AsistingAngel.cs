@@ -23,7 +23,7 @@ namespace TownOfHost.Roles.Ghost
         public static Vector3 pos;
         public static void SetupCustomOption()
         {
-            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.AsistingAngel, new(1, 1, 1));
+            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.AsistingAngel, new(1, 1, 1),fromtext: UtilsOption.GetFrom(From.TownOfHost_K));
             GhostRoleAssingData.Create(Id + 1, CustomRoles.AsistingAngel, CustomRoleTypes.Crewmate, CustomRoleTypes.Neutral);
             CoolDown = FloatOptionItem.Create(Id + 2, "AsistingAngelCoolDown", new(0f, 180f, 0.5f), 25f, TabGroup.GhostRoles, false)
                 .SetValueFormat(OptionFormat.Seconds).SetParent(CustomRoleSpawnChances[CustomRoles.AsistingAngel]).SetParentRole(CustomRoles.AsistingAngel);

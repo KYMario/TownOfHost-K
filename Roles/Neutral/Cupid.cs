@@ -116,17 +116,41 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
         opt.SetVision(false);
     }
 
-    // ★ キューピッド視点でラバーズに♥と役職名を名前の右に表示（名前は消えない）
-    public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    // ★★★ ここから追加・修正版 GetTemporaryName ★★★
+    public override bool GetTemporaryName(
+    ref string name,
+    ref bool NoMarker,
+    bool isForMeeting,
+    PlayerControl seer,
+    PlayerControl seen = null)
     {
         seen ??= seer;
-        if (!Is(seer)) return "";
-        if (seer.PlayerId == seen.PlayerId) return "";
-        if (!Player.IsAlive()) return "";
-        // ★ seenがCupidLoversなら♥表示
-        if (!CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId)) return "";
-        return $"<color={RoleInfo.RoleColorCode}>♥</color>";
+
+        // --- Cupid視点：CupidLovers の名前色変更 ---
+        // seer が Cupid でなくても、Cupid が生きていて seen が CupidLovers なら色変更
+        if (CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId))
+        {
+            // Cupid が生存している場合のみ色変更
+            var cupid = Player; // このクラスの Player は Cupid 本人
+            if (cupid != null && cupid.IsAlive())
+            {
+                name = $"<color=#ff66cc>{seen.Data.PlayerName}</color>";
+                return true;
+            }
+        }
+
+        // --- ② CupidLovers視点：Cupid の名前に [Cupid] 表示 ---
+        if (CupidLoversPlayers.Any(p => p.PlayerId == seer.PlayerId)
+            && seen.PlayerId == Player.PlayerId) // Cupid本人
+        {
+            name = $"{seen.Data.PlayerName} <color={RoleInfo.RoleColorCode}>\nキューピッド</color>";
+            return true;
+        }
+
+        return false;
     }
+    // ★★★ ここまで追加 ★★★
+
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
@@ -166,7 +190,6 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
                 string.Format(GetString("Log.CupidFa"),
                     UtilsName.GetPlayerColor(killer, true),
                     UtilsName.GetPlayerColor(target, true)));
-            // ★ 即座に役職変化（会議後ではなくキル時点で変化）
             if (!Utils.RoleSendList.Contains(killer.PlayerId)) Utils.RoleSendList.Add(killer.PlayerId);
             killer.RpcSetCustomRole(LoverChenge, true, log: true);
             UtilsNotifyRoles.NotifyRoles();
@@ -205,7 +228,6 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
 
             t1.RpcSetCustomRole(CustomRoles.CupidLovers);
             t2.RpcSetCustomRole(CustomRoles.CupidLovers);
-
 
             RPC.SyncCupidLoversPlayers();
 

@@ -20,7 +20,8 @@ public sealed class MadBait : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
             SetupOptionItem,
             "mb",
             OptionSort: (2, 4),
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            from: From.TownOfHost_K
         );
     public MadBait(PlayerControl player)
     : base(

@@ -28,7 +28,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
             (5, 1),
             true,
             introSound: () => GetIntroSound(RoleTypes.Shapeshifter),
-            from: From.None
+            from: From.TownOfHost_K
         );
     public MassMedia(PlayerControl player)
     : base(

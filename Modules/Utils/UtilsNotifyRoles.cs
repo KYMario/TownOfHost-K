@@ -471,6 +471,7 @@ namespace TownOfHost
                 var IsMisidentify = seer.GetMisidentify(out _);
                 RoleAddAddons.GetRoleAddon(role, out var data, seer, subrole: [CustomRoles.Guesser]);
                 var hasgessuer = seerSubrole.Contains(CustomRoles.Guesser)
+                            || role is CustomRoles.NiceGuesser
                             || data.GiveGuesser.GetBool()
                             || (seerSubrole.Contains(CustomRoles.LastImpostor) && LastImpostor.giveguesser)
                             || (seerSubrole.Contains(CustomRoles.LastNeutral) && LastNeutral.GiveGuesser.GetBool());

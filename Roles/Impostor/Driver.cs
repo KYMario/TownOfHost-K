@@ -25,7 +25,8 @@ public sealed class Driver : RoleBase, IImpostor, IKillFlashSeeable, IDeathReaso
                 AssignCountRule = new(1, 1, 1),
                 AssignUnitRoles = new CustomRoles[2] { CustomRoles.Driver, CustomRoles.Braid }
             },
-            combination: CombinationRoles.DriverandBraid
+            combination: CombinationRoles.DriverandBraid,
+            from: From.TownOfHost_K
         );
     public Driver(PlayerControl player)
     : base(

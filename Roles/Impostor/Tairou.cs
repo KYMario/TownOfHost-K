@@ -16,7 +16,8 @@ namespace TownOfHost.Roles.Impostor
                 6000,
                 SetupOptionItem,
                 "t",
-                OptionSort: (6, 10)
+                OptionSort: (6, 10),
+                from: From.TownOfHost_K
             );
         public Tairou(PlayerControl player)
             : base(

@@ -24,7 +24,8 @@ public sealed class UnFortuner : RoleBase, IImpostor, IUsePhantomButton
             24500,
             SetupOptionItem,
             "Uf",
-            OptionSort: (6, 11)
+            OptionSort: (6, 11),
+            from: From.TownOfHost_K
         );
     public UnFortuner(PlayerControl player)
     : base(

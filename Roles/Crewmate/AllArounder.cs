@@ -27,7 +27,8 @@ public sealed class AllArounder : RoleBase, ISystemTypeUpdateHook, IKillFlashSee
             SetupOptionItem,
             "AA",
             "#599afb",
-            (1, 0)
+            (1, 0),
+            from: From.TownOfHost_K
         );
     public AllArounder(PlayerControl player)
     : base(

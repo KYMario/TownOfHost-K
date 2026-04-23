@@ -16,7 +16,7 @@ namespace TownOfHost.Roles.Ghost
         static Dictionary<byte, byte> SendList = new();
         public static void SetupCustomOption()
         {
-            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.GhostRumour);
+            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.GhostRumour, fromtext: UtilsOption.GetFrom(From.TownOfHost_K));
             Data = GhostRoleAssingData.Create(Id + 1, CustomRoles.GhostRumour, CustomRoleTypes.Crewmate);
             CoolDown = FloatOptionItem.Create(Id + 2, "Cooldown", new(0f, 180f, 0.5f), 25f, TabGroup.GhostRoles, false)
                 .SetValueFormat(OptionFormat.Seconds).SetParent(CustomRoleSpawnChances[CustomRoles.GhostRumour]).SetParentRole(CustomRoles.GhostRumour);

@@ -23,7 +23,8 @@ public sealed class Amnesiac : RoleBase, IImpostor
             "#f8cd46",
             OptionSort: (8, 0),
             introSound: () => GetIntroSound(RoleTypes.Crewmate),
-            isCantSeeTeammates: true
+            isCantSeeTeammates: true,
+            from: From.TownOfHost_K
         );
     public Amnesiac(PlayerControl player)
     : base(

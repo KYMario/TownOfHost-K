@@ -23,7 +23,8 @@ public sealed class CurseMaker : RoleBase, IKiller, IUsePhantomButton
             "#554d59",
             (3, 3),
             true,
-            introSound: () => GetIntroSound(RoleTypes.Phantom)
+            introSound: () => GetIntroSound(RoleTypes.Phantom),
+            from: From.TownOfHost_K
         );
     public CurseMaker(PlayerControl player)
     : base(

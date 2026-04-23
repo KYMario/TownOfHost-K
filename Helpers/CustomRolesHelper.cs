@@ -362,6 +362,7 @@ namespace TownOfHost
         GrimReaper,
         Fox,
         MilkyWay,
-        Eater
+        Pavlov,
+        Eater,
     }
 }

@@ -19,7 +19,8 @@ public sealed class EarnestWolf : RoleBase, IImpostor, IUsePhantomButton
             4600,
             SetupOptionItem,
             "EW",
-            OptionSort: (3, 8)
+            OptionSort: (3, 8),
+            from: From.TownOfHost_K
         );
     public EarnestWolf(PlayerControl player)
     : base(

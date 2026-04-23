@@ -18,7 +18,8 @@ public sealed class TaskStar : RoleBase
             SetupOptionItem,
             "ts",
             "#FFD700",
-            (4, 1)
+            (4, 1),
+            from: From.TownOfHost_K
         );
     public TaskStar(PlayerControl player)
     : base(

@@ -49,6 +49,11 @@ namespace TownOfHost
 
             var meg = GetString($"{(CustomRoles)CustomWinnerHolder.WinnerTeam}") + GetString("Team") + GetString("Win");
             var winnerColor = ((CustomRoles)CustomWinnerHolder.WinnerTeam).GetRoleInfo()?.RoleColor ?? UtilsRoleText.GetRoleColor((CustomRoles)CustomWinnerHolder.WinnerTeam);
+            if (UtilsGameLog.IsPavlovWinnerTeam())
+            {
+                meg = GetString("TeamPavlov") + GetString("Win");
+                winnerColor = UtilsRoleText.GetRoleColor(CustomRoles.PavlovDog);
+            }
 
             switch (CustomWinnerHolder.WinnerTeam)
             {

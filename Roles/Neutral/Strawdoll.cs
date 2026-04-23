@@ -25,7 +25,7 @@ public sealed class Strawdoll : RoleBase, IKiller, IUsePhantomButton
             (7, 2),
             true,
             introSound: () => GetIntroSound(RoleTypes.Crewmate),
-            from: From.None,
+            from: From.TownOfHost_K,
             Desc: () => string.Format(GetString("StrawdollDesc"), OptionWinKilledCount.GetInt(), OptionReprisalDistance.GetBool() ? GetString("StrawdollDescDistance") : ""
             , OptionTpToVent.GetBool() ? GetString("StrawdollDescVent") : "")
         );

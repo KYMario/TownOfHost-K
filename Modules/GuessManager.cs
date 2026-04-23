@@ -197,7 +197,6 @@ public static class GuessManager
                     dp.SetRealKiller(pc);
                     MeetingVoteManager.ResetVoteManager(dp.PlayerId);
 
-                    //死者检查
                     if (!dp.IsModClient() && !dp.AmOwner) pc.RpcMeetingKill(dp);
                     CustomRoleManager.OnMurderPlayer(pc, target);
 
@@ -235,7 +234,7 @@ public static class GuessManager
                 }, 2.0f, "Reikai Guess Msg");
             }
         }
-        return false;
+        return operate == 2;
     }
 
     private static bool CheckTargetRoles(PlayerControl target, CustomRoles role)
@@ -452,7 +451,6 @@ public static class GuessManager
             return false;
         }
 
-        //判断选择的玩家是否合理
         PlayerControl target = PlayerCatch.GetPlayerById(id);
         if (target == null || target.Data.IsDead)
         {

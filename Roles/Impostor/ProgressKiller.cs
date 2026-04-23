@@ -17,7 +17,8 @@ public sealed class ProgressKiller : RoleBase, IImpostor
             5300,
             SetupOptionItem,
             "pk",
-            OptionSort: (5, 1)
+            OptionSort: (5, 1),
+            from: From.TownOfHost_K
         );
     public ProgressKiller(PlayerControl player)
     : base(

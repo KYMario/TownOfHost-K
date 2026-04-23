@@ -19,7 +19,8 @@ public sealed class Android : RoleBase
             "And",
             "#8a99b7",
             (9, 1),
-            false
+            false,
+            from: From.TownOfHost_K
         );
     public Android(PlayerControl player)
     : base(

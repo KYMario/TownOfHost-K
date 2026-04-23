@@ -17,7 +17,8 @@ namespace TownOfHost.Roles.Impostor
                 3500,
                 SetupOptionItem,
                 "EA",
-                OptionSort: (2, 4)
+                OptionSort: (2, 4),
+                from: From.TownOfHost_K
             );
         public EvilAddoer(PlayerControl player)
         : base(

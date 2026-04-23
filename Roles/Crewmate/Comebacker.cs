@@ -23,7 +23,8 @@ public sealed class Comebacker : RoleBase
             SetupOptionItem,
             "cb",
             "#ff9966",
-            (9, 0)
+            (9, 0),
+            from: From.TownOfHost_K
         );
     public Comebacker(PlayerControl player)
     : base(

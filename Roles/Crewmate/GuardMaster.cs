@@ -18,7 +18,8 @@ public sealed class GuardMaster : RoleBase
             SetupOptionItem,
             "gms",
             "#8FBC8B",
-            (5, 4)
+            (5, 4),
+            from: From.TownOfHost_K
         );
     public GuardMaster(PlayerControl player)
     : base(

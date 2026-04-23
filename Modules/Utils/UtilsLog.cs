@@ -24,7 +24,7 @@ namespace TownOfHost
     {
         public static DirectoryInfo GetLogFolder(bool auto = false)
         {
-            var folder = Directory.CreateDirectory($"{Application.persistentDataPath}/TownOfHost_K/Logs");
+            var folder = Directory.CreateDirectory($"{Application.persistentDataPath}/TownOfHost_Pko/Logs");
             if (auto)
             {
                 folder = Directory.CreateDirectory($"{folder.FullName}/AutoLogs");
@@ -54,7 +54,7 @@ namespace TownOfHost
             string t = DateTime.Now.ToString("yyyy-MM-dd_HH.mm.ss");
             string subver = CredentialsPatch.Subver.RemoveHtmlTags();
             if (subver != "") subver = $"({subver})";
-            string fileName = $"{path}/TownOfHost_K-v{Main.PluginVersion}{subver}-{t}.log";
+            string fileName = $"{path}/TownOfHost_Pko-v{Main.PluginVersion}{subver}-{t}.log";
             FileInfo file = new(@$"{Environment.CurrentDirectory}/BepInEx/LogOutput.log");
             var logFile = file.CopyTo(fileName);
             return logFile.FullName;
@@ -128,6 +128,31 @@ namespace TownOfHost
             builder.Append("</pos>");
             return builder.ToString();
         }
+        public static bool IsPavlovWinnerTeam()
+        {
+            static bool IsPavlovRole(CustomRoles role)
+                => role is CustomRoles.PavlovDog or CustomRoles.PavlovOwner or CustomRoles.PavlovDogImprint;
+
+            if ((int)CustomWinnerHolder.WinnerTeam >= 0 && IsPavlovRole((CustomRoles)CustomWinnerHolder.WinnerTeam))
+                return true;
+
+            foreach (var role in CustomWinnerHolder.WinnerRoles)
+                if (IsPavlovRole(role))
+                    return true;
+
+            foreach (var role in CustomWinnerHolder.AdditionalWinnerRoles)
+                if (IsPavlovRole(role))
+                    return true;
+
+            foreach (var id in CustomWinnerHolder.WinnerIds)
+            {
+                var winner = GetPlayerById(id);
+                if (winner != null && IsPavlovRole(winner.GetCustomRole()))
+                    return true;
+            }
+
+            return false;
+        }
         /// <summary> WinnerTextを生成します </summary>
         /// <returns>CustomWinnerText,CustomWinnerColor,WinText,barColor,winColorの順に返します</returns>
         public static (string, string, string, Color, Color) GetWinnerText(string WinText = "", Color barColor = new Color(), Color winColor = new Color(), List<byte> winnerList = null)
@@ -135,6 +160,7 @@ namespace TownOfHost
             string CustomWinnerText = "";
             StringBuilder AdditionalWinnerText = new(32);
             var CustomWinnerColor = GetRoleColorCode(CustomRoles.Crewmate);
+            var isPavlovWinner = IsPavlovWinnerTeam();
 
             winnerList ??= Main.winnerList;
 
@@ -255,6 +281,12 @@ namespace TownOfHost
                     CustomWinnerColor = StringHelper.ColorCode(Color.gray);
                     break;
             }
+            if (isPavlovWinner && !SuddenDeathMode.NowSuddenDeathMode)
+            {
+                CustomWinnerText = GetString("TeamPavlov");
+                CustomWinnerColor = GetRoleColorCode(CustomRoles.PavlovDog);
+                barColor = GetRoleColor(CustomRoles.PavlovDog);
+            }
             if (CustomWinnerHolder.WinnerTeam is not CustomWinner.None and not CustomWinner.Draw)
                 if (SuddenDeathMode.NowSuddenDeathMode && !SuddenDeathMode.NowSuddenDeathTemeMode)
                 {
@@ -270,10 +302,11 @@ namespace TownOfHost
                     CustomWinnerText = "<size=60%>" + name + ColorString(GetRoleColor(winnerRole), $"({GetRoleName(winnerRole)})") + $"{GetString("Win")}</size>";
                 }
 
-            foreach (var role in CustomWinnerHolder.AdditionalWinnerRoles)
-            {
-                AdditionalWinnerText.Append('＆').Append(ColorString(GetRoleColor(role), GetRoleName(role)));
-            }
+            if (!isPavlovWinner)
+                foreach (var role in CustomWinnerHolder.AdditionalWinnerRoles)
+                {
+                    AdditionalWinnerText.Append('＆').Append(ColorString(GetRoleColor(role), GetRoleName(role)));
+                }
             if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Draw and not CustomWinner.None and not CustomWinner.OneLove && !SuddenDeathMode.NowSuddenDeathMode)
             {
                 CustomWinnerText = $"<{CustomWinnerColor}>{CustomWinnerText}{AdditionalWinnerText}{GetString("Win")}</color>";
@@ -387,6 +420,11 @@ namespace TownOfHost
                 {
                     var meg = GetString($"{(CustomRoles)CustomWinnerHolder.WinnerTeam}") + GetString("Team") + GetString("Win");
                     var winnerColor = ((CustomRoles)CustomWinnerHolder.WinnerTeam).GetRoleInfo()?.RoleColor ?? GetRoleColor((CustomRoles)CustomWinnerHolder.WinnerTeam);
+                    if (IsPavlovWinnerTeam())
+                    {
+                        meg = GetString("TeamPavlov") + GetString("Win");
+                        winnerColor = GetRoleColor(CustomRoles.PavlovDog);
+                    }
 
                     switch (CustomWinnerHolder.WinnerTeam)
                     {

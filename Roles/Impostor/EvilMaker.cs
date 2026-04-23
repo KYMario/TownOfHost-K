@@ -18,7 +18,8 @@ public sealed class EvilMaker : RoleBase, IImpostor, IUsePhantomButton
             3600,
             SetupOptionItem,
             "Em",
-            OptionSort: (2, 5)
+            OptionSort: (2, 5),
+            from: From.TownOfHost_K
         );
     public EvilMaker(PlayerControl player)
     : base(

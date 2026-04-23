@@ -25,7 +25,8 @@ public sealed class MadBetrayer : RoleBase, IKiller, ISchrodingerCatOwner
             assignInfo: new RoleAssignInfo(CustomRoles.MadBetrayer, CustomRoleTypes.Madmate)
             {
                 AssignCountRule = new(1, 1, 1)
-            }
+            },
+            from: From.TownOfHost_K
         );
     public MadBetrayer(PlayerControl player)
     : base(

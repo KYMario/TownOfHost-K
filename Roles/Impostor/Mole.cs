@@ -18,7 +18,8 @@ namespace TownOfHost.Roles.Impostor
                 5800,
                 null,
                 "ml",
-                OptionSort: (6, 1)
+                OptionSort: (6, 1),
+                from: From.TownOfHost_K
             );
         public Mole(PlayerControl player)
         : base(

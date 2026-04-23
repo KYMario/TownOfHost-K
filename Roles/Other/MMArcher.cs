@@ -24,7 +24,8 @@ public sealed class MMArcher : RoleBase, IKiller, IUsePhantomButton
             "#30b6ef",
             OptionSort: (0, 0),
             isDesyncImpostor: true,
-            introSound: () => GetIntroSound(RoleTypes.Shapeshifter)
+            introSound: () => GetIntroSound(RoleTypes.Shapeshifter),
+            from: From.TownOfHost_K
         );
     public MMArcher(PlayerControl player)
     : base(

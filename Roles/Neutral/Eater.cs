@@ -335,6 +335,8 @@ public sealed class Eater : RoleBase, IKiller, IUsePhantomButton, IKillFlashSeea
             if (state != null) state.DeathReason = CustomDeathReason.Swallowed;
             exileTarget.SetRealKiller(Player);
             exileTarget.RpcExileV3();
+            PlayerState.GetByPlayerId(exileTarget.PlayerId)?.SetDead();
+            ReportDeadBodyPatch.IgnoreBodyids[exileTarget.PlayerId] = false;
             UtilsGameLog.AddGameLog("Eater", $"{UtilsName.GetPlayerColor(Player)} swallowed {UtilsName.GetPlayerColor(exileTarget)}");
             RemoveDeadBodyArrow(exileTarget.PlayerId);
         }

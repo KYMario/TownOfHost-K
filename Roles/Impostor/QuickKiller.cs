@@ -19,7 +19,8 @@ public sealed class QuickKiller : RoleBase, IImpostor
             SetupOptionItem,
             "qk",
             OptionSort: (7, 5),
-            Desc: () => string.Format(GetString("QuickKillerDesc"), OptionAbiltyCanUsePlayercount.GetInt(), OptionQuickKillTimer.GetInt())
+            Desc: () => string.Format(GetString("QuickKillerDesc"), OptionAbiltyCanUsePlayercount.GetInt(), OptionQuickKillTimer.GetInt()),
+            from: From.TownOfHost_K
         );
     public QuickKiller(PlayerControl player)
     : base(

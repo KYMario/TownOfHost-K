@@ -837,6 +837,7 @@ public enum CustomRoles
     Assassin,
     UnFortuner,
     //TOH-P
+    EvilGuesser,
     TimeSleeper,
     StandMaster,
     EvilBlender,
@@ -925,7 +926,9 @@ public enum CustomRoles
     Satellite,
     Merlin,
     //TOH-P
+    NiceGuesser,
     Pukupuku,
+    Medium,
     //DEBUG only Crewmate
     Analyzer,
     //Neutral
@@ -949,6 +952,10 @@ public enum CustomRoles
     Oblivion,
     Eater,
     Spelunker,
+    PavlovDog,
+    PavlovOwner,
+    PavlovDogImprint,
+    Moira,
     //TOH-K
     Remotekiller,
     Chef,

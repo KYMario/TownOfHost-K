@@ -44,11 +44,8 @@ public sealed class Tama : RoleBase, IKiller
 
     static OptionItem OptLoadCooldown;
     static float LoadCooldown;
-
-    // ★ 追加：装填できるかどうか
     static OptionItem OptCanLoad;
     static bool CanLoad;
-
     static OptionItem OptVentCooldown;
     static OptionItem OptVentMaxTime;
     static OptionItem OptCanVentMove;
@@ -58,12 +55,9 @@ public sealed class Tama : RoleBase, IKiller
     {
         OptLoadCooldown = FloatOptionItem.Create(RoleInfo, 10, "TamaLoadCooldown", new(0f, 60f, 0.5f), 10f, false)
             .SetValueFormat(OptionFormat.Seconds);
-
-        // ★ 装填できるかどうかのオプション
         OptCanLoad = BooleanOptionItem.Create(RoleInfo, 11, "TamaCanLoad", true, false);
-
         OptVentCooldown = FloatOptionItem.Create(RoleInfo, 12, GeneralOption.Cooldown, new(0f, 180f, 0.5f), 0f, false)
-        .SetValueFormat(OptionFormat.Seconds);
+            .SetValueFormat(OptionFormat.Seconds);
         OptVentMaxTime = FloatOptionItem.Create(RoleInfo, 13, GeneralOption.EngineerInVentCooldown, new(0f, 180f, 0.5f), 0f, false)
             .SetZeroNotation(OptionZeroNotation.Infinity)
             .SetValueFormat(OptionFormat.Seconds);
@@ -79,18 +73,14 @@ public sealed class Tama : RoleBase, IKiller
     public override void ApplyGameOptions(IGameOptions opt)
     {
         opt.SetVision(true);
-
-        // ★ 装填不可ならエンジニア判定に偽装
         if (!CanLoad)
             Player.RpcSetRoleDesync(RoleTypes.Engineer, Player.GetClientId());
-
         AURoleOptions.EngineerCooldown = OptVentCooldown.GetFloat();
         AURoleOptions.EngineerInVentMaxTime = OptVentMaxTime.GetFloat();
     }
 
     public float CalculateKillCooldown() => LoadCooldown;
 
-    // ★ 装填不可ならキルボタンを出さない
     public bool CanUseKillButton()
     {
         if (!CanLoad) return false;
@@ -99,6 +89,7 @@ public sealed class Tama : RoleBase, IKiller
 
     public bool CanUseSabotageButton() => false;
     public bool CanUseImpostorVentButton() => true;
+    public override bool CanVentMoving(PlayerPhysics physics, int ventId) => CanVentMove;
 
     private bool IsOwnerAlive()
     {
@@ -110,21 +101,15 @@ public sealed class Tama : RoleBase, IKiller
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
         info.DoKill = false;
-
-        // ★ 装填不可なら何も起きない
         if (!CanLoad) return;
 
         var (killer, target) = info.AttemptTuple;
-
         if (hasLoaded || isLoading) return;
-
-        // ★ キルボタンのターゲットがオーナー（波動砲ジャッカル）でないと装填不可
         if (target.PlayerId != OwnerId) return;
 
         isLoading = true;
         hasLoaded = true;
 
-        // ★ 波動砲ジャッカルに装填を通知
         var owner = GetPlayerById(OwnerId);
         if (owner?.GetRoleClass() is JackalHadouHo jhh)
             jhh.SetLoaded(true);
@@ -148,13 +133,10 @@ public sealed class Tama : RoleBase, IKiller
 
         if (!CanLoad)
             return $"{(isForHud ? "" : "<size=60%>")}<color=#5e5e5e>装填機能は無効化されています</color>";
-
         if (hasLoaded)
             return $"{(isForHud ? "" : "<size=60%>")}<color=#00b4eb>装填済み！波動砲ジャッカルが超波動砲を撃てる</color>";
-
         if (!IsOwnerAlive())
             return $"{(isForHud ? "" : "<size=60%>")}<color=#5e5e5e>波動砲ジャッカルが死亡しています</color>";
-
         return $"{(isForHud ? "" : "<size=60%>")}<color=#00b4eb>波動砲ジャッカルにキルボタンで装填</color>";
     }
 
@@ -166,21 +148,18 @@ public sealed class Tama : RoleBase, IKiller
 
         var owner = GetPlayerById(OwnerId);
 
-        // ★ 装填中に弾が死んだらジャッカルの超波動砲状態を解除
         if (!player.IsAlive() && hasLoaded)
         {
             hasLoaded = false;
             isLoading = false;
-
             if (owner?.GetRoleClass() is JackalHadouHo jhh)
                 jhh.SetLoaded(false);
-
             SendRPC();
             return;
         }
 
-        // ★ オーナーが死亡したら昇格
-        if (player.IsAlive() && (owner == null || !owner.IsAlive()))
+        // ★ オーナーが死亡または転職（JackalHadouHoでなくなった）したら昇格
+        if (player.IsAlive() && (owner == null || !owner.IsAlive() || owner.GetCustomRole() != CustomRoles.JackalHadouHo))
         {
             OwnerId = byte.MaxValue;
             MyState.SetCountType(CountTypes.Jackal);
@@ -188,12 +167,14 @@ public sealed class Tama : RoleBase, IKiller
                 Utils.RoleSendList.Add(Player.PlayerId);
             JackalHadouHo.NextNoSideKick = true;
             Player.RpcSetCustomRole(CustomRoles.JackalHadouHo, true);
+            SendRPC();
+            UtilsNotifyRoles.NotifyRoles();
+            return;
         }
 
         if (!hasLoaded) return;
         if (owner == null || !owner.IsAlive() || !player.IsAlive()) return;
 
-        // ★ 装填後はオーナーの位置にワープ
         var position = owner.transform.position;
         player.RpcSnapToForced(position, SendOption.None);
     }
@@ -201,18 +182,13 @@ public sealed class Tama : RoleBase, IKiller
     public override void OnStartMeeting()
     {
         if (!AmongUsClient.Instance.AmHost) return;
-
-        // ★ 会議開始時に装填キャンセル
         if (hasLoaded || isLoading)
         {
             hasLoaded = false;
             isLoading = false;
-
-            // ★ 波動砲ジャッカルの装填状態もリセット
             var owner = GetPlayerById(OwnerId);
             if (owner?.GetRoleClass() is JackalHadouHo jhh)
                 jhh.SetLoaded(false);
-
             SendRPC();
             UtilsNotifyRoles.NotifyRoles();
         }

@@ -19,8 +19,7 @@ public sealed class DummySpawner : RoleBase, IImpostor, IKiller
             27000,
             SetupOptionItem,
             "ds",
-            "#ff4444",
-            from: From.SuperNewRoles
+            "#ff4444"
         );
 
     public DummySpawner(PlayerControl player)

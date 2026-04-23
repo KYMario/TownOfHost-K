@@ -23,7 +23,8 @@ public sealed class EvilBlender : RoleBase, IImpostor, IUsePhantomButton
             24300,
             SetupOptionItem,
             "Eb",
-            OptionSort: (2, 7)
+            OptionSort: (2, 7),
+            from: From.TownOfHost_K
         );
     public EvilBlender(PlayerControl player)
     : base(

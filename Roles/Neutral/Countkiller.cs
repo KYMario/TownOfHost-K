@@ -27,7 +27,8 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
             Desc: () =>
             {
                 return string.Format(GetString("CountKillerDesc"), OptionVictoryCount.GetInt(), OptionAddWin.GetBool() ? GetString("AddWin") : GetString("SoloWin"));
-            }
+            },
+            from: From.TownOfHost_K
         );
     public CountKiller(PlayerControl player)
     : base(

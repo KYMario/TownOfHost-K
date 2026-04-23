@@ -164,7 +164,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
     public override bool CanUseAbilityButton() => true;
     bool IUsePhantomButton.IsPhantomRole => true;
-
     public void SetLoaded(bool loaded)
     {
         IsLoaded = loaded;
@@ -205,7 +204,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                     {
                         IsSuperCharging = true;
                         superChargeTimer = 0f;
-                        // ★ 超波動砲チャージ開始時のみフラッシュ
                         Utils.AllPlayerKillFlash();
                         StartSuperChargeFlashLoop();
                     }
@@ -213,7 +211,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                     {
                         IsCharging = true;
                         chargeTimer = 0f;
-                        // ★ 通常波動砲はチャージ開始時のみフラッシュ（ループなし）
                         Utils.AllPlayerKillFlash();
                     }
                     colorchange = 0f;
@@ -269,7 +266,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             CanSideKick = false;
             SendRpc();
             AURoleOptions.PhantomCooldown = Cooldown;
-
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
         }
 
@@ -288,7 +284,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         {
             IsSuperCharging = true;
             superChargeTimer = 0f;
-            // ★ 超波動砲チャージ開始時のみフラッシュ
             Utils.AllPlayerKillFlash();
             StartSuperChargeFlashLoop();
         }
@@ -296,7 +291,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         {
             IsCharging = true;
             chargeTimer = 0f;
-            // ★ 通常波動砲はチャージ開始時のみフラッシュ（ループなし）
             Utils.AllPlayerKillFlash();
         }
         colorchange = 0f;
@@ -313,7 +307,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         SendRpc();
     }
 
-    // ★ 超波動砲のみキルフラッシュ連打
     void StartSuperChargeFlashLoop()
     {
         int count = (int)(SuperChargeTime / 0.1f);
@@ -351,35 +344,41 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         }
     }
 
+    private void ResetAllState()
+    {
+        IsCharging = false;
+        IsSuperCharging = false;
+        ShowBeamMark = false;
+        chargeTimer = 0f;
+        superChargeTimer = 0f;
+        HasHit = false;
+        IsFiring = false;
+        IsSuperBeam = false;
+        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+        Player.MarkDirtySettings();
+        Player.SyncSettings();
+        Player.RpcSetColor((byte)PlayerColor);
+        SetRoleTextHeight(false);
+    }
+
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
 
         if (MeetingHud.Instance != null)
         {
-            IsCharging = false;
-            IsSuperCharging = false;
-            ShowBeamMark = false;
-            IsFiring = false;
-            IsSuperBeam = false;
-            Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-            Player.MarkDirtySettings();
-            SetRoleTextHeight(false);
-            UtilsNotifyRoles.NotifyRoles();
+            if (IsCharging || IsSuperCharging || ShowBeamMark || IsFiring)
+            {
+                ResetAllState();
+                UtilsNotifyRoles.NotifyRoles();
+                SendRpc();
+            }
             return;
         }
 
         if (!Player.IsAlive() && (IsCharging || IsSuperCharging || ShowBeamMark))
         {
-            IsCharging = false;
-            IsSuperCharging = false;
-            ShowBeamMark = false;
-            IsFiring = false;
-            IsSuperBeam = false;
-            Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-            Player.MarkDirtySettings();
-            Player.RpcSetColor((byte)PlayerColor);
-            SetRoleTextHeight(false);
+            ResetAllState();
             UtilsNotifyRoles.NotifyRoles();
             SendRpc();
             return;
@@ -447,7 +446,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         BeamFacingLeft = Player.cosmetics.FlipX;
         SendBeamDirection(BeamFacingLeft);
 
-        // ★ 通常波動砲はビーム開始時のみフラッシュ
         Utils.AllPlayerKillFlash();
 
         IsCharging = false;
@@ -485,16 +483,11 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             if (!HasHit && SelfDestructOnMiss)
             {
-                // ★ 速度を先に戻す
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
-
-                // ★ 死因を自爆に変更
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
-
-                // ★ IsFiringリセット
                 IsFiring = false;
                 return;
             }
@@ -522,7 +515,6 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         BeamFacingLeft = Player.cosmetics.FlipX;
         SendBeamDirection(BeamFacingLeft);
 
-        // ★ 超波動砲はビーム開始時もフラッシュ
         Utils.AllPlayerKillFlash();
 
         IsSuperCharging = false;
@@ -572,16 +564,11 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             if (!HasHit && SelfDestructOnMiss)
             {
-                // ★ 速度を先に戻す
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
-
-                // ★ 死因を自爆に変更
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
-
-                // ★ IsFiringリセット
                 IsFiring = false;
                 return;
             }
@@ -646,7 +633,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             if (target.PlayerId == Player.PlayerId) continue;
             if ((!KillJackal) && target.GetCustomRole() is CustomRoles.Jackal or CustomRoles.JackalMafia
                 or CustomRoles.JackalAlien or CustomRoles.Jackaldoll or CustomRoles.JackalHadouHo
-                or CustomRoles.Tama && !SuddenDeathMode.NowSuddenDeathMode)continue;
+                or CustomRoles.Tama && !SuddenDeathMode.NowSuddenDeathMode) continue;
 
             var targetPos = target.GetTruePosition();
             var toTarget = targetPos - myPos;
@@ -664,38 +651,14 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
-        IsCharging = false;
-        IsSuperCharging = false;
-        ShowBeamMark = false;
-        chargeTimer = 0f;
-        superChargeTimer = 0f;
-        HasHit = false;
-        IsFiring = false;
-        IsSuperBeam = false;
-        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-        Player.MarkDirtySettings();
-        Player.SyncSettings();
-        Player.RpcSetColor((byte)PlayerColor);
-        SetRoleTextHeight(false);
+        ResetAllState();
         UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
         SendRpc();
     }
 
     public override void OnStartMeeting()
     {
-        IsCharging = false;
-        IsSuperCharging = false;
-        ShowBeamMark = false;
-        chargeTimer = 0f;
-        superChargeTimer = 0f;
-        HasHit = false;
-        IsFiring = false;
-        IsSuperBeam = false;
-        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-        Player.MarkDirtySettings();
-        Player.SyncSettings();
-        Player.RpcSetColor((byte)PlayerColor);
-        SetRoleTextHeight(false);
+        ResetAllState();
     }
 
     public override void AfterMeetingTasks()
@@ -743,11 +706,9 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
     public override bool GetTemporaryName(ref string name, ref bool NoMarker, bool isForMeeting, PlayerControl seer, PlayerControl seen = null)
     {
         seen ??= seer;
-        // ★ 死亡中または会議中は表示しない
         if (!Player.IsAlive() || isForMeeting)
             return false;
 
-        // ★ 波動砲本人かつバニラ勢のみに別名を表示
         if (seen == seer && Is(seer) && !seer.IsModClient() && (IsCharging || IsSuperCharging || ShowBeamMark))
         {
             if (!Player.IsAlive() || isForMeeting) return false;
@@ -802,6 +763,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             return false;
         }
+
         if (!Player.IsAlive() || isForMeeting) return false;
 
         if ((IsCharging || IsSuperCharging) && seen.PlayerId == Player.PlayerId)

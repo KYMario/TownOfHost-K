@@ -22,7 +22,8 @@ public sealed class AntiReporter : RoleBase, IImpostor, IUsePhantomButton
             SetupOptionItem,
             "anr",
             OptionSort: (6, 2),
-            Desc: () => string.Format(GetString("AntiReporterDesc"), OptionAntiReporterResetse.GetString() is "∞" ? "" : OptionAntiReporterResetse.GetString(), OptionMax.GetInt())
+            Desc: () => string.Format(GetString("AntiReporterDesc"), OptionAntiReporterResetse.GetString() is "∞" ? "" : OptionAntiReporterResetse.GetString(), OptionMax.GetInt()),
+            from: From.TownOfHost_K
         );
     public AntiReporter(PlayerControl player)
     : base(

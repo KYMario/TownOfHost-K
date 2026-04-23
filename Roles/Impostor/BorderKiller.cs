@@ -22,7 +22,8 @@ public sealed class BorderKiller : RoleBase, IImpostor
             Desc: () =>
             {
                 return string.Format(GetString("BorderKillerDesc"), OptionMissionKillcount.GetInt());
-            }
+            },
+            from: From.TownOfHost_K
         );
     public BorderKiller(PlayerControl player)
     : base(

@@ -20,7 +20,7 @@ public sealed class MadChanger : RoleBase, IKiller, IKillFlashSeeable, IDeathRea
             OptionSort: (2, 3),
             isDesyncImpostor: true,
             introSound: () => GetIntroSound(RoleTypes.Crewmate),
-            from: From.None
+            from: From.TownOfHost_K
         );
     public MadChanger(PlayerControl player)
     : base(

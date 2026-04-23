@@ -26,7 +26,8 @@ public sealed class JackalDoll : RoleBase
                 assignInfo: new RoleAssignInfo(CustomRoles.Jackaldoll, CustomRoleTypes.Neutral)
                 {
                     AssignCountRule = new(0, 15, 1)
-                }
+                },
+            from: From.TownOfHost_K
         );
     public JackalDoll(PlayerControl player)
     : base(

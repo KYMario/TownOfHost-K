@@ -33,7 +33,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
             {
                 AssignCountRule = new(1, 1, 1)
             },
-            from: From.None,
+            from: From.TownOfHost_K,
             Desc: () =>
             {
                 return string.Format(GetString("FoxDesc"), OptWinTaskCount.GetInt(), OptGiveGuardTaskCount.GetInt(), OptGiveGuardMax.GetInt());

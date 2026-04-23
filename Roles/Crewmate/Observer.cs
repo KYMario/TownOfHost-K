@@ -19,7 +19,8 @@ public sealed class Observer : RoleBase
             "Observer",
             "#8a99b7",
             (3, 9),
-            false
+            false,
+            from: From.TownOfHost_K
         );
     public Observer(PlayerControl player)
     : base(

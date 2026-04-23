@@ -25,7 +25,8 @@ namespace TownOfHost.Roles.Neutral
                 assignInfo: new RoleAssignInfo(CustomRoles.Remotekiller, CustomRoleTypes.Neutral)
                 {
                     AssignCountRule = new(1, 1, 1)
-                }
+                },
+                from: From.TownOfHost_K
             );
         public Remotekiller(PlayerControl player)
         : base(

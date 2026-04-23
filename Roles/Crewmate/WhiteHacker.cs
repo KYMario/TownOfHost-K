@@ -20,7 +20,8 @@ public sealed class WhiteHacker : RoleBase
             SetupOptionItem,
             "WH",
             "#efefef",
-            (3, 7)
+            (3, 7),
+            from: From.TownOfHost_K
         );
 
     public WhiteHacker(PlayerControl player)

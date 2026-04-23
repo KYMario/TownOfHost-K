@@ -17,7 +17,8 @@ public sealed class Notifier : RoleBase, IImpostor
             7100,
             SetupOptionItems,
             "nt",
-            OptionSort: (7, 6)
+            OptionSort: (7, 6),
+            from: From.TownOfHost_K
         );
     public Notifier(PlayerControl player)
     : base(

@@ -19,7 +19,8 @@ public sealed class UltraStar : RoleBase, IKiller
             SetupOptionItem,
             "us",
             "#ffff8e",
-            (4, 0)
+            (4, 0),
+            from: From.TownOfHost_K
         );
     public UltraStar(PlayerControl player)
     : base(

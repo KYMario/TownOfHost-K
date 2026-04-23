@@ -1,18 +1,11 @@
 using AmongUs.GameOptions;
 using Hazel;
 using TownOfHost.Roles.Core;
-using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.PlayerCatch;
 using static TownOfHost.Translator;
 
 namespace TownOfHost.Roles.Neutral;
 
-/// <summary>
-/// 忘却者 (Oblivion)
-/// 第三陣営。死体をレポートするとそのプレイヤーの役職に変化する。
-/// 切断者の死体をレポートした場合は変化しない。
-/// 勝利条件：変化後の役職に準ずる。
-/// </summary>
 public sealed class Oblivion : RoleBase
 {
     public static readonly SimpleRoleInfo RoleInfo =
@@ -25,8 +18,8 @@ public sealed class Oblivion : RoleBase
             30400,
             SetUpOptionItem,
             "ob",
-            "#b0b0d0",
-            (6, 2),
+            "#808080",
+            (7, 2),
             true,
             from: From.SuperNewRoles
         );
@@ -35,14 +28,14 @@ public sealed class Oblivion : RoleBase
         : base(RoleInfo, player, () => HasTask.False)
     {
         hasTransformed = false;
+        pendingRoleId = byte.MaxValue;
     }
 
     bool hasTransformed;
+    // ★ 会議後に変化する役職を保留
+    byte pendingRoleId;
 
-    static void SetUpOptionItem()
-    {
-        // 現時点でオプションなし（将来拡張用）
-    }
+    static void SetUpOptionItem() { }
 
     public override void ApplyGameOptions(IGameOptions opt)
     {
@@ -51,39 +44,44 @@ public sealed class Oblivion : RoleBase
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
-        // ★ レポートしたのが自分でない場合は無視
         if (reporter == null || reporter.PlayerId != Player.PlayerId) return;
-
-        // ★ すでに変化済みなら無視
         if (hasTransformed) return;
-
-        // ★ targetがnull（緊急会議ボタン）の場合は無視
         if (target == null) return;
-
-        // ★ 切断者の死体の場合は変化しない
         if (target.Disconnected) return;
 
-        // ★ レポート相手がいない場合は無視
         var deadPlayer = GetPlayerById(target.PlayerId);
         if (deadPlayer == null) return;
 
         var newRole = deadPlayer.GetCustomRole();
 
-        // ★ GM・切断者・無効役職は除外
-        if (newRole is CustomRoles.GM or CustomRoles.NotAssigned) return;
+        if (newRole is CustomRoles.GM or CustomRoles.NotAssigned or CustomRoles.Oblivion) return;
 
-        // ★ 自分と同じ役職は意味がないのでスキップ
-        if (newRole == CustomRoles.Oblivion) return;
+        // ★ 会議後に変化するよう保留
+        pendingRoleId = target.PlayerId;
+        SendRPC();
+    }
+
+    public override void AfterMeetingTasks()
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (!Player.IsAlive()) return;
+        if (pendingRoleId == byte.MaxValue) return;
+
+        var deadPlayer = GetPlayerById(pendingRoleId);
+        pendingRoleId = byte.MaxValue;
+
+        if (deadPlayer == null) return;
+
+        var newRole = deadPlayer.GetCustomRole();
+        if (newRole is CustomRoles.GM or CustomRoles.NotAssigned or CustomRoles.Oblivion) return;
 
         hasTransformed = true;
 
-        // ★ 役職変化処理
         if (!Utils.RoleSendList.Contains(Player.PlayerId))
             Utils.RoleSendList.Add(Player.PlayerId);
 
         Player.RpcSetCustomRole(newRole, log: null);
 
-        // ★ ログ
         UtilsGameLog.AddGameLog(
             "Oblivion",
             $"{UtilsName.GetPlayerColor(Player)}(忘却者)が" +
@@ -91,7 +89,6 @@ public sealed class Oblivion : RoleBase
             $"{UtilsRoleText.GetRoleName(newRole)}に変化した"
         );
 
-        // ★ 本人にメッセージ
         Utils.SendMessage(
             string.Format(GetString("OblivionTransformed"),
                 UtilsRoleText.GetRoleName(newRole)),
@@ -106,11 +103,13 @@ public sealed class Oblivion : RoleBase
     {
         using var sender = CreateSender();
         sender.Writer.Write(hasTransformed);
+        sender.Writer.Write(pendingRoleId);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
         hasTransformed = reader.ReadBoolean();
+        pendingRoleId = reader.ReadByte();
     }
 
     public override string GetProgressText(bool comms = false, bool GameLog = false)
@@ -125,6 +124,8 @@ public sealed class Oblivion : RoleBase
         seen ??= seer;
         if (!Is(seer) || seer.PlayerId != seen.PlayerId || !Player.IsAlive()) return "";
         if (hasTransformed) return "";
-        return $"{(isForHud ? "" : "<size=60%>")}<color=#b0b0d0>死体をレポートすると役職が変化する</color>";
+        if (pendingRoleId != byte.MaxValue)
+            return $"{(isForHud ? "" : "<size=60%>")}<color=#808080>会議後に役職が変化する...</color>";
+        return $"{(isForHud ? "" : "<size=60%>")}<color=#808080>死体をレポートすると役職が変化する</color>";
     }
 }

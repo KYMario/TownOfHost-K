@@ -18,7 +18,8 @@ public sealed class MadTracker : RoleBase, IKillFlashSeeable, IDeathReasonSeeabl
             SetupOptionItem,
             "mt",
             OptionSort: (2, 2),
-            introSound: () => GetIntroSound(RoleTypes.Impostor)
+            introSound: () => GetIntroSound(RoleTypes.Impostor),
+            from: From.TownOfHost_K
         );
     public MadTracker(PlayerControl player)
     : base(

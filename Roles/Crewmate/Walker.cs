@@ -19,7 +19,8 @@ public sealed class Walker : RoleBase, IRoomTasker
             SetupOptionItem,
             "wa",
             "#057a2c",
-            (8, 2)
+            (8, 2),
+            from: From.TownOfHost_K
         );
     public Walker(PlayerControl player)
     : base(

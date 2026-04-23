@@ -18,7 +18,8 @@ public sealed class VentMaster : RoleBase
             "vm",
             "#ff6666",
             (9, 4),
-            introSound: () => GetIntroSound(RoleTypes.Noisemaker)
+            introSound: () => GetIntroSound(RoleTypes.Noisemaker),
+            from: From.TownOfHost_K
         );
     public VentMaster(PlayerControl player)
     : base(

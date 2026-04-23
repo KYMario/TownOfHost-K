@@ -27,7 +27,8 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
             Desc: () =>
             {
                 return string.Format(GetString("SantaClausDesc"), OptWinGivePresentCount.GetInt(), OptAddWin.GetBool() ? GetString("AddWin") : GetString("SoloWin"));
-            }
+            },
+            from: From.TownOfHost_K
         );
     public SantaClaus(PlayerControl player)
     : base(

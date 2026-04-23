@@ -28,7 +28,8 @@ public sealed class Madonna : RoleBase, ISelfVoter
             {
                 AssignCountRule = new(1, 1, 1)
             },
-            Desc: () => string.Format(GetString("MadonnaDesc"), GetString(ChangeRoles[OptionLoverChenge.GetValue()].ToString()), Optionlimit.GetInt())
+            Desc: () => string.Format(GetString("MadonnaDesc"), GetString(ChangeRoles[OptionLoverChenge.GetValue()].ToString()), Optionlimit.GetInt()),
+            from: From.TownOfHost_K
         );
     public Madonna(PlayerControl player)
     : base(

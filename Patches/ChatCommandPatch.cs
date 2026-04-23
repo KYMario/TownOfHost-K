@@ -954,7 +954,7 @@ namespace TownOfHost
                     case "/allplayertp":
                     case "/apt":
                         canceled = true;
-                        if (!GameStates.IsLobby || !Main.IsCs()) break;
+                        if (!GameStates.IsLobby) break;
                         foreach (var tp in PlayerCatch.AllPlayerControls)
                         {
                             Vector2 position = new(0.0f, 0.0f);
@@ -1619,7 +1619,7 @@ namespace TownOfHost
             "YES！", "そう思います。","もちろんはい！","いいえに決まってんだろー!!",
             "そうかもしれません。", "わかりません。","自分で考えろよカス", "はいはいそうだね～",
             "今は教えられません。", "期待しない方がいいでしょう。", "違うと思います。",
-            "おそらく違います。", "絶対に違います！", 
+            "おそらく違います。", "絶対に違います！",
         };
                         var rand = new System.Random();
                         string answer = answers[rand.Next(answers.Length)];
@@ -1702,7 +1702,7 @@ namespace TownOfHost
                         ShowTimer(player.PlayerId);
                     break;
                 case "/tp":
-                    if (!GameStates.IsLobby || args.Length < 1 || !Main.IsCs()) break;
+                    if (!GameStates.IsLobby || args.Length < 1) break;
                     canceled = true;
                     subArgs = args[1];
                     switch (subArgs)

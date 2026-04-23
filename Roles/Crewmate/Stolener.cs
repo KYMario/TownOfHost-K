@@ -18,7 +18,8 @@ public sealed class Stolener : RoleBase
             SetupOptionItem,
             "slt",
             "#605eb7",
-            (5, 0)
+            (5, 0),
+            from: From.TownOfHost_K
         );
     public Stolener(PlayerControl player)
     : base(

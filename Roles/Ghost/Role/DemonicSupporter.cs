@@ -10,7 +10,7 @@ namespace TownOfHost.Roles.Ghost
         public static List<byte> playerIdList = new();
         public static void SetupCustomOption()
         {
-            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.DemonicSupporter);
+            SetupRoleOptions(Id, TabGroup.GhostRoles, CustomRoles.DemonicSupporter, fromtext: UtilsOption.GetFrom(From.TownOfHost_K));
             GhostRoleAssingData.Create(Id + 1, CustomRoles.DemonicSupporter, CustomRoleTypes.Madmate);
         }
         public static void Init()

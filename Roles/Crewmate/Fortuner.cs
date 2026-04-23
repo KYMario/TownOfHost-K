@@ -25,7 +25,8 @@ public sealed class Fortuner : RoleBase, IKiller
             "fo",
             "#34f098",
             (1, 3),
-            true
+            true,
+            from: From.TownOfHost_K
         );
     public Fortuner(PlayerControl player)
     : base(

@@ -35,7 +35,8 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
                     Preview = string.Format(GetString("PhantomThiefDescInfo"), GetString($"PhantomThiefDescY{OptionNoticetype.GetValue()}"));
 
                 return string.Format(GetString("PhantomThiefDesc"), Preview, OptionCantSetCount.GetInt(), win);
-            }
+            },
+            from: From.TownOfHost_K
         );
     public PhantomThief(PlayerControl player)
     : base(

@@ -23,7 +23,8 @@ public sealed class Inspector : RoleBase, ISelfVoter
             SetupOptionItem,
             "Is",
             "#977b48",
-            (3, 5)
+            (3, 5),
+            from: From.TownOfHost_K
         );
     public Inspector(PlayerControl player)
     : base(
