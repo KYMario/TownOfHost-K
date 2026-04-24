@@ -79,33 +79,76 @@ public class CustomNetObject
         writer.Recycle();
     }
 
-    protected virtual void OnFixedUpdate() { }
+    protected virtual void OnFixedUpdate()
+    {
+        if (!IsDynamic) return;
+        try
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+            ushort num = (ushort)(PlayerControl.NetTransform.lastSequenceId + 2U);
+            MessageWriter mw = AmongUsClient.Instance.StartRpcImmediately(
+                PlayerControl.NetTransform.NetId, 21, SendOption.None);
+            NetHelpers.WriteVector2(Position, mw);
+            mw.Write(num);
+            AmongUsClient.Instance.FinishRpcImmediately(mw);
+        }
+        catch { }
+    }
 
-    // ★ 外見を設定（Data.Serializeで全員に送る）
+    // ★ 外見を設定（EHR方式: LocalPlayerの外見を一時書き換えてShapeshiftで送信）
     protected void SetAppearance(int colorId, string skinId = "", string hatId = "", string petId = "", string visorId = "")
     {
         if (PlayerControl == null) return;
 
-        var outfit = PlayerControl.Data.Outfits[PlayerOutfitType.Default];
+        var capturedPC = PlayerControl;
+        var outfit = PlayerControl.LocalPlayer.Data.Outfits[PlayerOutfitType.Default];
+        string origName = outfit.PlayerName;
+        int origColor = outfit.ColorId;
+        string origHat = outfit.HatId;
+        string origSkin = outfit.SkinId;
+        string origPet = outfit.PetId;
+        string origVisor = outfit.VisorId;
+
+        var sender = CustomRpcSender.Create("CNO.SetAppearance", SendOption.Reliable);
+        MessageWriter writer = sender.stream;
+        sender.StartMessage();
+
+        // ★ カラー・スキン・帽子・バイザー・ペットをLocalPlayerに一時設定
+        outfit.PlayerName = origName; // 名前はそのまま
         outfit.ColorId = colorId;
-        outfit.SkinId = skinId ?? "";
         outfit.HatId = hatId ?? "";
+        outfit.SkinId = skinId ?? "";
         outfit.PetId = petId ?? "";
         outfit.VisorId = visorId ?? "";
 
-        PlayerControl.RpcSetColor((byte)colorId);
-
-        // Data同期
-        MessageWriter writer = MessageWriter.Get(SendOption.Reliable);
-        writer.StartMessage(5);
-        writer.Write(AmongUsClient.Instance.GameId);
         writer.StartMessage(1);
-        writer.WritePacked(PlayerControl.Data.NetId);
-        PlayerControl.Data.Serialize(writer, false);
+        writer.WritePacked(PlayerControl.LocalPlayer.Data.NetId);
+        PlayerControl.LocalPlayer.Data.Serialize(writer, false);
         writer.EndMessage();
+
+        try { capturedPC.Shapeshift(PlayerControl.LocalPlayer, false); }
+        catch (Exception e) { Logger.Error(e.ToString(), "CNO.SetAppearance.Shapeshift"); }
+
+        sender.StartRpc(capturedPC.NetId, RpcCalls.Shapeshift)
+            .WriteNetObject(PlayerControl.LocalPlayer)
+            .Write(false)
+            .EndRpc();
+
+        // ★ LocalPlayerの外見を元に戻す
+        outfit.PlayerName = origName;
+        outfit.ColorId = origColor;
+        outfit.HatId = origHat;
+        outfit.SkinId = origSkin;
+        outfit.PetId = origPet;
+        outfit.VisorId = origVisor;
+
+        writer.StartMessage(1);
+        writer.WritePacked(PlayerControl.LocalPlayer.Data.NetId);
+        PlayerControl.LocalPlayer.Data.Serialize(writer, false);
         writer.EndMessage();
-        AmongUsClient.Instance.SendOrDisconnect(writer);
-        writer.Recycle();
+
+        sender.EndMessage();
+        sender.SendMessage();
     }
 
     // ★ 名前を設定
@@ -113,12 +156,10 @@ public class CustomNetObject
     {
         if (PlayerControl == null) return;
 
-        // ローカル
         if (PlayerControl.cosmetics?.nameText != null)
             PlayerControl.cosmetics.nameText.text = name;
 
-        // RPC（SetNameの正しい引数: playerName のみ）
-        var writer = AmongUsClient.Instance.StartRpcImmediately(
+        MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(
             PlayerControl.NetId, (byte)RpcCalls.SetName, SendOption.Reliable);
         writer.Write(PlayerControl.Data.NetId);
         writer.Write(name);
@@ -126,7 +167,7 @@ public class CustomNetObject
         AmongUsClient.Instance.FinishRpcImmediately(writer);
     }
 
-    // ★ 位置固定
+    // ★ 位置を固定
     protected void SnapToPosition(Vector2 position)
     {
         if (PlayerControl == null) return;
@@ -174,7 +215,7 @@ public class CustomNetObject
 
         AmongUsClient.Instance.NetIdCnt += 1U;
 
-        // スポーンメッセージ
+        // ★ スポーンメッセージ（EHRと同じ構造）
         MessageWriter msg = MessageWriter.Get(SendOption.Reliable);
         msg.StartMessage(5);
         msg.Write(AmongUsClient.Instance.GameId);
@@ -183,7 +224,7 @@ public class CustomNetObject
         item.SerializeValues(msg);
         msg.EndMessage();
 
-        // バニラ向け追加コンポーネント
+        // ★ バニラクライアント向け追加コンポーネント（EHRと同じ）
         for (uint i = 1; i <= 3; ++i)
         {
             msg.StartMessage(4);
@@ -213,7 +254,11 @@ public class CustomNetObject
 
         AllObjects.Add(this);
 
-        // PlayerId割り当て（0.1秒後）
+        // ★ PlayerControlをローカル変数にキャプチャ（クロージャの問題防止）
+        var capturedPC = PlayerControl;
+        var capturedSelf = this;
+
+        // ★ PlayerId割り当て（0.1秒後）
         _ = new LateTask(() =>
         {
             foreach (var pc in PlayerCatch.AllPlayerControls)
@@ -225,17 +270,17 @@ public class CustomNetObject
                 sender.StartMessage(pc.OwnerId);
 
                 writer.StartMessage(1);
-                writer.WritePacked(PlayerControl.NetId);
+                writer.WritePacked(capturedPC.NetId);
                 writer.Write(pc.PlayerId);
                 writer.EndMessage();
 
-                sender.StartRpc(PlayerControl.NetId, RpcCalls.MurderPlayer)
-                    .WriteNetObject(PlayerControl)
+                sender.StartRpc(capturedPC.NetId, RpcCalls.MurderPlayer)
+                    .WriteNetObject(capturedPC)
                     .Write((int)MurderResultFlags.FailedError)
                     .EndRpc();
 
                 writer.StartMessage(1);
-                writer.WritePacked(PlayerControl.NetId);
+                writer.WritePacked(capturedPC.NetId);
                 writer.Write((byte)254);
                 writer.EndMessage();
 
@@ -243,16 +288,15 @@ public class CustomNetObject
                 sender.SendMessage();
             }
 
-            PlayerControl.CachedPlayerData = PlayerControl.LocalPlayer.Data;
+            capturedPC.CachedPlayerData = PlayerControl.LocalPlayer.Data;
         }, 0.1f, "CNO.AssignId", true);
 
-        // ★ 外見・名前・位置設定（0.4秒後）
-        // ★ 終わったら次のキューを処理
+        // ★ 外見・名前・位置設定（0.4秒後）→ 完了したら次のキューを処理
         _ = new LateTask(() =>
         {
-            OnCreated();
+            capturedSelf.OnCreated();
             IsSpawning = false;
-            ProcessQueue(); // 次のダミーをスポーン
+            ProcessQueue();
         }, 0.4f, "CNO.OnCreated", true);
     }
 
@@ -274,6 +318,17 @@ public class CustomNetObject
     public static CustomNetObject Get(int id)
         => AllObjects.FirstOrDefault(x => x.Id == id);
 
+    // ★ キル可能ダミーを近接で取得
+    public static CustomNetObject GetKillableTarget(PlayerControl killer, float range = 1.5f)
+    {
+        if (killer == null) return null;
+        var pos = killer.GetTruePosition();
+        return AllObjects
+            .Where(o => o is IKillableDummy)
+            .OrderBy(o => Vector2.Distance(pos, o.Position))
+            .FirstOrDefault(o => Vector2.Distance(pos, o.Position) <= range);
+    }
+
     public static void Reset()
     {
         try
@@ -286,43 +341,10 @@ public class CustomNetObject
         }
         catch (Exception e) { Logger.Error(e.ToString(), "CNO.Reset"); }
     }
-
-    // ★ キル可能ダミーかチェック（キラーとの距離判定）
-    public static CustomNetObject GetKillableTarget(PlayerControl killer, float range = 1.0f)
-    {
-        if (killer == null) return null;
-        var pos = killer.GetTruePosition();
-        return AllObjects
-            .Where(o => o is IKillableDummy)
-            .OrderBy(o => Vector2.Distance(pos, o.Position))
-            .FirstOrDefault(o => Vector2.Distance(pos, o.Position) <= range);
-    }
 }
 
-// ★ キル可能ダミーのマーカーインターフェース
+// ★ キル可能ダミーのインターフェース
 public interface IKillableDummy
 {
     void OnKilled(PlayerControl killer);
-}
-
-public sealed class MarkerObject : CustomNetObject
-{
-    public MarkerObject(Vector2 position, List<byte> visibleTo = null)
-    {
-        CreateNetObject(position);
-        if (visibleTo != null)
-        {
-            _ = new LateTask(() =>
-            {
-                foreach (var pc in PlayerCatch.AllPlayerControls)
-                    if (!visibleTo.Contains(pc.PlayerId)) Hide(pc);
-            }, 0.5f, "MarkerObject.Hide", true);
-        }
-    }
-
-    protected override void OnCreated()
-    {
-        SetName("<color=#ff0000>★</color>");
-        SnapToPosition(Position);
-    }
 }

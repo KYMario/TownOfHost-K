@@ -167,6 +167,10 @@ class CheckGetNomalAchievement
             var (imp, crew, mad, neu) = (0, 0, 0, 0);
             foreach (var roledata in statistics.Rolecount)
             {
+                if (roledata.Key > CustomRoles.NotAssigned)
+                {
+                    continue;
+                }
                 switch (roledata.Key.GetCustomRoleTypes())
                 {
                     case CustomRoleTypes.Impostor: imp += roledata.Value.Item2; break;
@@ -216,7 +220,7 @@ class CheckGetNomalAchievement
             if (nowturnkill is 3) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_013]);
             if (nowturnkill is 5) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_014]);
         }
-        if (target.GetCustomRole().IsImpostor()) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_15]);
+        if (target.GetCustomRole().IsImpostor()) Achievements.RpcCompleteAchievement(killer.PlayerId, 0, achievements[600_015]);
 
         if (Options.CurrentGameMode is CustomGameMode.HideAndSeek or CustomGameMode.StandardHAS)
         {

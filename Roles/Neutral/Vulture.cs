@@ -196,10 +196,11 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
     {
         seen ??= seer;
         //死亡済み or 会議中 or 他人にマークの場合は空
-        if (!Player.IsAlive() || isForMeeting || seer.PlayerId != seen.PlayerId) return "";
+        if (!Player.IsAlive() || seer.PlayerId != seen.PlayerId) return "";
 
+        var text = "";
         //タスク数に達しているか
-        if (OptOnikuArrowtaskcount <= MyTaskState.CompletedTasksCount)
+        if (OptOnikuArrowtaskcount <= MyTaskState.CompletedTasksCount && !isForMeeting)
         {
             var str = $" <color={RoleInfo.RoleColorCode}>";
 
@@ -208,9 +209,14 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
             {
                 str += GetArrow.GetArrows(seer, arrow.Value);
             }
-            return $"{str}</color>";
+            text = $"{str}</color>";
         }
-        return "";
+        if (OptAddWinEatcount > 0)
+        {
+            if (OptAddWinEatcount <= EatCount)
+                text += Utils.AdditionalAliveWinnerMark;
+        }
+        return text;
     }
     public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {

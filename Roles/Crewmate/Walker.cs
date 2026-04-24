@@ -88,8 +88,8 @@ public sealed class Walker : RoleBase, IRoomTasker
                 iroomtasker?.ReceiveRoom(Player.PlayerId, reader);
                 break;
             case RPC_Types.CompleteRoom:
-                iroomtasker?.ReceiveCompleteRoom(Player.PlayerId, reader);
                 var a = MessageReader.Get(reader);
+                iroomtasker?.ReceiveCompleteRoom(Player.PlayerId, reader);
                 completeroom = a.ReadInt32();
                 MyTaskState.Update(Player);
                 break;

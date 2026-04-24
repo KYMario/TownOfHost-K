@@ -6,9 +6,9 @@
 この Mod の問題などに関して公式に問い合わせないでください。<br>
 
 この Mod はTOH,TOHKに役職や機能など追加したModです
-TOH-Pで起きたバグは本家や他MODには報告しないでまずはkに報告してください。<br>
+TOH-Pkoで起きたバグは本家や他MODには報告しないでまずはTOH-Pkoに報告してください。<br>
 
-また、TOH-Pに関する質問、バグ報告は基本、[DiscordServer](https://discord.gg/PQ5CrVHC25)でのみ受け付けております。<br>
+また、TOH-Pkoに関する質問、バグ報告は基本、[DiscordServer](https://discord.gg/PQ5CrVHC25)でのみ受け付けております。<br>
 
 [本家TOHはこちら](https://github.com/tukasa0001/TownOfHost)<br>
 [TOHKはこちら](https://github.com/KYMario/TownOfHost-K)<br>
@@ -53,7 +53,7 @@ AmongUsバージョン : **17.0.0**~<br>
 <br>
 勧誘部屋に遭遇した場合は勧誘先に無闇に参加せずまずは開発者にお知らせください。厳正に対処いたします。<br>
 
-## TOH-Pでの処罰、利用不可について
+## TOH-Pkoでの処罰、利用不可について
 v.5.1.61.1以降より[SuperNewRoles](https://github.com/SuperNewRoles/SuperNewRoles/)様等一部のModに搭載されていた<br>
 ブラックリストをTown Of Host-Pkoでも適応するようにいたしました。<br>
 
@@ -84,10 +84,10 @@ Modが使えなくなるよ!<br>
 ってことです。
 
 **TownOfHost-Pkoの開発者**<br>
-　しぇとこ<br>
+　しぇとこch<br>
 　　[Youtube](https://youtube.com/channel/UCM1gs89uwjOJF3EcVc1ZEOA?si=a1ffdwsBjGbJKig6)<br>
 
-※本家TownOfHost様の開発者はここでは省略させていただきます
+※本家TownOfHost,TownOfHost_K様の開発者はここでは省略させていただきます
 #### クレジット
 [Town Of Host](https://github.com/tukasa0001/TownOfHost)<br>
 　Fork元の本家です。<br>TownOfHost様にある機能はTownOfHost-Pkoでも大体実装されています<br>
@@ -108,7 +108,7 @@ Modが使えなくなるよ!<br>
 　10.24アプデの対応で参考にさせていただきました！<br>
 
 [SuperNewRoles](https://github.com/ykundesu/SuperNewRoles) <br>
-　スペランカー、神、フリーター、マグロ、陰陽師、忘却者、波動砲ジャッカル、弾、波動砲、ダブルキラー、自爆魔、サンタ、村長、天秤、ミーティングシェリフ、トイレファン、イビルギャンブラー、ペンギン、マッドスーサイドを移植/参考<br>
+　パブロフの犬、モイラ、キューピッド、スペランカー、神、フリーター、マグロ、陰陽師、忘却者、波動砲ジャッカル、弾、波動砲、ダブルキラー、自爆魔、サンタ、村長、天秤、ミーティングシェリフ、トイレファン、イビルギャンブラー、ペンギン、マッドスーサイドを移植/参考<br>
 　ブラックリスト等や様々な部分を参考にさせて頂きました！<br>
 
 [TheOtherRoles](https://github.com/TheOtherRolesAU/TheOtherRoles)<br>
@@ -127,4 +127,4 @@ TOR_GM_Haoming_Edition<br>
 　マッドジェスターの参考/移植させていただきました<br>
 
 [ExtremeRoles](https://github.com/yukieiji/ExtremeRoles)<br>
-　アサシンとマーリンの参考/移植をさせていただきました。<br>
+　アサシンとマーリンの参考/移植、イーターの移植をさせていただきました。<br>

@@ -32,7 +32,6 @@ namespace TownOfHost
             int Remotekiller = 0;
             int GrimReaper = 0;
             int MilkyWay = 0;
-            int Fox = 0;
             int FoxAndCrew = 0;
             int MadBetrayer = 0;
 
@@ -40,24 +39,18 @@ namespace TownOfHost
             {
                 if (pc.GetCustomRole() is CustomRoles.MadBetrayer)
                 {
-                    TownOfHost.Roles.Madmate.MadBetrayer.CheckCount(ref Crew, ref MadBetrayer);
+                    Roles.Madmate.MadBetrayer.CheckCount(ref Crew, ref MadBetrayer);
                     continue;
                 }
                 switch (pc.GetCountTypes())
                 {
+                    case CountTypes.Fox:
                     case CountTypes.Crew: Crew++; FoxAndCrew++; break;
                     case CountTypes.Impostor: Imp++; break;
                     case CountTypes.Jackal: Jackal++; break;
                     case CountTypes.Remotekiller: Remotekiller++; break;
                     case CountTypes.GrimReaper: GrimReaper++; break;
                     case CountTypes.MilkyWay: MilkyWay++; break;
-                    case CountTypes.Fox:
-                        if (pc.GetRoleClass() is Fox fox)
-                        {
-                            Fox++;
-                            FoxAndCrew += fox.FoxCount();
-                        }
-                        break;
                 }
             }
             if (Jackal == 0 && (CustomRoles.Jackal.IsPresent() || CustomRoles.JackalMafia.IsPresent() || CustomRoles.JackalAlien.IsPresent() || CustomRoles.JackalHadouHo.IsPresent()))
@@ -94,7 +87,7 @@ namespace TownOfHost
                 CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.GrimReaper, byte.MaxValue);
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.GrimReaper);
                 CustomWinnerHolder.NeutralWinnerIds.Add(PlayerCatch.AllPlayerControls
-                    .Where(pc => pc.GetCustomRole() is CustomRoles.GrimReaper).FirstOrDefault()?.PlayerId ?? byte.MaxValue);
+                    .FirstOrDefault(pc => pc.GetCustomRole() is CustomRoles.GrimReaper)?.PlayerId ?? byte.MaxValue);
             }
             else if (Jackal == 0 && Remotekiller == 0 && MilkyWay == 0 && MadBetrayer == 0 && FoxAndCrew <= Imp) //インポスター勝利
             {
@@ -118,7 +111,7 @@ namespace TownOfHost
                 CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Remotekiller, byte.MaxValue);
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Remotekiller);
                 CustomWinnerHolder.NeutralWinnerIds.Add(PlayerCatch.AllPlayerControls
-                    .Where(pc => pc.GetCustomRole() is CustomRoles.Remotekiller).FirstOrDefault()?.PlayerId ?? byte.MaxValue);
+                    .FirstOrDefault(pc => pc.GetCustomRole() is CustomRoles.Remotekiller)?.PlayerId ?? byte.MaxValue);
             }
             else if (Jackal == 0 && Imp == 0 && GrimReaper == 1 && Remotekiller == 0 && MilkyWay == 0 && MadBetrayer == 0)//死神勝利(2)
             {

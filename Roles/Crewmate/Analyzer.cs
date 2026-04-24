@@ -170,7 +170,7 @@ public sealed class Analyzer : RoleBase
                 if (role.IsCrewmate() || role.IsMadmate()) crewcount++;
                 if (role.IsNeutral())
                 {
-                    if (role is CustomRoles.GrimReaper || (pc.GetRoleClass() as Fox)?.FoxCount() is 0) return;
+                    if (role is CustomRoles.GrimReaper) return;
                     neucount++;
                 }
             });
@@ -215,7 +215,7 @@ public sealed class Analyzer : RoleBase
             if (role.IsCrewmate() || role.IsMadmate()) crewcount++;
             if (role.IsNeutral())
             {
-                if (role is CustomRoles.GrimReaper || (pc.GetRoleClass() as Fox)?.FoxCount() is 0) return;
+                if (role is CustomRoles.GrimReaper) return;
                 neucount++;
             }
         });

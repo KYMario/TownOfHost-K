@@ -101,32 +101,40 @@ namespace TownOfHost
         }
         public static string SummaryTexts(byte id)
         {
-            var builder = new StringBuilder();
-            // 全プレイヤー中最長の名前の長さからプレイヤー名の後の水平位置を計算する
-            // 1em ≒ 半角2文字
-            // 空白は0.5emとする
-            // SJISではアルファベットは1バイト，日本語は基本的に2バイト
-            var longestNameByteCount = Main.AllPlayerNames.Values.Select(name => name.GetByteCount()).OrderByDescending(byteCount => byteCount).FirstOrDefault();
-            //最大11.5emとする(★+日本語10文字分+半角空白)
-            var pos = Math.Min(((float)longestNameByteCount / 2) + 1.5f /* ★+末尾の半角空白 */ , 11.5f);
-            builder.Append(ColorString(Main.PlayerColors[id], Main.AllPlayerNames[id]));
-            builder.AppendFormat("<pos={0}em>", pos).Append(GetProgressText(id, ShowManegementText: false, gamelog: true)).Append("</pos>");
-            // "(00/00) " = 4em
-            pos += 6f;
-            builder.AppendFormat("<pos={0}em>", pos).Append(GetVitalText(id, true)).Append("</pos>");
-            // "Lover's Suicide " = 8em
-            // "回線切断 " = 4.5em
-            pos += DestroyableSingleton<TranslationController>.Instance.currentLanguage.languageID == SupportedLangs.English ? 8.5f : 5f;
-            builder.AppendFormat("<pos={0}em>", pos);
-            var role = GetTrueRoleName(id);
-            if (LastLogRole.ContainsKey(id))
-                role = LastLogRole[id];
-            role = Regex.Replace(role, "<b>", "");
-            role = Regex.Replace(role, "</b>", "");
-            builder.Append(role);
-            builder.Append(LastLogSubRole.TryGetValue(id, out var m) ? m : GetSubRolesText(id, mark: true));
-            builder.Append("</pos>");
-            return builder.ToString();
+            try
+            {
+                var builder = new StringBuilder();
+                // 全プレイヤー中最長の名前の長さからプレイヤー名の後の水平位置を計算する
+                // 1em ≒ 半角2文字
+                // 空白は0.5emとする
+                // SJISではアルファベットは1バイト，日本語は基本的に2バイト
+                var longestNameByteCount = Main.AllPlayerNames.Values.Select(name => name.GetByteCount()).OrderByDescending(byteCount => byteCount).FirstOrDefault();
+                //最大11.5emとする(★+日本語10文字分+半角空白)
+                var pos = Math.Min(((float)longestNameByteCount / 2) + 1.5f /* ★+末尾の半角空白 */ , 11.5f);
+                builder.Append(ColorString(Main.PlayerColors[id], Main.AllPlayerNames[id]));
+                builder.AppendFormat("<pos={0}em>", pos).Append(GetProgressText(id, ShowManegementText: false, gamelog: true)).Append("</pos>");
+                // "(00/00) " = 4em
+                pos += 6f;
+                builder.AppendFormat("<pos={0}em>", pos).Append(GetVitalText(id, true)).Append("</pos>");
+                // "Lover's Suicide " = 8em
+                // "回線切断 " = 4.5em
+                pos += DestroyableSingleton<TranslationController>.Instance.currentLanguage.languageID == SupportedLangs.English ? 8.5f : 5f;
+                builder.AppendFormat("<pos={0}em>", pos);
+                var role = GetTrueRoleName(id);
+                if (LastLogRole.ContainsKey(id))
+                    role = LastLogRole[id];
+                role = Regex.Replace(role, "<b>", "");
+                role = Regex.Replace(role, "</b>", "");
+                builder.Append(role);
+                builder.Append(LastLogSubRole.TryGetValue(id, out var m) ? m : GetSubRolesText(id, mark: true));
+                builder.Append("</pos>");
+                return builder.ToString();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error($"{ex}", "SummaryTexts");
+                return "???";
+            }
         }
         public static bool IsPavlovWinnerTeam()
         {

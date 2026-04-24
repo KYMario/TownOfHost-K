@@ -202,6 +202,7 @@ namespace TownOfHost
         {
             Logger.Info($"{player.GetNameWithRole().RemoveHtmlTags()}: InitTask", "TaskState.Init");
             if (player == null || player.Data == null || player.Data.Tasks == null) return;
+            //非クライアントたまにここで止まる。
             if (!UtilsTask.HasTasks(player.Data, false))
             {
                 AllTasksCount = 0;
@@ -275,6 +276,7 @@ namespace TownOfHost
             CalledMeeting = false;
             ExiledAnimate = false;
             canmusic = false;
+            turntimer = 0;
         }
         public static bool InGame = false; //AllClient
         public static bool IsOutro = false; //HostOnly
@@ -297,6 +299,7 @@ namespace TownOfHost
         public static bool task; //AllClient
         public static bool canmusic;  //AllClient
         public static bool introDestroyed = false; //AllClient
+        public static float turntimer;
     }
     public static class MeetingStates
     {

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Linq;
+using AmongUs.Data;
 using AmongUs.GameOptions;
 using BepInEx.Unity.IL2CPP.Utils.Collections;
 using HarmonyLib;
@@ -71,6 +72,8 @@ namespace TownOfHost
                 case RpcCalls.SetRole: //SetNameRPC
                     RoleTypes role = (RoleTypes)subReader.ReadUInt16();
                     Logger.Info("役職:" + __instance.GetRealName().RemoveHtmlTags() + " => " + role, "SetRole");
+                    if (AmongUsClient.Instance.AmHost is false && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                        _ = new LateTask(() => CustomButtonHud.BottonHud(), 1f, "setbutton", true);
                     break;
                 case RpcCalls.SendChat:
                     var text = subReader.ReadString();
@@ -235,6 +238,11 @@ namespace TownOfHost
                     byte targetId = reader.ReadByte();
                     byte killerId = reader.ReadByte();
                     RPC.SetRealKiller(targetId, killerId);
+                    if (killerId == PlayerControl.LocalPlayer.PlayerId && !AmongUsClient.Instance.AmHost)
+                    {
+                        var State = PlayerState.GetByPlayerId(targetId);
+                        Main.HostKill.TryAdd(targetId, State.DeathReason);
+                    }
                     break;
                 case CustomRPC.SyncYomiage:
                     Yomiage.YomiageS.Clear();

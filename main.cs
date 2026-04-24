@@ -57,15 +57,14 @@ namespace TownOfHost
         public static ConfigEntry<string> ExplosionKeyInput { get; private set; }
 
         public const string PluginGuid = "com.kymario.TownOfHost-Pko";
-        public const string PluginVersion = "1.0.0.4";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
-        public const string PluginShowVersion = "1.0.0.4";
+        public const string PluginVersion = "3.12.11.14";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
+        public const string PluginShowVersion = "3.12.11.14";
         public const string ModVersion = ".1.1";//リリースver用バージョン変更
-
         /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
         public static bool DebugVersion = false;
 
         // サポートされている最低のAmongUsバージョン
-        public static readonly string LowestSupportedVersion = "2025.9.9";
+        public static readonly string LowestSupportedVersion = "2026.3.31";
         // このバージョンのみで公開ルームを無効にする場合
         public static readonly bool IsPublicAvailableOnThisVersion = false;
         public Harmony Harmony { get; } = new Harmony(PluginGuid);
@@ -315,6 +314,7 @@ namespace TownOfHost
                     {CustomRoles.Tiebreaker,"#00552e"},
                     {CustomRoles.Guarding, "#7b68ee"},
                     {CustomRoles.MagicHand , "#dea785"},
+                    {CustomRoles.Powerful , "#f08e39"},
                     {CustomRoles.Stack , "#b55f47"},
                     //{CustomRoles.AntiTeleporter,"#dea785"},
                     //デバフ

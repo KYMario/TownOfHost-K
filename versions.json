@@ -122,5 +122,13 @@
     "51.14.32.16": {
         "Unavailable": false,
         "NotAvailableOnline": false
+    },
+    "51.14.32.17": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
+    },
+    "51.14.32.21": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
     }
 }

@@ -41,6 +41,14 @@ public static class SwitchSystemUpdateSystemPatch
         {
             return false;
         }
+        // ロールの処理
+        if (Roles.AddOns.Common.Amnesia.CheckAbility(player))
+        {
+            if ((roleclass as ISystemTypeUpdateHook)?.UpdateSwitchSystem(__instance, amount) is false)
+            {
+                return false;
+            }
+        }
         if (Options.LightOutDonttouch.GetBool())
             if (Options.LightOutDonttouchTime.GetFloat() > Main.SabotageActivetimer)
             {
@@ -75,13 +83,6 @@ public static class SwitchSystemUpdateSystemPatch
                 return false;
             }
         }
-
-        // ロールの処理
-        if (Roles.AddOns.Common.Amnesia.CheckAbility(player))
-            if (roleclass is ISystemTypeUpdateHook systemTypeUpdateHook && !systemTypeUpdateHook.UpdateSwitchSystem(__instance, amount))
-            {
-                return false;
-            }
         return true;
     }
 }

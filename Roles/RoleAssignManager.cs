@@ -20,8 +20,24 @@ namespace TownOfHost.Roles
 
             private RandomAssignOptions(int id, OptionItem parent, CustomRoleTypes roleTypes, int maxCount)
             {
+                var name = GetString($"CustomRoleTypes.{roleTypes}");
+                switch (roleTypes)
+                {
+                    case CustomRoleTypes.Crewmate:
+                        name = Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Crewmate), name);
+                        break;
+                    case CustomRoleTypes.Impostor:
+                        name = Utils.ColorString(UtilsRoleText.GetRoleColor(CustomRoles.Impostor), name);
+                        break;
+                    case CustomRoleTypes.Madmate:
+                        name = Utils.ColorString(ModColors.MadMateOrenge, name);
+                        break;
+                    case CustomRoleTypes.Neutral:
+                        name = Utils.ColorString(ModColors.Gray, name);
+                        break;
+                }
                 var replacementDictionary = new Dictionary<string, string>()
-                { { "%roleType%", GetString( $"CustomRoleTypes.{roleTypes}") } };
+                { { "%roleType%", name} };
 
                 var minOption = IntegerOptionItem.Create(idStart + id + 1, "RoleTypeMin", new(0, maxCount, 1), 0, TabGroup.MainSettings, false)
                     .SetParent(parent)

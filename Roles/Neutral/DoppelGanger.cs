@@ -158,7 +158,7 @@ public sealed class DoppelGanger : RoleBase, ILNKiller, ISchrodingerCatOwner, IA
             var AddDenominator = OptionAddWinCount.GetFloat();
             var SoloWinDenominator = OptionSoloWinCount.GetFloat();
             if (!Player.IsAlive()) return "";
-            if (SecondsWin) return Utils.ColorString(Palette.Purple.ShadeColor(-0.5f), $"({Count}/{SoloWinDenominator}) {Utils.AdditionalWinnerMark}");
+            if (SecondsWin) return Utils.ColorString(Palette.Purple.ShadeColor(-0.5f), $"({Count}/{SoloWinDenominator}) {Utils.AdditionalAliveWinnerMark}");
             else if (Target != byte.MaxValue)
                 return Utils.ColorString(Palette.Purple.ShadeColor(-0.3f), $"({Count}/{AddDenominator})");
             else

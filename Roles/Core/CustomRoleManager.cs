@@ -16,6 +16,7 @@ using TownOfHost.Roles.Neutral;
 using UnityEngine;
 using TownOfHost.Roles.Vanilla;
 using TownOfHost.Roles.AddOns.Neutral;
+using TownOfHost.Roles.AddOns.Impostor;
 
 namespace TownOfHost.Roles.Core;
 
@@ -40,8 +41,15 @@ public static class CustomRoleManager
     /// <param name="attemptKiller">実際にキルを行ったプレイヤー 不変</param>
     /// <param name="attemptTarget">>Killerが実際にキルを行おうとしたプレイヤー 不変</param>
     public static bool OnCheckMurder(PlayerControl attemptKiller, PlayerControl attemptTarget)
-        => OnCheckMurder(attemptKiller, attemptTarget, attemptKiller, attemptTarget);
-
+    {
+        if (attemptKiller.Is(CustomRoles.Powerful)
+        || (attemptKiller.Is(CustomRoles.LastImpostor) && LastImpostor.GievPowerful.GetBool())
+        || (attemptKiller.Is(CustomRoles.LastNeutral) && LastNeutral.GievPowerful.GetBool()))
+        {
+            return OnCheckMurder(attemptKiller, attemptTarget, attemptKiller, attemptTarget, Killpower: 2);
+        }
+        return OnCheckMurder(attemptKiller, attemptTarget, attemptKiller, attemptTarget);
+    }
     /// <param name="attemptKiller">実際にキルを行ったプレイヤー 不変</param>
     /// <param name="attemptTarget">Killerが実際にキルを行おうとしたプレイヤー 不変</param>
     /// <param name="appearanceKiller">見た目上でキルを行うプレイヤー 可変</param>
@@ -525,6 +533,7 @@ public static class CustomRoleManager
                 case CustomRoles.Guarding: Guarding.Add(pc.PlayerId); break;
                 case CustomRoles.Autopsy: Autopsy.Add(pc.PlayerId); break;
                 case CustomRoles.MagicHand: MagicHand.Add(pc.PlayerId); break;
+                case CustomRoles.Powerful: Powerful.Add(pc.PlayerId); break;
 
                 case CustomRoles.SlowStarter: SlowStarter.Add(pc.PlayerId); break;
                 case CustomRoles.Notvoter: Notvoter.Add(pc.PlayerId); break;
@@ -1018,6 +1027,7 @@ public enum CustomRoles
     Speeding,
     Management,
     Opener,
+    Powerful,
     Stack,
     //AntiTeleporter,
     Seeing,

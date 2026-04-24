@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
-using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.Modules.SelfVoteManager;
@@ -12,7 +11,7 @@ using static TownOfHost.Translator;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class Moira : RoleBase, ISelfVoter, IAdditionalWinner
+public sealed class Moira : RoleBase, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -60,6 +59,9 @@ public sealed class Moira : RoleBase, ISelfVoter, IAdditionalWinner
 
     // (player1Id, player2Id, role1Before, role2Before)
     List<(byte, byte, CustomRoles, CustomRoles)> swapHistory;
+
+    // ★ 今ターンスワップしたペア（シスメ用）
+    (byte id1, byte id2) pendingSwapMsg = (byte.MaxValue, byte.MaxValue);
 
     enum OptionName
     {
@@ -213,15 +215,11 @@ public sealed class Moira : RoleBase, ISelfVoter, IAdditionalWinner
                 string.Format(GetString("MoiraRevealed"), UtilsName.GetPlayerColor(Player, true)));
         }
 
-        // ★ タスクをスワップ
+        // ★ タスクを再割り当て（スワップ）
         SwapTaskState(p1, p2);
 
-        // ★ シスメ（役職名なし）
-        string swapMsg =
-            $"<color={RoleInfo.RoleColorCode}>【運命改変】</color>\n" +
-            $"{UtilsName.GetPlayerColor(p1, true)} と " +
-            $"{UtilsName.GetPlayerColor(p2, true)} の運命が入れ替わった！";
-        Utils.SendMessage(swapMsg);
+        // ★ シスメはOnExileWrapUpで送るためここでは保留
+        pendingSwapMsg = (id1, id2);
 
         UtilsGameLog.AddGameLog("Moira",
             $"{UtilsName.GetPlayerColor(Player)}が{UtilsName.GetPlayerColor(p1)}と{UtilsName.GetPlayerColor(p2)}の役職を入れ替えた");
@@ -230,58 +228,84 @@ public sealed class Moira : RoleBase, ISelfVoter, IAdditionalWinner
         UtilsNotifyRoles.NotifyRoles();
     }
 
-    // ★ タスクIDを Il2CppStructArray<byte> に変換して RpcSetTasks
+    // ★ タスクの完了フラグを交換してスワップ
     static void SwapTaskState(PlayerControl p1, PlayerControl p2)
     {
         if (!AmongUsClient.Instance.AmHost) return;
 
-        var rawTasks1 = p1.Data.Tasks?.ToArray();
-        var rawTasks2 = p2.Data.Tasks?.ToArray();
-        if (rawTasks1 == null || rawTasks2 == null) return;
+        var tasks1 = p1.Data.Tasks?.ToArray();
+        var tasks2 = p2.Data.Tasks?.ToArray();
+        if (tasks1 == null || tasks2 == null) return;
 
-        // ★ uint -> byte キャストして Il2CppStructArray<byte> に変換
-        var ids1 = new Il2CppStructArray<byte>(rawTasks1.Select(t => (byte)t.Id).ToArray());
-        var ids2 = new Il2CppStructArray<byte>(rawTasks2.Select(t => (byte)t.Id).ToArray());
-
-        p1.Data.RpcSetTasks(ids2);
-        p2.Data.RpcSetTasks(ids1);
+        // ★ 完了フラグを交換
+        int minLen = Math.Min(tasks1.Length, tasks2.Length);
+        for (int i = 0; i < minLen; i++)
+        {
+            (tasks1[i].Complete, tasks2[i].Complete) = (tasks2[i].Complete, tasks1[i].Complete);
+        }
 
         p1.MarkDirtySettings();
         p2.MarkDirtySettings();
+        GameManager.Instance.CheckTaskCompletion();
     }
 
-    // ★ 追放されたら全スワップを逆順で元に戻す
+    // ★ 投票結果画面（OnExileWrapUp）でシスメを送る → 追放アニメの直後に表示される
     public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
     {
         if (!AmongUsClient.Instance.AmHost) return;
-        if (exiled == null || exiled.PlayerId != Player.PlayerId) return;
 
-        foreach (var (id1, id2, role1, role2) in Enumerable.Reverse(swapHistory))
+        // ★ スワップのシスメ
+        if (pendingSwapMsg.id1 != byte.MaxValue && pendingSwapMsg.id2 != byte.MaxValue)
         {
-            var p1 = GetPlayerById(id1);
-            var p2 = GetPlayerById(id2);
-            if (p1 != null)
+            var p1 = GetPlayerById(pendingSwapMsg.id1);
+            var p2 = GetPlayerById(pendingSwapMsg.id2);
+            if (p1 != null && p2 != null)
             {
-                if (!Utils.RoleSendList.Contains(id1)) Utils.RoleSendList.Add(id1);
-                p1.RpcSetCustomRole(role1, true, log: null);
+                string swapMsg =
+                    $"<color={RoleInfo.RoleColorCode}>【運命改変】</color>\n" +
+                    $"{UtilsName.GetPlayerColor(p1, true)} と " +
+                    $"{UtilsName.GetPlayerColor(p2, true)} の運命が入れ替わった！";
+                Utils.SendMessage(swapMsg);
             }
-            if (p2 != null)
-            {
-                if (!Utils.RoleSendList.Contains(id2)) Utils.RoleSendList.Add(id2);
-                p2.RpcSetCustomRole(role2, true, log: null);
-            }
+            pendingSwapMsg = (byte.MaxValue, byte.MaxValue);
         }
-        swapHistory.Clear();
 
-        Utils.SendMessage(GetString("MoiraExiledRevert"));
-        UtilsNotifyRoles.NotifyRoles();
+        // ★ モイラ本人が追放されたら全スワップを逆順で元に戻す
+        if (exiled != null && exiled.PlayerId == Player.PlayerId)
+        {
+            foreach (var (id1, id2, role1, role2) in Enumerable.Reverse(swapHistory))
+            {
+                var p1 = GetPlayerById(id1);
+                var p2 = GetPlayerById(id2);
+                if (p1 != null)
+                {
+                    if (!Utils.RoleSendList.Contains(id1)) Utils.RoleSendList.Add(id1);
+                    p1.RpcSetCustomRole(role1, true, log: null);
+                }
+                if (p2 != null)
+                {
+                    if (!Utils.RoleSendList.Contains(id2)) Utils.RoleSendList.Add(id2);
+                    p2.RpcSetCustomRole(role2, true, log: null);
+                }
+            }
+            swapHistory.Clear();
+
+            Utils.SendMessage(GetString("MoiraExiledRevert"));
+            UtilsNotifyRoles.NotifyRoles();
+        }
     }
 
-    public bool CheckWin(ref CustomRoles winnerRole)
+    // ★ 単独勝利判定（CheckWinnerから呼ぶ）
+    public override void CheckWinner(GameOverReason reason)
     {
-        if (!Player.IsAlive()) return false;
-        if (remainingSwaps > 0) return false;
-        return true;
+        if (!Player.IsAlive()) return;
+        if (remainingSwaps > 0) return;
+
+        // ★ 全改変を使い切って生存→単独勝利
+        if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Moira, Player.PlayerId))
+        {
+            CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
+        }
     }
 
     public override string GetProgressText(bool comms = false, bool GameLog = false)

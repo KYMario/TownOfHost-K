@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Hazel;
+using TownOfHost.Roles.AddOns.Crewmate;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using UnityEngine;
@@ -61,6 +62,16 @@ public class RoomTaskAssign
                     RPC.PlaySoundRPC(playerid, Sounds.TaskComplete);
 
                     (player?.GetRoleClass() as IRoomTasker)?.OnComplete(completeroom);
+
+                    var ret = true;
+                    ret &= Workhorse.OnCompleteTask(player);
+                    if (ret)
+                    {
+                        var taskstate = player.GetPlayerTaskState();
+                        if (taskstate.CompletedTasksCount < taskstate.AllTasksCount || !UtilsTask.HasTasks(player.Data))
+                        { }
+                        else UtilsGameLog.AddGameLog("Task", string.Format(Translator.GetString("Taskfin"), UtilsName.GetPlayerColor(player, true)));
+                    }
                 }
                 else
                     Logger.Info($"{TaskRoom}にはもう既にいたから変更するよ", "RoomTaskAssign");

@@ -342,9 +342,9 @@ namespace TownOfHost
                 (string size, string color, string hi, string b) tag = ("", "", "", "");
                 var oldtext = text;
                 var i = 0;
-                for (i = 0; sendtext.Length < 400; i++)
+                for (i = 0; sendtext.Length < 350; i++)
                 {
-                    if (sendtext.Length + alltext[i].Length > 400 && i > 0)
+                    if (sendtext.Length + alltext[i].Length > 350 && i > 0)
                     {
                         i--;
                         break;
@@ -896,6 +896,7 @@ namespace TownOfHost
             return roundvalue * digit;
         }
         public const string AdditionalWinnerMark = "<#dddd00>★</color>";
+        public const string AdditionalAliveWinnerMark = "<#349121>★</color>";
 
         public static void SyncAllSettings()
         {

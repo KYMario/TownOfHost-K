@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace TownOfHost.Roles.Impostor;
 
-public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
+public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton, IDoubleTrigger, IKillFlashSeeable
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -566,4 +566,15 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton
         var l1 = new Achievement(RoleInfo, 0, 1, 0, 1);
         achievements.Add(0, l1);
     }
+    public bool CheckAction => (AddRole as IDoubleTrigger)?.CheckAction ?? false;
+    public bool SingleAction(PlayerControl killer, PlayerControl target)
+    {
+        return (AddRole as IDoubleTrigger)?.SingleAction(killer, target) ?? true;
+    }
+
+    public bool DoubleAction(PlayerControl killer, PlayerControl target)
+    {
+        return (AddRole as IDoubleTrigger)?.DoubleAction(killer, target) ?? true;
+    }
+    public bool? CheckKillFlash(MurderInfo info) => (AddRole as IKillFlashSeeable)?.CheckKillFlash(info) ?? false;
 }

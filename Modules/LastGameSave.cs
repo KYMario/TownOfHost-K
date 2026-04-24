@@ -103,12 +103,12 @@ public static class LastGameSave
                 List<byte> cloneRoles = new(PlayerState.AllPlayerStates.Keys);
                 foreach (var id in Main.winnerList)
                 {
-                    sb.Append($"\n★ ").Append(EndGamePatch.SummaryText[id]);
+                    sb.Append($"\n★ ").Append(EndGamePatch.SummaryText.TryGetValue(id, out var name) ? name : "???");
                     cloneRoles.Remove(id);
                 }
                 foreach (var id in cloneRoles)
                 {
-                    sb.Append($"\n　 ").Append(EndGamePatch.SummaryText[id]);
+                    sb.Append($"\n　 ").Append(EndGamePatch.SummaryText.TryGetValue(id, out var name) ? name : "???");
                 }
             }
             return "\n" + sb.ToString().RemoveHtmlTags();

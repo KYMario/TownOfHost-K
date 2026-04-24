@@ -19,7 +19,8 @@ public sealed class DummySpawner : RoleBase, IImpostor, IKiller
             27000,
             SetupOptionItem,
             "ds",
-            "#ff4444"
+            "#ff4444",
+            from: From.SuperNewRoles
         );
 
     public DummySpawner(PlayerControl player)
@@ -44,19 +45,18 @@ public sealed class DummySpawner : RoleBase, IImpostor, IKiller
     public bool CanUseSabotageButton() => true;
     public bool CanUseImpostorVentButton() => true;
 
-    // ★ キルボタンを押したとき: 通常キルの前に近くのダミーを優先してキル
-    public void OnCheckMurderAsKiller(MurderInfo info)
+    // ★ キルボタンを押したとき: 近くにダミーがいれば優先してキル
+    public bool OnCheckMurderAsKiller(MurderInfo info)
     {
         var killable = CustomNetObject.GetKillableTarget(Player, 1.5f);
         if (killable is IKillableDummy kd)
         {
-            info.DoKill = false; // 通常キルをキャンセル
             kd.OnKilled(Player);
-            Player.ResetKillCooldown();
-            Player.SetKillCooldown();
+            Player.SetKillCooldown(KillCooldownValue);
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+            return false; // 通常キルをキャンセル
         }
-        // killableがnullなら通常キル（info.DoKill = trueのまま）
+        return true; // ダミーがいなければ通常キル
     }
 
     public override void AfterMeetingTasks()

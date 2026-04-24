@@ -178,7 +178,7 @@ namespace TownOfHost
         public static bool AdminUsecheck(PlayerControl player, bool? i = null)
         {
             if (player == null) return false;
-            if (!player.IsAlive() && player.PlayerId == 0) return true;
+            if (!player.IsAlive() && player.PlayerId == PlayerControl.LocalPlayer.PlayerId) return true;
             else if (!player.IsAlive()) return false;
 
             if (DemonicCrusher.DemUseAbility) return i == null;
@@ -199,7 +199,7 @@ namespace TownOfHost
         public static bool VitealUsecheck(PlayerControl player, bool? i = null)
         {
             if (player == null) return false;
-            if (!player.IsAlive() && player.PlayerId == 0) return true;
+            if (!player.IsAlive() && player.PlayerId == PlayerControl.LocalPlayer.PlayerId) return true;
             else if (!player.IsAlive()) return false;
 
             if (DemonicCrusher.DemUseAbility) return i == null;
@@ -221,7 +221,7 @@ namespace TownOfHost
         public static bool LogAndCamUsecheck(PlayerControl player, bool? i = null)
         {
             if (player == null) return false;
-            if (!player.IsAlive() && player.PlayerId == 0) return true;
+            if (!player.IsAlive() && player.PlayerId == PlayerControl.LocalPlayer.PlayerId) return true;
             else if (!player.IsAlive()) return false;
 
             if (DemonicCrusher.DemUseAbility) return i == null;
@@ -466,7 +466,7 @@ namespace TownOfHost
                 sender.Write(GameLogAndCamTimer);
                 sender.Write(TurnLogAndCamTimer);
             }
-            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.Polus or MapNames.Fungle)
+            if (Map is MapNames.Airship or MapNames.Polus or MapNames.Fungle)
             {
                 sender.Write(GameVitalTimer);
                 sender.Write(TurnVitalTimer);
@@ -486,12 +486,12 @@ namespace TownOfHost
                 GameLogAndCamTimer = reader.ReadSingle();
                 TurnLogAndCamTimer = reader.ReadSingle();
             }
-            if (Map is MapNames.Airship or MapNames.Dleks or MapNames.Polus or MapNames.Fungle)
+            if (Map is MapNames.Airship or MapNames.Polus or MapNames.Fungle)
             {
                 GameVitalTimer = reader.ReadSingle();
                 TurnVitalTimer = reader.ReadSingle();
             }
-            RemoveDisableDevicesPatch.UpdateDisableDevices();
+            RemoveDisableDevicesPatch.UpdateDisableDevices(true);
         }
     }
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]

@@ -83,6 +83,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.Autopsy, "Au");
                 roleCommands.Add(CustomRoles.Tiebreaker, "tb");
                 roleCommands.Add(CustomRoles.MagicHand, "MaH");
+                roleCommands.Add(CustomRoles.Powerful, "pf");
 
                 //デバフ
                 roleCommands.Add(CustomRoles.SlowStarter, "sl");

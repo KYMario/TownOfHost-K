@@ -53,8 +53,11 @@ public interface IRoomTasker
     /// 部屋の変更用。<br/>
     /// </summary>
     /// <param name="reader"></param>
-    public void ReceiveRoom(byte playerid, MessageReader reader) => GetMyRoomData(playerid)?.ReceiveRoom(reader);
-
+    public void ReceiveRoom(byte playerid, MessageReader reader)
+    {
+        if (GetMyRoomData(playerid) is null) AddRoomTaker(playerid);
+        GetMyRoomData(playerid)?.ReceiveRoom(reader);
+    }
     /// <summary>
     /// RPCを受け取った時に呼ぶ。<br/>
     /// 部屋タスク完了時の処理。<br/>

@@ -113,6 +113,8 @@ public static class MeetingHudPatch
             {
                 //pc.GetPlayerState().IsBlackOut = false;
                 pc.Data.Role.NameColor = Palette.White;
+                pc.GetPlayerTaskState().hasTasks = UtilsTask.HasTasks(pc.Data, false);
+
                 ReportDeadBodyPatch.WaitReport[pc.PlayerId].Clear();
 
                 if (Main.CheckShapeshift.TryGetValue(pc.PlayerId, out var shapeshifting) && shapeshifting && AmongUsClient.Instance.AmHost)
@@ -362,7 +364,7 @@ public static class MeetingHudPatch
                 {
                     ChatUpdatePatch.BlockSendName = false;
                     NameColorManager.RpcMeetingColorName();
-                }, 5.5f, "SetName", true);
+                }, 7f, "SetName", true);
             }
             Main.IsActiveSabotage =
                 Utils.IsActive(SystemTypes.Reactor)

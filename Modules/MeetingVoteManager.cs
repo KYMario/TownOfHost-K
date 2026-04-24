@@ -596,7 +596,7 @@ public class MeetingVoteManager
 
         MeetingHud meetingHud = MeetingHud.Instance;
         HudManager hudManager = DestroyableSingleton<HudManager>.Instance;
-        bool ResetVote = (meetingHud.discussionTimer - (float)Main.NormalOptions.DiscussionTime - (float)Main.NormalOptions.VotingTime) > 3;
+        bool ResetVote = (meetingHud.discussionTimer - (float)Main.NormalOptions.DiscussionTime - (float)Main.NormalOptions.VotingTime) < 3;
 
         /* ホストにキルアニメーション,全員にリアフラ*/
         meetingHud.playerStates.Do(x => x.MaskArea.gameObject.SetActive(false));

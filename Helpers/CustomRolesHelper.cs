@@ -89,6 +89,7 @@ namespace TownOfHost
                 CustomRoles.Autopsy or
                 CustomRoles.Tiebreaker or
                 CustomRoles.MagicHand or
+                CustomRoles.Powerful or
                 //デバフ
                 CustomRoles.NonReport or
                 CustomRoles.Notvoter or
@@ -123,7 +124,8 @@ namespace TownOfHost
                 CustomRoles.Revenger or
                 CustomRoles.Autopsy or
                 CustomRoles.Tiebreaker or
-                CustomRoles.MagicHand
+                CustomRoles.MagicHand or
+                CustomRoles.Powerful
                 ;
         }
         public static bool IsDebuffAddon(this CustomRoles roles)

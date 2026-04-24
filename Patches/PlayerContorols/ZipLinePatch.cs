@@ -23,9 +23,7 @@ namespace TownOfHost
             if (__instance.GetRoleClass() is Roles.Impostor.HadouHo hadouHo)
             {
                 if (hadouHo.IsCharging || hadouHo.ShowBeamMark)
-                {
                     return false;
-                }
             }
             if (__instance.GetRoleClass() is Roles.Neutral.JackalHadouHo jackalHo)
             {
@@ -86,7 +84,6 @@ namespace TownOfHost
         }
         public static void OnMeeting(PlayerControl reporter, NetworkedPlayerInfo oniku)
         {
-            //速度は処理止まらんぜ
             foreach (var playerId in ZipdiePlayers)
             {
                 var player = PlayerCatch.GetPlayerById(playerId);
@@ -103,22 +100,50 @@ namespace TownOfHost
         }
     }
 
+    // ★ MovingPlatform（エアシップのぬーん）禁止Patch
     [HarmonyPatch(typeof(MovingPlatformBehaviour))]
     class HadouHoMovingPlatformPatch
     {
         [HarmonyPatch(nameof(MovingPlatformBehaviour.Use), typeof(PlayerControl)), HarmonyPrefix]
         public static bool UsePrefix(PlayerControl player)
         {
-            // ★ ホストのみ処理
             if (AmongUsClient.Instance.AmHost is false) return true;
 
-            // ★ 波動砲がチャージ中またはビーム中なら梯子使用禁止
             if (player.GetRoleClass() is Roles.Impostor.HadouHo hadouHo)
             {
                 if (hadouHo.IsCharging || hadouHo.ShowBeamMark)
-                {
                     return false;
-                }
+            }
+            // ★ JackalHadouHoも追加
+            if (player.GetRoleClass() is Roles.Neutral.JackalHadouHo jackalHo)
+            {
+                if (jackalHo.IsCharging || jackalHo.ShowBeamMark)
+                    return false;
+            }
+            return true;
+        }
+    }
+
+    // ★ 梯子禁止Patch（ClimbLadderをフック）
+    [HarmonyPatch(typeof(PlayerPhysics), nameof(PlayerPhysics.ClimbLadder))]
+    class HadouHoLadderPatch
+    {
+        public static bool Prefix(PlayerPhysics __instance, Ladder source, byte climbLadderSid)
+        {
+            if (AmongUsClient.Instance.AmHost is false) return true;
+
+            var player = __instance.myPlayer;
+            if (player == null) return true;
+
+            if (player.GetRoleClass() is Roles.Impostor.HadouHo hadouHo)
+            {
+                if (hadouHo.IsCharging || hadouHo.ShowBeamMark)
+                    return false;
+            }
+            if (player.GetRoleClass() is Roles.Neutral.JackalHadouHo jackalHo)
+            {
+                if (jackalHo.IsCharging || jackalHo.ShowBeamMark)
+                    return false;
             }
             return true;
         }

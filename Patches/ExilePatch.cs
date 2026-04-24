@@ -166,7 +166,14 @@ namespace TownOfHost
                     }
 
                     if (Options.ExAftermeetingflash.GetBool())
-                        Utils.AllPlayerKillFlash();
+                        if (Main.NormalOptions.MapId is 4)
+                        {
+                            _ = new LateTask(() => Utils.AllPlayerKillFlash(), 3f, "AftermeetingFlash", true);
+                        }
+                        else
+                        {
+                            Utils.AllPlayerKillFlash();
+                        }
 
                     if ((Main.NormalOptions.MapId is not 4 || AntiBlackout.OverrideExiledPlayer()) && !Iscallassasin)
                     {
@@ -177,6 +184,7 @@ namespace TownOfHost
                     }
 
                     GameStates.task = true;
+                    GameStates.turntimer = 0;
                     Logger.Info("タスクフェイズ開始", "Phase");
                 }, 0.52f, "AfterMeetingDeathPlayers Task");
                 if (Iscallassasin is false)
@@ -206,6 +214,7 @@ namespace TownOfHost
             {
                 _ = new LateTask(() =>
                 {
+                    GameStates.turntimer = 0;
                     GameStates.task = true;
                     Logger.Info("タスクフェイズ開始", "Phase");
                 }, 0.52f, "TaskTurn Start");

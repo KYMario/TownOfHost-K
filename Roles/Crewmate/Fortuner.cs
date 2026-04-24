@@ -69,6 +69,7 @@ public sealed class Fortuner : RoleBase, IKiller
         CustomRoles.Speeding,CustomRoles.Speeding,
         CustomRoles.MagicHand,CustomRoles.MagicHand,
         CustomRoles.Serial,CustomRoles.Serial,
+        CustomRoles.Powerful, CustomRoles.Powerful,
         CustomRoles.PlusVote,
         CustomRoles.Seeing,
         CustomRoles.Sunglasses,
@@ -253,7 +254,7 @@ public sealed class Fortuner : RoleBase, IKiller
     {
         var n1 = new Achievement(RoleInfo, 0, 3, 0, 0);
         var n2 = new Achievement(RoleInfo, 1, 1, 0, 0);
-        var l1 = new Achievement(RoleInfo, 1, 20, 0, 1);
+        var l1 = new Achievement(RoleInfo, 2, 20, 0, 1);
         achievements.Add(0, n1);
         achievements.Add(1, n2);
         achievements.Add(2, l1);

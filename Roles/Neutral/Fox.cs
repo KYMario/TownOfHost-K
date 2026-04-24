@@ -1,19 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
-using UnityEngine;
-using HarmonyLib;
-
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Modules.ChatManager;
+using TownOfHost.Patches;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
-using TownOfHost.Patches;
-using Hazel;
+using UnityEngine;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class Fox : RoleBase, ISystemTypeUpdateHook
+public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -33,11 +31,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
             {
                 AssignCountRule = new(1, 1, 1)
             },
-            from: From.TownOfHost_K,
-            Desc: () =>
-            {
-                return string.Format(GetString("FoxDesc"), OptWinTaskCount.GetInt(), OptGiveGuardTaskCount.GetInt(), OptGiveGuardMax.GetInt());
-            }
+            from: From.TownOfHost_K
         );
     public Fox(PlayerControl player)
     : base(
@@ -46,67 +40,166 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
         () => HasTask.ForRecompute
     )
     {
-        MyTaskState.NeedTaskCount = OptWinTaskCount.GetInt();
-        GiveGuardMax = OptGiveGuardMax.GetInt();
-        GiveGuardTaskCount = OptGiveGuardTaskCount.GetInt();
-        WinTaskCount = OptWinTaskCount.GetInt();
-        Engventcool = OptEngVentCoolDown.GetFloat();
-        Engventinmax = OptEngVentInmaxtime.GetFloat();
-        TellDie = OptTellDie.GetBool();
-        canseeguardcount = OptCanseeGuardCount.GetBool();
-        canwin3player = OptCanWin3players.GetBool();
+        Maxmeter = OptionMeterCount.GetFloat();
+        MeterDistance = OptionDistance.GetFloat();
+        OnlySeekiller = OptionOnlySeeKiller.GetBool();
+        IsActiveNotice = OptionNoticeRoomTask.GetBool();
+        GiveGuardTaskCount = OptionGiveGuardTaskCount.GetInt();
+        GiveGuardMax = OptionGiveGuardMax.GetInt();
+        DieAliveCount = OptionDieAliveCount.GetInt();
+        CrewTaskFinishFlug = (FoxCrewTaskFin)OptionCrewTaskFinish.GetValue();
+        IsTellDie = OptionTellDie.GetBool();
+        Engventcool = OptionEngVentCoolDown.GetFloat();
+        Engventinmax = OptionEngVentInmaxtime.GetFloat();
 
+        CompleteRoomTask = false;
+        Taskcount = 0;
         Guard = 0;
-        IsNoticed = false;
-        checktaskwinflag = false;
-        FoxRoom = null;
+        NowMeter = Maxmeter;
+        IsShowMyRole = false;
+        isnotice = false;
+        meatermark = "";
+        MyTaskState.NeedTaskCount = GiveGuardTaskCount;
     }
-    int Guard;
-    int Taskcount;
-    static OptionItem OptGiveGuardTaskCount; static int GiveGuardTaskCount;
-    static OptionItem OptGiveGuardMax; static int GiveGuardMax;
-    static OptionItem OptWinTaskCount; static int WinTaskCount;
-    static OptionItem OptEngVentCoolDown; static float Engventcool;
-    static OptionItem OptEngVentInmaxtime; static float Engventinmax;
-    static OptionItem OptTellDie; static bool TellDie;
-    static OptionItem OptCanseeGuardCount; static bool canseeguardcount;
-    static OptionItem OptCanWin3players; static bool canwin3player;
-    bool checktaskwinflag;
-    SystemTypes? FoxRoom;
-    bool IsNoticed;
-    enum OptionName
-    {
-        FoxGiveGuardTaskcount,
-        FoxGiveGuardMax,
-        FoxCanseeGuardCount,
-        FoxTellDie,
-        Foxwintaskcount,
-        Fox3playersCanwin
-    }
+    bool CompleteRoomTask;
 
-    private static void SetupOptionItem()
+    float NowMeter; float timer; bool IsShowMyRole; string meatermark;
+    int Taskcount; int Guard;
+    static void SetupOptionItem()
     {
-        SoloWinOption.Create(RoleInfo, 9, defo: 15);
-        OptWinTaskCount = IntegerOptionItem.Create(RoleInfo, 20, OptionName.Foxwintaskcount, new(1, 99, 1), 6, false);
-        OptCanWin3players = BooleanOptionItem.Create(RoleInfo, 21, OptionName.Fox3playersCanwin, false, false);
-        ObjectOptionitem.Create(RoleInfo, 30, "FoxAbilitySetting", true, null).SetOptionName(() => "Ability Setting");
-        OptEngVentCoolDown = FloatOptionItem.Create(RoleInfo, 10, StringNames.EngineerCooldown, OptionBaseCoolTime, 10, false).SetValueFormat(OptionFormat.Seconds);
-        OptEngVentInmaxtime = FloatOptionItem.Create(RoleInfo, 11, StringNames.EngineerInVentCooldown, new(0.5f, 30, 0.5f), 3, false).SetValueFormat(OptionFormat.Seconds);
-        OptTellDie = BooleanOptionItem.Create(RoleInfo, 16, OptionName.FoxTellDie, false, false);
-        OverrideTasksData.Create(RoleInfo, 25);
-        ObjectOptionitem.Create(RoleInfo, 29, "FoxGuardSetting", true, null).SetOptionName(() => "Guard Setting");
-        OptGiveGuardTaskCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.FoxGiveGuardTaskcount, new(1, 99, 1), 3, false);
-        OptGiveGuardMax = IntegerOptionItem.Create(RoleInfo, 13, OptionName.FoxGiveGuardMax, new(0, 99, 1), 2, false);
-        OptCanseeGuardCount = BooleanOptionItem.Create(RoleInfo, 14, OptionName.FoxCanseeGuardCount, false, false);
+        string[] values = EnumHelper.GetAllNames<FoxCrewTaskFin>();
+        SoloWinOption.Create(RoleInfo, 10, defo: 15);
+        OptionCrewTaskFinish = StringOptionItem.Create(RoleInfo, 11, OptionName.FoxCrewTaskFin, values, 0, false);
+        OptionDieAliveCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.FoxDieAliveCount, new(0, 15, 1), 3, false);
+        ObjectOptionitem.Create(RoleInfo, 13, "FoxAbilitySetting", true, null).SetOptionName(() => "Ability Setting");
+        OptionEngVentCoolDown = FloatOptionItem.Create(RoleInfo, 14, StringNames.EngineerCooldown, OptionBaseCoolTime, 10, false).SetValueFormat(OptionFormat.Seconds);
+        OptionEngVentInmaxtime = FloatOptionItem.Create(RoleInfo, 15, StringNames.EngineerInVentCooldown, new(0.5f, 30, 0.5f), 3, false).SetValueFormat(OptionFormat.Seconds);
+        OptionTellDie = BooleanOptionItem.Create(RoleInfo, 16, OptionName.FoxTellDie, false, false);
+        OptionNoticeRoomTask = BooleanOptionItem.Create(RoleInfo, 24, OptionName.FoxNoticeRoomTask, true, false);
+        ObjectOptionitem.Create(RoleInfo, 17, "FoxMeterSetting", true, null).SetOptionName(() => "Meter Setting");
+        OptionMeterCount = FloatOptionItem.Create(RoleInfo, 18, OptionName.FoxMeterCount, new(5, 1200, 5), 60, false).SetValueFormat(OptionFormat.Seconds);
+        OptionDistance = FloatOptionItem.Create(RoleInfo, 19, OptionName.FoxMeterDistance, new(0.5f, 5f, 0.25f), 1.25f, false).SetValueFormat(OptionFormat.Multiplier);
+        OptionOnlySeeKiller = BooleanOptionItem.Create(RoleInfo, 20, OptionName.FoxShowRoleOnlyKiller, false, false);
+        ObjectOptionitem.Create(RoleInfo, 21, "FoxGuardSetting", true, null).SetOptionName(() => "Guard Setting");
+        OptionGiveGuardTaskCount = IntegerOptionItem.Create(RoleInfo, 22, OptionName.FoxGiveGuardTaskcount, new(1, 99, 1), 3, false);
+        OptionGiveGuardMax = IntegerOptionItem.Create(RoleInfo, 23, OptionName.FoxGiveGuardMax, new(0, 99, 1), 2, false);
+        OverrideTasksData.Create(RoleInfo, 30);
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
         AURoleOptions.EngineerCooldown = Engventcool;
         AURoleOptions.EngineerInVentMaxTime = Engventinmax;
     }
+    #region Meter / Die
+    public override void OnFixedUpdate(PlayerControl player)
+    {
+        if (player.IsAlive() is false) return;
+
+        timer += Time.fixedDeltaTime;
+        if (5 < timer)
+        {
+            var mypos = player.GetTruePosition();
+            foreach (var otherpc in PlayerCatch.AllAlivePlayerControls)
+            {
+                if (otherpc.PlayerId == player.PlayerId) continue;
+
+                if (Vector2.Distance(mypos, otherpc.GetTruePosition()) < MeterDistance)
+                {
+                    NowMeter -= Time.fixedDeltaTime;
+                    break;
+                }
+            }
+            if (GetNow() != meatermark)
+            {
+                meatermark = GetNow();
+                if (AmongUsClient.Instance.AmHost)
+                    UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+            }
+            if (IsShowMyRole is false && NowMeter < 0)
+            {
+                IsShowMyRole = true;
+                isnotice = true;
+                SendRPC_ShowMyRole();
+
+                foreach (var seer in PlayerCatch.AllAlivePlayerControls)
+                {
+                    if (((seer.GetRoleClass() as IKiller)?.IsKiller is true) || !OnlySeekiller)
+                    {
+                        NameColorManager.Add(seer.PlayerId, Player.PlayerId, RoleInfo.RoleColorCode);
+                    }
+                }
+                if (AmongUsClient.Instance.AmHost)
+                    UtilsNotifyRoles.NotifyRoles();
+            }
+        }
+
+        //非ホスト導入者はタイマー処理のみ行う。
+        if (AmongUsClient.Instance.AmHost is false)
+        {
+            if (PlayerCatch.AllAlivePlayersCount <= DieAliveCount)
+            {
+                MyState.DeathReason = CustomDeathReason.Spell;
+                Player.RpcExileV3();
+                UtilsGameLog.AddGameLog($"Fox", $"{UtilsName.GetPlayerColor(Player, true)}(<b>{UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)}</b>) [{Utils.GetVitalText(Player.PlayerId, true)}]");
+            }
+        }
+    }
+    public override void AfterMeetingTasks()
+    {
+        timer = 0;
+        Logger.Info($"現在のメーター{NowMeter}", "Fox");
+    }
+    public override void OverrideDisplayRoleNameAsSeen(PlayerControl seer, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
+    {
+        if (IsShowMyRole is false) return;
+
+        if (seer.IsAlive() && ((seer.GetRoleClass() as IKiller)?.IsKiller is true) || !OnlySeekiller)
+        {//生きてて キラーであるかキラー以外も見えるか
+            enabled = true;
+            addon = false;
+        }
+    }
+    void SendRPC_ShowMyRole()
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.IsShowMyRole);
+    }
+    #endregion
+    #region RoomTask
+    int? IRoomTasker.GetMaxTaskCount() => null;
+    bool IRoomTasker.IsAssignRoomTask() => IsActiveNotice && !CompleteRoomTask && Player.IsAlive();
+    void IRoomTasker.OnComplete(int completeroom) => SendRPC_CompleteRoom();
+    void IRoomTasker.ChangeRoom(PlainShipRoom TaskRoom) => SendRPC_ChengeRoom(TaskRoom);
+    public void SendRPC_CompleteRoom()
+    {
+        CompleteRoomTask = true;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.CompleteRoom);
+    }
+    public void SendRPC_ChengeRoom(PlainShipRoom TaskPSR)
+    {
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPC_Types.ChengeRoom);
+        sender.Writer.Write((byte)TaskPSR.RoomId);
+    }
+    public override string MeetingAddMessage()
+    {
+        if (SelfVoteManager.Canuseability() is false) return "";
+        var oldcomptask = CompleteRoomTask;
+        CompleteRoomTask = false;
+        if (!Player.IsAlive() || oldcomptask) return "";
+
+        isnotice = true;
+        var chance = IRandom.Instance.Next(100);
+        if (chance > 95) return $"<color=#d288ee>{GetString("FoxAliveMeg1")}</color>";
+        if (chance > 90) return $"<color=#d288ee>{GetString("FoxAliveMeg2")}</color>";
+        if (chance > 85) return $"<color=#d288ee>{GetString("FoxAliveMeg3")}</color>";
+        return $"<color=#d288ee>{GetString("FoxAliveMeg")}</color>";
+    }
+    #endregion
+    #region Guard
     public override bool OnCompleteTask(uint taskid)
     {
-        if (MyTaskState.HasCompletedEnoughCountOfTasks(WinTaskCount)) checktaskwinflag = true;
         //もう上限に達しているなら処理終わり
         if (GiveGuardMax <= Guard) return true;
         //タスクカウントを増やす
@@ -116,6 +209,8 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
         {
             Taskcount = 0;
             Guard++;
+            Logger.Info($"ガード追加:{Guard}", "Fox");
+            MyTaskState.NeedTaskCount += GiveGuardTaskCount;
         }
         return true;
     }
@@ -128,18 +223,155 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
 
             killer.SetKillCooldown(target: target, force: true);
             Guard--;
-            SendRPC();
             Logger.Info($"ガード残り:{Guard}", "Fox");
             info.GuardPower = 2;
-            if (canseeguardcount) UtilsNotifyRoles.NotifyRoles(SpecifySeer: target);
             return true;
         }
         return true;
     }
+    #endregion
+    #region Sabotage
+    bool ISystemTypeUpdateHook.UpdateReactorSystem(ReactorSystemType reactorSystem, byte amount) => false;
+    bool ISystemTypeUpdateHook.UpdateHeliSabotageSystem(HeliSabotageSystem heliSabotageSystem, byte amount) => false;
+    bool ISystemTypeUpdateHook.UpdateLifeSuppSystem(LifeSuppSystemType lifeSuppSystem, byte amount) => false;
+    bool ISystemTypeUpdateHook.UpdateHqHudSystem(HqHudSystemType hqHudSystemType, byte amount) => false;
+    bool ISystemTypeUpdateHook.UpdateSwitchSystem(SwitchSystem switchSystem, byte amount) => false;
+    bool ISystemTypeUpdateHook.UpdateHudOverrideSystem(HudOverrideSystemType hudOverrideSystem, byte amount) => false;
+    #endregion
+    #region win
+    public static bool SFoxCheckWin(ref GameOverReason reason)
+    {
+        foreach (var pc in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.Fox)))
+        {
+            if (pc.GetRoleClass() is Fox fox)
+            {
+                if (fox.FoxCheckWin(ref reason)) return true;
+            }
+        }
+        return false;
+    }
+    public bool FoxCheckWin(ref GameOverReason reason)
+    {
+        if (Player.IsAlive() is false) return false;
+
+        if (reason is GameOverReason.CrewmatesByTask && CustomWinnerHolder.WinnerTeam is CustomWinner.Crewmate)
+        {
+            switch (CrewTaskFinishFlug)
+            {
+                case FoxCrewTaskFin.FoxCrewTaskFin_MyWin:
+                    if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Fox, Player.PlayerId))
+                    {
+                        CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
+                        reason = GameOverReason.ImpostorsByKill;
+                        Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                        if (isnotice is false && 5 <= UtilsGameLog.day && IsActiveNotice) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+                        return true;
+                    }
+                    break;
+                case FoxCrewTaskFin.FoxCrewTaskFin_Addwin:
+                    CustomWinnerHolder.AdditionalWinnerRoles.Add(CustomRoles.Fox);
+                    CustomWinnerHolder.WinnerIds.Add(Player.PlayerId);
+                    return false;
+            }
+        }
+        else
+        {
+            if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Fox, Player.PlayerId))
+            {
+                CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
+                reason = GameOverReason.ImpostorsByKill;
+                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+                if (isnotice is false && 5 <= UtilsGameLog.day && IsActiveNotice) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
+                return true;
+            }
+        }
+        return false;
+    }
+    public static bool BlockTaskWin()
+    {
+        if (GameModeManager.IsStandardClass() is false) return false;
+        foreach (var pc in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.Fox)))
+        {
+            if (pc.GetRoleClass() is Fox fox)
+            {
+                if (pc.IsAlive() && CrewTaskFinishFlug is FoxCrewTaskFin.FoxCrewTaskFin_NoGameEnd)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    #endregion
+    #region name
+    public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    {
+        seen ??= seer;
+        if (seen != seer || !seer.IsAlive()) return "";
+
+        return $"<size=40%><u>{GetNow()}</u></size>";
+    }
+    public override void OverrideProgressTextAsSeen(PlayerControl seer, ref bool enabled, ref string text)
+    {
+        if (seer == null) return;
+        if (Is(seer) || seer.Is(CustomRoles.GM) || !seer.IsAlive()) return;
+
+        text = $"<#cccccc>(?/{MyTaskState.AllTasksCount})";
+    }
+    public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
+    {
+        seen ??= seer;
+        if (isForMeeting || seer != seen) return "";
+        return (seer.GetRoleClass() as IRoomTasker)?.GetLowerText(seer, RoleInfo.RoleColorCode) ?? "";
+    }
+    string GetNow()//バッテリー量の表示
+    {
+        var battery = (NowMeter / Maxmeter) * 100;
+        if (battery <= 0) return "　";
+        if (battery <= 5) return "<mark=#d95327><color=#000000>||</mark>           </size></color>";
+        if (battery <= 10) return "<mark=#d96e27><color=#000000>|||</mark>          </size></color>";
+        if (battery <= 20) return "<mark=#d9b827><color=#000000>||||</mark>         </size></color>";
+        if (battery <= 30) return "<mark=#d6d927><color=#000000>|||||</mark>        </size></color>";
+        if (battery <= 40) return "<mark=#b8d13b><color=#000000>||||||</mark>       </size></color>";
+        if (battery <= 50) return "<mark=#a7ba47><color=#000000>|||||||</mark>      </size></color>";
+        if (battery <= 60) return "<mark=#96ba47><color=#000000>||||||||</mark>     </size></color>";
+        if (battery <= 70) return "<mark=#84ba47><color=#000000>|||||||||</mark>    </size></color>";
+        if (battery <= 80) return "<mark=#75ba47><color=#000000>||||||||||</mark>   </size></color>";
+        if (battery <= 90) return "<mark=#3fb81d><color=#000000>|||||||||||</mark>  </size></color>";
+        else return "<mark=#03ff4a><color=#000000>||||||||||</mark> </size></color>";
+    }
+    #endregion
+    #region RPC
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        var iroomtasker = Player.GetRoleClass() is IRoomTasker roomTasker ? roomTasker : null;
+        switch ((RPC_Types)reader.ReadPackedInt32())
+        {
+            case RPC_Types.ChengeRoom:
+                iroomtasker?.ReceiveRoom(Player.PlayerId, reader);
+                break;
+            case RPC_Types.CompleteRoom:
+                var a = MessageReader.Get(reader);
+                iroomtasker?.ReceiveCompleteRoom(Player.PlayerId, reader);
+                CompleteRoomTask = true;
+                break;
+            case RPC_Types.IsShowMyRole:
+                IsShowMyRole = true;
+                break;
+        }
+    }
+
+    enum RPC_Types
+    {
+        ChengeRoom,
+        CompleteRoom,
+        IsShowMyRole
+    }
+    #endregion
     public override CustomRoles TellResults(PlayerControl player)
     {
         //ぽんこつ占い師のぽんこつ占い師で死ぬのはかわいそう('ω')
-        if (AmongUsClient.Instance.AmHost && TellDie && player.IsAlive() && player != null)
+        if (AmongUsClient.Instance.AmHost && IsTellDie && player.IsAlive() && player != null)
         {
             Player.RpcExileV3();
             MyState.DeathReason = CustomDeathReason.Spell;
@@ -175,129 +407,34 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook
         }
         return CustomRoles.NotAssigned;
     }
-    public override void AfterMeetingTasks()
+    /* 自身が妖狐であると暴露されるまでのカウント */
+    static OptionItem OptionMeterCount; static float Maxmeter;
+    static OptionItem OptionDistance; static float MeterDistance;
+    static OptionItem OptionOnlySeeKiller; static bool OnlySeekiller;
+    /* 毎ターン指定した部屋に行かないと通知される */
+    static OptionItem OptionNoticeRoomTask; static bool IsActiveNotice;
+    /* キルガード */
+    static OptionItem OptionGiveGuardTaskCount; static int GiveGuardTaskCount;
+    static OptionItem OptionGiveGuardMax; static int GiveGuardMax;
+    /* 設定人数以下になったら成仏 */
+    static OptionItem OptionDieAliveCount; static int DieAliveCount;
+    /* タスク勝利時の挙動 */
+    static OptionItem OptionCrewTaskFinish; static FoxCrewTaskFin CrewTaskFinishFlug;
+    enum FoxCrewTaskFin { FoxCrewTaskFin_MyWin, FoxCrewTaskFin_Lose, FoxCrewTaskFin_NoGameEnd, FoxCrewTaskFin_Addwin }
+    /* その他*/
+    static OptionItem OptionTellDie; static bool IsTellDie;
+    static OptionItem OptionEngVentCoolDown; static float Engventcool;
+    static OptionItem OptionEngVentInmaxtime; static float Engventinmax;
+    enum OptionName
     {
-        if (!AmongUsClient.Instance.AmHost) return;
-
-        timer = 0;
-        List<SystemTypes> rooms = new();
-        ShipStatus.Instance.AllRooms.Where(room => room?.RoomId is not null and not SystemTypes.Hallway).Do(r => rooms.Add(r.RoomId));
-
-        var rand = IRandom.Instance;
-        FoxRoom = rooms[rand.Next(0, rooms.Count)];
-        SendRPC();
-        Logger.Info($"NextTask : {FoxRoom}", "Fox");
+        FoxMeterCount, FoxMeterDistance, FoxShowRoleOnlyKiller,
+        FoxNoticeRoomTask,
+        FoxDieAliveCount,
+        FoxCrewTaskFin,
+        FoxGiveGuardTaskcount, FoxGiveGuardMax,
+        FoxTellDie
     }
-    float timer = 0;
-    public override void OnFixedUpdate(PlayerControl player)
-    {
-        if (FoxRoom == null || !player.IsAlive() || !AmongUsClient.Instance.AmHost) return;
-
-        if (MyState.HasSpawned) timer += Time.fixedDeltaTime;
-
-        var nowroom = player.GetPlainShipRoom();
-        if (nowroom == null) return;
-        if (FoxRoom == nowroom.RoomId)
-        {
-            if (timer > 0.5f)
-            {
-                player.RpcProtectedMurderPlayer();
-                Logger.Info($"{FoxRoom}に{player.name}が来たよ", "Fox");
-                FoxRoom = null;
-                SendRPC();
-                _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.3f, "FoxChengeRoom", null);
-                return;
-            }
-            //スポーンがもうすぐそこならぬるいので変えてやる!!
-            List<SystemTypes> rooms = new();
-            ShipStatus.Instance.AllRooms.Where(room => room?.RoomId is not null and not SystemTypes.Hallway && room?.RoomId != FoxRoom).Do(r => rooms.Add(r.RoomId));
-
-            var rand = IRandom.Instance;
-            FoxRoom = rooms[rand.Next(0, rooms.Count)];
-            SendRPC();
-            Logger.Info($"NextTask : {FoxRoom}", "Fox");
-            _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.3f, "FoxChengeRoom", null);
-        }
-    }
-    public override string MeetingAddMessage()
-    {
-        if (!Player.IsAlive() || FoxRoom == null) return "";
-
-        IsNoticed = true;
-        var chance = IRandom.Instance.Next(100);
-        if (chance > 95) return $"<color=#d288ee>{GetString("FoxAliveMeg1")}</color>";
-        if (chance > 90) return $"<color=#d288ee>{GetString("FoxAliveMeg2")}</color>";
-        if (chance > 85) return $"<color=#d288ee>{GetString("FoxAliveMeg3")}</color>";
-        return $"<color=#d288ee>{GetString("FoxAliveMeg")}</color>";
-    }
-    public override string GetProgressText(bool comms = false, bool GameLog = false) => $"<color=#{(checktaskwinflag ? "d288ee" : "5e5e5e")}>({(canseeguardcount ? $"{Guard}" : "?")})</color>";
-    public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
-    {
-        seen ??= seer;
-        if (isForMeeting || seer != seen || !Player.IsAlive() || FoxRoom == null) return "";
-        return $"<color=#d288ee>{string.Format(GetString("FoxRoomMission"), $"<color=#cccccc><b>{GetString($"{FoxRoom}")}<b></color>")}</color>";
-    }
-    public static bool SFoxCheckWin(ref GameOverReason reason)
-    {
-        foreach (var pc in PlayerCatch.AllPlayerControls.Where(pc => pc.Is(CustomRoles.Fox)))
-        {
-            if (pc.GetRoleClass() is Fox fox)
-            {
-                if (fox.FoxCheckWin(ref reason)) return true;
-            }
-        }
-        return false;
-    }
-    public bool FoxCheckWin(ref GameOverReason reason)
-    {
-        //3人1w1c1foxの状態を避けるために3人以下なら勝てないようにする
-        //4人以上か3人以下でも勝利がOn　　　　　　　　　　　　　　　　　　生存していて　　　　　タスクが完了している
-        if ((PlayerCatch.AllAlivePlayersCount > 3 || canwin3player) && Player.IsAlive() && checktaskwinflag)
-        {
-            if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.Fox, Player.PlayerId))
-            {
-                CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
-                reason = GameOverReason.ImpostorsByKill;
-                Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
-                if (IsNoticed is false && 5 <= UtilsGameLog.day) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[2]);
-                return true;
-            }
-        }
-        return false;
-    }
-    public int FoxCount()
-    {
-        if (!Player.IsAlive()) return 0;
-        //     4人以上で　　　　　　　　　　タスク完了しているフラグがある　　　生存Countに入れる : 入れない
-        return PlayerCatch.AllAlivePlayersCount > 3 && checktaskwinflag ? 1 : 0;
-    }
-    public override void OverrideProgressTextAsSeen(PlayerControl seer, ref bool enabled, ref string text)
-    {
-        if (seer == null) return;
-        if (Is(seer) || seer.Is(CustomRoles.GM)) return;
-
-        text = $"<#cccccc>(?/{MyTaskState.AllTasksCount})";
-    }
-    bool ISystemTypeUpdateHook.UpdateReactorSystem(ReactorSystemType reactorSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateHeliSabotageSystem(HeliSabotageSystem heliSabotageSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateLifeSuppSystem(LifeSuppSystemType lifeSuppSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateHqHudSystem(HqHudSystemType hqHudSystemType, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateSwitchSystem(SwitchSystem switchSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateHudOverrideSystem(HudOverrideSystemType hudOverrideSystem, byte amount) => false;
-
-    public void SendRPC()
-    {
-        using var sender = CreateSender();
-        sender.Writer.Write(Guard);
-        sender.Writer.Write(FoxRoom.HasValue ? (byte)FoxRoom : byte.MaxValue);
-    }
-
-    public override void ReceiveRPC(MessageReader reader)
-    {
-        Guard = reader.ReadInt32();
-        var roomId = reader.ReadByte();
-        FoxRoom = roomId == byte.MaxValue ? null : (SystemTypes)roomId;
-    }
+    bool isnotice;
     public static Dictionary<int, Achievement> achievements = new();
     [Attributes.PluginModuleInitializer]
     public static void Load()

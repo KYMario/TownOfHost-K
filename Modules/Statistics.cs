@@ -8,7 +8,6 @@ using static TownOfHost.Translator;
 using static TownOfHost.PlayerCatch;
 using static TownOfHost.UtilsRoleText;
 using System;
-using Epic.OnlineServices.RTC;
 
 namespace TownOfHost
 {
@@ -81,7 +80,16 @@ namespace TownOfHost
 
                     foreach (var role in Statistics.NowStatistics.Rolecount)
                     {
-                        var id = role.Key.GetRoleInfo().ConfigId;
+                        var id = role.Key.GetRoleInfo()?.ConfigId ?? -1;
+                        if (id == -1 && role.Key is CustomRoles.Amanojaku or CustomRoles.AsistingAngel or CustomRoles.SKMadmate)
+                        {
+                            switch (role.Key)
+                            {
+                                case CustomRoles.Amanojaku: id = 19100; break;
+                                case CustomRoles.AsistingAngel: id = 22000; break;
+                                case CustomRoles.SKMadmate: id = CustomRoles.Madmate.GetRoleInfo().ConfigId; break;
+                            }
+                        }
                         t += $"{id}${role.Value.Item1}${role.Value.Item2}&";
                     }
                     t += "!";
@@ -128,6 +136,8 @@ namespace TownOfHost
                 {
                     File.WriteAllText(PATH, "");
                 }
+                CustomRoleManager.CustomRoleIds.Add(19100, CustomRoles.Amanojaku);
+                CustomRoleManager.CustomRoleIds.Add(22000, CustomRoles.AsistingAngel);
 
                 string Text = File.ReadAllText(PATH);
 
@@ -256,14 +266,15 @@ namespace TownOfHost
                 role += i % 2 == 0 ? $"\n{GetRoleColorAndtext(roledata.Key)}：{roledata.Value.Item2}/{roledata.Value.Item1}<size=30%>({Getpercent(roledata.Value.Item2, roledata.Value.Item1)})</size>"
                 : $"<pos=70%>{GetRoleColorAndtext(roledata.Key)}：{roledata.Value.Item2}/{roledata.Value.Item1}<size=30%>({Getpercent(roledata.Value.Item2, roledata.Value.Item1)})</size></pos>";
                 i++;
-                wincount += roledata.Value.Item2;
+
+                if (roledata.Key > CustomRoles.NotAssigned) continue;
+
                 var roleTypes = roledata.Key.GetCustomRoleTypes();
                 if (typecount.TryAdd(roleTypes, (roledata.Value.Item1, roledata.Value.Item2)) is false)
                 {
                     typecount[roleTypes] = (typecount[roleTypes].all + roledata.Value.Item1, typecount[roleTypes].win + roledata.Value.Item2);
                 }
             }
-            text += $"<pos=60%>★{GetString("Statistics.WinCount")}{wincount}</pos>";
             var modetext = "";
             foreach (var gamemodedata in Statistics.NowStatistics.gamemodecount)
             {
@@ -279,8 +290,10 @@ namespace TownOfHost
                     case CustomGameMode.TaskBattle: colorcode = "#8cb8ff"; break;
                     case CustomGameMode.MurderMystery: colorcode = "#1a389c"; break;
                 }
+                wincount += gamemodedata.Value.win;
                 modetext += $"\n<{colorcode}>{GetString(gamemodedata.Key.ToString())}</color> ： {gamemodedata.Value.win}/{gamemodedata.Value.count}<size=30%>({Getpercent(gamemodedata.Value.win, gamemodedata.Value.count)})</size>";
             }
+            text += $"<pos=60%>★{GetString("Statistics.WinCount")}{wincount}</pos>";
             var typetext = "";
             foreach (var data in typecount)
             {
@@ -396,6 +409,21 @@ namespace TownOfHost
                 if (!rc.TryGetValue(role, out var data)) goto pyoon;
                 var i1 = data.Item1;
                 var i2 = data.Item2;
+
+                if (pc.Is(CustomRoles.AsistingAngel))
+                {
+                    if (!rc.TryGetValue(CustomRoles.AsistingAngel, out var asidata)) goto pyoon;
+                    i1 = asidata.Item1;
+                    i2 = asidata.Item2;
+                    rc[CustomRoles.AsistingAngel] = (i1 + 1, i2 + (Iswinner ? 1 : 0));
+                }
+                else if (pc.Is(CustomRoles.Amanojaku))
+                {
+                    if (!rc.TryGetValue(CustomRoles.Amanojaku, out var asidata)) goto pyoon;
+                    i1 = asidata.Item1;
+                    i2 = asidata.Item2;
+                    rc[CustomRoles.Amanojaku] = (i1 + 1, i2 + (Iswinner ? 1 : 0));
+                }
                 if (Iswinner)
                 {
                     i2 += 1;
@@ -417,7 +445,10 @@ namespace TownOfHost
                 }
                 foreach (var diedata in Main.HostKill)
                 {
-                    kc[diedata.Value] = kc[diedata.Value] + 1;
+                    if (kc.TryAdd(diedata.Value, 1) is false)
+                    {
+                        kc[diedata.Value] = kc[diedata.Value] + 1;
+                    }
                 }
 
                 if (pc.Is(CustomRoleTypes.Crewmate) && role.GetRoleInfo()?.IsDesyncImpostor == false)

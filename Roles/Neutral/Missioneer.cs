@@ -52,6 +52,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         meetingassignmentcount = OptionMeetingAssignmentCount.GetInt();
         WinAssignmentpoint = OptionWinAssignmentPoint.GetInt();
         AddWinAssignmentpoint = OptionAddWinAssignmentPoint.GetInt();
+        IsEnabledKill = OptionEnabledKillTask.GetBool();
 
         lv1point = Option1LvPoint.GetInt();
         lv2point = Option2lvpoint.GetInt();
@@ -77,6 +78,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     static OptionItem OptionKillpoint; static int killpoint;
     static OptionItem Optionmovepoint; static int movepoint;
     static OptionItem OptionTaskpoint; static int taskpoint;
+    static OptionItem OptionEnabledKillTask; static bool IsEnabledKill;
 
 
     enum MissionList
@@ -84,7 +86,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         Non = -1,
         Kill = 0, KillToVent, KillRoom, KillPlayer,
         GoRoom = 10, GoVent, SeePlayer, MorePlayer,
-        Task = 20, Vote, AllTaskComp, Report
+        Task = 20, Vote, AllTaskComp, Report,
     }
     enum OptionName
     {
@@ -92,6 +94,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         MissioneerMeetingAssignmentcount,
         Missioneerlv1point, Missioneerlv2point, Missioneerlv3point, Missioneerlv4point,
         MissioneerKillpoint, MissioneerMovepoint, MissioneerTaskpoint,
+        MissioneerEnabledKillTask
     }
 
     private static void SetupOptionItem()
@@ -101,13 +104,14 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         OptionAddWinAssignmentPoint = IntegerOptionItem.Create(RoleInfo, 20, OptionName.MissioneerAddWinAssignmntPoint, new(0, 300, 1), 20, false).SetZeroNotation(OptionZeroNotation.Off);
         OptionMeetingAssignmentCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.MissioneerMeetingAssignmentcount, new(0, 5, 1), 3, false);
         OptionKillCoolDown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, OptionBaseCoolTime, 20f, false).SetValueFormat(OptionFormat.Seconds);
+        OptionEnabledKillTask = BooleanOptionItem.Create(RoleInfo, 27, OptionName.MissioneerEnabledKillTask, true, false);
         OverrideTasksData.Create(RoleInfo, 22, tasks: (true, 0, 1, 2));
         ObjectOptionitem.Create(RoleInfo, 26, "MissoneerPointSetting", true, null).SetOptionName(() => "Point Setting");
         Option1LvPoint = IntegerOptionItem.Create(RoleInfo, 13, OptionName.Missioneerlv1point, new(0, 25, 1), 0, false);
         Option2lvpoint = IntegerOptionItem.Create(RoleInfo, 14, OptionName.Missioneerlv2point, new(0, 25, 1), 1, false);
         Option3lvpoint = IntegerOptionItem.Create(RoleInfo, 15, OptionName.Missioneerlv3point, new(0, 25, 1), 3, false);
         Option4lvpoint = IntegerOptionItem.Create(RoleInfo, 16, OptionName.Missioneerlv4point, new(0, 25, 1), 5, false);
-        OptionKillpoint = IntegerOptionItem.Create(RoleInfo, 17, OptionName.MissioneerKillpoint, new(0, 25, 1), 5, false);
+        OptionKillpoint = IntegerOptionItem.Create(RoleInfo, 17, OptionName.MissioneerKillpoint, new(0, 25, 1), 5, false).SetEnabled(() => OptionEnabledKillTask.GetBool());
         Optionmovepoint = IntegerOptionItem.Create(RoleInfo, 18, OptionName.MissioneerMovepoint, new(0, 25, 1), 2, false);
         OptionTaskpoint = IntegerOptionItem.Create(RoleInfo, 19, OptionName.MissioneerTaskpoint, new(0, 25, 1), 1, false);
     }
@@ -244,7 +248,9 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     bool ISelfVoter.CanUseVoted() => Seted is false;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
-        if (!Canuseability()) return true;
+        if (Madmate.MadAvenger.Skill) return true;
+        if (Impostor.Assassin.NowUse) return true;
+
         if (Is(voter) && !Seted)
         {
             if (CheckSelfVoteMode(Player, votedForId, out var status))
@@ -265,6 +271,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     {
         StringBuilder sb = new();
         sb.Append($"<size=80%>{GetString("MissioneerMeg")}");
+        if (NowMissionLists?.Count <= 0) NowMissionLists = GetMissionList(Math.Min(meetingassignmentcount, PlayerCatch.AllAlivePlayersCount - 1));
         foreach (var mission in NowMissionLists)
         {
             var data = PlayerCatch.GetPlayerInfoById(mission.Key);
@@ -277,6 +284,11 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     {
         Dictionary<byte, MissionList> MissionLists = [];
         var list = EnumHelper.GetAllValues<MissionList>();
+
+        if (IsEnabledKill is false)
+        {
+            list = list.Where(x => (int)x < 10).ToArray();
+        }
         var aliveplayerlist = PlayerCatch.AllAlivePlayerControls.Where(pc => pc.PlayerId != Player.PlayerId).ToList();
         for (var i = 0; i < missioncount; i++)
         {
@@ -429,7 +441,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
     {
         seen ??= seer;
         if (seen != seer) return "";
-        var mark = AddWin ? Utils.AdditionalWinnerMark : "";
+        var mark = AddWin ? Utils.AdditionalAliveWinnerMark : "";
         if (isForMeeting || NowMission is not MissionList.GoVent) return mark;
         return GetArrow.GetArrows(Player, ventpos.ventpos) + mark;
     }
@@ -450,6 +462,21 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
             return $"<size=80%><{RoleInfo.RoleColorCode}>{GetString($"mission.{NowMission}")} {add}</color>";
         }
         return "";
+    }
+    public override void OnSpawn(bool initialState = false)
+    {
+        if (NowMission is MissionList.KillPlayer or MissionList.SeePlayer)
+        {
+            if (target.GetPlayerControl().IsAlive()) return;
+
+            var players = PlayerCatch.AllAlivePlayerControls.Where(pc => pc.PlayerId != Player.PlayerId);
+            players = players.OrderBy(x => Guid.NewGuid());
+            var targetpc = players.ToArray()[IRandom.Instance.Next(players.Count())];
+            target = targetpc.PlayerId;
+            SendRPC();
+            UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+            Logger.Info($"NewTarget{target}", "Missioneer");
+        }
     }
 
     private void SendRPC()
@@ -473,7 +500,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         Room = room is -5 ? null : (SystemTypes)room;
         AddWin = reader.ReadBoolean();
         var id = reader.ReadInt32();
-        ventpos = id is -1 ? (Vector3.zero, -1) : (ShipStatus.Instance.AllVents.Where(vent => vent.Id == id).FirstOrDefault().transform.position, id);
+        ventpos = id is -1 ? (Vector3.zero, -1) : (ShipStatus.Instance.AllVents.FirstOrDefault(vent => vent.Id == id).transform.position, id);
     }
 
     public bool CheckWin(ref CustomRoles winnerRole) => AddWin && Player.IsAlive();

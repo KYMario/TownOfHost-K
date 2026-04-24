@@ -277,6 +277,7 @@ namespace TownOfHost
             if (pc.GetPlayerState() is null) return false;
             if (pc.Is(CustomRoles.DemonicSupporter)) return true;
             if (pc.Is(CustomRoles.Amnesia) && !pc.Is(CustomRoleTypes.Impostor)) return false;
+            if (GameStates.IsMeeting) return false;
 
             var roleCanUse = (pc.GetRoleClass() as IKiller)?.CanUseSabotageButton();
 

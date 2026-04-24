@@ -326,7 +326,7 @@ namespace TownOfHost
                     if (MotoKillButton == null && __instance.KillButton.graphic.sprite && player.Data.RoleType is not RoleTypes.Viper) MotoKillButton = __instance.KillButton.graphic.sprite;
                     if (ImpVentButton == null && __instance.ImpostorVentButton.graphic.sprite) ImpVentButton = __instance.ImpostorVentButton.graphic.sprite;
 
-                    if (player == !GameStates.IsModHost) return;
+                    if (!GameStates.IsModHost) return;
                     //リセット
                     if (__instance.KillButton.graphic.sprite && MotoKillButton && player.Data.RoleType is not RoleTypes.Viper) __instance.KillButton.graphic.sprite = MotoKillButton;
                     if (__instance.ImpostorVentButton.graphic.sprite && ImpVentButton) __instance.ImpostorVentButton.graphic.sprite = ImpVentButton;
@@ -570,6 +570,8 @@ namespace TownOfHost
             __instance.KillButton.ToggleVisible(player.CanUseKillButton());
             __instance.ImpostorVentButton.ToggleVisible(player.CanUseImpostorVentButton());
             __instance.SabotageButton.ToggleVisible(player.CanUseSabotageButton());
+
+            CustomButtonHud.BottonHud();
         }
     }
     [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.Show))]
