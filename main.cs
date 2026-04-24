@@ -459,6 +459,7 @@ namespace TownOfHost
         Hit,
         Suffocation,
         Swallowed,
+        Poisoned,
         etc = -1
     }
     //WinData
@@ -510,6 +511,7 @@ namespace TownOfHost
         Spelunker = CustomRoles.Spelunker,
         Pavlov = CustomRoles.PavlovDog,
         Moira = CustomRoles.Moira,
+        PoisonedBakery = CustomRoles.PoisonedBakery,
 
         HASTroll = CustomRoles.HASTroll,
         TaskPlayerB = CustomRoles.TaskPlayerB,

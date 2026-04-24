@@ -851,6 +851,7 @@ public enum CustomRoles
     StandMaster,
     EvilBlender,
     DummySpawner,
+    Reverser,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,
@@ -965,6 +966,7 @@ public enum CustomRoles
     PavlovOwner,
     PavlovDogImprint,
     Moira,
+    PoisonedBakery,
     //TOH-K
     Remotekiller,
     Chef,

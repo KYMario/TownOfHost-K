@@ -4,6 +4,8 @@ using Hazel;
 using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
+using TownOfHost.Roles.Impostor;
+using TownOfHost.Roles.Neutral;
 
 namespace TownOfHost.Roles.Impostor;
 
@@ -36,6 +38,7 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
         rewindIndex = 0;
         positionHistory = new();
         rewindSkipPlayers = new();
+        movingPlatformUsedDuringRec = new();
     }
 
     static OptionItem OptionPhantomCooldown;
@@ -52,8 +55,9 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
     int rewindIndex;
 
     Dictionary<byte, List<Vector2>> positionHistory;
-    // ★ REC開始時に梯子・ぬーん・ジップライン使用中だったプレイヤー
     HashSet<byte> rewindSkipPlayers;
+    // ★ REC中にぬーん・ジップラインを使用したプレイヤー
+    HashSet<byte> movingPlatformUsedDuringRec;
 
     enum OptionName
     {
@@ -83,6 +87,28 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
 
     bool IUsePhantomButton.IsPhantomRole => true;
 
+    // ★ ぬーん・ジップライン・梯子使用中か判定
+    static bool IsUsingMovingPlatform(PlayerControl pc)
+    {
+        if (pc.MyPhysics.Animations.IsPlayingAnyLadderAnimation()) return true;
+        if (pc.onLadder) return true;
+        if ((MapNames)Main.NormalOptions.MapId == MapNames.Airship
+            && Vector2.Distance(pc.GetTruePosition(), new Vector2(7.76f, 8.56f)) <= 1.9f) return true;
+        if (pc.MyPhysics.Animations.Animator.GetCurrentAnimation()?.name?.Contains("Zipline") == true) return true;
+        if (pc.MyPhysics.Animations.Animator.GetCurrentAnimation()?.name?.Contains("Platform") == true) return true;
+        return false;
+    }
+
+    // ★ 波動砲系がビーム・チャージ中か判定
+    static bool IsBeamingOrCharging(PlayerControl pc)
+    {
+        if (pc.GetRoleClass() is HadouHo hh)
+            return hh.IsCharging || hh.ShowBeamMark;
+        if (pc.GetRoleClass() is JackalHadouHo jhh)
+            return jhh.IsCharging || jhh.IsSuperCharging || jhh.ShowBeamMark;
+        return false;
+    }
+
     void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
         AdjustKillCooldown = false;
@@ -95,22 +121,17 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
         recordTimer = 0f;
         positionHistory.Clear();
         rewindSkipPlayers.Clear();
+        movingPlatformUsedDuringRec.Clear();
 
         foreach (var pc in PlayerCatch.AllAlivePlayerControls)
         {
-            positionHistory[pc.PlayerId] = new List<Vector2>();
-
-            // ★ REC開始時点で梯子・ぬーん・ジップライン使用中のプレイヤーをスキップリストに追加
-            if (pc.MyPhysics.Animations.IsPlayingAnyLadderAnimation())
+            // ★ REC開始時点でジップライン使用中はRECしない
+            if (IsUsingMovingPlatform(pc))
             {
                 rewindSkipPlayers.Add(pc.PlayerId);
                 continue;
             }
-            if ((MapNames)Main.NormalOptions.MapId == MapNames.Airship
-                && Vector2.Distance(pc.GetTruePosition(), new Vector2(7.76f, 8.56f)) <= 1.9f)
-            {
-                rewindSkipPlayers.Add(pc.PlayerId);
-            }
+            positionHistory[pc.PlayerId] = new List<Vector2>();
         }
 
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
@@ -122,7 +143,6 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
         if (!AmongUsClient.Instance.AmHost) return;
         if (!Player.IsAlive()) return;
 
-        // ★ 記録フェーズ
         if (isRecording)
         {
             recordTimer += Time.fixedDeltaTime;
@@ -131,6 +151,15 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
             {
                 foreach (var pc in PlayerCatch.AllAlivePlayerControls)
                 {
+                    // ★ REC中にぬーん・ジップライン使用中になったプレイヤーを記録
+                    if (IsUsingMovingPlatform(pc))
+                    {
+                        movingPlatformUsedDuringRec.Add(pc.PlayerId);
+                        continue;
+                    }
+
+                    if (rewindSkipPlayers.Contains(pc.PlayerId)) continue;
+
                     if (!positionHistory.ContainsKey(pc.PlayerId))
                         positionHistory[pc.PlayerId] = new List<Vector2>();
 
@@ -142,7 +171,6 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
 
             if (recordTimer >= RecordDuration)
             {
-                // 記録終了 → 巻き戻し開始
                 isRecording = false;
                 isRewinding = true;
                 rewindTimer = 0f;
@@ -155,7 +183,6 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
             return;
         }
 
-        // ★ 巻き戻しフェーズ
         if (isRewinding)
         {
             rewindTimer += Time.fixedDeltaTime * RewindSpeed;
@@ -166,10 +193,10 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
 
                 if (rewindIndex < 0)
                 {
-                    // 巻き戻し完了
                     isRewinding = false;
                     positionHistory.Clear();
                     rewindSkipPlayers.Clear();
+                    movingPlatformUsedDuringRec.Clear();
                     Player.RpcResetAbilityCooldown();
                     UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                     SendRpc();
@@ -182,13 +209,16 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
                     if (pc == null || !pc.IsAlive()) continue;
                     if (rewindIndex >= kvp.Value.Count) continue;
 
-                    // ★ REC開始時にスキップ登録されていたプレイヤーはワープしない
+                    // ★ REC開始時スキップ
                     if (rewindSkipPlayers.Contains(pc.PlayerId)) continue;
-
-                    // ★ 巻き戻し中に梯子・ジップライン使用中もスキップ
-                    if (pc.MyPhysics.Animations.IsPlayingAnyLadderAnimation()) continue;
-                    if ((MapNames)Main.NormalOptions.MapId == MapNames.Airship
-                        && Vector2.Distance(pc.GetTruePosition(), new Vector2(7.76f, 8.56f)) <= 1.9f) continue;
+                    // ★ REC中にぬーん使用
+                    if (movingPlatformUsedDuringRec.Contains(pc.PlayerId)) continue;
+                    // ★ 巻き戻し中に梯子・ジップライン使用中
+                    if (IsUsingMovingPlatform(pc)) continue;
+                    // ★ ベント中
+                    if (pc.inVent) continue;
+                    // ★ 波動砲系がビーム・チャージ中
+                    if (IsBeamingOrCharging(pc)) continue;
 
                     var targetPos = kvp.Value[rewindIndex];
                     pc.RpcSnapToForced(targetPos, SendOption.None);
@@ -208,6 +238,7 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
         rewindIndex = 0;
         positionHistory.Clear();
         rewindSkipPlayers.Clear();
+        movingPlatformUsedDuringRec.Clear();
         SendRpc();
     }
 
@@ -220,6 +251,7 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
         rewindIndex = 0;
         positionHistory.Clear();
         rewindSkipPlayers.Clear();
+        movingPlatformUsedDuringRec.Clear();
     }
 
     public override void AfterMeetingTasks()

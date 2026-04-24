@@ -80,6 +80,7 @@
 "StandMaster","StandMaster","スタンドマスター"
 "EvilBlender","EvilBlender","イビルブレンダー"
 "EvilGuesser","EvilGuesser","イビルゲッサー"
+"Reverser","Reverser","リバーサー"
 "#ImpostorName"
 
 "# マッドメイト系役職"
@@ -222,6 +223,7 @@
 "PavlovDog","Pavlov's Dog","パブロフの犬","","","","",""
 "PavlovOwner","Pavlov's Owner","パブロフのオーナー","","","","",""
 "Moira","Moira","モイラ"
+"PoisonBakery","Poisoned Bakery","毒入りパン屋"
 "#NeutralName"
 
 "#コンビネーション役職"
@@ -399,6 +401,7 @@
 "TimeSleeperInfo","Let's relive that moment again.","あの時をもう一度やり直そう"
 "EvilBlenderInfo","Chemistry solves everything","化学は裏切らない"
 "UnFortunerInfo","Happiness for Only Impostors","幸せになりたい..."
+"ReverserInfo","Reverse everyone's controls","全員の操作を反転させよう"
 "#ImpostorInfo"
 
 "# マッドメイト系役職"
@@ -676,6 +679,7 @@
 "DoubleKillerInfoLong","","特殊なキル能力を有するインポスターです。\nファントムボタンでキルをすることができます。\nクールタイムは独立しており、別々に使用することができます。"
 "EvilBlenderInfoLong","An Impostor who can activate a special sabotage only once.\nIf no sabotage other than door closing is active, pressing the Phantom button will fill the entire map with Poison Gas.\nWhen the gas is released, all living players must reach the designated room within a certain time or they will die (cause of death: Suffocation).\nWhile Poison Gas is active, the emergency button cannot be used and no sabotages can be triggered.","1度のみ特殊サボタージュを発動することができるインポスター。\nドア閉め以外のサボタージュが発動されていない時にファントムボタンを押すと\n「毒ガス」をマップ全体に充満させることができる。\n毒ガスが発生した時、生存しているプレイヤーは一定時間以内に指定された部屋へ行かないと死亡する。(死因:窒息)\n毒ガス発生中は緊急ボタンは使用できず、サボタージュも発動できない。"
 "UnFortunerInfoLong","An Impostor who can grant attributes.\nThe kill target at the moment the Phantom button is used will receive a random attribute at the start of the next meeting.\n\nIf 'Grant one attribute per use' is ON, or if no overwrite attributes are configured, one random attribute is applied.\nOtherwise, all configured attributes are applied.","属性を付与することのできるインポスター。\nファントムボタンを使用した時のキルターゲットに\n次会議開始時、ランダムで属性を付与する。\n\n'1回使用で属性を1つ渡す'がON、または上書きする付与属性が未設定の場合は、ランダムで1つ。\nそれ以外の場合は設定した属性が全て付与される。"
+"ReverserInfoLong","A single click button can reverse the controls of all players for a certain period of time.","ワンクリックボタンで全てのプレイヤーの操作を一定時間反転できる。"
 "#ImpostorInfoLong"
 
 "# マッドメイト系役職"
@@ -713,7 +717,7 @@
 "DictatorInfoLong","When you vote someone, the meeting will end on the spot and the player you voted will be ejected.\nThe moment you vote someone out, you will also die.\nWhen you vote for someone in a meeting, they forcibly break that meeting and exile the player they vote for.\nAfter exercising the force, the Dictators die just after meeting.","会議中に誰かに投票をすると、会議を強制終了させて投票先を吊る事ができる。\n投票したタイミングでディクテーターは死ぬ。","(船员阵营):\n当独裁者在会议阶段投票给玩家后，会议会被强制结束并放逐其投票对象。\n该技能发动后独裁者将会死亡。","(船員):\n如果獨裁主義者在會議上投票給某位玩家,\n獨裁主義者將強制結束會議並無視場上票數將獨裁主義者投的那個人投出\n但是獨裁主義者將死於他投票的瞬間。","(Член Экипажа):\nЕсли Диктатор проголосует за любого игрока во время собрания, он сможет принудительно завершить собрание и кикнуть игрока за которого он отдал голос \nТак же Диктатор умрёт после собрания когда он отдаст голос.","(Tripulantes): \nQuando votar em alguém, durante uma reunião, a reunião será encerrada e a pessoa em que você votou, será exilada. \nAo exilar alguém, você morre-rá.",""
 "SeerInfoLong","Whenever someone dies, you will see a ""Kill Flash"".","プレイヤーが死亡するごとに、シーアはキルフラッシュを見ることができる。\n\n遅延が有効な場合、プレイヤーが死亡後、数秒後にキルフラッシュが起こる。","(船员阵营):\n每当玩家死亡时，灵媒将会看到击杀闪烁。","(船員):當有玩家死亡時,靈媒將看到閃光","(Член Экипажа):\nПровидец видит ''Вспышку Убийства'' каждый раз, когда игроки умирают.","(Tripulantes): \nQuando alguém morre, você vê um ""clarão de abate"" (a sua tela piscará brevemente).",""
 "TimeManagerInfoLong","The more tasks you do, the longer your meeting will last. When you die, the meeting time will be restored.","タスクを終わらせるごとに会議時間が延びる。死亡すると会議時間は元に戻る。","(船员阵营):\n你做的任务越多，会议时间就会越长。在你死后，会议时间会复原。","(船員陣營):\n時間大師做越多任務，那麼會議時間就會延長越多(直到上限)。如果時間大師死亡，那麼會議時間就會恢復原狀。","(Член Экипажа):\nМастер Времени может увеличить время встречи, увеличивается время по мере выполнения заданий. Но когда он умрет, время встречи будет сброшено по умолчанию.","(Tripulantes):\nAo fazer tarefas você aumenta o tempo de reunião. Quando você morre, o tempo de reunião volta ao normal.",""
-"BakeryInfoLong","If the baker survives, the bread arrives at the meeting.","パン屋が生存していると、会議開始時にパン屋生存コメントがチャット欄に表示される。"
+"BakeryInfoLong","If the baker survives, the bread arrives at the meeting.There is a certain probability that it will transform into a poisoned bakery.","パン屋が生存していると、会議開始時にパン屋生存コメントがチャット欄に表示される。一定の確率で毒入りパン屋に変化する。"
 "FortuneTellerInfoLong","When you vote for yourself during a meeting after completing the required number of tasks, you can switch to Divination Mode.\nWhile in Divination Mode, voting for someone other than yourself allows you to divine (reveal) that player's role.\nThis setting can be changed to allow divination without self-voting.","既定のタスク数を完了した状態で会議で自投票すると占いモードに変更できる。\n占いモードの状態で自身以外の誰かに投票すると、投票先の役職を占うことができる。\n自投票せずとも占えるように設定で変更が可能。"
 "ToiletFanInfoLong","By entering the vent, you can open all the lounge restroom doors. That's all...","ベントに入ることでラウンジのトイレのドアを全て開くことができる。それだけ。"
 "VentMasterInfoLong","When someone other than yourself enters the vent, you can see the flash.\nWhen the vent is available, you can enter it repeatedly without cooldown or duration restrictions.","自身以外の誰かがベントの中に入るとフラッシュを見ることができる。\nベントが使える場合、クールダウン、持続時間なしで何度でもベントに入ることができる。"
@@ -1538,6 +1542,7 @@
 "ArcherArrowTime","Have Arrow","矢の所持数"
 "ArcherArrowSpeed","Arrow Speed","矢の速度"
 "EvilBlenderSabotageLimittime","Sabotage limit","窒息死するまでの時間"
+"ReverserDuration","Reverser Duration","効果時間"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
@@ -1724,6 +1729,7 @@
 "FortunerAddGiveAddon","Set AddGiveAddoneList","付与する属性を上書きする"
 "FortunerGiveOne","One use Give oneaddon","1回使用で属性を1つ渡す"
 "MediumShowDeathReason","Display the cause of death","死因を表示する"
+"PoisonedBakeryRole77","The probability of the bakery turning into a poisoned bakery.","毒入りパン屋に変化する確率"
 
 "## Neutral Role Setting"
 "SchrodingerCatExiledTeamChanges","Team Changes When Ejected","吊られた際、陣営が変化する","薛定谔的猫被放逐时会加入其他阵营","薛定諤的貓被丟出時陣營會轉變","Команда меняется после его Изгнания","Time Muda Quando Exilado",""
@@ -2407,6 +2413,7 @@
 "DeathReason.Hit","Hit","命中"
 "DeathReason.Suffocation","Suffocation","窒息"
 "DeathReason.Swallowed","Swallowed","丸呑み"
+"DeathReason.Poisoned","Poisoned","毒殺"
 "DeathReason.etc","Other","その他","其他","其他","Другое","Outros",""
 "Alive","Alive","生存","存活","存活","Выжил","Vivo",""
 "Win","Wins","勝利","胜利","勝利"," Победили","Vitória",""

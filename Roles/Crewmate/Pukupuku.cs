@@ -121,8 +121,8 @@ namespace TownOfHost.Roles.Crewmate
 
             if (killerRef != null && !killerRef.Data.IsDead)
             {
-                // ★ 道連れ死因を設定
-                PlayerState.GetByPlayerId(killerRef.PlayerId).DeathReason = CustomDeathReason.Revenge;
+                // ★ 死因を設定
+                PlayerState.GetByPlayerId(killerRef.PlayerId).DeathReason = CustomDeathReason.Poisoned;
 
                 // ★ キル実行
                 killerRef.MurderPlayer(killerRef);

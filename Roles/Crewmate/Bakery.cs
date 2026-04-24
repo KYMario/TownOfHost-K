@@ -16,13 +16,15 @@ public sealed class Bakery : RoleBase
             () => RoleTypes.Crewmate,
             CustomRoleTypes.Crewmate,
             10200,
-            null,
+            SetupOptionItem,
             "bak",
             "#8f6121",
             (4, 2),
-            introSound: () => GetIntroSound(RoleTypes.Crewmate),
-            from: From.TownOfHost_K
+            introSound: () => GetIntroSound(RoleTypes.Crewmate)
         );
+
+    private static OptionItem PoisonedBakeryChanceOption;
+
     public Bakery(PlayerControl player)
     : base(
         RoleInfo,
@@ -33,9 +35,23 @@ public sealed class Bakery : RoleBase
         RouteNumber = 0;
         IsOnlyNomalMessage = false;
     }
+
     bool RareRoute;
     int RouteNumber;
     static bool IsOnlyNomalMessage;
+
+    public static void SetupOptionItem()
+    {
+        PoisonedBakeryChanceOption = FloatOptionItem.Create(
+            RoleInfo,
+            12,
+            "PoisonedBakeryRole77",
+            new(0f, 100f, 1f),
+            25f,
+            false
+        ).SetValueFormat(OptionFormat.Percent);
+    }
+
     public override void Add()
     {
         var bakerycount = 0;
@@ -50,6 +66,7 @@ public sealed class Bakery : RoleBase
         }
         if (bakerycount > 1) IsOnlyNomalMessage = true;
     }
+
     public override string MeetingAddMessage()
     {
         if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return "";
@@ -60,6 +77,7 @@ public sealed class Bakery : RoleBase
         }
         return "";
     }
+
     string BakeryMeg()
     {
         if (IsOnlyNomalMessage)
@@ -82,22 +100,23 @@ public sealed class Bakery : RoleBase
                     RouteNumber = 1;
                     return GetString("Message.Bakery1");
                 }
-                else if (dore <= 35)//20%
-                {
-                    RouteNumber = 2;
-                    return string.Format(GetString("Message.Bakery2"), GetString($"{kisetu}"));
-                }
-                else if (dore <= 65)//30%
-                {
-                    RouteNumber = 3;
-                    Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
-                    return string.Format(GetString("Message.Bakery3"), (MapNames)Main.NormalOptions.MapId, GetString($"{kisetu}.Ba"));
-                }
-                else//35%
-                {
-                    RouteNumber = 4;
-                    return GetString($"Message.Bakery4.{meg}");
-                }
+                else
+                    if (dore <= 35)
+                    {
+                        RouteNumber = 2;
+                        return string.Format(GetString("Message.Bakery2"), GetString($"{kisetu}"));
+                    }
+                    else
+                        if (dore <= 65)
+                        {
+                            RouteNumber = 3;
+                            return string.Format(GetString("Message.Bakery3"), (MapNames)Main.NormalOptions.MapId, GetString($"{kisetu}.Ba"));
+                        }
+                        else//35%
+                        {
+                            RouteNumber = 4;
+                            return GetString($"Message.Bakery4.{meg}");
+                        }
             }
             return GetString("Message.Bakery");
         }
@@ -113,7 +132,7 @@ public sealed class Bakery : RoleBase
                     int Ripo = IRandom.Instance.Next(0, Like + 5 + 26);
                     if (Ripo <= 25) Ripo = 0;
                     else Ripo -= 25;
-                    //26を足したり引いたりしてるのはいいね,リポが0の場合を多くするため。
+
 
                     if (sns is 9) return string.Format(GetString($"Message.Bakery1.9"), $"{IRandom.Instance.Next((UtilsGameLog.day - 1) * 5, UtilsGameLog.day * 5) * 10}") + string.Format("\n　<color=#ff69b4>♥</color>{0}　<color=#7cfc00>Θ</color>{1}", Like, Ripo);
                     if (sns is 8) return GetString("Message.Bakery1.8");
@@ -130,6 +149,77 @@ public sealed class Bakery : RoleBase
         //ここまで来たらバグじゃ!!
         return "なんかエラー起きてるよ(´-ω-`)\nホストさんログ取って提出して☆";
     }
+
+    private RoleTypes ConvertCustomRoleToRoleType(CustomRoles customRole)
+    {
+        return customRole switch
+        {
+            CustomRoles.PoisonedBakery => RoleTypes.Crewmate,
+            _ => RoleTypes.Crewmate
+        };
+    }
+
+    public override void AfterMeetingTasks()
+    {
+        Logger.Info("AfterMeetingTasks called for Bakery", nameof(Bakery));
+        try
+        {
+            base.AfterMeetingTasks();
+
+            if (Player == null)
+            {
+                Logger.Warn("Player is null in Bakery.AfterMeetingTasks", nameof(Bakery));
+                return;
+            }
+
+            if (!Player.IsAlive()) return;
+
+            if (PoisonedBakeryChanceOption == null)
+            {
+                Logger.Warn("PoisonedBakeryChanceOption is null", nameof(Bakery));
+                return;
+            }
+
+            var chance = PoisonedBakeryChanceOption.GetFloat();
+            var rand = IRandom.Instance.Next(1, 101);
+
+            Logger.Info($"Chance: {chance}, Random: {rand}", nameof(Bakery));
+
+            if (rand <= chance)
+            {
+                Logger.Info("Schedule transforming into PoisonedBakery", nameof(Bakery));
+                _ = new LateTask(() =>
+                {
+                    try
+                    {
+                        if (Player == null)
+                        {
+                            Logger.Warn("Player is null when executing delayed Bakery transform", nameof(Bakery));
+                            return;
+                        }
+
+                        if (!AmongUsClient.Instance.AmHost)
+                        {
+                            Logger.Info("Not host - skipping role change", nameof(Bakery));
+                            return;
+                        }
+
+                        Player.RpcSetCustomRole(CustomRoles.PoisonedBakery);
+                        Utils.SendMessage("<color=#a83232>パン屋が<b><size=120%>パン屋(N)</b></size>に変化しました。</color>", Player.PlayerId);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Exception(ex, nameof(Bakery));
+                    }
+                }, 0.05f, "BakeryTransform", true);
+            }
+        }
+        catch (Exception e)
+        {
+            Logger.Exception(e, nameof(Bakery));
+        }
+    }
+
     public static string BakeryMark()
     {
         var bakerys = PlayerCatch.AllAlivePlayerControls.Where(pc =>
@@ -143,18 +233,8 @@ public sealed class Bakery : RoleBase
         if (bakerys.Count() <= 0) return "";
 
         return $" <#8f6121><rotate=-20>§</rotate></color>{(bakerys.Count() > 1 ? $"×{bakerys.Count()}" : "")}";
+        //非クライアントに§が表示されないのでそこをいつか直します
     }
-    public override void CheckWinner(GameOverReason reason)
-    {
-        if (Player.IsAlive()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
-    }
-    public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
-    [Attributes.PluginModuleInitializer]
-    public static void Load()
-    {
-        var n1 = new Achievement(RoleInfo, 0, 1, 0, 0);
-        var n2 = new Achievement(RoleInfo, 1, 1, 0, 1);
-        achievements.Add(0, n1);
-        achievements.Add(1, n2);
-    }
+
+
 }
