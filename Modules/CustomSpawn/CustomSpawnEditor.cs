@@ -229,6 +229,7 @@ public class CustomSpawnEditor
             logger.Info("ロード完了!");
             EditorAPI.Loaded = true;
             GameOptionsManager.Instance.CurrentGameOptions.SetInt(Int32OptionNames.NumImpostors, 1);
+            ShipStatus.Instance.EmergencyButton.gameObject.SetActive(false);
         }
 
         [HarmonyPatch(typeof(GameOptionsManager), "set_CurrentGameOptions"), HarmonyPrefix]
