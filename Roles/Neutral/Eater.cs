@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using AmongUs.GameOptions;
+using Hazel;
 
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
@@ -257,6 +258,9 @@ public sealed class Eater : RoleBase, IKiller, IUsePhantomButton, IKillFlashSeea
     }
 
     void AddDeadBodyArrow(byte playerId, Vector2 pos)
+        => AddDeadBodyArrow(playerId, pos, sync: true);
+
+    void AddDeadBodyArrow(byte playerId, Vector2 pos, bool sync)
     {
         if (!OptionShowArrow.GetBool()) return;
 
@@ -268,22 +272,86 @@ public sealed class Eater : RoleBase, IKiller, IUsePhantomButton, IKillFlashSeea
         var position = new Vector3(pos.x, pos.y, 0f);
         deadBodyPositions[playerId] = position;
         GetArrow.Add(Player.PlayerId, position);
+
+        if (sync) RpcAddDeadBodyArrow(playerId, pos);
+        UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
     }
 
     void RemoveDeadBodyArrow(byte playerId)
+        => RemoveDeadBodyArrow(playerId, sync: true);
+
+    void RemoveDeadBodyArrow(byte playerId, bool sync)
     {
         if (!deadBodyPositions.TryGetValue(playerId, out var pos)) return;
         GetArrow.Remove(Player.PlayerId, pos);
         deadBodyPositions.Remove(playerId);
+
+        if (sync) RpcRemoveDeadBodyArrow(playerId);
+        UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
     }
 
     void ClearAllBodyArrows()
+        => ClearAllBodyArrows(sync: true);
+
+    void ClearAllBodyArrows(bool sync)
     {
         foreach (var pos in deadBodyPositions.Values)
         {
             GetArrow.Remove(Player.PlayerId, pos);
         }
         deadBodyPositions.Clear();
+
+        if (sync) RpcClearAllBodyArrows();
+        UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
+    }
+
+    void RpcAddDeadBodyArrow(byte playerId, Vector2 pos)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPCType.AddDeadBodyArrow);
+        sender.Writer.Write(playerId);
+        NetHelpers.WriteVector2(pos, sender.Writer);
+    }
+
+    void RpcRemoveDeadBodyArrow(byte playerId)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPCType.RemoveDeadBodyArrow);
+        sender.Writer.Write(playerId);
+    }
+
+    void RpcClearAllBodyArrows()
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+        using var sender = CreateSender();
+        sender.Writer.WritePacked((int)RPCType.ClearDeadBodyArrows);
+    }
+
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        switch ((RPCType)reader.ReadPackedInt32())
+        {
+            case RPCType.AddDeadBodyArrow:
+                var playerId = reader.ReadByte();
+                var pos = NetHelpers.ReadVector2(reader);
+                AddDeadBodyArrow(playerId, pos, sync: false);
+                break;
+            case RPCType.RemoveDeadBodyArrow:
+                RemoveDeadBodyArrow(reader.ReadByte(), sync: false);
+                break;
+            case RPCType.ClearDeadBodyArrows:
+                ClearAllBodyArrows(sync: false);
+                break;
+        }
+    }
+
+    enum RPCType
+    {
+        AddDeadBodyArrow,
+        RemoveDeadBodyArrow,
+        ClearDeadBodyArrows
     }
 
     void BeginSwallow(PlayerControl target)
@@ -335,8 +403,6 @@ public sealed class Eater : RoleBase, IKiller, IUsePhantomButton, IKillFlashSeea
             if (state != null) state.DeathReason = CustomDeathReason.Swallowed;
             exileTarget.SetRealKiller(Player);
             exileTarget.RpcExileV3();
-            PlayerState.GetByPlayerId(exileTarget.PlayerId)?.SetDead();
-            ReportDeadBodyPatch.IgnoreBodyids[exileTarget.PlayerId] = false;
             UtilsGameLog.AddGameLog("Eater", $"{UtilsName.GetPlayerColor(Player)} swallowed {UtilsName.GetPlayerColor(exileTarget)}");
             RemoveDeadBodyArrow(exileTarget.PlayerId);
         }

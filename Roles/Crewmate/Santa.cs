@@ -256,6 +256,7 @@ public sealed class Santa : RoleBase, IKiller
 
         killer.ResetKillCooldown();
         killer.SetKillCooldown();
+        killer.RpcResetAbilityCooldown();
 
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(ForceLoop: true), 0.2f, "Santa Gift");
     }
