@@ -230,7 +230,7 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
     }
     // 部屋タスク↓
     int? IRoomTasker.GetMaxTaskCount() => null;
-    bool IRoomTasker.IsAssignRoomTask() => IsStolen is false && targetId is not byte.MaxValue && IsAssignRoomtask && Player.IsAlive();
+    bool IRoomTasker.IsAssignRoomTask() => IsStolen is false && IsAssignRoomtask && Player.IsAlive();
     void IRoomTasker.ChangeRoom(PlainShipRoom TaskRoom) => SendRPC_ChengeRoom(TaskRoom);
     void IRoomTasker.OnComplete(int completeroom)
     {

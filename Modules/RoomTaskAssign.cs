@@ -115,14 +115,17 @@ public class RoomTaskAssign
         GetArrow.Add(playerid, RoomArrow);
         TaskRoom = TaskPSR.RoomId;
 
-        Logger.Info($"NextTask : {TaskRoom}", "RoomTaskAssign_ReceiveRoom");
+        Logger.Info($"{playerid}-NextTask : {TaskRoom}", "RoomTaskAssign_ReceiveRoom");
     }
 
     public void ReceiveCompleteRoom(MessageReader reader)
     {
         TaskRoom = null;
         TaskPSR = null;
-        completeroom = reader.ReadInt32();
+        if (reader.BytesRemaining > 0)
+        {
+            completeroom = reader.ReadInt32();
+        }
     }
 
     public string GetLowerText(PlayerControl seer, string colorcode = "#ffffff")
