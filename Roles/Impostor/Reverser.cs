@@ -19,7 +19,7 @@ public sealed class Reverser : RoleBase, IImpostor, IUsePhantomButton
             SetupOptionItem,
             "esb",
             "#ff1919",
-            (0, 1)
+            (6, 6)
         );
 
     private static OptionItem OptionCooldown;

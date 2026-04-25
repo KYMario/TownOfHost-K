@@ -21,7 +21,7 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
             25000,
             SetUpOptionItem,
             "ts",
-            OptionSort: (3, 14)
+            OptionSort: (6, 14)
         );
 
     public TimeSleeper(PlayerControl player)
@@ -92,10 +92,11 @@ public sealed class TimeSleeper : RoleBase, IImpostor, IUsePhantomButton
     {
         if (pc.MyPhysics.Animations.IsPlayingAnyLadderAnimation()) return true;
         if (pc.onLadder) return true;
+        // ★ CharismaStar方式：エアシップの昇降機座標チェック
         if ((MapNames)Main.NormalOptions.MapId == MapNames.Airship
             && Vector2.Distance(pc.GetTruePosition(), new Vector2(7.76f, 8.56f)) <= 1.9f) return true;
-        if (pc.MyPhysics.Animations.Animator.GetCurrentAnimation()?.name?.Contains("Zipline") == true) return true;
-        if (pc.MyPhysics.Animations.Animator.GetCurrentAnimation()?.name?.Contains("Platform") == true) return true;
+        // ★ ジップライン判定（inMovingPlatを使う）
+        if (pc.inMovingPlat) return true;
         return false;
     }
 
