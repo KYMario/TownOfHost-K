@@ -967,6 +967,7 @@ public enum CustomRoles
     PavlovDogImprint,
     Moira,
     PoisonedBakery,
+    Monika,
     //TOH-K
     Remotekiller,
     Chef,
