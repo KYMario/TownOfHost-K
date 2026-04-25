@@ -18,7 +18,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             typeof(VillageChief),
             player => new VillageChief(player),
             CustomRoles.VillageChief,
-            () => RoleTypes.Crewmate,
+            () => RoleTypes.Engineer,
             CustomRoleTypes.Crewmate,
             60000,
             SetupOptionItem,
@@ -42,11 +42,9 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     private bool hasUsedAbility;
     private float nearTimer;
 
-    // ★ スポーン待機タイマー
     private float spawnWaitTimer;
     private bool CanApproach => spawnWaitTimer >= 3f;
 
-    // ★ 任命クールタイム用タイマー
     private float appointCooldownTimer;
 
     public byte NextAppointCandidate;
@@ -74,6 +72,17 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     public override void ApplyGameOptions(IGameOptions opt)
     {
         opt.SetVision(false);
+        AURoleOptions.EngineerCooldown = OptionAppointCooldown.GetFloat();
+    }
+
+    public override bool CanClickUseVentButton => false;
+    public override bool OnEnterVent(PlayerPhysics physics, int ventId) => false;
+
+    public override string GetAbilityButtonText()
+    {
+        if (hasUsedAbility) return "<color=#888888>任命済</color>";
+        if (NextAppointCandidate == byte.MaxValue) return "候補未設定";
+        return "任命";
     }
 
     bool ISelfVoter.CanUseVoted()
@@ -142,6 +151,11 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     {
         spawnWaitTimer = 0f;
         appointCooldownTimer = OptionAppointCooldown.GetFloat();
+
+        if (Player.IsAlive())
+        {
+            Player.RpcResetAbilityCooldown();
+        }
     }
 
     public override void OnFixedUpdate(PlayerControl player)
@@ -156,46 +170,48 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             if (appointCooldownTimer > 0f)
             {
                 appointCooldownTimer -= Time.fixedDeltaTime;
-                if (appointCooldownTimer < 0f) appointCooldownTimer = 0f;
             }
         }
 
-        if (!AmongUsClient.Instance.AmHost) return;
-        if (!GameStates.IsInTask) return;
-        if (!Player.IsAlive()) return;
-        if (hasUsedAbility) return;
-        if (NextAppointCandidate == byte.MaxValue) return;
-        if (!CanApproach) return;
+        bool isHost = AmongUsClient.Instance.AmHost;
+        bool isMe = Is(PlayerControl.LocalPlayer);
 
-        var target = GetPlayerById(NextAppointCandidate);
-        if (target == null || !target.IsAlive())
+        if ((isHost || isMe) && GameStates.IsInTask && Player.IsAlive() && !hasUsedAbility && NextAppointCandidate != byte.MaxValue && CanApproach)
         {
-            nearTimer = 0f;
-            NextAppointCandidate = byte.MaxValue;
-            SendRPC();
-            return;
-        }
-
-        float dist = Vector2.Distance(Player.GetTruePosition(), target.GetTruePosition());
-        if (dist <= 1.0f)
-        {
-            nearTimer += Time.fixedDeltaTime;
-
-            if (nearTimer >= 3f)
+            var target = GetPlayerById(NextAppointCandidate);
+            if (target != null && target.IsAlive())
             {
-                nearTimer = 3f;
-
-                if (appointCooldownTimer <= 0f)
+                float dist = Vector2.Distance(Player.GetTruePosition(), target.GetTruePosition());
+                if (dist <= 1.0f)
                 {
-                    DoAppoint(target);
-                    NextAppointCandidate = byte.MaxValue;
+                    nearTimer += Time.fixedDeltaTime;
+
+                    if (nearTimer >= 3f)
+                    {
+                        nearTimer = 3f;
+
+                        if (isHost && appointCooldownTimer <= 0f)
+                        {
+                            DoAppoint(target);
+                            NextAppointCandidate = byte.MaxValue;
+                            nearTimer = 0f;
+                        }
+                    }
+                }
+                else
+                {
                     nearTimer = 0f;
                 }
             }
-        }
-        else
-        {
-            nearTimer = 0f;
+            else
+            {
+                nearTimer = 0f;
+                if (isHost)
+                {
+                    NextAppointCandidate = byte.MaxValue;
+                    SyncStateRpc();
+                }
+            }
         }
     }
 
@@ -207,7 +223,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
         {
             PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
             Player.RpcMurderPlayer(Player);
-            SendRPC();
+            SyncStateRpc();
             return;
         }
 
@@ -231,7 +247,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             $"{UtilsName.GetPlayerColor(target)}({UtilsRoleText.GetRoleName(previousRole)})をシェリフに任命した"
         );
 
-        SendRPC();
+        SyncStateRpc();
         UtilsNotifyRoles.NotifyRoles();
     }
 
@@ -239,7 +255,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     {
         if (hasUsedAbility) return "<color=#f5a623>(任命済)</color>";
         if (NextAppointCandidate != byte.MaxValue) return "<color=#f5a623>(候補選択中)</color>";
-        return "<color=#f5a623>(未任命)</color>";
+        return "<color=#808080>(未任命)</color>";
     }
 
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null,
@@ -248,22 +264,24 @@ public sealed class VillageChief : RoleBase, ISelfVoter
         seen ??= seer;
         if (!Is(seer) || seer.PlayerId != seen.PlayerId || isForMeeting || !Player.IsAlive()) return "";
         if (hasUsedAbility) return "";
+
+        string prefix = isForHud ? "" : "<size=60%>";
+
         if (NextAppointCandidate == byte.MaxValue)
-            return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>会議で自投票→任命候補を選択</color>";
+            return $"{prefix}<color=#f5a623>会議で自投票→任命候補を選択</color>";
 
         var candidate = GetPlayerById(NextAppointCandidate);
         string name = candidate != null ? candidate.Data.PlayerName : "???";
 
-        if (!CanApproach)
-            return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>準備中...</color>";
-
         if (appointCooldownTimer > 0f)
-            return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>任命クールダウン: {appointCooldownTimer:F1}s</color>";
+        {
+            return $"{prefix}<color=#f5a623>クールタイム明け待機中</color>";
+        }
 
-        return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>{name}に3秒近づいて任命！</color>";
+        return $"{prefix}<color=#f5a623>{name}に3秒近づいて任命！</color>";
     }
 
-    private void SendRPC()
+    private void SyncStateRpc()
     {
         using var sender = CreateSender();
         sender.Writer.Write(hasUsedAbility);

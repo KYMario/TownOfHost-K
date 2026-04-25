@@ -26,16 +26,28 @@ public sealed class PoisonedBakery : RoleBase
         );
 
     private bool _firstMeeting = true;
-    private static List<byte> PoisonedPlayers = new();
 
-    public PoisonedBakery(PlayerControl player)
-    : base(
-        RoleInfo,
-        player
-    )
+    // TOHYを参考に、リストではなくインスタンスごとにターゲットを管理
+    public PlayerControl PoisonedPlayer = null;
+    public static List<PoisonedBakery> Bakeries = new();
+
+    public PoisonedBakery(PlayerControl player) : base(RoleInfo, player) { }
+
+    public override void Add()
     {
+        base.Add();
+        Bakeries.Add(this);
+        CustomRoleManager.MarkOthers.Add(GetMarkOthers);
     }
 
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
+        Bakeries.Remove(this);
+        CustomRoleManager.MarkOthers.Remove(GetMarkOthers);
+    }
+
+    // ★ refを削除しました（CS0115, CS1615エラーの修正）
     public override void CheckWinner(GameOverReason reason)
     {
         base.CheckWinner(reason);
@@ -45,18 +57,10 @@ public sealed class PoisonedBakery : RoleBase
         if (IsSpecialWinner())
         {
             Debug.Log("Special winner condition met. Poisoned Bakery cannot override.");
-            if (!Player.IsAlive())
-            {
-                PoisonedPlayers.Clear();
-            }
             return;
         }
 
-        if (!Player.IsAlive())
-        {
-            PoisonedPlayers.Clear();
-            return;
-        }
+        if (!Player.IsAlive()) return;
 
         _ = HandlePoisonedBakeryWin(ref reason);
     }
@@ -65,35 +69,55 @@ public sealed class PoisonedBakery : RoleBase
     {
         var specialWinners = new HashSet<CustomWinner>
         {
-            CustomWinner.Arsonist,
-            CustomWinner.Workaholic,
-            CustomWinner.Vulture,
-            CustomWinner.Terrorist,
-            CustomWinner.Chef,
-            CustomWinner.Jester,
-            CustomWinner.Executioner,
-            CustomWinner.MassMedia
+            CustomWinner.Arsonist, CustomWinner.Workaholic, CustomWinner.Vulture,
+            CustomWinner.Terrorist, CustomWinner.Chef, CustomWinner.Jester,
+            CustomWinner.Executioner, CustomWinner.MassMedia
         };
-
         return specialWinners.Contains(CustomWinnerHolder.WinnerTeam);
-    }
-
-    private bool ShouldOverrideVictory()
-    {
-        return true;
     }
 
     public override void OnStartMeeting()
     {
+        if (!AmongUsClient.Instance.AmHost) return;
+
         if (_firstMeeting)
         {
             Utils.SendMessage("<color=#a83232><size=120%>パン屋が毒入りパンを配るようになりました。</size></color>", Player.PlayerId);
             _firstMeeting = false;
         }
+    }
 
+    public override string MeetingAddMessage()
+    {
+        if (!Player.IsAlive() || PoisonedPlayer == null) return "";
+        return $"<color=#a83232>毒入りパンを配布されたプレイヤー: {UtilsName.GetPlayerColor(PoisonedPlayer.PlayerId)}§</color>";
+    }
+
+    public override void AfterMeetingTasks()
+    {
+        base.AfterMeetingTasks();
+
+        if (!AmongUsClient.Instance.AmHost) return;
+
+        // 1. 前回の会議終了時に配った毒の処理（パン屋とターゲットが生きていれば毒殺）
+        if (Player.IsAlive() && PoisonedPlayer != null && PoisonedPlayer.IsAlive())
+        {
+            PoisonedPlayer.SetRealKiller(Player);
+            MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.Poisoned, PoisonedPlayer.PlayerId);
+        }
+
+        // 2. 自分が追放された場合などは、次のターゲットを選ばずに終了
+        if (!Player.IsAlive())
+        {
+            PoisonedPlayer = null;
+            SendRPC(false, byte.MaxValue);
+            return;
+        }
+
+        // 3. 次のターンのターゲットを決める（TOHY方式）
         var targetList = PlayerCatch.AllAlivePlayerControls
             .Where(p => p.PlayerId != Player.PlayerId)
-            .Where(p => !PoisonedPlayers.Contains(p.PlayerId))
+            .Where(p => !Main.AfterMeetingDeathPlayers.ContainsKey(p.PlayerId)) // 今回死ぬ人には配らない
             .ToList();
 
         if (targetList.Any())
@@ -101,100 +125,41 @@ public sealed class PoisonedBakery : RoleBase
             var rand = IRandom.Instance;
             var targetPlayer = targetList[rand.Next(targetList.Count)];
 
-            PoisonedPlayers.Add(targetPlayer.PlayerId);
+            PoisonedPlayer = targetPlayer;
             Utils.SendMessage($"<color=#a83232><size=120%>{targetPlayer.GetRealName()} に毒入りパンを配布しました。</size></color>", Player.PlayerId);
 
             SendRPC(true, targetPlayer.PlayerId);
         }
+        else
+        {
+            PoisonedPlayer = null;
+            SendRPC(false, byte.MaxValue);
+        }
     }
 
-    public override string MeetingAddMessage()
+    // TOHY方式の真骨頂：タスク中に自分がキルされたら、配った毒を無効化（回収）する
+    public override void OnMurderPlayerAsTarget(MurderInfo info)
     {
-        if (!Player.IsAlive() || PoisonedPlayers.Count == 0) return "";
+        if (info.IsSuicide) return;
 
-        var poisonedNames = PoisonedPlayers
-            .Select(id => UtilsName.GetPlayerColor(id) + "§")
-            .ToList();
-
-        return $"<color=#a83232>毒入りパンを配布されたプレイヤー: {string.Join(", ", poisonedNames)}</color>";
-    }
-
-    public override void AfterMeetingTasks()
-    {
-        base.AfterMeetingTasks();
-
-        if (Player == null)
-        {
-            Debug.LogError("Player is null!");
-            return;
-        }
-
-        if (!AmongUsClient.Instance.AmHost)
-        {
-            PoisonedPlayers.Clear();
-            return;
-        }
-
-        if (Player.IsAlive())
-        {
-            var poisonedIdList = new List<byte>();
-            foreach (var poisonedPlayerId in PoisonedPlayers)
-            {
-                var poisonedPlayer = PlayerCatch.GetPlayerById(poisonedPlayerId);
-                if (poisonedPlayer == null)
-                {
-                    Debug.LogWarning($"Player with ID {poisonedPlayerId} not found!");
-                    continue;
-                }
-
-                if (poisonedPlayer.IsAlive())
-                {
-                    poisonedPlayer.SetRealKiller(Player);
-                    poisonedIdList.Add(poisonedPlayer.PlayerId);
-                }
-            }
-
-            if (poisonedIdList.Count > 0)
-            {
-                MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.Poisoned, poisonedIdList.ToArray());
-            }
-            else
-            {
-                Debug.LogWarning("No poisoned players to add to MeetingHudPatch.");
-            }
-        }
-
-        PoisonedPlayers.Clear();
-    }
-
-    private void SetCustomDeathReason(PlayerControl player, CustomDeathReason reason)
-    {
-        if (player == null) return;
-
-        RPC.SendDeathReason(player.PlayerId, reason);
+        PoisonedPlayer = null;
+        if (AmongUsClient.Instance.AmHost) SendRPC(false, byte.MaxValue);
     }
 
     public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (PoisonedPlayers.Contains(seen.PlayerId))
+
+        // パン屋が全員死んでいたらマークを出さない
+        if (!Bakeries.Any(b => b.Player.IsAlive())) return "";
+
+        // 見ている相手が、生きているパン屋の誰かのターゲットになっているかチェック
+        if (Bakeries.Any(b => b.PoisonedPlayer != null && b.PoisonedPlayer.PlayerId == seen.PlayerId))
         {
             var color = new Color32(168, 50, 50, 255);
             return Utils.ColorString(color, "§");
         }
         return "";
-    }
-
-    public override void Add()
-    {
-        base.Add();
-        CustomRoleManager.MarkOthers.Add(GetMarkOthers);
-    }
-
-    public override void OnDestroy()
-    {
-        base.OnDestroy();
-        CustomRoleManager.MarkOthers.Remove(GetMarkOthers);
     }
 
     private void SendRPC(bool doPoison, byte target = 255)
@@ -207,29 +172,15 @@ public sealed class PoisonedBakery : RoleBase
     public override void ReceiveRPC(MessageReader reader)
     {
         var doPoison = reader.ReadBoolean();
-        var poisonedId = reader.ReadByte();
+        var targetId = reader.ReadByte();
 
-        if (doPoison)
+        if (doPoison && targetId != byte.MaxValue)
         {
-            PoisonedPlayers.Add(poisonedId);
-
-            foreach (var player in PlayerCatch.AllPlayerControls)
-            {
-                if (PoisonedPlayers.Contains(player.PlayerId))
-                {
-                    player.Data.PlayerName += "§";
-                }
-            }
+            PoisonedPlayer = PlayerCatch.GetPlayerById(targetId);
         }
         else
         {
-            PoisonedPlayers.Remove(poisonedId);
-
-            var poisonedPlayer = PlayerCatch.GetPlayerById(poisonedId);
-            if (poisonedPlayer != null)
-            {
-                poisonedPlayer.Data.PlayerName = poisonedPlayer.Data.PlayerName.Replace("§", "");
-            }
+            PoisonedPlayer = null;
         }
     }
 
@@ -237,19 +188,14 @@ public sealed class PoisonedBakery : RoleBase
     {
         var specialWinners = new HashSet<CustomWinner>
         {
-            CustomWinner.Arsonist,
-            CustomWinner.Workaholic,
-            CustomWinner.Vulture,
-            CustomWinner.Terrorist,
-            CustomWinner.Chef,
-            CustomWinner.Jester,
-            CustomWinner.Executioner,
-            CustomWinner.MassMedia
+            CustomWinner.Arsonist, CustomWinner.Workaholic, CustomWinner.Vulture,
+            CustomWinner.Terrorist, CustomWinner.Chef, CustomWinner.Jester,
+            CustomWinner.Executioner, CustomWinner.MassMedia
         };
 
         if (CustomWinnerHolder.WinnerTeam != CustomWinner.Default && !specialWinners.Contains(CustomWinnerHolder.WinnerTeam))
         {
-            var bakeryAlive = PlayerCatch.AllPlayerControls.Any(pc => pc.GetCustomRole() == CustomRoles.PoisonedBakery && pc.IsAlive());
+            var bakeryAlive = PlayerCatch.AllAlivePlayerControls.Any(pc => pc.GetCustomRole() == CustomRoles.PoisonedBakery);
             if (bakeryAlive)
             {
                 Debug.Log("Overriding non-special winner to PoisonedBakery.");
