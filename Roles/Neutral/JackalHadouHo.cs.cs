@@ -4,10 +4,13 @@ using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using UnityEngine;
+using static TownOfHost.Modules.SelfVoteManager;
+using static TownOfHost.PlayerCatch;
+using static TownOfHost.Translator;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
+public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton, ISelfVoter
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -59,6 +62,11 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         IsSuperBeam = false;
 
         CustomRoleManager.LowerOthers.Add(GetLowerTextOthers);
+
+        skCandidateId = byte.MaxValue;
+        skNearTimer = 0f;
+        skCooldownTimer = 0f;
+        skSpawnWaitTimer = -1f;
     }
 
     public bool IsCharging;
@@ -73,11 +81,16 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
     float colorchange;
     int PlayerColor;
     bool IsFiring = false;
-    bool spawnCooldownStarted = false;
     public bool CanSideKick;
     public bool IsLoaded;
     public bool IsSuperBeam;
     public static bool NextNoSideKick = false;
+
+    byte skCandidateId;
+    float skNearTimer;
+    float skCooldownTimer;
+    float skSpawnWaitTimer;
+    bool SkCanApproach => skSpawnWaitTimer >= 3f;
 
     static OptionItem OptionKillCooldown;
     static float KillCooldown;
@@ -155,17 +168,93 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         CanSideKick = NextNoSideKick ? false : OptionCanMakeSidekick.GetBool();
         NextNoSideKick = false;
         SidekickCooldown = OptionSidekickCooldown.GetFloat();
-        spawnCooldownStarted = false;
+        skCandidateId = byte.MaxValue;
+        skNearTimer = 0f;
+        skCooldownTimer = 0f;
+        skSpawnWaitTimer = -1f;
     }
 
     public override void ApplyGameOptions(IGameOptions opt)
     {
         opt.SetVision(HasImpostorVision);
-        AURoleOptions.PhantomCooldown = CanSideKick ? SidekickCooldown : Cooldown;
+        if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+        {
+            AURoleOptions.PhantomCooldown = Cooldown;
+        }
     }
 
     public override bool CanUseAbilityButton() => true;
     bool IUsePhantomButton.IsPhantomRole => true;
+    bool IUsePhantomButton.IsresetAfterKill => true;
+
+    bool ISelfVoter.CanUseVoted() => CanSideKick && Player.IsAlive();
+
+    public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
+    {
+        if (!Is(voter)) return true;
+        if (!CanSideKick || !Player.IsAlive()) return true;
+
+        if (CheckSelfVoteMode(Player, votedForId, out var status))
+        {
+            if (status is VoteStatus.Self)
+            {
+                skCandidateId = byte.MaxValue;
+                Utils.SendMessage("<color=#00b4eb>【サイドキック任命モード】</color>\n候補に投票 → 次ターン3秒近づいてSK\nスキップ → キャンセル", Player.PlayerId);
+                SetMode(Player, true);
+                return false;
+            }
+            if (status is VoteStatus.Skip)
+            {
+                skCandidateId = byte.MaxValue;
+                Utils.SendMessage(GetString("VoteSkillFin"), Player.PlayerId);
+                SetMode(Player, false);
+                return false;
+            }
+            if (status is VoteStatus.Vote)
+            {
+                var target = GetPlayerById(votedForId);
+                if (target == null || !target.IsAlive() || votedForId == Player.PlayerId)
+                {
+                    Utils.SendMessage("<color=#00b4eb>その相手はSKにできません。</color>", Player.PlayerId);
+                    SetMode(Player, false);
+                    return false;
+                }
+                var targetRole = target.GetCustomRole();
+                if (targetRole is CustomRoles.King or CustomRoles.Jackal or CustomRoles.JackalAlien
+                    or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalHadouHo
+                    or CustomRoles.Merlin)
+                {
+                    Utils.SendMessage("<color=#00b4eb>その役職はSKにできません。</color>", Player.PlayerId);
+                    SetMode(Player, false);
+                    return false;
+                }
+                skCandidateId = votedForId;
+                Utils.SendMessage($"<color=#00b4eb>【SK候補設定】</color>\n{UtilsName.GetPlayerColor(target, true)} を候補に設定しました。\n次ターン、3秒近づいてSK実行！", Player.PlayerId);
+                SetMode(Player, false);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void OnCheckMurderAsKiller(MurderInfo info)
+    {
+        if (info.IsSuicide) return;
+        AfterKillPhantomReset();
+    }
+
+    public void AfterKillPhantomReset()
+    {
+        _ = new LateTask(() =>
+        {
+            if (!Player.IsAlive()) return;
+            if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+            {
+                AURoleOptions.PhantomCooldown = Cooldown;
+            }
+            Player.RpcResetAbilityCooldown(Sync: true);
+        }, 0.2f, "JHHPhantomResetOnKill", true);
+    }
 
     public void SetLoaded(bool loaded)
     {
@@ -180,103 +269,8 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
     void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        bool doFire = false;
-
-        if (CanSideKick)
-        {
-            if (!doFire)
-            {
-                AdjustKillCooldown = true;
-                ResetCooldown = false;
-
-                var target = Player.GetKillTarget(true);
-                if (target == null)
-                {
-                    AdjustKillCooldown = false;
-                    ResetCooldown = false;
-
-                    if (doFire) return;
-
-                    if (IsFiring) return;
-                    if (ShowBeamMark) return;
-                    if (!Player.IsAlive() || IsCharging || IsSuperCharging) return;
-
-                    IsFiring = true;
-
-                    if (IsLoaded)
-                    {
-                        IsSuperCharging = true;
-                        superChargeTimer = 0f;
-                        Utils.AllPlayerKillFlash();
-                        StartSuperChargeFlashLoop();
-                    }
-                    else
-                    {
-                        IsCharging = true;
-                        chargeTimer = 0f;
-                        Utils.AllPlayerKillFlash();
-                    }
-                    colorchange = 0f;
-
-                    Main.AllPlayerKillCooldown[Player.PlayerId] = 60f;
-                    Player.SetKillCooldown(60f);
-                    _ = new LateTask(() => { Player.SyncSettings(); }, 0.1f, "JackalHadouHoKillTimer", true);
-                    Player.SyncSettings();
-
-                    Main.AllPlayerKillCooldown[Player.PlayerId] = 60f;
-                    Player.SyncSettings();
-                    UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
-                    UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
-                    SendRpc();
-                    return;
-                }
-
-                var targetrole = target.GetCustomRole();
-                if (targetrole is CustomRoles.King or CustomRoles.Jackal or CustomRoles.JackalAlien
-                    or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalHadouHo
-                    or CustomRoles.Merlin)
-                {
-                    ResetCooldown = false;
-                    return;
-                }
-
-                CanSideKick = false;
-                SendRpc();
-
-                Player.RpcProtectedMurderPlayer(target);
-                target.RpcProtectedMurderPlayer(Player);
-                target.RpcProtectedMurderPlayer(target);
-
-                target.RpcSetCustomRole(CustomRoles.Tama, log: null);
-                if (target.GetRoleClass() is Tama tama)
-                    tama.SetOwner(Player.PlayerId);
-
-                if (!Utils.RoleSendList.Contains(target.PlayerId))
-                    Utils.RoleSendList.Add(target.PlayerId);
-
-                UtilsGameLog.AddGameLog("JackalHadouHoSideKick",
-                    string.Format(GetString("log.Sidekick"),
-                    UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})",
-                    UtilsName.GetPlayerColor(Player, true)));
-
-                UtilsOption.MarkEveryoneDirtySettings();
-                AURoleOptions.PhantomCooldown = Cooldown;
-                Player.RpcResetAbilityCooldown();
-                UtilsNotifyRoles.NotifyRoles();
-                return;
-            }
-
-            CanSideKick = false;
-            SendRpc();
-            AURoleOptions.PhantomCooldown = Cooldown;
-
-            UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
-        }
-
         AdjustKillCooldown = false;
         ResetCooldown = false;
-
-        if (doFire && !CanSideKick) return;
 
         if (IsFiring) return;
         if (ShowBeamMark) return;
@@ -311,6 +305,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         SendRpc();
     }
 
+
     void StartSuperChargeFlashLoop()
     {
         int count = (int)(SuperChargeTime / 0.1f);
@@ -336,7 +331,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             {
                 if (beaming)
                 {
-                    roleText.text = "<alpha=#00>縲</alpha>";
+                    roleText.text = "<alpha=#00>　</alpha>";
                     roleTextTransform.SetLocalY(0.35f);
                 }
                 else
@@ -348,41 +343,94 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         }
     }
 
+    private void ResetAllState()
+    {
+        IsCharging = false;
+        IsSuperCharging = false;
+        ShowBeamMark = false;
+        chargeTimer = 0f;
+        superChargeTimer = 0f;
+        HasHit = false;
+        IsFiring = false;
+        IsSuperBeam = false;
+        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+        Player.MarkDirtySettings();
+        Player.SyncSettings();
+        Player.RpcSetColor((byte)PlayerColor);
+        SetRoleTextHeight(false);
+    }
+
     public override void OnFixedUpdate(PlayerControl player)
     {
+        if (player.AmOwner && Is(player))
+        {
+            AURoleOptions.PhantomCooldown = Cooldown;
+        }
+
+        if (GameStates.IsInTask && Player.IsAlive() && CanSideKick)
+        {
+            if (skSpawnWaitTimer >= 0f && skSpawnWaitTimer < 3f)
+                skSpawnWaitTimer += Time.fixedDeltaTime;
+
+            if (skCooldownTimer > 0f)
+                skCooldownTimer -= Time.fixedDeltaTime;
+        }
+
+        if (IsCharging) chargeTimer += Time.fixedDeltaTime;
+        if (IsSuperCharging) superChargeTimer += Time.fixedDeltaTime;
+
         if (!AmongUsClient.Instance.AmHost) return;
 
-        if (!spawnCooldownStarted && Player.IsAlive() && !GameStates.Intro && GameStates.IsInTask && !GameStates.IsMeeting)
+        if (GameStates.IsInTask && Player.IsAlive() && CanSideKick)
         {
-            spawnCooldownStarted = true;
-            Player.RpcResetAbilityCooldown(Sync: true);
+            if (skCandidateId != byte.MaxValue)
+            {
+                if (SkCanApproach && skCooldownTimer <= 0f)
+                {
+                    var skTarget = GetPlayerById(skCandidateId);
+                    if (skTarget == null || !skTarget.IsAlive())
+                    {
+                        skCandidateId = byte.MaxValue;
+                        skNearTimer = 0f;
+                        SendRpc();
+                    }
+                    else
+                    {
+                        float dist = Vector2.Distance(Player.GetTruePosition(), skTarget.GetTruePosition());
+                        if (dist <= 1.0f)
+                        {
+                            skNearTimer += Time.fixedDeltaTime;
+                            UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+                            if (skNearTimer >= 3f)
+                            {
+                                DoSideKick(skTarget);
+                                skCandidateId = byte.MaxValue;
+                                skNearTimer = 0f;
+                            }
+                        }
+                        else
+                        {
+                            skNearTimer = 0f;
+                        }
+                    }
+                }
+            }
         }
 
         if (MeetingHud.Instance != null)
         {
-            IsCharging = false;
-            IsSuperCharging = false;
-            ShowBeamMark = false;
-            IsFiring = false;
-            IsSuperBeam = false;
-            Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-            Player.MarkDirtySettings();
-            SetRoleTextHeight(false);
-            UtilsNotifyRoles.NotifyRoles();
+            if (IsCharging || IsSuperCharging || ShowBeamMark || IsFiring)
+            {
+                ResetAllState();
+                UtilsNotifyRoles.NotifyRoles();
+                SendRpc();
+            }
             return;
         }
 
         if (!Player.IsAlive() && (IsCharging || IsSuperCharging || ShowBeamMark))
         {
-            IsCharging = false;
-            IsSuperCharging = false;
-            ShowBeamMark = false;
-            IsFiring = false;
-            IsSuperBeam = false;
-            Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-            Player.MarkDirtySettings();
-            Player.RpcSetColor((byte)PlayerColor);
-            SetRoleTextHeight(false);
+            ResetAllState();
             UtilsNotifyRoles.NotifyRoles();
             SendRpc();
             return;
@@ -428,19 +476,11 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         if (ShowBeamMark && Player.IsAlive())
             ApplyBeamHit();
 
-        if (IsCharging)
-        {
-            chargeTimer += Time.fixedDeltaTime;
-            if (chargeTimer >= ChargeTime)
-                FireBeam();
-        }
+        if (IsCharging && chargeTimer >= ChargeTime)
+            FireBeam();
 
-        if (IsSuperCharging)
-        {
-            superChargeTimer += Time.fixedDeltaTime;
-            if (superChargeTimer >= SuperChargeTime)
-                FireSuperBeam();
-        }
+        if (IsSuperCharging && superChargeTimer >= SuperChargeTime)
+            FireSuperBeam();
     }
 
     void FireBeam()
@@ -490,10 +530,8 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
-
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
-
                 IsFiring = false;
                 return;
             }
@@ -507,6 +545,10 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 if (!Player.IsAlive()) { IsFiring = false; return; }
                 Main.AllPlayerKillCooldown[Player.PlayerId] = KillCooldown;
                 Player.SetKillCooldown(KillCooldown);
+                if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+                {
+                    AURoleOptions.PhantomCooldown = Cooldown;
+                }
                 Player.RpcResetAbilityCooldown(Sync: true);
                 UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 _ = new LateTask(() => { IsFiring = false; }, 0.3f, "JHHResetFiring", true);
@@ -537,6 +579,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 PlayerState.GetByPlayerId(pc.PlayerId).DeathReason = CustomDeathReason.etc;
                 pc.RpcExileV3();
                 PlayerState.GetByPlayerId(pc.PlayerId).SetDead();
+                UtilsGameLog.AddGameLog("JackalHadouHo", $"<color=#ff0000>【超波動砲】</color> 弾({UtilsName.GetPlayerColor(pc, true)})を消費しました");
                 break;
             }
         }
@@ -573,10 +616,8 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
-
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
-
                 IsFiring = false;
                 return;
             }
@@ -590,6 +631,10 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 if (!Player.IsAlive()) { IsFiring = false; return; }
                 Main.AllPlayerKillCooldown[Player.PlayerId] = KillCooldown;
                 Player.SetKillCooldown(KillCooldown);
+                if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+                {
+                    AURoleOptions.PhantomCooldown = Cooldown;
+                }
                 Player.RpcResetAbilityCooldown(Sync: true);
                 UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                 _ = new LateTask(() => { IsFiring = false; }, 0.3f, "JHHSuperResetFiring", true);
@@ -624,6 +669,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             CustomRoleManager.OnCheckMurder(Player, target, target, target, true, deathReason: CustomDeathReason.Hit);
             HasHit = true;
+            UtilsGameLog.AddGameLog("JackalHadouHo", $"<color=#00b4eb>【波動砲】</color> {UtilsName.GetPlayerColor(Player, true)} ═> {UtilsName.GetPlayerColor(target, true)}");
         }
     }
 
@@ -654,51 +700,78 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             CustomRoleManager.OnCheckMurder(Player, target, target, target, true, deathReason: CustomDeathReason.Hit);
             HasHit = true;
+            UtilsGameLog.AddGameLog("JackalHadouHo", $"<color=#ff0000>【超波動砲】</color> {UtilsName.GetPlayerColor(Player, true)} ═> {UtilsName.GetPlayerColor(target, true)}");
         }
     }
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
-        IsCharging = false;
-        IsSuperCharging = false;
-        ShowBeamMark = false;
-        chargeTimer = 0f;
-        superChargeTimer = 0f;
-        HasHit = false;
-        IsFiring = false;
-        IsSuperBeam = false;
-        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-        Player.MarkDirtySettings();
-        Player.SyncSettings();
-        Player.RpcSetColor((byte)PlayerColor);
-        SetRoleTextHeight(false);
+        ResetAllState();
         UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
         SendRpc();
     }
 
     public override void OnStartMeeting()
     {
-        IsCharging = false;
-        IsSuperCharging = false;
-        ShowBeamMark = false;
-        chargeTimer = 0f;
-        superChargeTimer = 0f;
-        HasHit = false;
-        IsFiring = false;
-        IsSuperBeam = false;
-        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-        Player.MarkDirtySettings();
-        Player.SyncSettings();
-        Player.RpcSetColor((byte)PlayerColor);
-        SetRoleTextHeight(false);
+        ResetAllState();
     }
 
     public override void AfterMeetingTasks()
     {
         if (!AmongUsClient.Instance.AmHost) return;
         if (!Player.IsAlive()) return;
-        AURoleOptions.PhantomCooldown = CanSideKick ? SidekickCooldown : Cooldown;
-        Player.RpcResetAbilityCooldown();
+
+        if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+        {
+            AURoleOptions.PhantomCooldown = Cooldown;
+            Player.RpcResetAbilityCooldown();
+        }
+
+        skSpawnWaitTimer = 0f;
+        skCooldownTimer = SidekickCooldown;
+        skNearTimer = 0f;
+    }
+
+    private void DoSideKick(PlayerControl target)
+    {
+        CanSideKick = false;
+
+        var targetRole = target.GetCustomRole();
+        if (targetRole is CustomRoles.King or CustomRoles.Jackal or CustomRoles.JackalAlien
+            or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalHadouHo
+            or CustomRoles.Merlin)
+        {
+            Utils.SendMessage("<color=#00b4eb>この役職はSKにできません。</color>", Player.PlayerId);
+            SendRpc();
+            return;
+        }
+
+        Player.RpcProtectedMurderPlayer(target);
+        target.RpcProtectedMurderPlayer(Player);
+        target.RpcProtectedMurderPlayer(target);
+
+        target.RpcSetCustomRole(CustomRoles.Tama, log: null);
+        if (target.GetRoleClass() is Tama tama)
+            tama.SetOwner(Player.PlayerId);
+
+        if (!Utils.RoleSendList.Contains(target.PlayerId))
+            Utils.RoleSendList.Add(target.PlayerId);
+
+        UtilsGameLog.AddGameLog("JackalHadouHoSideKick",
+            string.Format(GetString("log.Sidekick"),
+            UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})",
+            UtilsName.GetPlayerColor(Player, true)));
+
+        UtilsOption.MarkEveryoneDirtySettings();
+
+        if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+        {
+            AURoleOptions.PhantomCooldown = Cooldown;
+            Player.RpcResetAbilityCooldown();
+        }
+
+        SendRpc();
+        UtilsNotifyRoles.NotifyRoles();
     }
 
     public void SendRpc()
@@ -795,6 +868,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             return false;
         }
+
         if (!Player.IsAlive() || isForMeeting) return false;
 
         if ((IsCharging || IsSuperCharging) && seen.PlayerId == Player.PlayerId)
@@ -890,15 +964,36 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
     {
         seen ??= seer;
         if (seen.PlayerId != seer.PlayerId || isForMeeting || !Player.IsAlive()) return "";
-        if (CanSideKick) return $"{(isForHud ? "" : "<size=60%>")}<color=#00b4eb>ファントムボタン → サイドキック指名</color>";
-        if (IsLoaded) return $"{(isForHud ? "" : "<size=60%>")}<color=#00b4eb>【装填済】ファントムボタン → 超波動砲チャージ！</color>";
-        if (!IsCharging && !IsSuperCharging) return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>ファントムボタン → チャージ発射</color>/color>";
+        string size = isForHud ? "" : "<size=60%>";
+
+        if (CanSideKick)
+        {
+            string cdText = skCooldownTimer > 0f ? $"SK CD: {Mathf.CeilToInt(skCooldownTimer)}s" : "SK準備完了";
+
+            if (skCandidateId != byte.MaxValue)
+            {
+                var skTarget = PlayerCatch.GetPlayerById(skCandidateId);
+                string name = skTarget != null ? skTarget.Data.PlayerName : "???";
+                if (skCooldownTimer > 0f)
+                    return $"{size}<color=#00b4eb>{cdText} | 候補: {name}</color>";
+                if (!SkCanApproach)
+                    return $"{size}<color=#00b4eb>待機中... | 候補: {name}</color>";
+                float progress = System.Math.Min(skNearTimer, 3f);
+                return $"{size}<color=#00b4eb>{name}に近づき中 {progress:F1}/3.0s</color>";
+            }
+
+            if (isForMeeting) return $"{size}<color=#00b4eb>自投票→SK候補を投票で指定</color>";
+            return $"{size}<color=#00b4eb>{cdText} | 【会議で自投票→候補指定】</color>";
+        }
+
+        if (IsLoaded) return $"{size}<color=#00b4eb>【装填済】ファントムボタン → 超波動砲チャージ！</color>";
+        if (!IsCharging && !IsSuperCharging) return $"{size}<color=#ff0000>ファントムボタン → チャージ発射</color>";
         if (IsSuperCharging)
         {
-            var remaining = SuperChargeTime - superChargeTimer;
-            return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>超チャージ中.. {remaining:F1}s</color>";
+            var remaining = Mathf.Max(0f, SuperChargeTime - superChargeTimer);
+            return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>超チャージ中... {remaining:F1}s</color>";
         }
-        var rem = ChargeTime - chargeTimer;
+        var rem = Mathf.Max(0f, ChargeTime - chargeTimer);
         return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>チャージ中... {rem:F1}s</color>";
     }
 
@@ -911,12 +1006,12 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
         if (IsSuperCharging && seer.PlayerId != Player.PlayerId)
         {
-            var remaining = SuperChargeTime - superChargeTimer;
+            var remaining = Mathf.Max(0f, SuperChargeTime - superChargeTimer);
             return $"<color=#ff0000>超チャージ中... {(int)remaining}s</color>";
         }
         if (IsCharging && seer.PlayerId != Player.PlayerId)
         {
-            var remaining = ChargeTime - chargeTimer;
+            var remaining = Mathf.Max(0f, ChargeTime - chargeTimer);
             return $"<color=#ff0000>チャージ中... {(int)remaining}s</color>";
         }
         if (ShowBeamMark && seer.PlayerId != Player.PlayerId)
@@ -925,10 +1020,10 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         return "";
     }
 
-    public override string GetAbilityButtonText() => CanSideKick ? GetString("Sidekick") : (IsLoaded ? "超発射" : "発射");
+    public override string GetAbilityButtonText() => IsLoaded ? "超発射" : "発射";
     public override bool OverrideAbilityButton(out string text)
     {
-        text = CanSideKick ? "SideKick" : (IsLoaded ? "JackalHadouHo_SuperFire" : "JackalHadouHo_Fire");
+        text = IsLoaded ? "JackalHadouHo_SuperFire" : "JackalHadouHo_Fire";
         return true;
     }
 }

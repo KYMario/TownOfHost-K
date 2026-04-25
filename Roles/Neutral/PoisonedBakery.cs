@@ -19,7 +19,7 @@ public sealed class PoisonedBakery : RoleBase
             () => AmongUs.GameOptions.RoleTypes.Crewmate,
             CustomRoleTypes.Neutral,
             73493,
-            SetupOptionItem, // ★ nullからSetupOptionItemに変更
+            SetupOptionItem,
             "poisoned_bak",
             "#FF4A5A",
             (5, 3)
@@ -29,6 +29,7 @@ public sealed class PoisonedBakery : RoleBase
 
     public PlayerControl PoisonedPlayer = null;
     public static List<PoisonedBakery> Bakeries = new();
+    public static List<byte> PoisonedPlayerIds = new();
 
     public PoisonedBakery(PlayerControl player) : base(RoleInfo, player) { }
 
@@ -64,6 +65,7 @@ public sealed class PoisonedBakery : RoleBase
         base.OnDestroy();
         Bakeries.Remove(this);
         CustomRoleManager.MarkOthers.Remove(GetMarkOthers);
+        PoisonedPlayerIds.Clear();
     }
 
     public override void CheckWinner(GameOverReason reason)
@@ -117,22 +119,18 @@ public sealed class PoisonedBakery : RoleBase
 
         if (!AmongUsClient.Instance.AmHost) return;
 
-        // 前回の会議終了時に配った毒の処理
         if (Player.IsAlive() && PoisonedPlayer != null && PoisonedPlayer.IsAlive())
         {
             PoisonedPlayer.SetRealKiller(Player);
             MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.Poisoned, PoisonedPlayer.PlayerId);
         }
 
-        // 自分が追放された場合などは、次のターゲットを選ばずに終了
         if (!Player.IsAlive())
         {
-            PoisonedPlayer = null;
-            SendRPC(false, byte.MaxValue);
+            ClearPoison();
             return;
         }
 
-        // 次のターンのターゲットを決める
         var targetList = PlayerCatch.AllAlivePlayerControls
             .Where(p => p.PlayerId != Player.PlayerId)
             .Where(p => !Main.AfterMeetingDeathPlayers.ContainsKey(p.PlayerId))
@@ -143,33 +141,46 @@ public sealed class PoisonedBakery : RoleBase
             var rand = IRandom.Instance;
             var targetPlayer = targetList[rand.Next(targetList.Count)];
 
-            PoisonedPlayer = targetPlayer;
+            SetPoison(targetPlayer);
             Utils.SendMessage($"<color=#a83232><size=120%>{targetPlayer.GetRealName()} に毒入りパンを配布しました。</size></color>", Player.PlayerId);
-
-            SendRPC(true, targetPlayer.PlayerId);
         }
         else
         {
-            PoisonedPlayer = null;
-            SendRPC(false, byte.MaxValue);
+            ClearPoison();
         }
     }
 
     public override void OnMurderPlayerAsTarget(MurderInfo info)
     {
         if (info.IsSuicide) return;
+        if (AmongUsClient.Instance.AmHost) ClearPoison();
+    }
 
+    private void SetPoison(PlayerControl target)
+    {
+        PoisonedPlayer = target;
+        if (!PoisonedPlayerIds.Contains(target.PlayerId))
+        {
+            PoisonedPlayerIds.Add(target.PlayerId);
+        }
+        SendRPC(true, target.PlayerId);
+    }
+
+    private void ClearPoison()
+    {
+        if (PoisonedPlayer != null)
+        {
+            PoisonedPlayerIds.Remove(PoisonedPlayer.PlayerId);
+        }
         PoisonedPlayer = null;
-        if (AmongUsClient.Instance.AmHost) SendRPC(false, byte.MaxValue);
+        SendRPC(false, byte.MaxValue);
     }
 
     public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
 
-        if (!Bakeries.Any(b => b.Player.IsAlive())) return "";
-
-        if (Bakeries.Any(b => b.PoisonedPlayer != null && b.PoisonedPlayer.PlayerId == seen.PlayerId))
+        if (PoisonedPlayerIds.Contains(seen.PlayerId))
         {
             var color = new Color32(168, 50, 50, 255);
             return Utils.ColorString(color, "§");
@@ -192,9 +203,17 @@ public sealed class PoisonedBakery : RoleBase
         if (doPoison && targetId != byte.MaxValue)
         {
             PoisonedPlayer = PlayerCatch.GetPlayerById(targetId);
+            if (!PoisonedPlayerIds.Contains(targetId))
+            {
+                PoisonedPlayerIds.Add(targetId);
+            }
         }
         else
         {
+            if (PoisonedPlayer != null)
+            {
+                PoisonedPlayerIds.Remove(PoisonedPlayer.PlayerId);
+            }
             PoisonedPlayer = null;
         }
     }

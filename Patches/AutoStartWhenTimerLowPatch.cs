@@ -8,7 +8,7 @@ namespace TownOfHost.Patches
     {
         private static float timer = 0f;
         private static int lastPlayerCount = 0;
-        private static float timeWhenFull = 0f; // 15人揃った瞬間の時間を記録
+        private static float timeWhenFull = 0f;
 
         public static void Postfix()
         {
@@ -25,26 +25,18 @@ namespace TownOfHost.Patches
 
             int playerCount = PlayerControl.AllPlayerControls.Count;
 
-            // ★ 基本のスタート時間は3分（180秒）
-            float limit = 180f;
-
             timer += Time.deltaTime;
 
-            // ★ 途中参加で15人になった瞬間、その時点の時間を記録する
             if (lastPlayerCount < 15 && playerCount == 15)
             {
                 timeWhenFull = timer;
             }
             lastPlayerCount = playerCount;
 
-            // ★ 15人揃っている場合の特別ルール
-            if (playerCount == 15)
-            {
-                // 「基本の3分＋60秒(240秒)」 か 「揃った時間＋60秒」 の、どちらか遅い方をリミットにする
-                limit = Mathf.Max(180f + 60f, timeWhenFull + 60f);
-            }
+            if (playerCount < 15) return;
 
-            // タイマーがリミットに到達したらスタート
+            float limit = Mathf.Max(180f + 60f, timeWhenFull + 60f);
+
             if (timer >= limit)
             {
                 timer = 0f;

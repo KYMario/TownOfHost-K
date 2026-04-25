@@ -112,7 +112,17 @@ public sealed class Tama : RoleBase, IKiller
 
         var owner = GetPlayerById(OwnerId);
         if (owner?.GetRoleClass() is JackalHadouHo jhh)
+        {
             jhh.SetLoaded(true);
+            _ = new LateTask(() =>
+            {
+                if (owner.IsAlive() && owner.AmOwner)
+                {
+                    AURoleOptions.PhantomCooldown = 0.1f;
+                    owner.RpcResetAbilityCooldown(Sync: true);
+                }
+            }, 0.2f, "JHHPhantomCDResetOnLoad", true);
+        }
 
         SendRPC();
         UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
@@ -153,12 +163,14 @@ public sealed class Tama : RoleBase, IKiller
             hasLoaded = false;
             isLoading = false;
             if (owner?.GetRoleClass() is JackalHadouHo jhh)
+            {
                 jhh.SetLoaded(false);
+                jhh.AfterKillPhantomReset();
+            }
             SendRPC();
             return;
         }
 
-        // ★ オーナーが死亡または転職（JackalHadouHoでなくなった）したら昇格
         if (player.IsAlive() && (owner == null || !owner.IsAlive() || owner.GetCustomRole() != CustomRoles.JackalHadouHo))
         {
             OwnerId = byte.MaxValue;
@@ -188,7 +200,10 @@ public sealed class Tama : RoleBase, IKiller
             isLoading = false;
             var owner = GetPlayerById(OwnerId);
             if (owner?.GetRoleClass() is JackalHadouHo jhh)
+            {
                 jhh.SetLoaded(false);
+                jhh.AfterKillPhantomReset();
+            }
             SendRPC();
             UtilsNotifyRoles.NotifyRoles();
         }
