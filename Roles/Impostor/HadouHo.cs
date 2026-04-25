@@ -56,6 +56,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
     float colorchange;
     int PlayerColor;
     bool IsFiring = false;
+    bool spawnCooldownStarted = false;
 
     static OptionItem OptionCoolDown;
     static float Cooldown;
@@ -114,6 +115,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         PlayerSpeed = Main.AllPlayerSpeed[Player.PlayerId];
         BeamColorModeValue = OptionBeamColorMode.GetValue();
         PlayerColor = Player.Data.DefaultOutfit.ColorId;
+        spawnCooldownStarted = false;
     }
 
     public override void ApplyGameOptions(IGameOptions opt)
@@ -188,7 +190,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
             {
                 if (beaming)
                 {
-                    roleText.text = "<alpha=#00>　</alpha>";
+                    roleText.text = "<alpha=#00>縲</alpha>";
                     roleTextTransform.SetLocalY(0.35f);
                 }
                 else
@@ -203,6 +205,12 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
+
+        if (!spawnCooldownStarted && Player.IsAlive() && !GameStates.Intro && GameStates.IsInTask && !GameStates.IsMeeting)
+        {
+            spawnCooldownStarted = true;
+            Player.RpcResetAbilityCooldown(Sync: true);
+        }
 
         if (MeetingHud.Instance != null)
         {
@@ -593,7 +601,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
         if (seen.PlayerId != seer.PlayerId || isForMeeting || !Player.IsAlive()) return "";
         if (!IsCharging) return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>ファントムボタン → チャージ発射</color>";
         var remaining = ChargeTime - chargeTimer;
-        return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>チャージ中... {remaining:F1}s</color>";
+        return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000><color=#ff0000>チャージ中... {remaining:F1}s</color>";
     }
 
     public string GetLowerTextOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)
@@ -611,7 +619,7 @@ public sealed class HadouHo : RoleBase, IImpostor, IUsePhantomButton
 
         if (ShowBeamMark && seer.PlayerId != Player.PlayerId)
         {
-            return "<color=#ff0000>ビーム中</color>";
+            return "<color=#ff0000>ビーム中/color>";
         }
 
         return "";

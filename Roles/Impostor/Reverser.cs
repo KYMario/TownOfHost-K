@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using AmongUs.GameOptions;
 using UnityEngine;
 using TownOfHost.Roles.Core;
@@ -183,4 +183,4 @@ public sealed class Reverser : RoleBase, IImpostor, IUsePhantomButton
         if (isForHud) return text;
         return $"<size=50%>{text}</size>";
     }
-}
+}*/

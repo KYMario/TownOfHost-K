@@ -73,6 +73,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
     float colorchange;
     int PlayerColor;
     bool IsFiring = false;
+    bool spawnCooldownStarted = false;
     public bool CanSideKick;
     public bool IsLoaded;
     public bool IsSuperBeam;
@@ -154,6 +155,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         CanSideKick = NextNoSideKick ? false : OptionCanMakeSidekick.GetBool();
         NextNoSideKick = false;
         SidekickCooldown = OptionSidekickCooldown.GetFloat();
+        spawnCooldownStarted = false;
     }
 
     public override void ApplyGameOptions(IGameOptions opt)
@@ -164,6 +166,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
     public override bool CanUseAbilityButton() => true;
     bool IUsePhantomButton.IsPhantomRole => true;
+
     public void SetLoaded(bool loaded)
     {
         IsLoaded = loaded;
@@ -266,6 +269,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             CanSideKick = false;
             SendRpc();
             AURoleOptions.PhantomCooldown = Cooldown;
+
             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
         }
 
@@ -332,7 +336,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             {
                 if (beaming)
                 {
-                    roleText.text = "<alpha=#00>　</alpha>";
+                    roleText.text = "<alpha=#00>縲</alpha>";
                     roleTextTransform.SetLocalY(0.35f);
                 }
                 else
@@ -344,41 +348,41 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         }
     }
 
-    private void ResetAllState()
-    {
-        IsCharging = false;
-        IsSuperCharging = false;
-        ShowBeamMark = false;
-        chargeTimer = 0f;
-        superChargeTimer = 0f;
-        HasHit = false;
-        IsFiring = false;
-        IsSuperBeam = false;
-        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
-        Player.MarkDirtySettings();
-        Player.SyncSettings();
-        Player.RpcSetColor((byte)PlayerColor);
-        SetRoleTextHeight(false);
-    }
-
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
 
+        if (!spawnCooldownStarted && Player.IsAlive() && !GameStates.Intro && GameStates.IsInTask && !GameStates.IsMeeting)
+        {
+            spawnCooldownStarted = true;
+            Player.RpcResetAbilityCooldown(Sync: true);
+        }
+
         if (MeetingHud.Instance != null)
         {
-            if (IsCharging || IsSuperCharging || ShowBeamMark || IsFiring)
-            {
-                ResetAllState();
-                UtilsNotifyRoles.NotifyRoles();
-                SendRpc();
-            }
+            IsCharging = false;
+            IsSuperCharging = false;
+            ShowBeamMark = false;
+            IsFiring = false;
+            IsSuperBeam = false;
+            Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+            Player.MarkDirtySettings();
+            SetRoleTextHeight(false);
+            UtilsNotifyRoles.NotifyRoles();
             return;
         }
 
         if (!Player.IsAlive() && (IsCharging || IsSuperCharging || ShowBeamMark))
         {
-            ResetAllState();
+            IsCharging = false;
+            IsSuperCharging = false;
+            ShowBeamMark = false;
+            IsFiring = false;
+            IsSuperBeam = false;
+            Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+            Player.MarkDirtySettings();
+            Player.RpcSetColor((byte)PlayerColor);
+            SetRoleTextHeight(false);
             UtilsNotifyRoles.NotifyRoles();
             SendRpc();
             return;
@@ -486,8 +490,10 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
+
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
+
                 IsFiring = false;
                 return;
             }
@@ -567,8 +573,10 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
                 Player.RpcSetColor((byte)PlayerColor);
                 Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
                 Player.MarkDirtySettings();
+
                 PlayerState.GetByPlayerId(Player.PlayerId).DeathReason = CustomDeathReason.Suicide;
                 Player.RpcMurderPlayerV2(Player);
+
                 IsFiring = false;
                 return;
             }
@@ -651,14 +659,38 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
     public override void OnReportDeadBody(PlayerControl reporter, NetworkedPlayerInfo target)
     {
-        ResetAllState();
+        IsCharging = false;
+        IsSuperCharging = false;
+        ShowBeamMark = false;
+        chargeTimer = 0f;
+        superChargeTimer = 0f;
+        HasHit = false;
+        IsFiring = false;
+        IsSuperBeam = false;
+        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+        Player.MarkDirtySettings();
+        Player.SyncSettings();
+        Player.RpcSetColor((byte)PlayerColor);
+        SetRoleTextHeight(false);
         UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
         SendRpc();
     }
 
     public override void OnStartMeeting()
     {
-        ResetAllState();
+        IsCharging = false;
+        IsSuperCharging = false;
+        ShowBeamMark = false;
+        chargeTimer = 0f;
+        superChargeTimer = 0f;
+        HasHit = false;
+        IsFiring = false;
+        IsSuperBeam = false;
+        Main.AllPlayerSpeed[Player.PlayerId] = PlayerSpeed;
+        Player.MarkDirtySettings();
+        Player.SyncSettings();
+        Player.RpcSetColor((byte)PlayerColor);
+        SetRoleTextHeight(false);
     }
 
     public override void AfterMeetingTasks()
@@ -716,7 +748,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             if ((IsCharging || IsSuperCharging) && seen.PlayerId == Player.PlayerId)
             {
                 bool facingLeft = seer.PlayerId == Player.PlayerId ? Player.cosmetics.FlipX : BeamFacingLeft;
-                string bigStar = "<size=800%><color=#ffffff>★</color></size>";
+                string bigStar = "<size=800%><color=#ffffff>★/color></size>";
                 string blank = "　　　";
                 string text = facingLeft ? bigStar + blank : blank + bigStar;
                 name = "<line-height=1200%>\n" + text + "</line-height>";
@@ -763,13 +795,12 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
 
             return false;
         }
-
         if (!Player.IsAlive() || isForMeeting) return false;
 
         if ((IsCharging || IsSuperCharging) && seen.PlayerId == Player.PlayerId)
         {
             bool facingLeft = seer.PlayerId == Player.PlayerId ? Player.cosmetics.FlipX : BeamFacingLeft;
-            string bigStar = "<size=800%><color=#ffffff>★</color></size>";
+            string bigStar = "<size=800%><color=#ffffff>★/color></size>";
             string blank = "　　　";
             string text = facingLeft ? bigStar + blank : blank + bigStar;
             name = "<line-height=1200%>\n" + text + "</line-height>";
@@ -781,7 +812,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         {
             SetRoleTextHeight(true);
             bool facingLeft = BeamFacingLeft;
-            string star = "<voffset=0.35em><size=800%><color=#ffffff>★</color></size></voffset>";
+            string star = "<voffset=0.35em><size=800%><color=#ffffff>★/color></size></voffset>";
             string beamBlock = IsSuperBeam ? BuildSuperBeamBlock() : BuildBeamBlock();
             int beamRepeat = IsSuperBeam ? 4 : 2;
             string blank800 = IsSuperBeam ? "<size=1800%>　</size>" : "<size=1200%>　</size>";
@@ -861,11 +892,11 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         if (seen.PlayerId != seer.PlayerId || isForMeeting || !Player.IsAlive()) return "";
         if (CanSideKick) return $"{(isForHud ? "" : "<size=60%>")}<color=#00b4eb>ファントムボタン → サイドキック指名</color>";
         if (IsLoaded) return $"{(isForHud ? "" : "<size=60%>")}<color=#00b4eb>【装填済】ファントムボタン → 超波動砲チャージ！</color>";
-        if (!IsCharging && !IsSuperCharging) return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>ファントムボタン → チャージ発射</color>";
+        if (!IsCharging && !IsSuperCharging) return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>ファントムボタン → チャージ発射</color>/color>";
         if (IsSuperCharging)
         {
             var remaining = SuperChargeTime - superChargeTimer;
-            return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>超チャージ中... {remaining:F1}s</color>";
+            return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>超チャージ中.. {remaining:F1}s</color>";
         }
         var rem = ChargeTime - chargeTimer;
         return $"{(isForHud ? "" : "<size=60%>")}<color=#ff0000>チャージ中... {rem:F1}s</color>";

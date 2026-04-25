@@ -93,7 +93,7 @@ namespace TownOfHost.Modules
 
                 string NowOption = $"{killCooldown},{killDistance},{impostorLight},{crewLight},{playerSpeed},{numEmergency},{emergencyCooldown},{discussionTime},{votingTime},{anonymousVotes},{numCommonTasks},{numLongTasks},{numShortTasks},{visualTasks},{taskBarMode},{confirmImpostor}";
                 NowOption += $"{engcooldown},{engmaxtime},{scicooldown},{scibattery},{trackercool},{trackerdelay},{tarckduration},{noisealert},{noiseimp},{shapecool},{ShapeshifterDuration},{shapeskin},{phantom},{detective},{vip},{guardancool}";
-                if (OldOptionstext == NowOption)
+                if (OldOptionstext == NowOption)//再度送信するならキャンセル
                 {
                     return;
                 }
@@ -126,7 +126,7 @@ namespace TownOfHost.Modules
             {
                 if (GameOptionsManager.Instance.CurrentGameOptions == null)
                 {
-                    Logger.Error($"CurrentGameOptions縺系ull縺", "Pl.BuildGameOptions");
+                    Logger.Error($"CurrentGameOptionsがnullだ", "Pl.BuildGameOptions");
                     return BasedGameOptions;
                 }
                 Main.RealOptionsData = new OptionBackupData(GameOptionsManager.Instance.CurrentGameOptions);
@@ -135,7 +135,7 @@ namespace TownOfHost.Modules
             var opt = BasedGameOptions;
             if (BasedGameOptions == null)
             {
-                Logger.Error($"BasedGameOptions縺系ull縺", "Pl.BuildGameOptions");
+                Logger.Error($"BasedGameOptionsがnullだ", "Pl.BuildGameOptions");
                 return opt;
             }
 
@@ -148,13 +148,13 @@ namespace TownOfHost.Modules
 
             if (player == null)
             {
-                Logger.Error($"player縺系ull縺", "Pl.BuildGameOptions");
+                Logger.Error($"playerがnullだ", "Pl.BuildGameOptions");
                 return opt;
             }
             var state = PlayerState.GetByPlayerId(player.PlayerId);
             if (state == null)
             {
-                Logger.Error($"state縺系ull繧・〒", "Pl.BuildGameOptions");
+                Logger.Error($"stateがnullやで", "Pl.BuildGameOptions");
                 return opt;
             }
             if (CurrentGameMode == CustomGameMode.TaskBattle)
@@ -203,13 +203,14 @@ namespace TownOfHost.Modules
                 var roleClass = player.GetRoleClass();
                 if (roleClass == null)
                 {
-                    Logger.Error($"roleClass縺系ull縺", "Pl.BuildGameOptions");
+                    Logger.Error($"roleClassがnullだ", "Pl.BuildGameOptions");
                     //    return opt;
                 }
 
                 if (player.Is(CustomRoles.MagicHand))
                     opt.SetInt(Int32OptionNames.KillDistance, MagicHand.KillDistance.GetInt());
 
+                //キルレンジ
                 if (OverrideKilldistance.AllData.TryGetValue(role, out var killdistance))
                     opt.SetInt(Int32OptionNames.KillDistance, killdistance.Killdistance.GetInt());
 
@@ -237,6 +238,7 @@ namespace TownOfHost.Modules
                     }
                 }
 
+                //書く役職の処
                 if (HasRoleAddon)
                 {
                     //Wac
@@ -258,6 +260,7 @@ namespace TownOfHost.Modules
                         opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
                     }
 
+                //ホストだとまだﾋﾟｯｶｰﾝしちゃうのどうにかしたい。
                 //Lighting
                 if (HasLithing)
                 {
@@ -266,7 +269,7 @@ namespace TownOfHost.Modules
                         opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultImpostorVision * (role.GetRoleTypes().IsCrewmate() ? AURoleOptions.ElectricalCrewVision : 5f));
                         opt.SetFloat(FloatOptionNames.ImpostorLightMod, Main.DefaultImpostorVision);
                     }
-                    else
+                    else//停電時はクルー視界
                         if (isElectrical)
                         {
                             opt.SetFloat(FloatOptionNames.CrewLightMod, Main.DefaultCrewmateVision);
@@ -279,8 +282,10 @@ namespace TownOfHost.Modules
                         }
                 }
 
+                //キルクール0に設定+修正する設定をONにした時だけ呼び出す。
                 if (Main.AllPlayerKillCooldown.TryGetValue(player.PlayerId, out var killCooldown))
                 {
+                    //キルボタンが使用可能の時は最小0.000...1　設定無効 or キルボタンが使用不可なら最小0
                     AURoleOptions.KillCooldown = Mathf.Max(((roleClass as IKiller)?.CanUseKillButton() == true) ? 0.00000000000000000000000000000000000000000001f : 0f, killCooldown);
                 }
 
@@ -336,6 +341,7 @@ namespace TownOfHost.Modules
 
                 if (HaveWatching) opt.SetBool(BoolOptionNames.AnonymousVotes, false);
 
+                //幽霊役職用の奴
                 if (player.IsGhostRole())
                 {
                     var gr = PlayerState.GetByPlayerId(player.PlayerId).GhostRole;
@@ -363,10 +369,10 @@ namespace TownOfHost.Modules
                     speed += addspeed;
                 }
                 if (state.CanMove is false) speed = Main.MinSpeed;
-                var minSpeed = TownOfHost.Roles.Impostor.Reverser.AllowNegativeSpeed ? -10f : Main.MinSpeed;
-                AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, minSpeed, 10f);
+                AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, 10f);
             }
 
+            //あっ、鬼さんは開始前見ちゃだめですよ?
             if ((CurrentGameMode == CustomGameMode.HideAndSeek || IsStandardHAS) && HideAndSeekKillDelayTimer > 0)
             {
                 opt.SetFloat(FloatOptionNames.ImpostorLightMod, 0f);
@@ -392,6 +398,7 @@ namespace TownOfHost.Modules
         {
             try
             {
+                //キルクとか反映されないから～
                 return base.AmValid() && player is not null && !SelectRolesPatch.Disconnected.Contains(player.PlayerId) && Main.RealOptionsData != null;
             }
             catch
