@@ -6,7 +6,7 @@ using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost.Roles.Crewmate;
 
-public sealed class UltraStar : RoleBase, IKiller
+public sealed class UltraStar : RoleBase, IKiller, ISchrodingerCatOwner
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -156,6 +156,7 @@ public sealed class UltraStar : RoleBase, IKiller
     bool IKiller.CanUseImpostorVentButton() => false;
     bool IKiller.CanKill => false;
     bool IKiller.IsKiller => true;
+    public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.Crew;
     public override void CheckWinner(GameOverReason reason)
     {
         if (Player.IsAlive() && Player.IsWinner(CustomWinner.Crewmate))
