@@ -1,3 +1,4 @@
+using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
 using UnityEngine;
@@ -33,6 +34,8 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         standOriginPos = Vector2.zero;
         isStandActive = false;
         standWasAlive = false;
+        lastAliveCount = 15;
+        lastStandKillTimer = 0f;
     }
 
     static OptionItem OptionPhantomCooldown;
@@ -44,6 +47,8 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
     Vector2 standOriginPos;
     bool isStandActive;
     bool standWasAlive;
+    int lastAliveCount;
+    float lastStandKillTimer;
 
     enum OptionName
     {
@@ -72,7 +77,7 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
 
     void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        AdjustKillCooldown = true;
+        AdjustKillCooldown = false;
         ResetCooldown = false;
 
         if (!Player.IsAlive()) return;
@@ -98,35 +103,22 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         standOriginPos = stand.GetTruePosition();
         isStandActive = true;
         standWasAlive = true;
+        lastAliveCount = AllAlivePlayerControls.Count();
 
-        // ★ Y+0.47した位置にワープ
         var warpPos = Player.GetTruePosition();
         warpPos.y += 0.47f;
-        stand.RpcSnapToForced(warpPos, SendOption.None);
+        stand.NetTransform.RpcSnapTo(warpPos);
 
-        // ★ キルク減少を少し遅延させて確実に反映
-        _ = new LateTask(() =>
-        {
-            var s = GetPlayerById(standId);
-            if (s == null || !s.IsAlive()) return;
-            float remaining = s.killTimer > 0f ? s.killTimer
-                : (Main.AllPlayerKillCooldown.TryGetValue(standId, out var kc) ? kc : 30f);
-            float newCooldown = Mathf.Max(0f, remaining - KillCooldownReduction);
-            Main.AllPlayerKillCooldown[standId] = newCooldown;
-            s.SetKillCooldown(newCooldown);
-            s.SyncSettings();
-        }, 0.2f, "StandMasterKillCD", true);
+        float currentTimer = stand.killTimer;
+        float newCooldown = Mathf.Max(0f, currentTimer - KillCooldownReduction);
+        stand.killTimer = newCooldown;
+        lastStandKillTimer = newCooldown;
 
-        // ★ ファントムCDをリセット
-        _ = new LateTask(() =>
-        {
-            if (!Player.IsAlive()) return;
-            AURoleOptions.PhantomCooldown = PhantomCooldown;
-            Player.RpcResetAbilityCooldown();
-            Player.SyncSettings();
-        }, 0.3f, "StandMasterPhantomCD", true);
+        AURoleOptions.PhantomCooldown = PhantomCooldown;
+        Player.RpcResetAbilityCooldown();
 
-        SendRpc();
+        SendRpcToggle(standId, standOriginPos, newCooldown);
+
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
         Utils.SendMessage(GetString("StandMasterActivated"), Player.PlayerId);
     }
@@ -134,6 +126,11 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
     public override void OnFixedUpdate(PlayerControl player)
     {
         if (!AmongUsClient.Instance.AmHost) return;
+
+        int currentAliveCount = AllAlivePlayerControls.Count();
+        bool someoneDied = currentAliveCount < lastAliveCount;
+        lastAliveCount = currentAliveCount;
+
         if (!isStandActive) return;
 
         var stand = GetPlayerById(standId);
@@ -143,18 +140,28 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
             return;
         }
 
-        // ★ PlayerStateのIsDead判定でキルを検出（IsAlive()より確実）
         bool nowDead = PlayerState.GetByPlayerId(standId)?.IsDead ?? true;
 
         if (standWasAlive && nowDead)
         {
-            // ★ 死亡した → 元の位置に死体をワープ
-            stand.RpcSnapToForced(standOriginPos, SendOption.None);
+            stand.NetTransform.RpcSnapTo(standOriginPos);
             ResetStand(returnToOrigin: false);
             return;
         }
 
         standWasAlive = !nowDead;
+
+        if (!nowDead)
+        {
+            float currentTimer = stand.killTimer;
+
+            if (someoneDied || currentTimer > lastStandKillTimer + 2f)
+            {
+                ResetStand(returnToOrigin: true);
+                return;
+            }
+            lastStandKillTimer = currentTimer;
+        }
     }
 
     void ResetStand(bool returnToOrigin)
@@ -165,15 +172,15 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         {
             var stand = GetPlayerById(standId);
             if (stand != null && stand.IsAlive())
-                stand.RpcSnapToForced(standOriginPos, SendOption.None);
+                stand.NetTransform.RpcSnapTo(standOriginPos);
         }
 
-        standId = byte.MaxValue;
-        standOriginPos = Vector2.zero;
         isStandActive = false;
         standWasAlive = false;
+        standId = byte.MaxValue;
+        standOriginPos = Vector2.zero;
 
-        SendRpc();
+        SendRpcReturn();
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
     }
 
@@ -197,22 +204,47 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         Player.RpcResetAbilityCooldown();
     }
 
-    void SendRpc()
+    void SendRpcToggle(byte sId, Vector2 origin, float newTimer)
     {
         using var sender = CreateSender();
-        sender.Writer.Write(isStandActive);
-        sender.Writer.Write(standId);
-        sender.Writer.Write(standOriginPos.x);
-        sender.Writer.Write(standOriginPos.y);
+        sender.Writer.Write((byte)1);
+        sender.Writer.Write(sId);
+        sender.Writer.Write(origin.x);
+        sender.Writer.Write(origin.y);
+        sender.Writer.Write(newTimer);
+    }
+
+    void SendRpcReturn()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write((byte)2);
     }
 
     public override void ReceiveRPC(MessageReader reader)
     {
-        isStandActive = reader.ReadBoolean();
-        standId = reader.ReadByte();
-        float x = reader.ReadSingle();
-        float y = reader.ReadSingle();
-        standOriginPos = new Vector2(x, y);
+        byte action = reader.ReadByte();
+        if (action == 1)
+        {
+            standId = reader.ReadByte();
+            float x = reader.ReadSingle();
+            float y = reader.ReadSingle();
+            standOriginPos = new Vector2(x, y);
+            float newTimer = reader.ReadSingle();
+
+            isStandActive = true;
+            standWasAlive = true;
+            lastAliveCount = AllAlivePlayerControls.Count();
+
+            var s = GetPlayerById(standId);
+            if (s != null) s.killTimer = newTimer;
+        }
+        else if (action == 2)
+        {
+            isStandActive = false;
+            standWasAlive = false;
+            standId = byte.MaxValue;
+            standOriginPos = Vector2.zero;
+        }
     }
 
     public override string GetLowerText(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false, bool isForHud = false)

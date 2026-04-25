@@ -293,7 +293,10 @@ namespace TownOfHost
                 + $"\n/cmd forceend(fe) - {GetString("Command.forceend")}"
                 + $"\n/cmd mw - {GetString("Command.mw")}"
                 + $"\n/cmd kf - {GetString("Command.kf")}"
-                + $"\n/cmd addwhite(aw) - {GetString("Command.addwhite")}";
+                + $"\n/cmd addwhite(aw) - {GetString("Command.addwhite")}"
+                + $"\n/cmd set rule(s r) - {GetString("Command.set_rule")}"
+                + $"\n/cmd mod id|name|color - {GetString("Command.modadd")}"
+                + $"\n/cmd mod delete id|name|color - {GetString("Command.moddel")}";
                 //導入者
                 text += $"<size=80%></line-height>\n<#028760>【~~~~~~~{GetString("OnlyClient")}~~~~~~~】</color></size><line-height=1.3pic>"
                 + $"\n/cmd dump - {GetString("Command.dump")}";
@@ -308,7 +311,12 @@ namespace TownOfHost
             + $"\n/cmd h now(h n) - {GetString("Command.h_now")}"
             + $"\n/cmd h roles(h r ) {GetString("Command.h_roles")}"
             + $"\n/cmd myrole(m) - {GetString("Command.m")}"
-            + $"\n/cmd meetinginfo(mi,/day) - {GetString("Command.mi")}";
+            + $"\n/cmd meetinginfo(mi,/day) - {GetString("Command.mi")}"
+            + $"\n/cmd (number)d(number) - {GetString("Command.(number)d(number)")}"
+            + $"\n/cmd 8ball - {GetString("Command.8ball")}"
+            + $"\n/cmd pko - {GetString("Command.pko")}"
+            + $"\n/cmd rename(r) - {GetString("Command.rename")}"
+            + $"\n/cmd rule(rl) - {GetString("Command.rule")}";
             if (CustomRolesHelper.CheckGuesser() || CustomRoles.Guesser.IsPresent()) text += $"\n/cmd bt - {GetString("Command.bt")}";
             if (Options.ImpostorHideChat.GetBool()) text += $"\n/cmd ic - {GetString("Command.impchat")}";
             if (Options.JackalHideChat.GetBool()) text += $"\n/cmd jc - {GetString("Command.jacchat")}";
@@ -320,6 +328,17 @@ namespace TownOfHost
                 text += $"\n/cmd lastresult(l) - {GetString("Command.lastresult")}"
                     + $"\n/cmd killlog(kl) - {GetString("Command.killlog")}"
                     + $"\n/cmd timer - {GetString("Command.timer")}";
+            }
+            {
+                text += $"<size=80%></line-height>\n<#ADE0EE>【~~~~~~~{GetString("ModeratorCommand")}~~~~~~~】</color></size><line-height=1.3pic>"
+                + $"\n/cmd fe - {GetString("Command.fe")}"
+                + $"\n/cmd sw - {GetString("Command.Mkf")}"
+                + $"\n/cmd say - {GetString("Command.Msay")}"
+                + $"\n/cmd start - {GetString("Command.start")}"
+                + $"\n/cmd kf - {GetString("Command.kf")}"
+                + $"\n/cmd mf - {GetString("Command.mf")}"
+                + $"\n/cmd ban - {GetString("Command.ban")}"
+                + $"\n/cmd kick - {GetString("Command.kick")}";
             }
             if (Main.UseYomiage.Value) text += $"\n/cmd voice - {GetString("Command.voice")}";
 

@@ -19,7 +19,7 @@ public sealed class PoisonedBakery : RoleBase
             () => AmongUs.GameOptions.RoleTypes.Crewmate,
             CustomRoleTypes.Neutral,
             73493,
-            null,
+            SetupOptionItem, // ★ nullからSetupOptionItemに変更
             "poisoned_bak",
             "#FF4A5A",
             (5, 3)
@@ -27,11 +27,30 @@ public sealed class PoisonedBakery : RoleBase
 
     private bool _firstMeeting = true;
 
-    // TOHYを参考に、リストではなくインスタンスごとにターゲットを管理
     public PlayerControl PoisonedPlayer = null;
     public static List<PoisonedBakery> Bakeries = new();
 
     public PoisonedBakery(PlayerControl player) : base(RoleInfo, player) { }
+
+    private static void SetupOptionItem()
+    {
+        HideRoleOptions(CustomRoles.PoisonedBakery);
+    }
+
+    public static void HideRoleOptions(CustomRoles role)
+    {
+        if (Options.CustomRoleSpawnChances != null &&
+            Options.CustomRoleSpawnChances.TryGetValue(role, out var spawnOption))
+        {
+            spawnOption.SetHidden(true);
+        }
+
+        if (Options.CustomRoleCounts != null &&
+            Options.CustomRoleCounts.TryGetValue(role, out var countOption))
+        {
+            countOption.SetHidden(true);
+        }
+    }
 
     public override void Add()
     {
@@ -47,7 +66,6 @@ public sealed class PoisonedBakery : RoleBase
         CustomRoleManager.MarkOthers.Remove(GetMarkOthers);
     }
 
-    // ★ refを削除しました（CS0115, CS1615エラーの修正）
     public override void CheckWinner(GameOverReason reason)
     {
         base.CheckWinner(reason);
@@ -99,14 +117,14 @@ public sealed class PoisonedBakery : RoleBase
 
         if (!AmongUsClient.Instance.AmHost) return;
 
-        // 1. 前回の会議終了時に配った毒の処理（パン屋とターゲットが生きていれば毒殺）
+        // 前回の会議終了時に配った毒の処理
         if (Player.IsAlive() && PoisonedPlayer != null && PoisonedPlayer.IsAlive())
         {
             PoisonedPlayer.SetRealKiller(Player);
             MeetingHudPatch.TryAddAfterMeetingDeathPlayers(CustomDeathReason.Poisoned, PoisonedPlayer.PlayerId);
         }
 
-        // 2. 自分が追放された場合などは、次のターゲットを選ばずに終了
+        // 自分が追放された場合などは、次のターゲットを選ばずに終了
         if (!Player.IsAlive())
         {
             PoisonedPlayer = null;
@@ -114,10 +132,10 @@ public sealed class PoisonedBakery : RoleBase
             return;
         }
 
-        // 3. 次のターンのターゲットを決める（TOHY方式）
+        // 次のターンのターゲットを決める
         var targetList = PlayerCatch.AllAlivePlayerControls
             .Where(p => p.PlayerId != Player.PlayerId)
-            .Where(p => !Main.AfterMeetingDeathPlayers.ContainsKey(p.PlayerId)) // 今回死ぬ人には配らない
+            .Where(p => !Main.AfterMeetingDeathPlayers.ContainsKey(p.PlayerId))
             .ToList();
 
         if (targetList.Any())
@@ -137,7 +155,6 @@ public sealed class PoisonedBakery : RoleBase
         }
     }
 
-    // TOHY方式の真骨頂：タスク中に自分がキルされたら、配った毒を無効化（回収）する
     public override void OnMurderPlayerAsTarget(MurderInfo info)
     {
         if (info.IsSuicide) return;
@@ -150,10 +167,8 @@ public sealed class PoisonedBakery : RoleBase
     {
         seen ??= seer;
 
-        // パン屋が全員死んでいたらマークを出さない
         if (!Bakeries.Any(b => b.Player.IsAlive())) return "";
 
-        // 見ている相手が、生きているパン屋の誰かのターゲットになっているかチェック
         if (Bakeries.Any(b => b.PoisonedPlayer != null && b.PoisonedPlayer.PlayerId == seen.PlayerId))
         {
             var color = new Color32(168, 50, 50, 255);

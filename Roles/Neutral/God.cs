@@ -1,3 +1,6 @@
+using System.Linq;
+using UnityEngine;
+using Hazel;
 using AmongUs.GameOptions;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -5,7 +8,7 @@ using static TownOfHost.Translator;
 
 namespace TownOfHost.Roles.Neutral;
 
-public sealed class God : RoleBase, ISystemTypeUpdateHook
+public sealed class God : RoleBase, ISystemTypeUpdateHook, IDeathReasonSeeable
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
@@ -14,98 +17,178 @@ public sealed class God : RoleBase, ISystemTypeUpdateHook
             CustomRoles.God,
             () => RoleTypes.Crewmate,
             CustomRoleTypes.Neutral,
-            24020,
+            88000,
             SetupOptionItem,
-            "gd",
-            "#FFD700",
-            (6, 2),
+            "god",
+            "#ffd700",
+            (6, 1),
+            false,
+            introSound: () => GetIntroSound(RoleTypes.Crewmate),
             from: From.SuperNewRoles
         );
 
     public God(PlayerControl player)
-    : base(RoleInfo, player, () => HasTask.ForRecompute)
+        : base(RoleInfo, player, () => HasTask.True)
     {
-        WinTaskCount = OptWinTaskCount.GetInt();
-        MyTaskState.NeedTaskCount = WinTaskCount;
-        checktaskwinflag = false;
     }
 
-    static OptionItem OptWinTaskCount;
-    int WinTaskCount;
-    bool checktaskwinflag;
+    public static OptionItem SeeVotesOpt;
+    public static OptionItem CanSeeDeathReasonOpt;
+    public static OptionItem RequireTasksToWinOpt;
+    public static OptionItem TaskCountOpt;
+
+    public static OptionItem CantFixReactorOpt;
+    public static OptionItem CantFixLightsOutOpt;
+    public static OptionItem CantFixHeliOpt;
+    public static OptionItem CantFixCommsOpt;
 
     enum OptionName
     {
-        GodWinTaskCount,
+        GodSeeVotes,
+        GodCanSeeDeathReason,
+        GodRequireTasksToWin,
+        GodOverrideTaskCount,
+        GodTaskCount,
+        GodCantFixReactor,
+        GodCantFixLightsOut,
+        GodCantFixHeli,
+        GodCantFixComms
     }
 
     private static void SetupOptionItem()
     {
-        SoloWinOption.Create(RoleInfo, 9, defo: 15);
-        OptWinTaskCount = IntegerOptionItem.Create(RoleInfo, 10, OptionName.GodWinTaskCount, new(1, 99, 1), 6, false)
-            .SetValueFormat(OptionFormat.Pieces);
-        OverrideTasksData.Create(RoleInfo, 20);
+        SoloWinOption.Create(RoleInfo, 25007, defo: 5);
+        OverrideTasksData.Create(RoleInfo, 94);
+
+        SeeVotesOpt = BooleanOptionItem.Create(RoleInfo, 25010, OptionName.GodSeeVotes, true, false)
+            .SetParentRole(CustomRoles.God);
+
+        CanSeeDeathReasonOpt = BooleanOptionItem.Create(RoleInfo, 25011, OptionName.GodCanSeeDeathReason, true, false)
+            .SetParentRole(CustomRoles.God);
+
+        RequireTasksToWinOpt = BooleanOptionItem.Create(RoleInfo, 25012, OptionName.GodRequireTasksToWin, false, false)
+            .SetParentRole(CustomRoles.God);
+
+        TaskCountOpt = IntegerOptionItem.Create(RoleInfo, 25013, OptionName.GodTaskCount, new(0, 999, 1), 0, false)
+            .SetParentRole(CustomRoles.God);
+
+        CantFixReactorOpt = BooleanOptionItem.Create(RoleInfo, 25014, OptionName.GodCantFixReactor, false, false)
+            .SetParentRole(CustomRoles.God);
+
+        CantFixLightsOutOpt = BooleanOptionItem.Create(RoleInfo, 25015, OptionName.GodCantFixLightsOut, false, false)
+            .SetParentRole(CustomRoles.God);
+
+        CantFixHeliOpt = BooleanOptionItem.Create(RoleInfo, 25016, OptionName.GodCantFixHeli, false, false)
+            .SetParentRole(CustomRoles.God);
+
+        CantFixCommsOpt = BooleanOptionItem.Create(RoleInfo, 25017, OptionName.GodCantFixComms, false, false)
+            .SetParentRole(CustomRoles.God);
     }
 
-    public override bool OnCompleteTask(uint taskid)
+    public override void ApplyGameOptions(IGameOptions opt)
     {
-        if (MyTaskState.HasCompletedEnoughCountOfTasks(WinTaskCount))
-            checktaskwinflag = true;
+        if (SeeVotesOpt?.GetBool() == true)
+        {
+            opt.SetBool(BoolOptionNames.AnonymousVotes, false);
+        }
+    }
+
+    public override void OverrideDisplayRoleNameAsSeer(PlayerControl seen, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
+    {
+        if (!Player.IsAlive()) return;
+        enabled = true;
+        roleText = UtilsRoleText.GetTrueRoleName(seen.PlayerId, true);
+        addon = true;
+    }
+
+    public override void OverrideTrueRoleName(ref Color roleColor, ref string roleText)
+    {
+    }
+
+    public override void CheckWinner(GameOverReason reason)
+    {
+        base.CheckWinner(reason);
+
+        if (!AmongUsClient.Instance.AmHost) return;
+        if (!Player.IsAlive()) return;
+
+        if (RequireTasksToWinOpt?.GetBool() == true)
+        {
+            if (!UtilsTask.HasTasks(Player.Data))
+            {
+                Logger.Info($"{PlayerCatch.GetPlayerById(Player.PlayerId)?.GetNameWithRole().RemoveHtmlTags()} : タスクが割り当てられていないため勝利条件を満たさない (God)", nameof(God));
+                return;
+            }
+
+            var required = TaskCountOpt?.GetInt() ?? 0;
+            if (required > 0)
+            {
+                if (MyTaskState.CompletedTasksCount < required)
+                {
+                    Logger.Info($"{PlayerCatch.GetPlayerById(Player.PlayerId)?.GetNameWithRole().RemoveHtmlTags()} : 必要タスク数({required})未達のため勝利条件を満たさない (God)", nameof(God));
+                    return;
+                }
+            }
+            else
+            {
+                if (!MyTaskState.IsTaskFinished)
+                {
+                    Logger.Info($"{PlayerCatch.GetPlayerById(Player.PlayerId)?.GetNameWithRole().RemoveHtmlTags()} : タスク未完了のため勝利条件を満たさない (God)", nameof(God));
+                    return;
+                }
+            }
+        }
+
+        CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.God, Player.PlayerId, AddWin: false, hantrole: CustomRoles.God);
+        Logger.Info($"{PlayerCatch.GetPlayerById(Player.PlayerId)?.GetNameWithRole().RemoveHtmlTags()} : 単独勝利宣言 (God)", nameof(God));
+    }
+
+    public bool? CheckSeeDeathReason(PlayerControl seen)
+    {
+        if (CanSeeDeathReasonOpt?.GetBool() == true)
+        {
+            return true;
+        }
+        return null;
+    }
+
+    public bool UpdateReactorSystem(ReactorSystemType reactorSystem, byte amount)
+    {
+        if (CantFixReactorOpt?.GetBool() == true && Player.IsAlive()) return false;
         return true;
     }
 
-    // 全員の役職を神の画面にのみ表示
-    public override string GetSuffix(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    public bool UpdateHeliSabotageSystem(HeliSabotageSystem heliSabotageSystem, byte amount)
     {
-        seen ??= seer;
-        if (!Is(seer)) return "";
-        if (seer.PlayerId == seen.PlayerId) return "";
-        if (!Player.IsAlive()) return "";
-
-        var role = seen.GetCustomRole();
-        return $"<color={UtilsRoleText.GetRoleColorCode(role)}>{UtilsRoleText.GetRoleName(role)}</color>";
+        if (CantFixHeliOpt?.GetBool() == true && Player.IsAlive()) return false;
+        return true;
     }
 
-    // サボタージュ修理をブロック（ドア以外）
-    // falseを返すと修理をキャンセル
-    bool ISystemTypeUpdateHook.UpdateReactorSystem(ReactorSystemType reactorSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateHeliSabotageSystem(HeliSabotageSystem heliSabotageSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateLifeSuppSystem(LifeSuppSystemType lifeSuppSystem, byte amount) => false;
-    bool ISystemTypeUpdateHook.UpdateHqHudSystem(HqHudSystemType hqHudSystemType, byte amount) => false;
-    // ★ ドアとスイッチ（停電）はUpdateSwitchSystemがfalseで修理不可になる
-    bool ISystemTypeUpdateHook.UpdateSwitchSystem(SwitchSystem switchSystem, byte amount) => false;
-    // ★ 通信サボ
-    bool ISystemTypeUpdateHook.UpdateHudOverrideSystem(HudOverrideSystemType hudOverrideSystem, byte amount) => false;
-
-    // 勝利判定
-    public static bool CheckWin(ref GameOverReason reason)
+    public bool UpdateLifeSuppSystem(LifeSuppSystemType lifeSuppSystem, byte amount)
     {
-        foreach (var pc in PlayerCatch.AllPlayerControls)
-        {
-            if (pc.GetRoleClass() is not God god) continue;
-            if (!pc.IsAlive()) continue;
-            if (!god.checktaskwinflag) continue;
-
-            if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.God, pc.PlayerId, true))
-            {
-                CustomWinnerHolder.NeutralWinnerIds.Add(pc.PlayerId);
-                reason = GameOverReason.ImpostorsByKill;
-                return true;
-            }
-        }
-        return false;
+        return true;
     }
 
-    public override string GetProgressText(bool comms = false, bool GameLog = false)
+    public bool UpdateHudOverrideSystem(HudOverrideSystemType hudOverrideSystem, byte amount)
     {
-        var color = checktaskwinflag ? "#FFD700" : "#5e5e5e";
-        return $"<color={color}>({MyTaskState.CompletedTasksCount}/{WinTaskCount})</color>";
+        if (CantFixCommsOpt?.GetBool() == true && Player.IsAlive()) return false;
+        return true;
     }
 
-    public override void OverrideProgressTextAsSeen(PlayerControl seer, ref bool enabled, ref string text)
+    public bool UpdateHqHudSystem(HqHudSystemType hqHudSystemType, byte amount)
     {
-        if (seer == null) return;
-        if (Is(seer) || seer.Is(CustomRoles.GM)) return;
-        text = $"<#cccccc>(?/{MyTaskState.AllTasksCount})";
+        if (CantFixCommsOpt?.GetBool() == true && Player.IsAlive()) return false;
+        return true;
+    }
+
+    public bool UpdateSwitchSystem(SwitchSystem switchSystem, byte amount)
+    {
+        if (CantFixLightsOutOpt?.GetBool() == true && Player.IsAlive()) return false;
+        return true;
+    }
+
+    public bool UpdateDoorsSystem(DoorsSystemType doorsSystem, byte amount)
+    {
+        return true;
     }
 }

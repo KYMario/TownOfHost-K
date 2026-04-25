@@ -54,7 +54,7 @@ namespace TownOfHost
                 __instance.freeChatField.textArea.Clear();
                 return false;
             }
-            var text = __instance.freeChatField.textArea.text;
+            var text = (__instance.freeChatField.textArea.text ?? string.Empty).TrimStart();
             if (ChatHistory.Count == 0 || ChatHistory[^1] != text) ChatHistory.Add(text);
             ChatControllerUpdatePatch.CurrentHistorySelection = ChatHistory.Count;
             string[] args = text/*.ToLower()*/.Split(' ');
@@ -64,7 +64,7 @@ namespace TownOfHost
             Logger.Info(text, "SendChat");
             ChatManager.SendMessage(PlayerControl.LocalPlayer, text);
 
-            if (text.StartsWith("/") && !text.Contains("cmd"))
+            if (text.StartsWith("/") && !text.Contains("cmd", StringComparison.OrdinalIgnoreCase))
             {
                 SendMessage(GetString("Error.CommandFailed"), PlayerControl.LocalPlayer.PlayerId);
                 if (DebugModeManager.AmDebugger && GameStates.IsLocalGame)
@@ -73,9 +73,9 @@ namespace TownOfHost
                     cancelVal = "/cmd " + text;
                 }
             }
-            if (text.StartsWith("/cmd")) canceled = true;
+            if (text.StartsWith("/cmd", StringComparison.OrdinalIgnoreCase)) canceled = true;
 
-            if (args[0] != "/cmd" || args.Length <= 1)
+            if (args.Length <= 1 || !string.Equals(args[0], "/cmd", StringComparison.OrdinalIgnoreCase))
             {
                 if (canceled)
                 {
@@ -107,6 +107,13 @@ namespace TownOfHost
             // ここはそのまま
             if (GuessManager.GuesserMsg(PlayerControl.LocalPlayer, text)) canceled = true;
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
+
+            if (Moderator.TryHandleCommand(PlayerControl.LocalPlayer, args, out var moderatorCanceled))
+            {
+                canceled = moderatorCanceled;
+                __instance.freeChatField.textArea.Clear();
+                return false;
+            }
 
             // ★ switch を args[0] ではなく cmd に変更する ★
             switch (args[0])
@@ -1399,29 +1406,34 @@ namespace TownOfHost
             }
 
             canceled = false;
+            text = (text ?? string.Empty).TrimStart();
             if (!AmongUsClient.Instance.AmHost)
             {
-                if (text.StartsWith("/cmd"))
+                if (text.StartsWith("/cmd", StringComparison.OrdinalIgnoreCase))
                 {
                     canceled = true;
                 }
                 return;
             }
-            if ((Isclient && !player.IsModClient()) || (!Isclient && player.IsModClient())) return;
+            if ((Isclient && !player.IsModClient()) || (!Isclient && player.IsModClient()))
+            {
+                if (!text.StartsWith("/cmd", StringComparison.OrdinalIgnoreCase)) return;
+            }
 
-            string[] args = text.Split(' ');
+            string[] args = text.Split(' ', StringSplitOptions.RemoveEmptyEntries);
             string subArgs = "";
-            if (text.IsSystemMessage() || player.Data.PlayerName.IsSystemMessage()) return;//システムメッセージなら処理しない
+            if ((text.IsSystemMessage() || player.Data.PlayerName.IsSystemMessage())
+                && !text.StartsWith("/cmd", StringComparison.OrdinalIgnoreCase)) return;//システムメッセージなら処理しない
             if (player.PlayerId != 0)
             {
                 ChatManager.SendMessage(player, text);
             }
 
-            if (text.StartsWith("/") && !text.Contains("cmd"))
+            if (text.StartsWith("/") && !text.Contains("cmd", StringComparison.OrdinalIgnoreCase))
             {
                 SendMessage(GetString("Error.CommandFailed"), player.PlayerId);
             }
-            if (args[0] != "/cmd" || args.Length <= 1) return;//cmdが無い場合は処理をしない
+            if (args.Length <= 1 || !string.Equals(args[0], "/cmd", StringComparison.OrdinalIgnoreCase)) return;//cmdが無い場合は処理をしない
 
             if (GuessManager.GuesserMsg(player, text)) { canceled = true; return; }
 
@@ -1429,6 +1441,12 @@ namespace TownOfHost
             args = text.ToLower().Split(' ');*/
             args = args.Skip(1).ToArray();
             if (args[0].StartsWith("/") is false) args[0] = $"/{args[0]}";
+
+            if (Moderator.TryHandleCommand(player, args, out var moderatorCanceled))
+            {
+                canceled = moderatorCanceled;
+                return;
+            }
 
             canceled = true;
             switch (args[0])
@@ -2046,17 +2064,25 @@ namespace TownOfHost
                 __result = false;
                 return false;
             }
-            int return_count = PlayerControl.LocalPlayer.name.Count(x => x == '\n');
-            chatText = new StringBuilder(chatText).Insert(0, "\n", return_count).ToString();
-            if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
-            if (chatText.Contains("who", StringComparison.OrdinalIgnoreCase))
-                DestroyableSingleton<UnityTelemetry>.Instance.SendWho();
-            MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.SendChat, SendOption.None);
-            messageWriter.Write(chatText);
-            AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
-            __result = true;
-            return false;
+            Moderator.OnBeforeChatSend(__instance);
+            try
+            {
+                int return_count = PlayerControl.LocalPlayer.name.Count(x => x == '\n');
+                chatText = new StringBuilder(chatText).Insert(0, "\n", return_count).ToString();
+                if (AmongUsClient.Instance.AmClient && DestroyableSingleton<HudManager>.Instance)
+                    DestroyableSingleton<HudManager>.Instance.Chat.AddChat(__instance, chatText);
+                if (chatText.Contains("who", StringComparison.OrdinalIgnoreCase))
+                    DestroyableSingleton<UnityTelemetry>.Instance.SendWho();
+                MessageWriter messageWriter = AmongUsClient.Instance.StartRpcImmediately(__instance.NetId, (byte)RpcCalls.SendChat, SendOption.None);
+                messageWriter.Write(chatText);
+                AmongUsClient.Instance.FinishRpcImmediately(messageWriter);
+                __result = true;
+                return false;
+            }
+            finally
+            {
+                Moderator.OnAfterChatSend(__instance);
+            }
         }
     }
 }
