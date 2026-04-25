@@ -2,7 +2,6 @@ using System;
 using AmongUs.GameOptions;
 using Hazel;
 using UnityEngine;
-
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.PlayerCatch;
@@ -34,7 +33,8 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     {
         hasUsedAbility = false;
         nearTimer = 0f;
-        spawnWaitTimer = -1f;   // ★ -1 = 近接処理無効
+        spawnWaitTimer = -1f;
+        appointCooldownTimer = 0f;
         NextAppointCandidate = byte.MaxValue;
         appointedSheriff = null;
     }
@@ -42,18 +42,21 @@ public sealed class VillageChief : RoleBase, ISelfVoter
     private bool hasUsedAbility;
     private float nearTimer;
 
-    // ★ 会議後スポーン待機タイマー（-1で無効、0以上でカウント中、3f以上で有効）
+    // ★ スポーン待機タイマー
     private float spawnWaitTimer;
-
-    // ★ 近接処理が有効か
     private bool CanApproach => spawnWaitTimer >= 3f;
+
+    // ★ 任命クールタイム用タイマー
+    private float appointCooldownTimer;
 
     public byte NextAppointCandidate;
     public PlayerControl appointedSheriff = null;
 
     private static OptionItem NotifyTarget;
+    private static OptionItem OptionAppointCooldown;
+
     private static readonly string[] NotifyTargetOptions =
-        ["送信しない", "全員", "村長のみ", "シェリフのみ", "村長とシェリフ"];
+        ["None", "Everyone", "VillageChiefOnly", "SheriffOnly", "VillageChiefAndSheriff"];
 
     private static void SetupOptionItem()
     {
@@ -61,6 +64,11 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             RoleInfo, 12, "VillageChiefNotifyTarget",
             NotifyTargetOptions, 0, false
         );
+
+        OptionAppointCooldown = FloatOptionItem.Create(
+            RoleInfo, 13, "AppointCooldown",
+            new(0f, 120f, 5f), 30f, false
+        ).SetValueFormat(OptionFormat.Seconds);
     }
 
     public override void ApplyGameOptions(IGameOptions opt)
@@ -104,7 +112,7 @@ public sealed class VillageChief : RoleBase, ISelfVoter
 
                 SendMessage(
                     "<color=#f5a623>任命候補を設定しました！</color>\n" +
-                    "次のターン、この相手に3秒近づくと任命します。",
+                    "次のターン、この相手に近づいて任命します。",
                     Player.PlayerId
                 );
 
@@ -126,33 +134,37 @@ public sealed class VillageChief : RoleBase, ISelfVoter
 
     public override void OnStartMeeting()
     {
-        // ★ 会議開始時にタイマーを無効化
         spawnWaitTimer = -1f;
         nearTimer = 0f;
     }
 
     public override void AfterMeetingTasks()
     {
-        if (!AmongUsClient.Instance.AmHost) return;
-        // ★ 会議終了後、3秒間は近接処理を無効にするためタイマーをゼロスタート
         spawnWaitTimer = 0f;
+        appointCooldownTimer = OptionAppointCooldown.GetFloat();
     }
 
     public override void OnFixedUpdate(PlayerControl player)
     {
+        if (GameStates.IsInTask && Player.IsAlive() && !hasUsedAbility)
+        {
+            if (spawnWaitTimer >= 0f && spawnWaitTimer < 3f)
+            {
+                spawnWaitTimer += Time.fixedDeltaTime;
+            }
+
+            if (appointCooldownTimer > 0f)
+            {
+                appointCooldownTimer -= Time.fixedDeltaTime;
+                if (appointCooldownTimer < 0f) appointCooldownTimer = 0f;
+            }
+        }
+
         if (!AmongUsClient.Instance.AmHost) return;
         if (!GameStates.IsInTask) return;
         if (!Player.IsAlive()) return;
         if (hasUsedAbility) return;
         if (NextAppointCandidate == byte.MaxValue) return;
-
-        // ★ スポーン待機タイマーをカウントアップ（3秒未満は処理しない）
-        if (spawnWaitTimer >= 0f && spawnWaitTimer < 3f)
-        {
-            spawnWaitTimer += Time.fixedDeltaTime;
-            return;
-        }
-
         if (!CanApproach) return;
 
         var target = GetPlayerById(NextAppointCandidate);
@@ -168,11 +180,17 @@ public sealed class VillageChief : RoleBase, ISelfVoter
         if (dist <= 1.0f)
         {
             nearTimer += Time.fixedDeltaTime;
+
             if (nearTimer >= 3f)
             {
-                DoAppoint(target);
-                NextAppointCandidate = byte.MaxValue;
-                nearTimer = 0f;
+                nearTimer = 3f;
+
+                if (appointCooldownTimer <= 0f)
+                {
+                    DoAppoint(target);
+                    NextAppointCandidate = byte.MaxValue;
+                    nearTimer = 0f;
+                }
             }
         }
         else
@@ -201,7 +219,6 @@ public sealed class VillageChief : RoleBase, ISelfVoter
         var previousRole = target.GetCustomRole();
         target.RpcSetCustomRole(CustomRoles.Sheriff, log: null);
 
-        // 任命直後にシェリフ側のキルクールを確実に再計算・同期する
         target.ResetKillCooldown();
         target.SetKillCooldown();
         target.RpcResetAbilityCooldown();
@@ -213,7 +230,6 @@ public sealed class VillageChief : RoleBase, ISelfVoter
             $"{UtilsName.GetPlayerColor(Player)}({UtilsRoleText.GetRoleName(CustomRoles.VillageChief)})が" +
             $"{UtilsName.GetPlayerColor(target)}({UtilsRoleText.GetRoleName(previousRole)})をシェリフに任命した"
         );
-
 
         SendRPC();
         UtilsNotifyRoles.NotifyRoles();
@@ -240,6 +256,9 @@ public sealed class VillageChief : RoleBase, ISelfVoter
 
         if (!CanApproach)
             return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>準備中...</color>";
+
+        if (appointCooldownTimer > 0f)
+            return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>任命クールダウン: {appointCooldownTimer:F1}s</color>";
 
         return $"{(isForHud ? "" : "<size=60%>")}<color=#f5a623>{name}に3秒近づいて任命！</color>";
     }

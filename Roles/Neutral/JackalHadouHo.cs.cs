@@ -748,7 +748,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
             if ((IsCharging || IsSuperCharging) && seen.PlayerId == Player.PlayerId)
             {
                 bool facingLeft = seer.PlayerId == Player.PlayerId ? Player.cosmetics.FlipX : BeamFacingLeft;
-                string bigStar = "<size=800%><color=#ffffff>★/color></size>";
+                string bigStar = "<size=800%><color=#ffffff>★</color></size>";
                 string blank = "　　　";
                 string text = facingLeft ? bigStar + blank : blank + bigStar;
                 name = "<line-height=1200%>\n" + text + "</line-height>";
@@ -800,7 +800,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         if ((IsCharging || IsSuperCharging) && seen.PlayerId == Player.PlayerId)
         {
             bool facingLeft = seer.PlayerId == Player.PlayerId ? Player.cosmetics.FlipX : BeamFacingLeft;
-            string bigStar = "<size=800%><color=#ffffff>★/color></size>";
+            string bigStar = "<size=800%><color=#ffffff>★</color></size>";
             string blank = "　　　";
             string text = facingLeft ? bigStar + blank : blank + bigStar;
             name = "<line-height=1200%>\n" + text + "</line-height>";
@@ -812,7 +812,7 @@ public sealed class JackalHadouHo : RoleBase, ILNKiller, IUsePhantomButton
         {
             SetRoleTextHeight(true);
             bool facingLeft = BeamFacingLeft;
-            string star = "<voffset=0.35em><size=800%><color=#ffffff>★/color></size></voffset>";
+            string star = "<voffset=0.35em><size=800%><color=#ffffff>★</color></size></voffset>";
             string beamBlock = IsSuperBeam ? BuildSuperBeamBlock() : BuildBeamBlock();
             int beamRepeat = IsSuperBeam ? 4 : 2;
             string blank800 = IsSuperBeam ? "<size=1800%>　</size>" : "<size=1200%>　</size>";
