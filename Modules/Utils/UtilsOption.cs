@@ -657,6 +657,7 @@ namespace TownOfHost
             CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             if (player.Is(CustomRoles.Serial)) sb.Append(juncture + AddonInfo(CustomRoles.Serial, "∂", pc: player));
             if (player.Is(CustomRoles.MagicHand)) sb.Append(juncture + AddonInfo(CustomRoles.MagicHand, "ж", pc: player));
+            if (player.Is(CustomRoles.Powerful)) sb.Append(juncture += AddonInfo(CustomRoles.Powerful, "∠", pc: player));
             if ((player.Is(CustomRoles.Connecting) && !player.Is(CustomRoles.WolfBoy)) || (player.Is(CustomRoles.Connecting) && !player.IsAlive()))
                 sb.Append(juncture + AddonInfo(CustomRoles.Connecting, "Ψ", pc: player) + "\n");
             if (player.Is(CustomRoles.Watching)) sb.Append(juncture + AddonInfo(CustomRoles.Watching, "∑", From.TOR_GM_Edition, pc: player) + "\n");
@@ -728,6 +729,7 @@ namespace TownOfHost
                 CustomRoles.Guesser => AddonInfo(role, "∮", From.TheOtherRoles),
                 CustomRoles.Serial => AddonInfo(role, "∂"),
                 CustomRoles.MagicHand => AddonInfo(role, "ж"),
+                CustomRoles.Powerful => AddonInfo(role, "∠"),
                 CustomRoles.Connecting => AddonInfo(role, "Ψ"),
                 CustomRoles.Watching => AddonInfo(role, "∑", From.TOR_GM_Edition),
                 CustomRoles.PlusVote => AddonInfo(role, "р", From.TownOfHost_Y),

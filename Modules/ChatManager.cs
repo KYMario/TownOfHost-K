@@ -295,6 +295,7 @@ namespace TownOfHost.Modules.ChatManager
                 Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
                 return;
             }
+            ChatUpdatePatch.ChatTimer = 0;
             // バニラ鯖使用下の状況
             if (Utils.IsRestriction())
             {
@@ -579,6 +580,7 @@ namespace TownOfHost.Modules.ChatManager
                 { if (PlayerControl.LocalPlayer is not null) Utils.ApplySuffix(null, true); }, 0.24f, "", true);
 
             Main.MessagesToSend.RemoveAt(0);
+            ChatUpdatePatch.ChatTimer = 0;
 
             // ホスト視点でのチャット送信
             if (clientId is -1)
