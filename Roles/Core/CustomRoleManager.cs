@@ -968,6 +968,7 @@ public enum CustomRoles
     Moira,
     PoisonedBakery,
     Monika,
+    LoversBreaker,
     //TOH-K
     Remotekiller,
     Chef,

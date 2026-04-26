@@ -1268,7 +1268,7 @@ namespace TownOfHost
             OptionAutoStartLimit = IntegerOptionItem.Create(1_300_220, "AutoStartLimit", new(30, 570, 30), 180, TabGroup.MainSettings, true)
                 .SetParent(OptionAutoStartSetting)
                 .SetColorcode("#00c1ff")
-                .SetOptionName(() => "タイマー残り何秒でスタートするか");
+                .SetOptionName(() => "部屋を建ててから何秒でスタートするか");
 
             OptionAutoStartLimitAnotherSetting = BooleanOptionItem.Create(1_300_230, "AutoStartLimitAnotherSetting", false, TabGroup.MainSettings, true)
                 .SetParent(OptionAutoStartSetting)
@@ -1278,7 +1278,7 @@ namespace TownOfHost
             OptionAutoStartLimitAnother = IntegerOptionItem.Create(1_300_240, "AutoStartLimitAnother", new(30, 570, 30), 420, TabGroup.MainSettings, true)
                 .SetParent(OptionAutoStartLimitAnotherSetting)
                 .SetColorcode("#00c1ff")
-                .SetOptionName(() => "タイマー残り何秒でスタートするか");
+                .SetOptionName(() => "部屋を建ててから何秒でスタートするか");
 
             OptionAutoReturnRoom = BooleanOptionItem.Create(1_300_250, "AutoReturnRoom", false, TabGroup.MainSettings, true)
                 .SetHeader(true)

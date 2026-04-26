@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,6 +19,7 @@ namespace TownOfHost
         public static Dictionary<byte, string> SummaryText = new();
         public static string KillLog = "";
         public static string outputLog = "";
+
         public static void Postfix(AmongUsClient __instance, [HarmonyArgument(0)] ref EndGameResult endGameResult)
         {
             GameStates.canmusic = true;
@@ -65,8 +67,9 @@ namespace TownOfHost
 
             var star = "★".Color(winnerColor);
             KillLog = $"{GetString("GameLog")}\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star;
-            outputLog = AmongUsClient.Instance.AmHost ? "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star
-            : "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + star + meg.Mark(winnerColor, false) + "/b" + star;
+            outputLog = AmongUsClient.Instance.AmHost
+                ? "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + UtilsGameLog.gamelog + "\n\n<b>" + star + meg.Mark(winnerColor, false) + "</b>" + star
+                : "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" + star + meg.Mark(winnerColor, false) + "/b" + star;
 
             LastGameSave.CreateIfNotExists();
             Main.Alltask = UtilsTask.AllTaskstext(false, false, false, false, false).RemoveHtmlTags();
@@ -117,6 +120,7 @@ namespace TownOfHost
                     }
                 }
             }
+
             Main.winnerList = new();
             foreach (var pc in winner)
             {
@@ -141,12 +145,42 @@ namespace TownOfHost
             CheckGetNomalAchievement.OnGameEnd();
             Achievements.UpdateAchievement();
 
-            // ★ バニラクライアントに勝利結果を送信
+            // ★ バニラクライアントに勝利結果と勝者リストをRPCで送信
             if (AmongUsClient.Instance.AmHost)
             {
-                string vanillaResult = meg;
-                SetEverythingUpPatch.RpcSendResultToVanilla(vanillaResult);
+                SetEverythingUpPatch.VanillaResultText = meg;
+                SetEverythingUpPatch.VanillaWinnerNames = Main.winnerList
+                    .Select(id => Main.AllPlayerNames.GetValueOrDefault(id, ""))
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .ToList();
+                SetEverythingUpPatch.VanillaLoserNames = PlayerState.AllPlayerStates.Keys
+                    .Where(id => !Main.winnerList.Contains(id))
+                    .Select(id => Main.AllPlayerNames.GetValueOrDefault(id, ""))
+                    .Where(n => !string.IsNullOrWhiteSpace(n))
+                    .ToList();
+
+                _ = new LateTask(() => RpcSendVanillaResult(meg), 3f, "SendVanillaResult", true);
             }
+        }
+
+        static void RpcSendVanillaResult(string resultText)
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+
+            var winnerNames = SetEverythingUpPatch.VanillaWinnerNames;
+            var loserNames = SetEverythingUpPatch.VanillaLoserNames;
+
+            var sender = AmongUsClient.Instance.StartRpcImmediately(
+                PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SyncModSystem,
+                SendOption.Reliable, -1);
+            sender.Write((int)RPC.ModSystem.SyncVanillaResult);
+            sender.Write(resultText);
+            sender.Write(winnerNames.Count);
+            foreach (var n in winnerNames) sender.Write(n);
+            sender.Write(loserNames.Count);
+            foreach (var n in loserNames) sender.Write(n);
+            AmongUsClient.Instance.FinishRpcImmediately(sender);
         }
     }
 
@@ -154,25 +188,10 @@ namespace TownOfHost
     class SetEverythingUpPatch
     {
         public static string LastWinsText = "";
-        // ★ バニラ向け表示用にstaticで保持
         public static string VanillaResultText = "";
+        public static List<string> VanillaWinnerNames = new();
+        public static List<string> VanillaLoserNames = new();
 
-        // ★ Prefix: バニラクライアントが自分で名前を書き換えて結果を表示
-        public static void Prefix(EndGameManager __instance)
-        {
-            if (Main.playerVersion.ContainsKey(0)) return; // MODホストがいる場合はPostfixで処理
-            if (string.IsNullOrEmpty(VanillaResultText)) return;
-
-            // バニラクライアントは自分自身の名前に結果を乗っけて表示
-            var localPc = PlayerControl.LocalPlayer;
-            if (localPc == null) return;
-
-            string origName = localPc.Data?.PlayerName ?? "";
-            string nameWithResult = $"{origName}\n<size=60%>{VanillaResultText}</size>";
-
-            try { localPc.cosmetics.nameText.text = nameWithResult; }
-            catch { }
-        }
         private static TextMeshPro roleSummary;
         private static SimpleButton showHideButton;
         public static SimpleButton ScreenShotbutton;
@@ -180,16 +199,14 @@ namespace TownOfHost
 
         public static void Postfix(EndGameManager __instance)
         {
-            // ★ バニラクライアント向け: MODなしでも試合結果を左上に表示
-            // EndGameManager.SetEverythingUpは全クライアントで動くのでここに書く
-            // ★ バニラクライアント: MODがない場合はShowVanillaResultのみ実行してreturn
+            // ★ バニラクライアント（MODなし）の場合
             if (!Main.playerVersion.ContainsKey(0))
             {
                 ShowVanillaResult(__instance);
                 return;
             }
 
-            // ★ MODクライアントでもバニラ表示を追加（左上のroleSummaryが見えない場合の補助）
+            // ★ MODクライアントでも非ホストかつVanillaResultTextがあれば補助表示
             if (!AmongUsClient.Instance.AmHost && !string.IsNullOrEmpty(VanillaResultText))
             {
                 ShowVanillaResult(__instance);
@@ -296,6 +313,7 @@ namespace TownOfHost
                     sb.Append($"\n　 ").Append(EndGamePatch.SummaryText.TryGetValue(id, out var name) ? name : "???");
                 }
             }
+
             roleSummary = TMPTemplate.Create(
                 "RoleSummaryText",
                 sb.ToString() + "<size=0>★</size>",
@@ -342,58 +360,58 @@ namespace TownOfHost
             }
         }
 
-        // ★ バニラクライアント（MODなし）向けに試合結果をUIに直接追加
-        private static void ShowVanillaResult(EndGameManager instance)
+        // ★ バニラクライアント向け左上テキスト表示
+        public static void ShowVanillaResult(EndGameManager instance)
         {
             try
             {
-                // ★ WinTextの下に結果テキストを追加表示
-                string displayText = string.IsNullOrEmpty(VanillaResultText)
-                    ? instance.WinText.text
-                    : VanillaResultText;
+                if (string.IsNullOrEmpty(VanillaResultText)) return;
 
-                var resultObj = UnityEngine.Object.Instantiate(instance.WinText.gameObject);
-                resultObj.transform.position = new(
-                    instance.WinText.transform.position.x,
-                    instance.WinText.transform.position.y - 1.2f,
-                    instance.WinText.transform.position.z);
-                resultObj.transform.localScale = new(0.45f, 0.45f, 0.45f);
+                var sb = new StringBuilder();
+                sb.Append($"<size=80%><color=#ffffff>ゲーム終了時の役職一覧:</color>\n");
 
-                var resultText = resultObj.GetComponent<TMPro.TextMeshPro>();
-                resultText.text = displayText;
-                resultText.color = Color.white;
-                resultText.fontSizeMin = 2f;
-                resultText.alignment = TextAlignmentOptions.Center;
+                foreach (var n in VanillaWinnerNames)
+                {
+                    sb.Append($"<color=#ffdd00>★ {n}</color>\n");
+                }
+                foreach (var n in VanillaLoserNames)
+                {
+                    sb.Append($"<color=#888888>　 {n}</color>\n");
+                }
+                sb.Append("</size>");
+
+                // ★ 左上にTMPオブジェクトを生成
+                var go = new GameObject("VanillaResultText");
+                go.transform.SetParent(instance.transform);
+                var tmp = go.AddComponent<TextMeshPro>();
+                tmp.text = sb.ToString();
+                tmp.fontSize = 1.8f;
+                tmp.alignment = TextAlignmentOptions.TopLeft;
+                tmp.color = Color.white;
+                tmp.enableWordWrapping = false;
+
+                var aspectPos = go.AddComponent<AspectPosition>();
+                aspectPos.Alignment = AspectPosition.EdgeAlignments.LeftTop;
+                aspectPos.DistanceFromEdge = new Vector3(0.2f, 0.2f, 0f);
+                aspectPos.AdjustPosition();
             }
-            catch { }
+            catch (Exception e)
+            {
+                Logger.Error($"ShowVanillaResult: {e}", "EndGame");
+            }
         }
 
-        // ★ ホストからバニラクライアントへRPCで結果テキストを送信
-        // EndGamePatchのPostfixから呼ぶ
-        public static void RpcSendResultToVanilla(string resultText)
+        // ★ 非ホストMODクライアントがRPCを受け取った時
+        public static void OnReceiveVanillaResult(string resultText, List<string> winners, List<string> losers)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
-
             VanillaResultText = resultText;
+            VanillaWinnerNames = winners;
+            VanillaLoserNames = losers;
 
-            // ★ バニラクライアント（MODなし）にカスタムRPCで送信
-            foreach (var pc in PlayerCatch.AllPlayerControls)
+            var egm = UnityEngine.Object.FindObjectOfType<EndGameManager>();
+            if (egm != null)
             {
-                if (pc.AmOwner) continue;
-                if (pc.IsModClient()) continue; // MODクライアントは自分でUI表示できる
-
-                // ★ 名前改行方式でバニラに無理やり表示
-                // WinTextの下に結果が見える
-                string nameWithResult =
-                    $"{Main.AllPlayerNames.GetValueOrDefault(pc.PlayerId, pc.Data.PlayerName)}\n" +
-                    $"<size=55%>{resultText}</size>";
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(
-                    pc.NetId, (byte)RpcCalls.SetName, SendOption.Reliable);
-                writer.Write(pc.Data.NetId);
-                writer.Write(nameWithResult);
-                writer.Write(false);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
+                ShowVanillaResult(egm);
             }
         }
     }

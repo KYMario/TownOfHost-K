@@ -125,7 +125,7 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
         seen ??= seer;
 
         // --- ① Cupid視点：CupidLovers の名前に ♥ を追加 ---
-        if (Is(seer) && CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId))
+        if (Is(seer) && IsCupidLoverPlayer(seen.PlayerId))
         {
             // 名前をピンク色にし、右側に赤いハートを表示
             name = $"<color=#ff66cc>{seen.Data.PlayerName}</color> <color=#ff0000>♥</color>";
@@ -133,7 +133,7 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
         }
 
         // --- ② CupidLovers視点：Cupid の名前に [キューピッド] 表示 ---
-        if (CupidLoversPlayers.Any(p => p.PlayerId == seer.PlayerId)
+        if (IsCupidLoverPlayer(seer.PlayerId)
             && seen.PlayerId == Player.PlayerId) // Cupid本人
         {
             name = $"{seen.Data.PlayerName} <color={RoleInfo.RoleColorCode}>\nキューピッド</color>";
@@ -148,8 +148,15 @@ public sealed class Cupid : RoleBase, IKiller, IAdditionalWinner
         if (!Is(seer)) return "";
         if (!Player.IsAlive()) return "";
         if (seer.PlayerId == seen.PlayerId) return "";
-        if (!CupidLoversPlayers.Any(p => p.PlayerId == seen.PlayerId)) return "";
+        if (!IsCupidLoverPlayer(seen.PlayerId)) return "";
         return $"<color=#ff0000>♥</color>";
+    }
+
+    private static bool IsCupidLoverPlayer(byte playerId)
+    {
+        if (CupidLoversPlayers.Any(p => p != null && p.PlayerId == playerId)) return true;
+        if (Lovers.CuCupidLoversPlayers.Any(p => p != null && p.PlayerId == playerId)) return true;
+        return false;
     }
 
     public override void OnFixedUpdate(PlayerControl player)
