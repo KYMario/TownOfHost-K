@@ -53,6 +53,7 @@ namespace TownOfHost
         KillSound,
         TaskComplete
     }
+
     [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.HandleRpc))]
     internal class RPCHandlerPatch
     {
@@ -63,13 +64,13 @@ namespace TownOfHost
             MessageReader subReader = MessageReader.Get(reader);
             switch (rpcType)
             {
-                case RpcCalls.SetName: //SetNameRPC
+                case RpcCalls.SetName:
                     subReader.ReadUInt32();
                     string name = subReader.ReadString();
                     if (subReader.BytesRemaining > 0 && (subReader?.ReadBoolean() ?? true)) return false;
                     Logger.Info("名前変更:" + __instance.GetNameWithRole().RemoveHtmlTags() + " => " + name, "SetName");
                     break;
-                case RpcCalls.SetRole: //SetNameRPC
+                case RpcCalls.SetRole:
                     RoleTypes role = (RoleTypes)subReader.ReadUInt16();
                     Logger.Info("役職:" + __instance.GetRealName().RemoveHtmlTags() + " => " + role, "SetRole");
                     if (AmongUsClient.Instance.AmHost is false && __instance.PlayerId == PlayerControl.LocalPlayer.PlayerId)
@@ -98,7 +99,7 @@ namespace TownOfHost
             }
             if (__instance.PlayerId != 0
                 && Enum.IsDefined(typeof(CustomRPC), (int)callId)
-                && !(callId is (byte)CustomRPC.VersionCheck or (byte)CustomRPC.RequestRetryVersionCheck or (byte)CustomRPC.ModUnload or (byte)CustomRPC.ClientSendHideMessage)) //ホストではなく、CustomRPCで、VersionCheckではない
+                && !(callId is (byte)CustomRPC.VersionCheck or (byte)CustomRPC.RequestRetryVersionCheck or (byte)CustomRPC.ModUnload or (byte)CustomRPC.ClientSendHideMessage))
             {
                 Logger.Warn($"{__instance?.Data?.GetLogPlayerName()}:{callId}({RPC.GetRpcName(callId)}) ホスト以外から送信されたためキャンセルしました。", "CustomRPC");
                 if (AmongUsClient.Instance.AmHost)
@@ -111,10 +112,10 @@ namespace TownOfHost
             }
             return true;
         }
+
         public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] byte callId, [HarmonyArgument(1)] MessageReader reader)
         {
             if (DebugModeManager.EnableTOHPDebugMode.GetBool() && callId != (byte)RpcCalls.SetPetStr) Logger.Info(callId + $"{(callId < (byte)CustomRPC.VersionCheck ? (RpcCalls)callId : (CustomRPC)callId)}" + "RPCを受け取りました！", "RPC");
-            //CustomRPC以外は処理しない
             if (callId < (byte)CustomRPC.VersionCheck) return;
 
             try
@@ -142,9 +143,7 @@ namespace TownOfHost
                         Version version = Version.Parse(reader.ReadString());
                         string tag = reader.ReadString();
                         string forkId = 3 <= version.Major ? reader.ReadString() : Main.OriginalForkId;
-
                         Main.playerVersion[__instance.PlayerId] = new PlayerVersion(version, tag, forkId);
-                        //バージョンが一致した場合送信
                         if (GameStartManagerPatch.GameStartManagerUpdatePatch.MatchVersions(__instance.PlayerId))
                         {
                             if (!AmongUsClient.Instance.AmHost) break;
@@ -175,8 +174,6 @@ namespace TownOfHost
                     }
                     int indexId = reader.ReadPackedInt32();
                     int maxId = reader.ReadPackedInt32();
-                    //foreach (OptionItem co in OptionItem.AllOptions)
-                    //すべてのカスタムオプションについてインデックス値で受信
                     for (var i = indexId; i < maxId; i++)
                         OptionItem.AllOptions[i].SetValue(reader.ReadPackedInt32());
                     break;
@@ -196,9 +193,9 @@ namespace TownOfHost
                     break;
                 case CustomRPC.SetCustomRole:
                     byte CustomRoleTargetId = reader.ReadByte();
-                    CustomRoles role = (CustomRoles)reader.ReadPackedInt32();
+                    CustomRoles role2 = (CustomRoles)reader.ReadPackedInt32();
                     int log = reader.ReadInt32();
-                    RPC.SetCustomRole(CustomRoleTargetId, role, log);
+                    RPC.SetCustomRole(CustomRoleTargetId, role2, log);
                     break;
                 case CustomRPC.ReplaceSubRole:
                     byte SubRoleTargetId = reader.ReadByte();
@@ -247,7 +244,6 @@ namespace TownOfHost
                 case CustomRPC.SyncYomiage:
                     Yomiage.YomiageS.Clear();
                     int yomi = reader.ReadInt32();
-                    //foreach (PlayerControl pc in PlayerCatch.AllPlayerControls)
                     for (int i = 0; i < yomi; i++)
                         Yomiage.YomiageS[reader.ReadInt32()] = reader.ReadString();
                     break;
@@ -317,13 +313,9 @@ namespace TownOfHost
 
     internal static class RPC
     {
-        //SyncCustomSettingsRPC Sender
         public static void SyncCustomSettingsRPC()
         {
             if (!AmongUsClient.Instance.AmHost) return;
-
-            // Rpcの送信又考えないとだな。
-            // Modclientがおり、部屋主じゃない時のみ
             if (!PlayerCatch.AnyModClient()) return;
 
             int count = 0;
@@ -343,26 +335,23 @@ namespace TownOfHost
                     writer.WritePacked(count);
                     writer.WritePacked(Math.Min(OptionItem.AllOptions.Count, count + 500));
                 }
-                //すべてのカスタムオプションについてインデックス値で送信
                 writer.WritePacked(co.GetValue());
                 count++;
             }
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void SyncCustomSettingsRPC(OptionItem item)
         {
             if (!AmongUsClient.Instance.AmHost || !PlayerCatch.AnyModClient()) return;
-
-            if (item is AssignOptionItem assignOptionItem)
-            {
-                return;
-            }
+            if (item is AssignOptionItem) return;
 
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncCustomSettings, SendOption.Reliable, -1);
             writer.WritePacked(item.Id);
             writer.WritePacked(item.GetValue());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void PlaySoundRPC(byte PlayerID, Sounds sound)
         {
             if (AmongUsClient.Instance.AmHost)
@@ -372,7 +361,8 @@ namespace TownOfHost
             writer.Write((byte)sound);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
-        public static IEnumerator CoRpcVersionCheck() //たぶんなおせました
+
+        public static IEnumerator CoRpcVersionCheck()
         {
             while (PlayerControl.LocalPlayer == null) yield return new UnityEngine.WaitForSeconds(0.5f);
 
@@ -383,15 +373,18 @@ namespace TownOfHost
             AmongUsClient.Instance.FinishRpcImmediately(writer);
             Main.playerVersion[PlayerControl.LocalPlayer.PlayerId] = new PlayerVersion(Main.PluginVersion, $"{ThisAssembly.Git.Commit}({ThisAssembly.Git.Branch})", Main.ForkId);
         }
+
         public static void RpcVersionCheck()
         {
             AmongUsClient.Instance.StartCoroutine(CoRpcVersionCheck().WrapToIl2Cpp());
         }
+
         public static void RpcModUnload(byte playerId)
         {
             Main.playerVersion.Remove(playerId);
             Logger.Info($"Id{playerId}がMODをアンロードしました", "ModUnload");
         }
+
         public static void RpcSyncRoomTimer()
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None, -1);
@@ -399,12 +392,14 @@ namespace TownOfHost
             writer.Write(GameStartManagerPatch.GetTimer());
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void RpcShowMeetingKill(byte targetId)
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ShowMeetingKill, SendOption.None, -1);
             writer.Write(targetId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void SendDeathReason(byte playerId, CustomDeathReason deathReason)
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetDeathReason, SendOption.None, -1);
@@ -412,6 +407,7 @@ namespace TownOfHost
             writer.Write((int)deathReason);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void GetDeathReason(MessageReader reader)
         {
             byte playerId = reader.ReadByte();
@@ -444,6 +440,7 @@ namespace TownOfHost
                 Logger.Error($"正常にEndGameを行えませんでした。\n{ex}", "EndGame", false);
             }
         }
+
         public static void PlaySound(byte playerID, Sounds sound)
         {
             if (PlayerControl.LocalPlayer.PlayerId == playerID)
@@ -459,6 +456,7 @@ namespace TownOfHost
                         break;
                 }
         }
+
         public static void SetCustomRole(byte targetId, CustomRoles role, int log)
         {
             RoleBase roleClass = CustomRoleManager.GetByPlayerId(targetId);
@@ -470,9 +468,8 @@ namespace TownOfHost
 
                 if (log == 0) UtilsGameLog.LastLogRole[targetId] = "<b> " + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
                 else if (log == 1) UtilsGameLog.LastLogRole[targetId] = $"<size=40%>{UtilsGameLog.LastLogRole[targetId].RemoveSizeTags()}</size><b>=> " + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
-
             }
-            else if (role >= CustomRoles.NotAssigned)   //500:NoSubRole 501~:SubRole
+            else if (role >= CustomRoles.NotAssigned)
             {
                 if (role.IsGhostRole()) PlayerState.GetByPlayerId(targetId).SetGhostRole(role);
                 else PlayerState.GetByPlayerId(targetId).SetSubRole(role);
@@ -487,10 +484,10 @@ namespace TownOfHost
                     CustomButtonHud.BottonHud(true);
                     _ = new LateTask(() => Main.showkillbutton = true, 0.5f, "", true);
                 }
-
                 RemoveDisableDevicesPatch.UpdateDisableDevices();
             }
         }
+
         public static void SyncLoversPlayers(CustomRoles lover)
         {
             if (!AmongUsClient.Instance.AmHost) return;
@@ -505,6 +502,7 @@ namespace TownOfHost
             }
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void SyncMadonnaLoversPlayers()
         {
             if (!AmongUsClient.Instance.AmHost) return;
@@ -514,6 +512,7 @@ namespace TownOfHost
                 writer.Write(lp.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void SyncCupidLoversPlayers()
         {
             if (!AmongUsClient.Instance.AmHost) return;
@@ -523,6 +522,7 @@ namespace TownOfHost
                 writer.Write(lp.PlayerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static void SendRpcLogger(uint targetNetId, byte callId, int targetClientId = -1)
         {
             if (!DebugModeManager.AmDebugger) return;
@@ -537,6 +537,7 @@ namespace TownOfHost
             catch { }
             Logger.Info($"FromNetID:{targetNetId}({from}) TargetClientID:{targetClientId}({target}) CallID:{callId}({rpcName})", "SendRPC");
         }
+
         public static string GetRpcName(byte callId)
         {
             string rpcName;
@@ -545,6 +546,7 @@ namespace TownOfHost
             else rpcName = callId.ToString();
             return rpcName;
         }
+
         public static void SetRealKiller(byte targetId, byte killerId)
         {
             PlayerState state = PlayerState.GetByPlayerId(targetId);
@@ -557,6 +559,7 @@ namespace TownOfHost
             writer.Write(killerId);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
+
         public static MessageWriter RpcPublicRoleSync(byte playerid, CustomRoles role)
         {
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.PublicRoleSync, SendOption.None, -1);
@@ -564,7 +567,7 @@ namespace TownOfHost
             writer.WritePacked((int)role);
             return writer;
         }
-        //参考元→SuperNewRoles様
+
         public static void RpcSyncAllNetworkedPlayer(int TargetClientId = -1, SendOption sendOption = SendOption.None)
         {
             if (AntiBlackout.IsCached || AntiBlackout.IsSet) return;
@@ -583,7 +586,6 @@ namespace TownOfHost
             }
             foreach (var player in GameData.Instance.AllPlayers)
             {
-                // データを分割して送信
                 if (writer.Length > 400)
                 {
                     writer.EndMessage();
@@ -604,7 +606,7 @@ namespace TownOfHost
                     }
                 }
 
-                writer.StartMessage(1); //0x01 Data
+                writer.StartMessage(1);
                 {
                     writer.WritePacked(player.NetId);
                     player.Serialize(writer, false);
@@ -612,10 +614,10 @@ namespace TownOfHost
                 writer.EndMessage();
             }
             writer.EndMessage();
-
             AmongUsClient.Instance.SendOrDisconnect(writer);
             writer.Recycle();
         }
+
         public enum ModSystem
         {
             SyncDeviceTimer,
@@ -625,8 +627,10 @@ namespace TownOfHost
             SyncNextSpawn,
             SyncOneLove,
             SyncVoteResult,
+            SyncVanillaResult,
             ShowIntro
         }
+
         public static void RpcModSetting(MessageReader reader)
         {
             if (AmongUsClient.Instance.AmHost) return;
@@ -653,7 +657,7 @@ namespace TownOfHost
                         {
                             byte targetId = reader.ReadByte();
                             var data = PlayerCatch.GetPlayerInfoById(reader.ReadByte());
-                            Main.AllPlayerNames[targetId] = reader.ReadString(); //data.PlayerNameから取得しようとしたら名前がシステムメセになったのでどうしようか悩む
+                            Main.AllPlayerNames[targetId] = reader.ReadString();
                             Main.PlayerColors[targetId] = Palette.PlayerColors[data.DefaultOutfit.ColorId];
                         }
                         break;
@@ -691,6 +695,13 @@ namespace TownOfHost
                         MeetingVoteManager.Voteresult = reader.ReadString();
                     }
                     break;
+                // ★ バニラ向け試合結果受信
+                case ModSystem.SyncVanillaResult:
+                    {
+                        var vanillaResult = reader.ReadString();
+                        SetEverythingUpPatch.OnReceiveVanillaResult(vanillaResult);
+                    }
+                    break;
                 case ModSystem.ShowIntro:
                     if (PlayerControl.LocalPlayer.PlayerId != 0)
                     {
@@ -711,6 +722,7 @@ namespace TownOfHost
             }
         }
     }
+
     [HarmonyPatch(typeof(InnerNet.InnerNetClient), nameof(InnerNet.InnerNetClient.StartRpcImmediately))]
     internal class StartRpcImmediatelyPatch
     {
@@ -718,6 +730,7 @@ namespace TownOfHost
         {
             RPC.SendRpcLogger(targetNetId, callId, targetClientId);
         }
+
         public static void Postfix([HarmonyArgument(1)] byte callId, MessageWriter __result)
         {
             if (!Enum.IsDefined(typeof(CustomRPC), (int)callId)) return;

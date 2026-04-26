@@ -75,7 +75,7 @@ namespace TownOfHost
                     "GitHub");
             }
 
-            // TwitterXボタンを生成
+            // Youtubeボタンを生成
             if (SimpleButton.IsNullOrDestroyed(TwitterXButton))
             {
                 TwitterXButton = CreateButton(
@@ -83,8 +83,8 @@ namespace TownOfHost
                     new(0.9f, -1f, 1f),
                     new(0, 202, 255, byte.MaxValue),
                     new(60, 255, 255, byte.MaxValue),
-                    () => Application.OpenURL("https://twitter.com/"),
-                    "Twitter(X)");
+                    () => Application.OpenURL("https://youtube.com/@toh-pko?si=P6vdE1t4MHoA_C6F"),
+                    "Youtube");
             }
             // TOHPBOTボタンを生成
             if (SimpleButton.IsNullOrDestroyed(TOHPBOTButton))

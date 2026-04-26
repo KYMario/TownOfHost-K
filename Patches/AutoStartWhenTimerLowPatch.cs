@@ -7,36 +7,43 @@ namespace TownOfHost.Patches
     public static class AutoStartPatch
     {
         private static float timer = 0f;
-        private static int lastPlayerCount = 0;
-        private static float timeWhenFull = 0f;
 
         public static void Postfix()
         {
+            // ホスト以外は動作しない
             if (!AmongUsClient.Instance.AmHost) return;
-            if (!Options.EnableGM.GetBool()) return;
 
+            // 自動スタート設定がOFFなら動作しない
+            if (!Options.OptionAutoStartSetting.GetBool()) return;
+
+            // GMのみ有効 → GMじゃないなら動作しない
+            if (Options.OptionAutoStartGM.GetBool() && !Options.EnableGM.GetBool()) return;
+
+            // ロビー以外ではリセット
             if (!GameStates.IsLobby)
             {
                 timer = 0f;
-                lastPlayerCount = 0;
-                timeWhenFull = 0f;
                 return;
             }
 
             int playerCount = PlayerControl.AllPlayerControls.Count;
 
+            // タイマー進行
             timer += Time.deltaTime;
 
-            if (lastPlayerCount < 15 && playerCount == 15)
+            // ★ 15人時の別設定がONならそちらを優先
+            float limit;
+
+            if (Options.OptionAutoStartLimitAnotherSetting.GetBool() && playerCount == 15)
             {
-                timeWhenFull = timer;
+                limit = Options.OptionAutoStartLimitAnother.GetFloat();
             }
-            lastPlayerCount = playerCount;
+            else
+            {
+                limit = Options.OptionAutoStartLimit.GetFloat();
+            }
 
-            if (playerCount < 15) return;
-
-            float limit = Mathf.Max(180f + 60f, timeWhenFull + 60f);
-
+            // タイマーが規定値を超えたら開始
             if (timer >= limit)
             {
                 timer = 0f;
@@ -44,7 +51,7 @@ namespace TownOfHost.Patches
                 var gsm = DestroyableSingleton<GameStartManager>.Instance;
                 if (gsm != null)
                 {
-                    gsm.countDownTimer = 0.1f;
+                    gsm.countDownTimer = 0.1f; // 即開始
                     gsm.startState = GameStartManager.StartingStates.Countdown;
                 }
             }

@@ -10,15 +10,18 @@ namespace TownOfHost.Patches
             // ホスト以外は実行しない
             if (!AmongUsClient.Instance.AmHost) return;
 
-            // GM設定がOFFなら何もしない
-            if (!Options.EnableGM.GetBool()) return;
+            // 自動戻り設定がOFFなら終了
+            if (!Options.OptionAutoReturnRoom.GetBool()) return;
+
+            // 「GMの場合のみ」がONなら GM 以外は終了
+            if (Options.OptionAutoReturnRoomGM.GetBool() && !Options.EnableGM.GetBool())
+                return;
 
             // EndGameNavigation は ShowButtons のタイミングで必ず存在する
             var nav = DestroyableSingleton<EndGameNavigation>.Instance;
             if (nav != null)
             {
-                // ★ GMがONのときだけ即ルーム（部屋）へ戻る
-                nav.NextGame();
+                nav.NextGame(); // ★ 自動で部屋に戻る
             }
         }
     }

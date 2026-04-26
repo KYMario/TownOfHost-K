@@ -499,6 +499,17 @@ namespace TownOfHost
             "ColoredOff" , "AssignAlgorithm.Random" , "PlatfromLeft" , "PlatfromRight"
         };
         // その他
+        public static OptionItem OptionCommandSetting;
+        public static OptionItem OptionCanChangeName;
+        public static OptionItem OptionNameCharLimit;
+        public static OptionItem OptionCanUseTpCommand;
+        public static OptionItem OptionAutoStartSetting;
+        public static OptionItem OptionAutoStartGM;
+        public static OptionItem OptionAutoStartLimit;
+        public static OptionItem OptionAutoStartLimitAnotherSetting;
+        public static OptionItem OptionAutoStartLimitAnother;
+        public static OptionItem OptionAutoReturnRoom;
+        public static OptionItem OptionAutoReturnRoomGM;
         public static OptionItem ConvenientOptions;
         public static OptionItem FirstTurnMeeting;
         public static bool firstturnmeeting;
@@ -1221,6 +1232,63 @@ namespace TownOfHost
                 );
             UseZoom = BooleanOptionItem.Create(1_000_008, "UseZoom", true, TabGroup.MainSettings, true)
                 .SetColorcode("#9199a1");
+
+            ObjectOptionitem.Create(1_300_112, "OtherOption", true, null, TabGroup.MainSettings).SetOptionName(() => "Other2").SetColorcode("#4f9bffff");
+
+            OptionCommandSetting = BooleanOptionItem.Create(1_300_114, "CommandSetting", false, TabGroup.MainSettings, true)
+                .SetHeader(true)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "コマンド設定");
+
+            OptionCanChangeName = BooleanOptionItem.Create(1_300_130, "CanChangeName", false, TabGroup.MainSettings, true)
+                .SetParent(OptionCommandSetting)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "/rename 名前変更を許可");
+
+            OptionNameCharLimit = IntegerOptionItem.Create(1_300_131, "NameCharLimit", new(1, 100, 1), 10, TabGroup.MainSettings, true)
+                .SetParent(OptionCanChangeName)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "名前の文字数制限");
+
+            OptionCanUseTpCommand = BooleanOptionItem.Create(1_300_132, "CanUseTpCommand", false, TabGroup.MainSettings, true)
+                .SetParent(OptionCommandSetting)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "/tp o,i コマンドを許可");
+
+            OptionAutoStartSetting = BooleanOptionItem.Create(1_300_200, "AutoStartSetting", false, TabGroup.MainSettings, true)
+                .SetHeader(true)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "自動スタートを有効にする");
+
+            OptionAutoStartGM = BooleanOptionItem.Create(1_300_210, "AutoStartGM", false, TabGroup.MainSettings, true)
+                .SetParent(OptionAutoStartSetting)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "GMの場合のみ自動スタートを有効にする");
+
+            OptionAutoStartLimit = IntegerOptionItem.Create(1_300_220, "AutoStartLimit", new(30, 570, 30), 180, TabGroup.MainSettings, true)
+                .SetParent(OptionAutoStartSetting)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "タイマー残り何秒でスタートするか");
+
+            OptionAutoStartLimitAnotherSetting = BooleanOptionItem.Create(1_300_230, "AutoStartLimitAnotherSetting", false, TabGroup.MainSettings, true)
+                .SetParent(OptionAutoStartSetting)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "15人の場合個別に設定する");
+
+            OptionAutoStartLimitAnother = IntegerOptionItem.Create(1_300_240, "AutoStartLimitAnother", new(30, 570, 30), 420, TabGroup.MainSettings, true)
+                .SetParent(OptionAutoStartLimitAnotherSetting)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "タイマー残り何秒でスタートするか");
+
+            OptionAutoReturnRoom = BooleanOptionItem.Create(1_300_250, "AutoReturnRoom", false, TabGroup.MainSettings, true)
+                .SetHeader(true)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "試合終了後自動で部屋に戻る");
+
+            OptionAutoReturnRoomGM = BooleanOptionItem.Create(1_300_260, "AutoReturnRoomGM", false, TabGroup.MainSettings, true)
+                .SetParent(OptionAutoReturnRoom)
+                .SetColorcode("#00c1ff")
+                .SetOptionName(() => "GMの場合のみ自動で部屋に戻る");
 
             ApplyDenyNameList = BooleanOptionItem.Create(1_000_100, "ApplyDenyNameList", true, TabGroup.MainSettings, true)
                 .SetHeader(true)

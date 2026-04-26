@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.Linq;
 using AmongUs.GameOptions;
 using Hazel;
+using HarmonyLib;
 using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -34,8 +36,6 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         standOriginPos = Vector2.zero;
         isStandActive = false;
         standWasAlive = false;
-        lastAliveCount = 15;
-        lastStandKillTimer = 0f;
     }
 
     static OptionItem OptionPhantomCooldown;
@@ -43,12 +43,10 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
     static OptionItem OptionKillCooldownReduction;
     static float KillCooldownReduction;
 
-    byte standId;
-    Vector2 standOriginPos;
-    bool isStandActive;
+    public byte standId;
+    public Vector2 standOriginPos;
+    public bool isStandActive;
     bool standWasAlive;
-    int lastAliveCount;
-    float lastStandKillTimer;
 
     enum OptionName
     {
@@ -72,7 +70,10 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
 
     public override void ApplyGameOptions(IGameOptions opt)
     {
-        AURoleOptions.PhantomCooldown = PhantomCooldown;
+        if (Player.AmOwner && Is(Player))
+        {
+            AURoleOptions.PhantomCooldown = PhantomCooldown;
+        }
     }
 
     void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
@@ -83,7 +84,7 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         if (!Player.IsAlive()) return;
         if (isStandActive) return;
 
-        var candidates = new System.Collections.Generic.List<PlayerControl>();
+        var candidates = new List<PlayerControl>();
         foreach (var pc in AllAlivePlayerControls)
         {
             if (pc.PlayerId == Player.PlayerId) continue;
@@ -94,7 +95,21 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
             candidates.Add(pc);
         }
 
-        if (candidates.Count == 0) return;
+        if (candidates.Count == 0)
+        {
+            float myCurrentTimer = Player.killTimer;
+            Player.killTimer = Mathf.Max(0f, myCurrentTimer - KillCooldownReduction);
+
+            if (Player.AmOwner && Is(Player))
+            {
+                AURoleOptions.PhantomCooldown = PhantomCooldown;
+            }
+            Player.RpcResetAbilityCooldown(Sync: true);
+
+            UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
+            Utils.SendMessage("<color=#cc0000>対象不在のため、自身のキルクールを短縮しました。</color>", Player.PlayerId);
+            return;
+        }
 
         var rand = IRandom.Instance;
         var stand = candidates[rand.Next(candidates.Count)];
@@ -103,7 +118,6 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         standOriginPos = stand.GetTruePosition();
         isStandActive = true;
         standWasAlive = true;
-        lastAliveCount = AllAlivePlayerControls.Count();
 
         var warpPos = Player.GetTruePosition();
         warpPos.y += 0.47f;
@@ -112,10 +126,12 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         float currentTimer = stand.killTimer;
         float newCooldown = Mathf.Max(0f, currentTimer - KillCooldownReduction);
         stand.killTimer = newCooldown;
-        lastStandKillTimer = newCooldown;
 
-        AURoleOptions.PhantomCooldown = PhantomCooldown;
-        Player.RpcResetAbilityCooldown();
+        if (Player.AmOwner && Is(Player))
+        {
+            AURoleOptions.PhantomCooldown = PhantomCooldown;
+        }
+        Player.RpcResetAbilityCooldown(Sync: true);
 
         SendRpcToggle(standId, standOriginPos, newCooldown);
 
@@ -125,12 +141,12 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
 
     public override void OnFixedUpdate(PlayerControl player)
     {
+        if (player.AmOwner && Is(player))
+        {
+            AURoleOptions.PhantomCooldown = PhantomCooldown;
+        }
+
         if (!AmongUsClient.Instance.AmHost) return;
-
-        int currentAliveCount = AllAlivePlayerControls.Count();
-        bool someoneDied = currentAliveCount < lastAliveCount;
-        lastAliveCount = currentAliveCount;
-
         if (!isStandActive) return;
 
         var stand = GetPlayerById(standId);
@@ -150,21 +166,9 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
         }
 
         standWasAlive = !nowDead;
-
-        if (!nowDead)
-        {
-            float currentTimer = stand.killTimer;
-
-            if (someoneDied || currentTimer > lastStandKillTimer + 2f)
-            {
-                ResetStand(returnToOrigin: true);
-                return;
-            }
-            lastStandKillTimer = currentTimer;
-        }
     }
 
-    void ResetStand(bool returnToOrigin)
+    public void ResetStand(bool returnToOrigin)
     {
         if (!isStandActive) return;
 
@@ -200,8 +204,12 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
     {
         if (!AmongUsClient.Instance.AmHost) return;
         if (!Player.IsAlive()) return;
-        AURoleOptions.PhantomCooldown = PhantomCooldown;
-        Player.RpcResetAbilityCooldown();
+
+        if (PlayerControl.LocalPlayer != null && Is(PlayerControl.LocalPlayer))
+        {
+            AURoleOptions.PhantomCooldown = PhantomCooldown;
+            Player.RpcResetAbilityCooldown();
+        }
     }
 
     void SendRpcToggle(byte sId, Vector2 origin, float newTimer)
@@ -233,7 +241,6 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
 
             isStandActive = true;
             standWasAlive = true;
-            lastAliveCount = AllAlivePlayerControls.Count();
 
             var s = GetPlayerById(standId);
             if (s != null) s.killTimer = newTimer;
@@ -265,5 +272,26 @@ public sealed class StandMaster : RoleBase, IImpostor, IUsePhantomButton
     {
         text = "StandMaster_Ability";
         return true;
+    }
+}
+
+[HarmonyPatch(typeof(CustomRoleManager), nameof(CustomRoleManager.OnCheckMurder))]
+public static class StandMasterKillReturnPatch
+{
+    public static void Postfix(PlayerControl killer)
+    {
+        if (!AmongUsClient.Instance.AmHost) return;
+
+        foreach (var pc in AllPlayerControls)
+        {
+            if (pc == null || !pc.IsAlive()) continue;
+            if (pc.GetRoleClass() is not StandMaster sm) continue;
+
+            if (sm.isStandActive && sm.standId == killer.PlayerId)
+            {
+                sm.ResetStand(returnToOrigin: true);
+                break;
+            }
+        }
     }
 }

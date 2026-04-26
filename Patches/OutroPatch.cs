@@ -141,12 +141,25 @@ namespace TownOfHost
             CheckGetNomalAchievement.OnGameEnd();
             Achievements.UpdateAchievement();
 
-            // ★ バニラクライアントに勝利結果を送信
+            // ★ バニラクライアントに勝利結果をRPCで送信
             if (AmongUsClient.Instance.AmHost)
             {
-                string vanillaResult = meg;
-                SetEverythingUpPatch.RpcSendResultToVanilla(vanillaResult);
+                SetEverythingUpPatch.VanillaResultText = meg;
+                RpcSendVanillaResult(meg);
             }
+        }
+
+        // ★ カスタムRPCでバニラにテキスト送信
+        static void RpcSendVanillaResult(string resultText)
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
+            var sender = AmongUsClient.Instance.StartRpcImmediately(
+                PlayerControl.LocalPlayer.NetId,
+                (byte)CustomRPC.SyncModSystem,
+                SendOption.Reliable, -1);
+            sender.Write((int)RPC.ModSystem.SyncVanillaResult);
+            sender.Write(resultText);
+            AmongUsClient.Instance.FinishRpcImmediately(sender);
         }
     }
 
@@ -154,25 +167,8 @@ namespace TownOfHost
     class SetEverythingUpPatch
     {
         public static string LastWinsText = "";
-        // ★ バニラ向け表示用にstaticで保持
         public static string VanillaResultText = "";
 
-        // ★ Prefix: バニラクライアントが自分で名前を書き換えて結果を表示
-        public static void Prefix(EndGameManager __instance)
-        {
-            if (Main.playerVersion.ContainsKey(0)) return; // MODホストがいる場合はPostfixで処理
-            if (string.IsNullOrEmpty(VanillaResultText)) return;
-
-            // バニラクライアントは自分自身の名前に結果を乗っけて表示
-            var localPc = PlayerControl.LocalPlayer;
-            if (localPc == null) return;
-
-            string origName = localPc.Data?.PlayerName ?? "";
-            string nameWithResult = $"{origName}\n<size=60%>{VanillaResultText}</size>";
-
-            try { localPc.cosmetics.nameText.text = nameWithResult; }
-            catch { }
-        }
         private static TextMeshPro roleSummary;
         private static SimpleButton showHideButton;
         public static SimpleButton ScreenShotbutton;
@@ -180,16 +176,14 @@ namespace TownOfHost
 
         public static void Postfix(EndGameManager __instance)
         {
-            // ★ バニラクライアント向け: MODなしでも試合結果を左上に表示
-            // EndGameManager.SetEverythingUpは全クライアントで動くのでここに書く
-            // ★ バニラクライアント: MODがない場合はShowVanillaResultのみ実行してreturn
+            // ★ バニラクライアント（MODなし）の場合
             if (!Main.playerVersion.ContainsKey(0))
             {
                 ShowVanillaResult(__instance);
                 return;
             }
 
-            // ★ MODクライアントでもバニラ表示を追加（左上のroleSummaryが見えない場合の補助）
+            // ★ MODクライアントでもバニラ結果テキストがあれば補助表示
             if (!AmongUsClient.Instance.AmHost && !string.IsNullOrEmpty(VanillaResultText))
             {
                 ShowVanillaResult(__instance);
@@ -342,59 +336,37 @@ namespace TownOfHost
             }
         }
 
-        // ★ バニラクライアント（MODなし）向けに試合結果をUIに直接追加
+        // ★ バニラクライアント向けに試合結果をUIに直接追加
         private static void ShowVanillaResult(EndGameManager instance)
         {
             try
             {
-                // ★ WinTextの下に結果テキストを追加表示
                 string displayText = string.IsNullOrEmpty(VanillaResultText)
                     ? instance.WinText.text
                     : VanillaResultText;
 
+                // ★ WinTextの下に結果テキストオブジェクトを追加
                 var resultObj = UnityEngine.Object.Instantiate(instance.WinText.gameObject);
                 resultObj.transform.position = new(
                     instance.WinText.transform.position.x,
-                    instance.WinText.transform.position.y - 1.2f,
+                    instance.WinText.transform.position.y - 0.8f,
                     instance.WinText.transform.position.z);
-                resultObj.transform.localScale = new(0.45f, 0.45f, 0.45f);
+                resultObj.transform.localScale = new(0.6f, 0.6f, 0.6f);
 
                 var resultText = resultObj.GetComponent<TMPro.TextMeshPro>();
                 resultText.text = displayText;
                 resultText.color = Color.white;
                 resultText.fontSizeMin = 2f;
                 resultText.alignment = TextAlignmentOptions.Center;
+                resultObj.SetActive(true);
             }
             catch { }
         }
 
-        // ★ ホストからバニラクライアントへRPCで結果テキストを送信
-        // EndGamePatchのPostfixから呼ぶ
-        public static void RpcSendResultToVanilla(string resultText)
+        // ★ 非ホストMODクライアントがRPCを受け取った時に呼ばれる
+        public static void OnReceiveVanillaResult(string resultText)
         {
-            if (!AmongUsClient.Instance.AmHost) return;
-
             VanillaResultText = resultText;
-
-            // ★ バニラクライアント（MODなし）にカスタムRPCで送信
-            foreach (var pc in PlayerCatch.AllPlayerControls)
-            {
-                if (pc.AmOwner) continue;
-                if (pc.IsModClient()) continue; // MODクライアントは自分でUI表示できる
-
-                // ★ 名前改行方式でバニラに無理やり表示
-                // WinTextの下に結果が見える
-                string nameWithResult =
-                    $"{Main.AllPlayerNames.GetValueOrDefault(pc.PlayerId, pc.Data.PlayerName)}\n" +
-                    $"<size=55%>{resultText}</size>";
-
-                var writer = AmongUsClient.Instance.StartRpcImmediately(
-                    pc.NetId, (byte)RpcCalls.SetName, SendOption.Reliable);
-                writer.Write(pc.Data.NetId);
-                writer.Write(nameWithResult);
-                writer.Write(false);
-                AmongUsClient.Instance.FinishRpcImmediately(writer);
-            }
         }
     }
 

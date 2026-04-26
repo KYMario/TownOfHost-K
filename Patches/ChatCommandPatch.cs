@@ -1612,6 +1612,13 @@ namespace TownOfHost
                 case "/r":
                 case "/rename":
                     canceled = true;
+
+                    if (!Options.OptionCanChangeName.GetBool())
+                    {
+                        SendMessage("<color=#ff0000>名前変更コマンドは現在許可されていません。</color>", player.PlayerId);
+                        break;
+                    }
+
                     var name = string.Join(" ", args.Skip(1)).Trim();
                     if (string.IsNullOrEmpty(name))
                     {
@@ -1624,6 +1631,13 @@ namespace TownOfHost
                         break;
                     }
                     if (name.StartsWith(" ")) break;
+
+                    if (name.Length > Options.OptionNameCharLimit.GetInt())
+                    {
+                        SendMessage($"<color=#ff0000>名前が長すぎます！(最大 {Options.OptionNameCharLimit.GetInt()} 文字)</color>", player.PlayerId);
+                        break;
+                    }
+
                     // ★ RpcSetName で全員に名前変更を通知
                     player.RpcSetName(name);
                     break;
@@ -1722,6 +1736,13 @@ namespace TownOfHost
                 case "/tp":
                     if (!GameStates.IsLobby || args.Length < 1) break;
                     canceled = true;
+
+                    if (!Options.OptionCanUseTpCommand.GetBool())
+                    {
+                        SendMessage("<color=#ff0000>テレポートコマンドは現在許可されていません。</color>", player.PlayerId);
+                        break;
+                    }
+
                     subArgs = args[1];
                     switch (subArgs)
                     {
