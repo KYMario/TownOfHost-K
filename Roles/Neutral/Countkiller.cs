@@ -36,6 +36,7 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
     )
     {
         VictoryCount = OptionVictoryCount.GetInt();
+        SoloVictoryCount = OptionSoloVictoryCount.GetInt();
         KillCooldown = OptionKillCooldown.GetFloat();
         CanVent = OptionCanVent.GetBool();
         KillCount = 0;
@@ -43,14 +44,17 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
     }
     static OptionItem OptionKillCooldown;
     static OptionItem OptionAddWin;
+    static OptionItem OptionAddWinToSoloWin;
     private static OptionItem OptionVictoryCount;
+    private static OptionItem OptionSoloVictoryCount;
     public static OptionItem OptionCanVent;
 
     enum OptionName
     {
-        CountKillerVictoryCount, CountKillerAddWin
+        CountKillerVictoryCount, CountKillerAddWin, CountKillerAddWinToSoloWin, CountKillerSoloVictoryCount
     }
     private int VictoryCount;
+    private int SoloVictoryCount;
     public static bool CanVent;
     private static float KillCooldown;
     int KillCount = 0;
@@ -64,7 +68,12 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
         .SetValueFormat(OptionFormat.Times);
         OptionCanVent = BooleanOptionItem.Create(RoleInfo, 12, GeneralOption.CanVent, true, false);
         OptionAddWin = BooleanOptionItem.Create(RoleInfo, 13, OptionName.CountKillerAddWin, true, false);
-        RoleAddAddons.Create(RoleInfo, 15);
+        OptionAddWinToSoloWin = BooleanOptionItem.Create(RoleInfo, 14, OptionName.CountKillerAddWinToSoloWin, false, false, OptionAddWin)
+            .SetParent(OptionAddWin);
+        OptionSoloVictoryCount = IntegerOptionItem.Create(RoleInfo, 15, OptionName.CountKillerSoloVictoryCount, new(1, 20, 1), 8, false, OptionAddWinToSoloWin)
+            .SetValueFormat(OptionFormat.Times)
+            .SetParent(OptionAddWinToSoloWin);
+        RoleAddAddons.Create(RoleInfo, 16);
     }
     public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.CountKiller;
     public float CalculateKillCooldown() => KillCooldown;
@@ -74,6 +83,7 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
         KillCooldown = OptionKillCooldown.GetFloat();
 
         VictoryCount = OptionVictoryCount.GetInt();
+        SoloVictoryCount = OptionSoloVictoryCount.GetInt();
         Logger.Info($"{PlayerCatch.GetPlayerById(playerId)?.GetNameWithRole().RemoveHtmlTags()} : 後{VictoryCount - KillCount}発", "CountKiller");
     }
     private void SendRPC()
@@ -87,7 +97,7 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
         KillCount = reader.ReadInt32();
         WinFlag = reader.ReadBoolean();
     }
-    public bool CanUseKillButton() => Player.IsAlive() && VictoryCount > 0 && KillCount < VictoryCount;
+    public bool CanUseKillButton() => Player.IsAlive() && VictoryCount > 0 && KillCount < GetFinalVictoryCount();
     public bool CanUseSabotageButton() => false;
     public bool CanUseImpostorVentButton() => CanVent;
     public void OnMurderPlayerAsKiller(MurderInfo info)
@@ -100,7 +110,7 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
                 return;
             }
             KillCount++;
-            Logger.Info($"{killer.GetNameWithRole()} : 残り{VictoryCount - KillCount}発", "CountKiller");
+            Logger.Info($"{killer.GetNameWithRole()} : 残り{GetFinalVictoryCount() - KillCount}発", "CountKiller");
             SendRPC();
             killer.ResetKillCooldown();
 
@@ -110,6 +120,11 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
                 WinFlag = true;
                 if (OptionAddWin.GetBool())
                     Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            }
+
+            if (OptionAddWin.GetBool() && OptionAddWinToSoloWin.GetBool() && KillCount >= GetSecondStageVictoryCount())
+            {
+                ForceSoloWin();
             }
         }
         return;
@@ -123,14 +138,21 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
     public void Win()
     {
         if (OptionAddWin.GetBool()) return;
+        ForceSoloWin();
+    }
+
+    private void ForceSoloWin()
+    {
         if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.CountKiller, Player.PlayerId))
         {
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             CustomWinnerHolder.NeutralWinnerIds.Add(Player.PlayerId);
         }
     }
+    private int GetSecondStageVictoryCount() => System.Math.Max(VictoryCount + 1, SoloVictoryCount);
+    private int GetFinalVictoryCount() => OptionAddWin.GetBool() && OptionAddWinToSoloWin.GetBool() ? GetSecondStageVictoryCount() : VictoryCount;
     public override string GetProgressText(bool comms = false, bool gamelog = false)
-    => Utils.ColorString(RoleInfo.RoleColor, $"({KillCount}/{VictoryCount})");
+    => Utils.ColorString(RoleInfo.RoleColor, $"({KillCount}/{GetFinalVictoryCount()})");
     public bool CheckWin(ref CustomRoles winnerRole) => OptionAddWin.GetBool() && WinFlag;
     public static System.Collections.Generic.Dictionary<int, Achievement> achievements = new();
     [Attributes.PluginModuleInitializer]

@@ -1668,6 +1668,8 @@
 "SideKickJackaldollMacCount","SideKick Max Count","サイドキックの最大数"
 "CountKillerVictoryCount","Number of kills you can win","勝利に必要なキル数"
 "CountKillerAddWin","Add Win","追加勝利"
+"CountKillerAddWinToSoloWin","Add Win to Solo Win","追加勝利後に単独勝利へ移行"
+"CountKillerSoloVictoryCount","Solo Win Must Kills","単独勝利に必要なキル数"
 "DoppelGangerAddWinCount","Add Win Must Count","追加勝利に必要なカウント"
 "DoppelGangerSoloWinCount","Solo Win Must Count","単独勝利に必要なカウント"
 "DoppelGangerShapeCountUp","Shape count up","変身中に加算されるカウント"
