@@ -137,7 +137,8 @@ class Faction
             Logger.Info("徒党が1人だから削除", "Faction");
         }
 
-        // 徒党が無事始動した場合、色を付ける
+        // 徒党が無事始動し、徒党仲間が見える場合、色を付ける
+        if (CanSeeFactionMate.GetBool() is false) return;
         foreach (var seer in allfaction)
         {
             foreach (var seen in allfaction)
