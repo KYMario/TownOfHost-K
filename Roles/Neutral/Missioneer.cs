@@ -286,7 +286,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
 
         if (IsEnabledKill is false)
         {
-            list = list.Where(x => (int)x < 10).ToArray();
+            list = list.Where(x => MissionList.GoRoom <= x).ToArray();
         }
         var aliveplayerlist = PlayerCatch.AllAlivePlayerControls.Where(pc => pc.PlayerId != Player.PlayerId).ToList();
         for (var i = 0; i < missioncount; i++)
@@ -296,7 +296,8 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
             var chance = IRandom.Instance.Next(list.Count());
             var mission = list[chance];
 
-            if (mission is MissionList.Non || pc.PlayerId == Player.PlayerId)
+            if (mission is MissionList.Non || pc.PlayerId == Player.PlayerId
+            || (!IsEnabledKill && mission is MissionList.Kill or MissionList.KillPlayer or MissionList.KillRoom or MissionList.KillToVent))
             {
                 i--;
                 continue;
