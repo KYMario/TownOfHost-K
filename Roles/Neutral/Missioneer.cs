@@ -294,7 +294,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
             if (aliveplayerlist.Count < i) break;
             var pc = aliveplayerlist[i];
             var chance = IRandom.Instance.Next(list.Count());
-            var mission = list[chance];
+            var mission = list.OrderBy(x => Guid.NewGuid()).ToArray()[chance];
 
             if (mission is MissionList.Non || pc.PlayerId == Player.PlayerId
             || (!IsEnabledKill && mission is MissionList.Kill or MissionList.KillPlayer or MissionList.KillRoom or MissionList.KillToVent))

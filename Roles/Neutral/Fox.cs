@@ -50,6 +50,9 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
         IsTellDie = OptionTellDie.GetBool();
         Engventcool = OptionEngVentCoolDown.GetFloat();
         Engventinmax = OptionEngVentInmaxtime.GetFloat();
+        CanSeeImpostor = OptionCanSeeImpostor.GetBool();
+        CanSeeNeutralKiller = OptionCanSeeNeutralKiller.GetBool();
+        CanSeeOther = OptionCanSeeOther.GetBool();
 
         CompleteRoomTask = false;
         Taskcount = 0;
@@ -79,6 +82,9 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
         OptionMeterCount = FloatOptionItem.Create(RoleInfo, 18, OptionName.FoxMeterCount, new(5, 1200, 5), 60, false).SetValueFormat(OptionFormat.Seconds);
         OptionDistance = FloatOptionItem.Create(RoleInfo, 19, OptionName.FoxMeterDistance, new(0.5f, 5f, 0.25f), 1.25f, false).SetValueFormat(OptionFormat.Multiplier);
         OptionOnlySeeKiller = BooleanOptionItem.Create(RoleInfo, 20, OptionName.FoxShowRoleOnlyKiller, false, false);
+        OptionCanSeeImpostor = BooleanOptionItem.Create(RoleInfo, 25, OptionName.FoxCanSeeImposotr, true, false, OptionOnlySeeKiller);
+        OptionCanSeeNeutralKiller = BooleanOptionItem.Create(RoleInfo, 26, OptionName.FoxCanSeeNeutralKiller, true, false, OptionOnlySeeKiller);
+        OptionCanSeeOther = BooleanOptionItem.Create(RoleInfo, 27, OptionName.FoxCanSeeOtherKiller, true, false, OptionOnlySeeKiller);
         ObjectOptionitem.Create(RoleInfo, 21, "FoxGuardSetting", true, null).SetOptionName(() => "Guard Setting");
         OptionGiveGuardTaskCount = IntegerOptionItem.Create(RoleInfo, 22, OptionName.FoxGiveGuardTaskcount, new(1, 99, 1), 3, false);
         OptionGiveGuardMax = IntegerOptionItem.Create(RoleInfo, 23, OptionName.FoxGiveGuardMax, new(0, 99, 1), 2, false);
@@ -122,7 +128,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
 
                 foreach (var seer in PlayerCatch.AllAlivePlayerControls)
                 {
-                    if (((seer.GetRoleClass() as IKiller)?.IsKiller is true) || !OnlySeekiller)
+                    if (CanSeeFox(seer))
                     {
                         NameColorManager.Add(seer.PlayerId, Player.PlayerId, RoleInfo.RoleColorCode);
                     }
@@ -151,12 +157,28 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
     public override void OverrideDisplayRoleNameAsSeen(PlayerControl seer, ref bool enabled, ref Color roleColor, ref string roleText, ref bool addon)
     {
         if (IsShowMyRole is false) return;
+        if (seer == Player) return;
 
-        if (seer.IsAlive() && ((seer.GetRoleClass() as IKiller)?.IsKiller is true) || !OnlySeekiller)
+        if (CanSeeFox(seer))
         {//生きてて キラーであるかキラー以外も見えるか
             enabled = true;
             addon = false;
         }
+    }
+    bool CanSeeFox(PlayerControl seer)
+    {
+        if (seer.IsAlive())
+        {
+            // キル役のみ制限無し
+            if (OnlySeekiller is false) return true;
+
+            if (seer.Is(CustomRoleTypes.Impostor)) return CanSeeImpostor;
+            if (seer.IsNeutralKiller()) return CanSeeNeutralKiller;
+
+            /* インポスターでも第三キラーでもない場合 */
+            return CanSeeOther;
+        }
+        return false;
     }
     void SendRPC_ShowMyRole()
     {
@@ -410,6 +432,9 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
     static OptionItem OptionMeterCount; static float Maxmeter;
     static OptionItem OptionDistance; static float MeterDistance;
     static OptionItem OptionOnlySeeKiller; static bool OnlySeekiller;
+    static OptionItem OptionCanSeeImpostor; static bool CanSeeImpostor;
+    static OptionItem OptionCanSeeNeutralKiller; static bool CanSeeNeutralKiller;
+    static OptionItem OptionCanSeeOther; static bool CanSeeOther;
     /* 毎ターン指定した部屋に行かないと通知される */
     static OptionItem OptionNoticeRoomTask; static bool IsActiveNotice;
     /* キルガード */
@@ -427,6 +452,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
     enum OptionName
     {
         FoxMeterCount, FoxMeterDistance, FoxShowRoleOnlyKiller,
+        FoxCanSeeImposotr, FoxCanSeeNeutralKiller, FoxCanSeeOtherKiller,
         FoxNoticeRoomTask,
         FoxDieAliveCount,
         FoxCrewTaskFin,
