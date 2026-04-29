@@ -2507,7 +2507,7 @@
 "Log.PlagueDoctor","{0} => {1}%","{0}が{1}感染した..."
 "MadBetrayerLog","Betrayed Impostor.","インポスターを裏切った。"
 "StrawdollKilledLog","{0}","藁人形が{0}回切られた..."
-"MissioneerAddpoint","Mission Complete. Addpoint{0},Point:{1}","Mission Complete. {0}ポイント入手し、合計{1}ポイントとなった"
+"MissioneerAddpoint","Mission Complete. Addpoint{0},Point:{1}({2})","Mission Complete. {2}が{0}p入手し、計{1}pとなった"
 
 "## つーるちっぷ"
 "InsiderModeOptionInfo","Impostor Can See AllPlayer Role","<#ff1919>インポスター</color>が全員の役職を把握します"

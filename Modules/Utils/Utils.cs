@@ -921,9 +921,11 @@ namespace TownOfHost
 
             return true;
         }
+        public static Dictionary<int, ICollection<(byte sentto, string title, string text)>> meetingsendhis = new();
         [GameModuleInitializer]
         public static void Init()
         {
+            meetingsendhis = new();
             GameDataSerializePatch.DontTouch = false;
             Camouflage.ventplayr.Clear();
             PlayerCatch.OldAlivePlayerControles.Clear();

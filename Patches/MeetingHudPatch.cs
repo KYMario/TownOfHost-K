@@ -20,6 +20,7 @@ using TownOfHost.Roles.AddOns.Common;
 using static TownOfHost.Translator;
 using TownOfHost.Modules.ChatManager;
 using System;
+using UnityEngine.UI;
 
 namespace TownOfHost;
 
@@ -276,8 +277,11 @@ public static class MeetingHudPatch
             Send += $"\n<size=50%>{GetString("MeetingHelp")}</size>";
             TemplateManager.SendTemplate("OnMeeting", noErr: true);
             if (MeetingStates.FirstMeeting) TemplateManager.SendTemplate("OnFirstMeeting", noErr: true);
-            if (Send != "") Utils.SendMessage(Send, title: Title);
-
+            if (Send != "")
+            {
+                Utils.SendMessage(Send, title: Title);
+                meetingsends.Add((byte.MaxValue, Title, Send));
+            }
             if (Options.CanSeeTimeLimit.GetBool())
             {
                 string limittext = "";
@@ -550,6 +554,15 @@ public static class MeetingHudPatch
     {
         public static void Postfix()
         {
+            if (0 < StartPatch.meetingsends.Count)
+            {
+                if (Utils.meetingsendhis.TryAdd(UtilsGameLog.day, StartPatch.meetingsends) is false)
+                {
+                    var a = Utils.meetingsendhis[UtilsGameLog.day];
+                    StartPatch.meetingsends.Do(x => a.Add((x.sentto, x.title, x.text)));
+                    Utils.meetingsendhis[UtilsGameLog.day] = a;
+                }
+            }
             StartPatch.meetingsends = [];
             MeetingStates.FirstMeeting = false;
             Logger.Info("------------会議終了------------", "Phase");

@@ -397,7 +397,7 @@ public sealed class Missioneer : RoleBase, IKiller, ISelfVoter, IAdditionalWinne
         Logger.Info($"ComplateMisson:{NowPoint + getpoint} ({NowPoint} + {getpoint}) / {NowMission}", "Missioneer");
         NowPoint += getpoint;
 
-        UtilsGameLog.AddGameLog("Missioneer", string.Format(GetString("MissioneerAddpoint"), getpoint, NowPoint));
+        UtilsGameLog.AddGameLog("Missioneer", string.Format(GetString("MissioneerAddpoint"), getpoint, NowPoint, Player.Data.GetPlayerColor()));
         //勝利条件チェック
         if (WinAssignmentpoint <= NowPoint && WinAssignmentpoint is not 0)//単独
         {

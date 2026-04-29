@@ -861,12 +861,28 @@ namespace TownOfHost
                     case "/mi":
                     case "/day":
                         canceled = true;
-                        if (GameStates.InGame)
+                        if (args.Length < 2)
                         {
-                            SendMessage(MeetingHudPatch.Send, title: MeetingHudPatch.Title);
-                            foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                            if (GameStates.InGame)
                             {
-                                SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                                foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                                {
+                                    SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            var day = args[1];
+                            if (int.TryParse(day, out var result))
+                            {
+                                if (meetingsendhis.TryGetValue(result, out var data))
+                                {
+                                    foreach (var d in data)
+                                    {
+                                        SendMessage(d.text, d.sentto, d.title);
+                                    }
+                                }
                             }
                         }
                         break;
@@ -1404,13 +1420,30 @@ namespace TownOfHost
                 case "/MeeginInfo":
                 case "/mi":
                     canceled = true;
-                    if (GameStates.InGame)
+                    if (args.Length < 2)
                     {
-                        SendMessage(MeetingHudPatch.Send, player.PlayerId, title: MeetingHudPatch.Title);
-                        foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                        if (GameStates.InGame)
                         {
-                            if (messagedata.sentto is byte.MaxValue || messagedata.sentto == player.PlayerId)
-                                SendMessage(messagedata.text, messagedata.sentto, messagedata.title);
+                            foreach (var messagedata in MeetingHudPatch.StartPatch.meetingsends)
+                            {
+                                if (messagedata.sentto is byte.MaxValue || messagedata.sentto == player.PlayerId)
+                                    SendMessage(messagedata.text, player.PlayerId, messagedata.title);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var day = args[1];
+                        if (int.TryParse(day, out var result))
+                        {
+                            if (meetingsendhis.TryGetValue(result, out var data))
+                            {
+                                foreach (var d in data)
+                                {
+                                    if (d.sentto is byte.MaxValue || d.sentto == player.PlayerId)
+                                        SendMessage(d.text, player.PlayerId, d.title);
+                                }
+                            }
                         }
                     }
                     break;
