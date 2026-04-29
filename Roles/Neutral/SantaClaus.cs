@@ -159,7 +159,7 @@ public sealed class SantaClaus : RoleBase, IAdditionalWinner
         //プレゼントを渡せたって言う処理
         Player.RpcProtectedMurderPlayer();
 
-        if (havepresent < MaxHavePresent)
+        if (havepresent < MaxHavePresent && MyTaskState.CompletedTasksCount == MyTaskState.AllTasksCount)
         {
             Player.Data.RpcSetTasks(Array.Empty<byte>());
             MyTaskState.CompletedTasksCount = 0;
