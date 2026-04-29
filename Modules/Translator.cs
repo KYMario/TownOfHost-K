@@ -248,6 +248,14 @@ namespace TownOfHost
                         "WalkerInfo" => "歩き疲れたよ!",
                         "OneLoveInfo" => "今度...水族館行かない?",
                         "FoxAliveMeg3" => "桜餅の中に油揚げが入っていた。妖狐がいるに違いない",
+                        "WorkaholicInfo" => "ゴールデンウイーク?仕事。",
+                        "MassMediaInfo" => "今週はGW特集か...",
+                        "Fortune_Meg" => "クローバーでつつまれた桜餅の中に{0}が!!",
+                        "News_MeetingNews2" => "<size=90%>【船報】</size>\n<size=70%>{0}はゴールデンウイークはどう過ごすのか?調査してみました!",
+                        "spring.Ba" => "桜餅",
+                        "PhantomThiefStolenMessage_2" => "会議室にあった桜餅が食べられてる!!!怪盗の仕業か!!!",
+                        "ModSettingInfo2" => "柏餅は食べた?",
+                        "ModSettingInfo3" => "やねよ～り～た～か～い～",
                         _ => res
                     };
                 }
