@@ -176,6 +176,14 @@ namespace TownOfHost
         }
         public static string GetRoleColorCode(this PlayerControl player)
         {
+            if (player.Is(CustomRoles.Amnesia))
+            {
+                return player.Is(CustomRoleTypes.Impostor) ? "#ff1919" : (player.Is(CustomRoleTypes.Crewmate) ? "#8cffff" : "#dedede");
+            }
+            if (player.GetMisidentify(out var missrole))
+            {
+                return UtilsRoleText.GetRoleColorCode(missrole);
+            }
             return UtilsRoleText.GetRoleColorCode(player.GetCustomRole());
         }
         public static Color GetRoleColor(this PlayerControl player)

@@ -1,4 +1,5 @@
 using HarmonyLib;
+using TownOfHost.Roles.Core;
 using UnityEngine;
 
 namespace TownOfHost.Patches
@@ -17,8 +18,13 @@ namespace TownOfHost.Patches
                 {
                     if (__instance.playerInfo._object.PlayerId == PlayerControl.LocalPlayer.PlayerId)
                     {
-                        color = UtilsRoleText.GetRoleColor(PlayerControl.LocalPlayer.GetCustomRole());
-                        __instance.NameText.text = Utils.ColorString(UtilsRoleText.GetRoleColor(PlayerControl.LocalPlayer.GetCustomRole()), PlayerControl.LocalPlayer.Data.GetLogPlayerName());
+                        var role = PlayerControl.LocalPlayer.GetMisidentify(out var missr) ? missr : PlayerControl.LocalPlayer.GetCustomRole();
+                        color = UtilsRoleText.GetRoleColor(role);
+                        if (PlayerControl.LocalPlayer.Is(CustomRoles.Amnesia))
+                        {
+                            color = PlayerControl.LocalPlayer.Is(CustomRoleTypes.Impostor) ? UtilsRoleText.GetRoleColor(CustomRoles.Impostor) : (PlayerControl.LocalPlayer.Is(CustomRoleTypes.Crewmate) ? UtilsRoleText.GetRoleColor(CustomRoles.Crewmate) : ModColors.NeutralGray);
+                        }
+                        __instance.NameText.text = Utils.ColorString(UtilsRoleText.GetRoleColor(role), PlayerControl.LocalPlayer.Data.GetLogPlayerName());
                         return;
                     }
                     __instance.NameText.text = __instance.playerInfo.GetLogPlayerName().RemoveColorTags().ApplyNameColorData(PlayerControl.LocalPlayer, __instance.playerInfo._object, true);
