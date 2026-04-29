@@ -38,8 +38,8 @@ namespace TownOfHost
                 if (roleClass != null)
                 {
                     roleClass.Dispose();
-                    CustomRoleManager.CreateInstance(role, player);
                 }
+                CustomRoleManager.CreateInstance(role, player);
                 PlayerState.GetByPlayerId(player.PlayerId).SetMainRole(role);
 
                 if (log == true) UtilsGameLog.LastLogRole[player.PlayerId] = "<b> " + Utils.ColorString(UtilsRoleText.GetRoleColor(role), GetString($"{role}")) + "</b>";
