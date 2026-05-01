@@ -256,7 +256,6 @@ namespace TownOfHost
 
                 LateTask.Update(Time.deltaTime);
                 CheckMurderPatch.Update();
-                ChatUpdatePatch.ChatTimer += Time.deltaTime;
 
                 if (Main.MegCount > 49)
                 {

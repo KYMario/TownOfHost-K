@@ -316,7 +316,6 @@ namespace TownOfHost
                 _ = new LateTask(() =>
                 {
                     if (client.Character == null) return;
-                    ChatUpdatePatch.ChatTimer = 0;
                     TemplateManager.SendTemplate("welcome", client.Character.PlayerId, true);
 
                     if (Main.UseingJapanese)
