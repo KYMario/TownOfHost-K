@@ -584,7 +584,7 @@ namespace TownOfHost.Modules.ChatManager
             if (clientId is -1)
             {
                 senderplayer.SetName(title);
-                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, "");
+                DestroyableSingleton<HudManager>.Instance.Chat.AddChat(senderplayer, msg);
                 senderplayer.SetName(name);
             }
             var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
