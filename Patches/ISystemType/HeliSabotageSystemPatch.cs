@@ -17,7 +17,7 @@ public static class HeliSabotageSystemUpdateSystemPatch
             amount = newReader.ReadByte();
             newReader.Recycle();
         }
-        if (!AmongUsClient.Instance.AmHost || Utils.NowKillFlash)
+        if (!AmongUsClient.Instance.AmHost || Utils.NowKillFlash || GameStates.CalledMeeting)
         {
             return true;
         }

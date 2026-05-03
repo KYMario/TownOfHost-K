@@ -18,7 +18,7 @@ public static class LifeSuppSystemUpdateSystemPatch
         }
         __state = amount;
 
-        if (!AmongUsClient.Instance.AmHost || Utils.NowKillFlash)
+        if (!AmongUsClient.Instance.AmHost || Utils.NowKillFlash || GameStates.CalledMeeting)
         {
             return true;
         }

@@ -19,7 +19,7 @@ public static class ReactorSystemTypeUpdateSystemPatch
             newReader.Recycle();
         }
         __state = amount;
-        if (!AmongUsClient.Instance.AmHost || Utils.NowKillFlash)
+        if (!AmongUsClient.Instance.AmHost || Utils.NowKillFlash || GameStates.CalledMeeting)
         {
             return true;
         }
