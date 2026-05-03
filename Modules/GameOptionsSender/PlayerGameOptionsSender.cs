@@ -369,7 +369,7 @@ namespace TownOfHost.Modules
                     speed += addspeed;
                 }
                 if (state.CanMove is false) speed = Main.MinSpeed;
-                AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, 10f);
+                AURoleOptions.PlayerSpeedMod = Mathf.Clamp(speed, Main.MinSpeed, Utils.IsRestriction() ? 3f : 10f);
             }
 
             //あっ、鬼さんは開始前見ちゃだめですよ?
