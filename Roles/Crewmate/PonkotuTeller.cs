@@ -199,10 +199,10 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             tage.Remove(target);
             var rand = IRandom.Instance;
             var P = tage[rand.Next(0, tage.Count)];
-            var role = target.GetTellResults(null); //結果を変更するかチェック
+            var role = P.GetTellResults(null); //結果を変更するかチェック
 
             GameTell.TryAdd(votedForId, role);
-            Logger.Info($"Player: {Player.name},Target: {target.name}, count: {count}(失敗)", "PonkotuTeller");
+            Logger.Info($"Player: {Player.name},Target: {target.name},changeto{P.name}, count: {count}(失敗)", "PonkotuTeller");
             var lasttext = GetString("Skill.Tellerfin") + (role.IsCrewmate() ? "!" : "...");
             SendRPC(votedForId, role);
             if (MeisFT.GetBool()) Utils.SendMessage(string.Format(GetString("Skill.Teller"), UtilsName.GetPlayerColor(target, true), TellRole ? "<b>" + GetString($"{role}").Color(UtilsRoleText.GetRoleColor(role)) + "</b>" : GetString($"{role.GetCustomRoleTypes()}")) + lasttext + $"\n\n" + (onemeetingmaximum != 0 ? string.Format(GetString("RemainingOneMeetingCount"), Math.Min(onemeetingmaximum - MeetingUsedcount, Max - count)) : string.Format(GetString("RemainingCount"), Max - count) + (Votemode == AbilityVoteMode.SelfVote ? "\n\n" + GetString("VoteSkillFin") : "")), Player.PlayerId);
