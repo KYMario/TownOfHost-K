@@ -84,7 +84,7 @@ namespace TownOfHost
                 ModSprite = GameObject.Instantiate(baseIcon, __instance.mapBackground.transform, false);
                 ModSprite.transform.position = baseIcon.transform.position;
                 ModSprite.transform.localScale = baseIcon.transform.localScale;
-                ModSprite.sprite = UtilsSprite.LoadSprite("TownOfHost.Resources.Tab.TabIcon_MainSettings.png", 200f);
+                ModSprite.sprite = UtilsSprite.LoadSprite("TownOfHost.Resources.TOHK.Tab.TabIcon_MainSettings.png", 200f);
 
                 JoinGame = __instance.transform.FindChild("Join Game")?.GetComponent<PassiveButton>();
 

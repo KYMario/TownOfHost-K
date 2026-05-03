@@ -506,7 +506,7 @@ namespace TownOfHost
             {
                 var allrole = CustomRolesHelper.AllStandardRoles;
                 var role = allrole[IRandom.Instance.Next(allrole.Count())];
-                var sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Label.{role}.png", size);
+                var sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.TOHK.Label.{role}.png", size);
                 if (sprite is null) return;
                 part.myRend.material.shader = shader;
                 part.myRend.sharedMaterial.shader = shader;
@@ -516,11 +516,11 @@ namespace TownOfHost
             {
                 var allrole = CustomRolesHelper.AllRoles;
                 var role = allrole[IRandom.Instance.Next(allrole.Count())];
-                var sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Button.{role}_Ability.png", size);
+                var sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.TOHK.Button.{role}_Ability.png", size);
                 if (sprite is null)
-                    sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Button.{role}_Kill.png", size);
+                    sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.TOHK.Button.{role}_Kill.png", size);
                 if (sprite is null)
-                    sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.Button.{role}_Vent.png", size);
+                    sprite = UtilsSprite.LoadSprite($"TownOfHost.Resources.TOHK.Button.{role}_Vent.png", size);
                 if (sprite is null) return;
                 part.myRend.material.shader = shader;
                 part.myRend.sharedMaterial.shader = shader;

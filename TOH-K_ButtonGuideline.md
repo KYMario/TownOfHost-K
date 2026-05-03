@@ -1,7 +1,9 @@
 ## CustomButtonGuieline/Resouseフォルダにある画像等について
 
+`Resources`内の`TOH-K`フォルダはTownOfHost-Kの開発者/サポーターが作成したものです。
+
 Buttonフォルダ、Labelフォルダ、Tabフォルダ(一部除く)<br>
-Resourcesファイル内の`ShowOption`,`pin`<br>
+`ShowOption`,`pin`<br>
 上記の画像は夜藍が大体作ってます。<br>
 <br>
 上記のファイル内の夜藍が作成した画像は**TownOfHost-K**を使用している動画、募集画像等に基本使っていただいてOKです。<br>
