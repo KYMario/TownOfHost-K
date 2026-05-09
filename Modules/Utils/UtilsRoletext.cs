@@ -347,7 +347,7 @@ namespace TownOfHost
                 ProgressText.Append(roleClass.GetProgressText(comms, gamelog));
             }
             if (player.CanMakeMadmate()) ProgressText.Append(ColorString(Palette.ImpostorRed.ShadeColor(0.5f), $"[{Options.CanMakeMadmateCount.GetInt() - PlayerCatch.SKMadmateNowCount}]"));
-            if (player.GetCustomRole() is CustomRoles.Jackal or CustomRoles.JackalAlien or CustomRoles.JackalMafia && JackalDoll.GetSideKickCount() > 0)
+            if (player.GetCustomRole() is CustomRoles.Jackal or CustomRoles.JackalAlien or CustomRoles.JackalMafia or CustomRoles.JackalWolf && JackalDoll.GetSideKickCount() > 0)
             {
                 ProgressText.Append(ColorString(GetRoleColor(CustomRoles.Jackal), $"[{JackalDoll.GetSideKickCount() - JackalDoll.NowSideKickCount}]"));
             }

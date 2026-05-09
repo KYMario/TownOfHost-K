@@ -20,7 +20,6 @@ using TownOfHost.Roles.AddOns.Common;
 using static TownOfHost.Translator;
 using TownOfHost.Modules.ChatManager;
 using System;
-using UnityEngine.UI;
 
 namespace TownOfHost;
 
@@ -361,6 +360,10 @@ public static class MeetingHudPatch
 
                             if (MeetingStates.FirstMeeting) UtilsShowOption.SendRoleInfo(pc);
                             else if (Utils.RoleSendList.Contains(pva.TargetPlayerId)) UtilsShowOption.SendRoleInfo(pc);
+
+                            var addrole = pc.GetRoleClass()?.HaveAddRole() ?? CustomRoles.NotAssigned;
+                            if (addrole is not CustomRoles.NotAssigned)
+                                Utils.SendMessage(addrole.GetRoleInfo()?.Description?.FullFormatHelp ?? $"", pc.PlayerId, Utils.ColorString(pc.GetRoleColor(), GetString("AddRoleInfoTitle")), checkl: true);
                         }
                     }, 1, "sendroleinfo");
                 }, 3f, "Send to Chat", true);

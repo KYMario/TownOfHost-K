@@ -958,6 +958,7 @@ public enum CustomRoles
     Missioneer,
     Strawdoll,
     Fool,
+    JackalWolf,
     TaskPlayerB,
     //DEBUG only Neutral.
     //HideAndSeek

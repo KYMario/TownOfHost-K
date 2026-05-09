@@ -578,4 +578,5 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton, IDoubleTr
         return (AddRole as IDoubleTrigger)?.DoubleAction(killer, target) ?? true;
     }
     public bool? CheckKillFlash(MurderInfo info) => (AddRole as IKillFlashSeeable)?.CheckKillFlash(info) ?? false;
+    public override CustomRoles HaveAddRole() => haverole;
 }

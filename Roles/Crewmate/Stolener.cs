@@ -75,7 +75,7 @@ public sealed class Stolener : RoleBase
         var role = Killer.GetPlayerControl()?.GetCustomRole() ?? CustomRoles.Crewmate;
         if (role.IsCrewmate() || role.IsMadmate()) return;
         if (role.IsImpostor()) role = CustomRoles.Impostor;
-        if (role is CustomRoles.JackalAlien or CustomRoles.JackalMafia) role = CustomRoles.Jackal;
+        if (role is CustomRoles.JackalAlien or CustomRoles.JackalMafia or CustomRoles.JackalWolf) role = CustomRoles.Jackal;
         if (CustomWinnerHolder.winners.Contains((CustomWinner)role)) Achievements.RpcCompleteAchievement(Killer, 0, achievements[1]);
     }
     public static Dictionary<int, Achievement> achievements = new();

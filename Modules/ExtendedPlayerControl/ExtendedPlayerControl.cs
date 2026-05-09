@@ -444,6 +444,7 @@ namespace TownOfHost
                 CustomRoles.Jackal or
                 CustomRoles.JackalMafia or
                 CustomRoles.JackalAlien or
+                CustomRoles.JackalWolf or
                 CustomRoles.Remotekiller or
                 CustomRoles.CountKiller or
                 CustomRoles.Fool or

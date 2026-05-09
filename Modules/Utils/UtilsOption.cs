@@ -236,7 +236,7 @@ namespace TownOfHost
             {
                 if (date.Key.IsEnable() || date.Key is CustomRoles.Impostor or CustomRoles.Crewmate ||
                 (date.Key is CustomRoles.MadonnaLovers && CustomRoles.Madonna.IsEnable()) ||
-                (date.Key is CustomRoles.Jackal) && (CustomRoles.JackalAlien.IsEnable() || CustomRoles.JackalMafia.IsEnable()))
+                (date.Key is CustomRoles.Jackal) && (CustomRoles.JackalAlien.IsEnable() || CustomRoles.JackalMafia.IsEnable() || CustomRoles.JackalWolf.IsEnable()))
                 {
                     sort.Add(date.Key, date.Value.OptionWin.GetInt());
                 }

@@ -24,7 +24,7 @@ class Faction
             if (role is CustomRoles.Madonna) continue;
             if (SoloWinOption.AllData.ContainsKey(role) is false)
             {
-                if (role is CustomRoles.Jackaldoll or CustomRoles.JackalAlien or CustomRoles.JackalMafia) continue;
+                if (role is CustomRoles.Jackaldoll or CustomRoles.JackalAlien or CustomRoles.JackalMafia or CustomRoles.JackalWolf) continue;
 
                 AddWinners.Add(role);
                 continue;
@@ -33,7 +33,7 @@ class Faction
             {
                 if (role is not CustomRoles.Jackal) return role.IsEnable();
 
-                return CustomRoles.Jackal.IsEnable() || CustomRoles.JackalAlien.IsEnable() || CustomRoles.JackalMafia.IsEnable() || CustomRoles.Jackaldoll.IsEnable();
+                return CustomRoles.Jackal.IsEnable() || CustomRoles.JackalAlien.IsEnable() || CustomRoles.JackalMafia.IsEnable() || CustomRoles.Jackaldoll.IsEnable() || CustomRoles.JackalWolf.IsEnable();
             });
             option.ReplacementDictionary = new Dictionary<string, string> { { "%roletype%", UtilsRoleText.GetRoleColorAndtext(role) } };
 
@@ -104,7 +104,7 @@ class Faction
             foreach (var player in PlayerCatch.AllPlayerControls)
             {
                 var role = player.GetCustomRole();
-                role = role is CustomRoles.Jackal or CustomRoles.JackalAlien or CustomRoles.JackalMafia ? CustomRoles.Jackal : role;
+                role = role is CustomRoles.Jackal or CustomRoles.JackalAlien or CustomRoles.JackalMafia or CustomRoles.JackalWolf ? CustomRoles.Jackal : role;
                 if (OptionRole.TryGetValue(role, out var option))
                 {
                     if (option.GetBool())

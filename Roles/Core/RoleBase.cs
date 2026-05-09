@@ -536,6 +536,7 @@ public abstract class RoleBase : IDisposable
     public virtual void CheckWinner(GameOverReason reason)
     { }
 
+    public virtual CustomRoles HaveAddRole() => CustomRoles.NotAssigned;
     /// <summary>
     /// 自身を別役職だと思い込む。
     /// [全クライアント]

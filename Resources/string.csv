@@ -170,6 +170,7 @@
 "PlagueDoctor","Plague Doctor","ペスト医師","瘟疫医生","","Чумной Доктор","Médico da Peste",""
 "Remotekiller","Remotekiller","リモートキラー","远程杀手",远程杀手","RemoteKiller","Tueur à distance",""
 "JackalMafia","JackalMafia","ジャッカルマフィア","豺狼黑手党","豺狼黑手黨","Шакаловая мафия","Máfia do Chacal",""
+"JackalWolf","JackalWolf","ジャッカルウルフ"
 "Chef","Chef","シェフ","厨师","廚師","Шеф-Повар","Cozinheiro",""
 "CountKiller","CountKiller","カウントキラー","伯爵杀手","伯爵殺手","Граф Киллер","Conde assassino",""
 "GrimReaper","GrimReaper","死神"
@@ -496,6 +497,7 @@
 "StrawdollInfo","Use him as a substitute","アイツを身代わりに"
 "MissioneerInfo","Mission is impossible","課題をこなせ"
 "FoolInfo","Great power demands great justice","大いなる力は大いなる正義のために"
+"JackalWolfInfo","","ﾜｫｫｰｰｰｰｰｰﾝ"
 "#NeutralInfo"
 
 "# HideAndSeek"
@@ -735,6 +737,7 @@
 "StrawdollInfoLong","Achieve victory by making the required number of kills on your behalf while transformed.\n\nUse the Kill button to select a target, and press the Phantom button to transform into that target.\nIf you get close to the target while transformed, you will die.\nIf the target is alive and is killed while you are transformed, the kill is prevented and the target dies instead.\nAfterwards, the transformation is canceled and you are teleported to the activation point.","変身した状態で設定回数キルを身代わりさせれば勝利。\n\nキルボタンでターゲットを指定し、ファントムボタンを押すことでターゲットに変身することができる。\n変身した状態でターゲットと近付くと自身が死亡する。\nターゲットが生存かつ変身中にキルされるとキルを防ぎ、ターゲットが代わりに死亡する\nその後、変身が解除され、発動地点にテレポートする。"
 "MissioneerInfoLong","By self-voting you can choose one mission from several options each turn.\n\nCompleting a mission grants points equal to the set total of (Level + Category).\nMissions do not change until they are reset.\n\nReach a certain number of points to achieve victory.","自投票をすることで、毎ターン複数から一つのミッションを選ぶことができる。\n\nミッションをこなすと「レベル + カテゴリ」の設定合計ポイントを入手できる。\nミッションは再設定するまで変更されない。\n\n一定ポイントに達すると勝利。"
 "FoolInfoLong","A combination role with <#be7c35>Nue</color>.\n\n- Kill a killable role once and the Crewmates win\n- If enabled in settings and you are alive when the Crewmates win\n\nMeeting either condition grants an additional victory.\nA neutral role whose body becomes an Impostor, gaining Kill and vent abilities.\n\nIf guessed by Nue, you die and Nue gains a self-destruct attack ability.\nFortune-telling results will show you as an Impostor.","<#be7c35>鵺(ぬえ)</color>とのコンビネーション役職。\n\n・キル可能役職を1度キルし,クルーが勝利\n・設定有効かつ,自身が生存した状態でクルーが勝利\nのどちらかの条件を満たすと追加勝利。\n体がインポスターになってしまいキル、ベントが解放されたニュートラル\n\n鵺に推測されると死亡し、鵺が自爆特攻能力を持つようになってしまう。\n占い結果がインポスターになる。"
+"JackalWolfInfoLong","","ジャッカルウルフはすべてのプレイヤーを殺すことができる。\nまた、設定されているインポスターの能力を併せて持つことができる。\nインポスターが残っておらず、生き残っているジャッカルの人数がクルーと同じかそれ以上でジャッカルが勝利する。"
 "#NeutralInfoLong"
 
 "# ImpostorDescInfos"
@@ -2622,6 +2625,7 @@
 "Message.AnnounceTOH-K","This room uses TownOfHost-K v{0}.","この部屋はTownOfHost-K v{0}を使用しています。","这个房间使用 TownOfHost-K v{0}.","這個房間使用 TownOfHost-K v{0}.","В этой комнате используется TownOfHost-K v{0}.","Esta sala usa TownOfHost-K v{0}.",""
 "RoleInfoTitle","【Your role】","【あなたの役職】","【你的角色】","【你的角色】","【ваша роль】","【Seu papel】",""
 "AddonInfoTitle","【Your Addons】","【あなたの属性】","【你的角色】","【你的角色】","【ваша роль】","【Seu papel】",""
+"AddRoleInfoTitle","【Addtional Role】","【併せ持つ役職】"
 "GhostRolesIntoTitle","【Your GhostRole】","【あなたの幽霊役職】"
 "Message.first","【===== Preparation time =====】","【===== 準備の時間だ =====】"
 "spring","spring","春"

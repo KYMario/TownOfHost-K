@@ -22,7 +22,7 @@ public sealed class JackalDoll : RoleBase
             SetupOptionItem,
             "jacd",
             "#00b4eb",
-            (1, 3),
+            (1, 4),
                 assignInfo: new RoleAssignInfo(CustomRoles.Jackaldoll, CustomRoleTypes.Neutral)
                 {
                     AssignCountRule = new(0, 15, 1)

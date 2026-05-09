@@ -29,7 +29,6 @@ public enum From
     Speyrp,
     RevolutionaryHostRoles,
     Love_Couple_Mod
-
 }
 public class SimpleRoleInfo
 {

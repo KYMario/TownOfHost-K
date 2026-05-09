@@ -53,7 +53,7 @@ namespace TownOfHost
                     case CountTypes.MilkyWay: MilkyWay++; break;
                 }
             }
-            if (Jackal == 0 && (CustomRoles.Jackal.IsPresent() || CustomRoles.JackalMafia.IsPresent() || CustomRoles.JackalAlien.IsPresent()))
+            if (Jackal == 0 && (CustomRoles.Jackal.IsPresent() || CustomRoles.JackalMafia.IsPresent() || CustomRoles.JackalAlien.IsPresent() || CustomRoles.JackalWolf.IsPresent()))
                 foreach (var player in PlayerCatch.AllAlivePlayerControls)
                 {
                     if (player.Is(CustomRoles.Jackaldoll) && JackalDoll.BossAndSidekicks.ContainsKey(player.PlayerId))
@@ -102,6 +102,7 @@ namespace TownOfHost
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalMafia);
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalAlien);
                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackaldoll);
+                CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalWolf);
             }
             else if (Imp == 0 && Jackal == 0 && MilkyWay == 0 && MadBetrayer == 0 && FoxAndCrew <= Remotekiller)
             {

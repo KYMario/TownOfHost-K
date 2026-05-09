@@ -199,6 +199,7 @@ namespace TownOfHost
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackal);
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalMafia);
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalAlien);
+                                CustomWinnerHolder.WinnerRoles.Add(CustomRoles.JackalWolf);
                                 CustomWinnerHolder.WinnerRoles.Add(CustomRoles.Jackaldoll);
                                 GameManager.Instance.RpcEndGame(GameOverReason.ImpostorsByKill, false);
                                 break;
@@ -445,10 +446,18 @@ namespace TownOfHost
                         {
                             var role = PlayerControl.LocalPlayer.GetCustomRole();
                             var roleClass = PlayerControl.LocalPlayer.GetRoleClass();
+                            var ismiss = false;
                             if (PlayerControl.LocalPlayer.Is(CustomRoles.Amnesia))
-                                role = PlayerControl.LocalPlayer.Is(CustomRoleTypes.Crewmate) ? CustomRoles.Crewmate : CustomRoles.Impostor;
                             {
-                                if (PlayerControl.LocalPlayer.GetMisidentify(out var missrole)) role = missrole;
+                                role = PlayerControl.LocalPlayer.Is(CustomRoleTypes.Crewmate) ? CustomRoles.Crewmate : CustomRoles.Impostor;
+                                ismiss = true;
+                            }
+                            {
+                                if (PlayerControl.LocalPlayer.GetMisidentify(out var missrole))
+                                {
+                                    role = missrole;
+                                    ismiss = true;
+                                }
                             }
                             if (role is CustomRoles.Amnesiac)
                             {
@@ -464,6 +473,12 @@ namespace TownOfHost
                             }
                             else
                                 SendMessage(role.GetRoleInfo()?.Description?.FullFormatHelp ?? $"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(PlayerControl.LocalPlayer.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{PlayerControl.LocalPlayer.GetRoleDesc(true)}", PlayerControl.LocalPlayer.PlayerId, hRoleInfoTitle, checkl: true);
+                            if (roleClass?.HaveAddRole() is not CustomRoles.NotAssigned and not null && !ismiss)
+                            {
+                                var addrole = roleClass.HaveAddRole();
+                                SendMessage(addrole.GetRoleInfo()?.Description?.FullFormatHelp ?? $"", PlayerControl.LocalPlayer.PlayerId, ColorString(PlayerControl.LocalPlayer.GetRoleColor(), GetString("AddRoleInfoTitle")), checkl: true);
+                            }
+
                             GetAddonsHelp(PlayerControl.LocalPlayer);
 
                             subArgs = args.Length < 2 ? "" : args[1];
@@ -477,9 +492,17 @@ namespace TownOfHost
                                     {
                                         role = player.GetCustomRole();
                                         roleClass = player.GetRoleClass();
-                                        if (player.Is(CustomRoles.Amnesia)) role = player.Is(CustomRoleTypes.Crewmate) ? CustomRoles.Crewmate : CustomRoles.Impostor;
-                                        if (player.GetMisidentify(out var missrole)) role = missrole;
-
+                                        ismiss = false;
+                                        if (player.Is(CustomRoles.Amnesia))
+                                        {
+                                            ismiss = true;
+                                            role = player.Is(CustomRoleTypes.Crewmate) ? CustomRoles.Crewmate : CustomRoles.Impostor;
+                                        }
+                                        if (player.GetMisidentify(out var missrole))
+                                        {
+                                            ismiss = true;
+                                            role = missrole;
+                                        }
                                         if (role is CustomRoles.Amnesiac)
                                         {
                                             if (roleClass is Amnesiac amnesiac && !amnesiac.Realized)
@@ -503,6 +526,12 @@ namespace TownOfHost
                                         {
                                             SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
                                         }
+                                        if (roleClass?.HaveAddRole() is not CustomRoles.NotAssigned and not null && !ismiss)
+                                        {
+                                            var addrole = roleClass.HaveAddRole();
+                                            SendMessage(addrole.GetRoleInfo()?.Description?.FullFormatHelp ?? $"", player.PlayerId, ColorString(player.GetRoleColor(), GetString("AddRoleInfoTitle")), checkl: true);
+                                        }
+
                                         GetAddonsHelp(player);
 
                                         if (player.IsGhostRole())
@@ -559,7 +588,7 @@ namespace TownOfHost
                     case "/jc":
                         if (Assassin.NowUse) break;
                         canceled = true;
-                        if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && PlayerControl.LocalPlayer.IsAlive() && PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien)
+                        if (GameStates.InGame && Options.ImpostorHideChat.GetBool() && PlayerControl.LocalPlayer.IsAlive() && PlayerControl.LocalPlayer.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalWolf)
                         {
                             var send = "";
                             foreach (var ag in args)
@@ -571,7 +600,7 @@ namespace TownOfHost
                             Logger.Info($"{PlayerControl.LocalPlayer.Data.GetLogPlayerName()} : {send}", "jackalChat");
                             foreach (var jac in PlayerCatch.AllPlayerControls)
                             {
-                                if (jac && ((jac?.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || !jac.IsAlive()))
+                                if (jac && ((jac?.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalWolf) || !jac.IsAlive()))
                                 {
                                     SendMessage(send.Mark(ModColors.JackalColor), jac.PlayerId,
                                     ColorString(ModColors.JackalColor, $"Φ{PlayerControl.LocalPlayer.GetPlayerColor()}Φ"));
@@ -1357,8 +1386,17 @@ namespace TownOfHost
                         canceled = true;
                         var role = player.GetCustomRole();
                         var roleclass = player.GetRoleClass();
-                        if (player.Is(CustomRoles.Amnesia)) role = player.Is(CustomRoleTypes.Crewmate) ? CustomRoles.Crewmate : CustomRoles.Impostor;
-                        if (player.GetMisidentify(out var missrole)) role = missrole;
+                        var ismiss = false;
+                        if (player.Is(CustomRoles.Amnesia))
+                        {
+                            ismiss = true;
+                            role = player.Is(CustomRoleTypes.Crewmate) ? CustomRoles.Crewmate : CustomRoles.Impostor;
+                        }
+                        if (player.GetMisidentify(out var missrole))
+                        {
+                            ismiss = true;
+                            role = missrole;
+                        }
                         if (role is CustomRoles.Amnesiac)
                         {
                             if (roleclass is Amnesiac amnesiac && !amnesiac.Realized)
@@ -1381,6 +1419,12 @@ namespace TownOfHost
                             {
                                 SendMessage($"<b><line-height=2.0pic><size=150%>{GetString(role.ToString()).Color(player.GetRoleColor())}</b>\n<size=60%><line-height=1.8pic>{player.GetRoleDesc(true)}", player.PlayerId, RoleInfoTitle);
                             }
+                        ismiss = false;
+                        if (roleclass?.HaveAddRole() is not CustomRoles.NotAssigned and not null && !ismiss)
+                        {
+                            var addrole = roleclass.HaveAddRole();
+                            SendMessage(addrole.GetRoleInfo()?.Description?.FullFormatHelp ?? $"", player.PlayerId, ColorString(player.GetRoleColor(), GetString("AddRoleInfoTitle")), checkl: true);
+                        }
                         GetAddonsHelp(player);
                     }
                     break;
@@ -1501,14 +1545,14 @@ namespace TownOfHost
                 case "/jacct":
                 case "/jc":
                     if (Assassin.NowUse) break;
-                    if (GameStates.InGame && Options.JackalHideChat.GetBool() && player.IsAlive() && player.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien)
+                    if (GameStates.InGame && Options.JackalHideChat.GetBool() && player.IsAlive() && player.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalWolf)
                     {
                         string send = "";
                         if (GetHideSendText(ref canceled, ref send) is false) return;
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "JackalChat");
                         foreach (var jac in AllPlayerControls)
                         {
-                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien) || (!jac.IsAlive())))
+                            if (jac && ((jac.GetCustomRole() is CustomRoles.Jackal or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalAlien or CustomRoles.JackalWolf) || (!jac.IsAlive())))
                             {
                                 if (jac.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)

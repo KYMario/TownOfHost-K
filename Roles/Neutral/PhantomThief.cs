@@ -264,7 +264,7 @@ public sealed class PhantomThief : RoleBase, IKiller, IKillFlashSeeable, IRoomTa
                 {
                     winner = CustomWinner.Crewmate;
                 }
-            if (Targetrole is CustomRoles.JackalAlien or CustomRoles.Jackaldoll or CustomRoles.JackalMafia)
+            if (Targetrole is CustomRoles.JackalAlien or CustomRoles.Jackaldoll or CustomRoles.JackalMafia or CustomRoles.JackalWolf)
             {
                 winner = CustomWinner.Jackal;
             }
