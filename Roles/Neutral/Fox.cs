@@ -176,7 +176,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
             if (seer.IsNeutralKiller()) return CanSeeNeutralKiller;
 
             /* インポスターでも第三キラーでもない場合 */
-            return CanSeeOther;
+            return (seer.GetRoleClass() as IKiller)?.IsKiller ?? false;
         }
         return false;
     }

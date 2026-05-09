@@ -140,6 +140,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton, IDoubleTr
         }
         AddRole?.Add();
         assassin = this;
+        Player.AddDoubleTrigger();
     }
     public override void OnDestroy()
     {
