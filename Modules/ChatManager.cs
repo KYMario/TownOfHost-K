@@ -238,14 +238,14 @@ namespace TownOfHost.Modules.ChatManager
         {
             if (PlayerControl.LocalPlayer.IsAlive() && !ChatUpdatePatch.DoBlockChat)
             {
-                if (Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).Count() > 0)
+                if (Main.MessagesToSend.Count(x => x.Item2 is not byte.MaxValue) > 0)
                 {
                     if (Utils.IsRestriction())
                     {
                         SendMessageInGame(null);
                         return;
                     }
-                    (string msg, byte sendTo, string title) = Main.MessagesToSend.Where(x => x.Item2 is not byte.MaxValue).FirstOrDefault();
+                    (string msg, byte sendTo, string title) = Main.MessagesToSend.FirstOrDefault(x => x.Item2 is not byte.MaxValue);
                     if (sendTo is not byte.MaxValue && Main.MegCount < 50)
                     {
                         Main.MessagesToSend.Remove((msg, sendTo, title));
@@ -577,6 +577,9 @@ namespace TownOfHost.Modules.ChatManager
             if (senderplayer == PlayerControl.LocalPlayer)
                 _ = new LateTask(() =>
                 { if (PlayerControl.LocalPlayer is not null) Utils.ApplySuffix(null, true); }, 0.24f, "", true);
+
+            if (Utils.IsRestriction() && senderplayer.PlayerId != PlayerControl.LocalPlayer.PlayerId)
+                return;
 
             Main.MessagesToSend.RemoveAt(0);
 
