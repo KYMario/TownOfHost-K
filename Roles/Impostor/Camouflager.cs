@@ -131,7 +131,6 @@ public sealed class Camouflager : RoleBase, IImpostor, IUsePhantomButton
         NowUse = false;
         Limit = -50;
         VentPlayers.Clear();
-        PlayerCatch.AllPlayerControls.Do(pc => Camouflage.RpcSetSkin(pc, ForceRevert: true, force: null));
     }
     public override bool NotifyRolesCheckOtherName => true;
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)

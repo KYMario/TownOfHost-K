@@ -582,6 +582,8 @@ namespace TownOfHost
                             UtilsNotifyRoles.NotifyRoles(OnlyMeName: true);
                     }, 15f, "Intro", true);
                 }
+
+                GameStates.AnyShapeShifter = PlayerCatch.AllPlayerControls.Any(pc => pc.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() is RoleTypes.Shapeshifter);
             }
             else
             {

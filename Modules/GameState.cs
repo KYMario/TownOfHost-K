@@ -276,6 +276,7 @@ namespace TownOfHost
             CalledMeeting = false;
             ExiledAnimate = false;
             canmusic = false;
+            AnyShapeShifter = false;
             turntimer = 0;
         }
         public static bool InGame = false; //AllClient
@@ -300,6 +301,7 @@ namespace TownOfHost
         public static bool canmusic;  //AllClient
         public static bool introDestroyed = false; //AllClient
         public static float turntimer;
+        public static bool AnyShapeShifter;
     }
     public static class MeetingStates
     {

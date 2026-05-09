@@ -8,7 +8,6 @@ using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Impostor;
 using TownOfHost.Roles.Neutral;
 using static TownOfHost.Roles.Core.RoleBase;
-using TownOfHost.Roles;
 
 namespace TownOfHost
 {
@@ -84,98 +83,9 @@ namespace TownOfHost
             //=============================================
             //以下、ボタンが押されることが確定したものとする。
             //=============================================
-
-            reporternetid = __instance.NetId;
-            targetid = target?.PlayerId ?? byte.MaxValue;
-            Wait = true;
-            GameStates.task = false;
-
-            DisableDevice.StartMeeting();
-            foreach (var kvp in PlayerState.AllPlayerStates)
-            {
-                var pc = PlayerCatch.GetPlayerById(kvp.Key);
-                kvp.Value.LastRoom = pc?.GetPlainShipRoom();
-                if (Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable())
-                    kvp.Value.IsBlackOut = true;
-            }
-            UtilsOption.MarkEveryoneDirtySettings();
-
-            AdminProvider.CalculateAdmin(true);
-
-            // シェイプキラー：通報者書き換え
             ShapeKiller.SetDummyReport(ref __instance, target);
 
-            if (target != null)
-            {
-                UtilsGameLog.AddGameLog("Meeting", UtilsName.GetPlayerColor(target, true) + Translator.GetString("Meeting.Report") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true)));
-                var colorid = Camouflage.PlayerSkins[target.PlayerId].ColorId;
-                var DieName = Palette.GetColorName(colorid);
-                var check = false;
-                var color = Palette.PlayerColors[colorid];
-                if (ChengeMeetingInfo.TryGetValue(target.PlayerId, out var output))
-                {
-                    color = ModColors.NeutralGray;
-                    check = true;
-                    DieName = output;
-                }
-                MeetingHudPatch.Oniku = (check ? DieName : UtilsName.GetPlayerColor(target, true)) + Translator.GetString("Meeting.Report") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true));
-                UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[__instance.PlayerId].ColorId]) + "<#ffffff>" + string.Format(Translator.GetString("MI.die"), DieName.Color(color)) + "</u></color>";
-                RpcSyncMeetingInfo(__instance, target, check ? DieName : null);
-            }
-            else
-            {
-                UtilsGameLog.AddGameLog("Meeting", Translator.GetString("Meeting.Button") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true)));
-                MeetingHudPatch.Oniku = Translator.GetString("Meeting.Button") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(__instance.PlayerId, true));
-                UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[__instance.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
-                RpcSyncMeetingInfo(__instance, target);
-            }
-            DisableDevice.CheckAddtime();
-            DisableDevice.SendMessage();
-
-            foreach (var pc in PlayerCatch.AllPlayerControls)
-            {
-                var roleClass = pc.GetRoleClass();
-                roleClass?.OnReportDeadBody(__instance, target);
-            }
-
-            _ = new LateTask(() =>
-            {
-                foreach (var pc in PlayerCatch.AllPlayerControls)
-                {
-                    if (!pc) continue;
-                    Camouflage.RpcSetSkin(pc, RevertToDefault: true, force: true);
-                }
-            }, 1f, "SetSkin", false);
-
-            // var State = PlayerState.GetByPlayerId(__instance.PlayerId);
-            if (State.NumberOfRemainingButtons > 0 && target is null)
-                State.NumberOfRemainingButtons--;
-
-            //if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return false;
-            //サボ関係多分なしに～
-            //押したのなら強制で始める
-            _ = new LateTask(() =>
-            {
-                UtilsNotifyRoles.NotifyMeetingRoles();
-
-                MeetingTimeManager.OnReportDeadBody();
-
-                UtilsOption.SyncAllSettings();
-
-                InnerNetClientPatch.DontTouch = true;
-                MeetingRoomManager.Instance.AssignSelf(__instance, target);
-                DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(__instance);
-                __instance.StartMeeting(target);
-                _ = new LateTask(() =>
-                {
-                    CustomRpcSender.Create("StartMeeting")
-                    .AutoStartRpc(__instance.NetId, RpcCalls.StartMeeting)
-                    .Write(target?.PlayerId ?? byte.MaxValue)
-                    .EndRpc()
-                    .SendMessage();
-                }, 0.2f, "Startmeeting", true);
-                Wait = false;
-            }, Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable() ? 0.12f : 0, "StartMeeting", true);
+            WaitMeeting(__instance, target);
 
             return false;
         }
@@ -214,102 +124,8 @@ namespace TownOfHost
 
             PlayerControlRpcUseZiplinePatch.OnMeeting(reporter, target);
 
-            GameStates.CalledMeeting = true;
-            GameStates.task = false;// Pos.Clear();
-            Wait = true;
-
-            DisableDevice.StartMeeting();
-            foreach (var kvp in PlayerState.AllPlayerStates)
-            {
-                var pc = PlayerCatch.GetPlayerById(kvp.Key);
-                kvp.Value.LastRoom = pc?.GetPlainShipRoom();
-                if (Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable())
-                    kvp.Value.IsBlackOut = true;
-            }
-
-            UtilsOption.MarkEveryoneDirtySettings();
-            AdminProvider.CalculateAdmin(true);
-            // シェイプキラー：通報者書き換え
             ShapeKiller.SetDummyReport(ref reporter, target);
-
-            if (Meetinginfo == "")
-            {
-                if (target != null)
-                {
-                    UtilsGameLog.AddGameLog("Meeting", UtilsName.GetPlayerColor(target, true) + Translator.GetString("Meeting.Report") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true)));
-                    var colorid = Camouflage.PlayerSkins[target.PlayerId].ColorId;
-                    var DieName = Palette.GetColorName(colorid);
-                    var check = false;
-                    var color = Palette.PlayerColors[colorid];
-                    if (ChengeMeetingInfo.TryGetValue(target.PlayerId, out var output))
-                    {
-                        color = ModColors.NeutralGray;
-                        check = true;
-                        DieName = output;
-                    }
-                    MeetingHudPatch.Oniku = (check ? DieName : UtilsName.GetPlayerColor(target, true)) + Translator.GetString("Meeting.Report") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
-                    UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + string.Format(Translator.GetString("MI.die"), DieName.Color(color)) + "</u></color>";
-                    RpcSyncMeetingInfo(reporter, target, check ? DieName : null);
-                }
-                else
-                {
-                    UtilsGameLog.AddGameLog("Meeting", Translator.GetString("Meeting.Button") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true)));
-                    MeetingHudPatch.Oniku = Translator.GetString("Meeting.Button") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
-                    UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
-                    RpcSyncMeetingInfo(reporter, target);
-                }
-            }
-            else
-            {
-                var info = GetString(Meetinginfo);
-                MeetingHudPatch.Oniku = info;
-                UtilsNotifyRoles.ExtendedMeetingText = $"<color={colorcode}><u>★" + info + "</u></color>";
-                RpcSyncMeetingInfo(reporter, target, meetingInfo: Meetinginfo, infoColor: colorcode);
-            }
-            DisableDevice.CheckAddtime();
-            DisableDevice.SendMessage();
-            reporternetid = reporter.NetId;
-            targetid = target?.PlayerId ?? byte.MaxValue;
-
-            if (!Options.firstturnmeeting || !MeetingStates.FirstMeeting)
-                foreach (var pc in PlayerCatch.AllPlayerControls)
-                {
-                    var roleClass = pc.GetRoleClass();
-                    roleClass?.OnReportDeadBody(reporter, target);
-                }
-            _ = new LateTask(() =>
-            {
-                foreach (var pc in PlayerCatch.AllPlayerControls)
-                {
-                    if (!pc) continue;
-                    Camouflage.RpcSetSkin(pc, RevertToDefault: true, force: true);
-                }
-            }, 1f, "SetSkin", false);
-
-            //if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
-            _ = new LateTask(() =>
-            {
-                UtilsNotifyRoles.NotifyMeetingRoles();
-
-                MeetingTimeManager.OnReportDeadBody();
-
-                UtilsOption.SyncAllSettings();
-
-                InnerNetClientPatch.DontTouch = true;
-                MeetingRoomManager.Instance.AssignSelf(reporter, target);
-                DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(reporter);
-                reporter.StartMeeting(target);
-
-                _ = new LateTask(() =>
-                {
-                    CustomRpcSender.Create("StartMeeting")
-                    .AutoStartRpc(reporter.NetId, RpcCalls.StartMeeting)
-                    .Write(target?.PlayerId ?? byte.MaxValue)
-                    .EndRpc()
-                    .SendMessage();
-                }, 0.2f, "Startmeeting", true);
-                Wait = false;
-            }, Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable() ? 0.12f : 0, "StartMeeting", true);
+            WaitMeeting(reporter, target);
         }
         public static Dictionary<byte, (float time, DontReportreson reason)> DontReport = new();
         public static string GetDontReportMark(PlayerControl seer, PlayerControl seen, bool isForMeeting = false)
@@ -486,7 +302,95 @@ namespace TownOfHost
                 }, 0.2f, "", true);
             }
         }
+        static void WaitMeeting(PlayerControl reporter, NetworkedPlayerInfo target)
+        {
+            if (!AmongUsClient.Instance.AmHost) return;
 
+            reporternetid = reporter.NetId;
+            targetid = target?.PlayerId ?? byte.MaxValue;
+            Wait = true;
+            GameStates.task = false;
+            bool IsMeetingBlackout = Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable() || GameStates.AlreadyDied;
+
+            DisableDevice.StartMeeting();
+            foreach (var kvp in PlayerState.AllPlayerStates)
+            {
+                var pc = PlayerCatch.GetPlayerById(kvp.Key);
+                kvp.Value.LastRoom = pc?.GetPlainShipRoom();
+                if (IsMeetingBlackout) kvp.Value.IsBlackOut = true;
+            }
+
+            AdminProvider.CalculateAdmin(true);
+
+            if (target != null)
+            {
+                UtilsGameLog.AddGameLog("Meeting", UtilsName.GetPlayerColor(target, true) + Translator.GetString("Meeting.Report") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true)));
+                var colorid = Camouflage.PlayerSkins[target.PlayerId].ColorId;
+                var DieName = Palette.GetColorName(colorid);
+                var check = false;
+                var color = Palette.PlayerColors[colorid];
+                if (ChengeMeetingInfo.TryGetValue(target.PlayerId, out var output))
+                {
+                    color = ModColors.NeutralGray;
+                    check = true;
+                    DieName = output;
+                }
+                MeetingHudPatch.Oniku = (check ? DieName : UtilsName.GetPlayerColor(target, true)) + Translator.GetString("Meeting.Report") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
+                UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + string.Format(Translator.GetString("MI.die"), DieName.Color(color)) + "</u></color>";
+                RpcSyncMeetingInfo(reporter, target, check ? DieName : null);
+            }
+            else
+            {
+                UtilsGameLog.AddGameLog("Meeting", Translator.GetString("Meeting.Button") + "\n\t\t┗  " + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true)));
+                MeetingHudPatch.Oniku = Translator.GetString("Meeting.Button") + "\n　" + string.Format(Translator.GetString("Meeting.Shoushu"), UtilsName.GetPlayerColor(reporter.PlayerId, true));
+                UtilsNotifyRoles.ExtendedMeetingText = "<u>★".Color(Palette.PlayerColors[Camouflage.PlayerSkins[reporter.PlayerId].ColorId]) + "<#ffffff>" + Translator.GetString("MI.Bot") + "</u></color>";
+                RpcSyncMeetingInfo(reporter, target);
+            }
+            DisableDevice.CheckAddtime();
+            DisableDevice.SendMessage();
+
+            foreach (var pc in PlayerCatch.AllPlayerControls)
+            {
+                var roleClass = pc.GetRoleClass();
+                roleClass?.OnReportDeadBody(reporter, target);
+            }
+
+            _ = new LateTask(() =>
+            {
+                foreach (var pc in PlayerCatch.AllPlayerControls)
+                {
+                    if (!pc) continue;
+                    Camouflage.RpcSetSkin(pc, RevertToDefault: true, force: true);
+                }
+            }, 0.35f, "SetSkin", false);
+
+            var State = PlayerState.GetByPlayerId(reporter.PlayerId);
+            if (State.NumberOfRemainingButtons > 0 && target is null)
+                State.NumberOfRemainingButtons--;
+
+            //サボ関係多分なしに～
+            //押したのなら強制で始める
+            _ = new LateTask(() => UtilsOption.SyncAllSettings(), 0.2f, "", true);
+            _ = new LateTask(() =>
+            {
+                UtilsNotifyRoles.NotifyMeetingRoles();
+
+                MeetingTimeManager.OnReportDeadBody();
+                InnerNetClientPatch.DontTouch = true;
+                MeetingRoomManager.Instance.AssignSelf(reporter, target);
+                DestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(reporter);
+                reporter.StartMeeting(target);
+                _ = new LateTask(() =>
+                {
+                    CustomRpcSender.Create("StartMeeting")
+                    .AutoStartRpc(reporter.NetId, RpcCalls.StartMeeting)
+                    .Write(target?.PlayerId ?? byte.MaxValue)
+                    .EndRpc()
+                    .SendMessage();
+                }, 0.2f, "Startmeeting", true);
+                Wait = false;
+            }, IsMeetingBlackout ? Main.LagTime * 2.5f : 0, "StartMeeting", true);
+        }
         public static void RpcCancelMeeting(PlayerControl target, DontReportreson? reason = null)
         {
             if (!AmongUsClient.Instance.AmHost || !PlayerCatch.AnyModClient()) return;
