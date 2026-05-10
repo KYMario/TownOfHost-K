@@ -1008,6 +1008,7 @@
 "## サボタージュ"
 "Sabotage","SabotageOption","サボタージュ設定"
 "ChangeSabotageWinRole","Change Sabotage Win","サボタージュでの勝利を変更する"
+"OptionSabotageFinAllKill","SabotageWin AllKill","サボタージュで勝利時、勝利者以外をキルする"
 "CommsCamouflage","Camouflage During Comms Sabotage","コミュサボ時のカモフラージュ","通信破坏时伪装","通訊破壞時所有玩家變成小灰人","Камуфляж при Саботаже Связи","Camuflagem Durante Comunicação",""
 "LightsOutSpecialSettings","Fix Lights Special Settings","停電の特殊設定","停电特殊设定","關燈特殊設定","Специальные настройки при саботаже света","Configuração Especial de Consertar Luzes",""
 "DisableAirshipViewingDeckLightsPanel","Disable Viewing Deck Lights Panel <#ff3300>Ⓐ</color>","展望の配電盤を無効化 <#ff3300>Ⓐ</color>","禁用瞭望台配电箱(飞艇地图)","關閉觀景台的配電箱  <#ff3300>Ⓐ</color>","Отключить починку света на ''Смотровой Палубе''  <#ff3300>Ⓐ</color>","Desativar Painel de Luzes do Deck Panorâmico <#ff3300>Ⓐ</color>",""

@@ -289,7 +289,7 @@ namespace TownOfHost.Modules.ChatManager
             var SendToPlayerControl = PlayerCatch.GetPlayerById(sendTo);
             int clientId = sendTo == byte.MaxValue ? -1 : SendToPlayerControl.GetClientId();
 
-            if (clientId is not -1 && SendToPlayerControl is null)
+            if (sendTo != byte.MaxValue && SendToPlayerControl is null)
             {
                 Main.MessagesToSend.RemoveAt(0);
                 Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
@@ -325,7 +325,7 @@ namespace TownOfHost.Modules.ChatManager
                             var seerclientid = seer.GetClientId();
 
                             GameDataSerializePatch.SerializeMessageCount++;
-                            var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                            var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.Reliable);
                             Nwriter.StartMessage(seerclientid);
                             if (seer.IsAlive())
                             {
@@ -399,7 +399,7 @@ namespace TownOfHost.Modules.ChatManager
                         if (chatController is not null)
                             chatController.timeSinceLastMessage = 0;
                     }
-                    var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.None);
+                    var Nwriter = CustomRpcSender.Create("MessagesToSend", SendOption.Reliable);
                     Nwriter.StartMessage(clientId);
                     Nwriter.StartRpc(senderplayer.NetId, (byte)RpcCalls.SetName)
                     .Write(senderplayer.Data.NetId)

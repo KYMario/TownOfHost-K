@@ -468,6 +468,7 @@ namespace TownOfHost
         public static OptionItem CommsDonttouchTime;
         // 他サボ
         public static OptionItem ChangeSabotageWinRole;
+        public static OptionItem OptionSabotageFinAllKill;
         // マップ改造
         public static OptionItem Sabotage;
         public static OptionItem MapModification;
@@ -958,6 +959,7 @@ namespace TownOfHost
                 .SetEnabled(() => IsActiveFungle);
             // 他
             ChangeSabotageWinRole = BooleanOptionItem.Create(108100, "ChangeSabotageWinRole", false, TabGroup.MainSettings, false).SetParent(Sabotage);
+            OptionSabotageFinAllKill = BooleanOptionItem.Create(10815, "OptionSabotageFinAllKill", false, TabGroup.MainSettings, false).SetParent(Sabotage);
             // サボタージュのクールダウン変更
             ModifySabotageCooldown = BooleanOptionItem.Create(108101, "ModifySabotageCooldown", false, TabGroup.MainSettings, false).SetParent(Sabotage);
             SabotageCooldown = FloatOptionItem.Create(108102, "SabotageCooldown", new(1f, 60f, 1f), 30f, TabGroup.MainSettings, false).SetParent(ModifySabotageCooldown)

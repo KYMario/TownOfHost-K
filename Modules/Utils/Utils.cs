@@ -411,7 +411,7 @@ namespace TownOfHost
                 Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));
             if (towsend is not "")
             {
-                SendMessage(towsend, sendTo, "NonTitle", true, isTowSend: true);
+                SendMessage(towsend, sendTo, IsRestriction() ? "NonTitle" : title, true, isTowSend: true);
             }
         }
 
