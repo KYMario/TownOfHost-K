@@ -285,7 +285,7 @@ public sealed class EvilHacker : RoleBase, IImpostor, IKillFlashSeeable
         return adminInfoText += Utils.ColorString(Color.green, $"{GetString("MurderNotify")}: {string.Join(", ", roomNames)}");
     }
     public bool? CheckKillFlash(MurderInfo info) =>
-        canSeeKillFlash && !info.IsSuicide && !info.IsAccident && info.AttemptKiller.Is(CustomRoleTypes.Impostor);
+        canSeeKillFlash && !info.IsSuicide && !info.IsAccident && info.AttemptKiller.IsTeammate(Player);
 
     public override void ApplyGameOptions(IGameOptions opt)
     {

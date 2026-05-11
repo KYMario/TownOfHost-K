@@ -140,7 +140,7 @@ namespace TownOfHost.Roles.Impostor
             if (seen.GetLoverRole() != seer.GetLoverRole() && seen.IsLovers() && KnowDeadRole(seen))
                 mark.Append(Utils.ColorString(UtilsRoleText.GetRoleColor(seen.GetLoverRole()), "♥"));
 
-            if (canSeeImpostorAbilities)
+            if (canSeeImpostorAbilities && Player.Is(CustomRoles.Insider))
             {
                 foreach (var impostor in PlayerCatch.AllPlayerControls)
                 {

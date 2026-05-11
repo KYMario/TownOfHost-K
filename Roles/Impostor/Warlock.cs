@@ -113,7 +113,7 @@ public sealed class Warlock : RoleBase, IImpostor
                 Player.SetKillCooldown();
                 CursedPlayer = null;
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 1, achievements[0]);
-                if (killTarget.Is(CustomRoleTypes.Impostor))
+                if (killTarget.IsTeammate(Player))
                     Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
         }

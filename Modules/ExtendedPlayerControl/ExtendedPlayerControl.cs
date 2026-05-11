@@ -691,6 +691,26 @@ namespace TownOfHost
         public static bool Is(this PlayerControl target, CustomRoleTypes type) { return target.GetCustomRole().GetCustomRoleTypes() == type; }
         public static bool Is(this PlayerControl target, RoleTypes type) { return target.GetCustomRole().GetRoleTypes() == type; }
         public static bool Is(this PlayerControl target, CountTypes type) { return target.GetCountTypes() == type; }
+        /// <summary>
+        /// インポスター同士(エゴイスト含む)、またはジャッカル(ドール除く)同士かの判定です
+        /// </summary>
+        /// <param name="player"></param>
+        /// <param name="target"></param>
+        /// <returns></returns>
+        public static bool IsTeammate(this PlayerControl player, PlayerControl target)
+        {
+            var plrole = player.GetCustomRole();
+            var tgrole = target.GetCustomRole();
+            if (plrole.IsImpostor() || plrole is CustomRoles.Egoist)
+            {
+                return tgrole.IsImpostor() || tgrole is CustomRoles.Egoist;
+            }
+            if (player.Is(CountTypes.Jackal))
+            {
+                return target.Is(CountTypes.Jackal);
+            }
+            return false;
+        }
         public static bool IsAlive(this PlayerControl target)
         {
             //ロビーなら生きている

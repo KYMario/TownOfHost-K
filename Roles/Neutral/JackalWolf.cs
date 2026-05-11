@@ -60,7 +60,7 @@ public sealed class JackalWolf : RoleBase, ILNKiller, IUsePhantomButton, IDouble
         {
             if (data.Key.IsImpostor() is false && data.Key is not CustomRoles.NotAssigned) continue;
             if (data.Key is CustomRoles.AlienHijack or CustomRoles.EvilSatellite or CustomRoles.ConnectSaver
-            or CustomRoles.Limiter or CustomRoles.Assassin)
+            or CustomRoles.Limiter or CustomRoles.Assassin or CustomRoles.Amnesiac)
             {
                 InvalidRoles.Add(data.Key);
                 continue;
@@ -85,11 +85,11 @@ public sealed class JackalWolf : RoleBase, ILNKiller, IUsePhantomButton, IDouble
     }
     public override void Add()
     {
-        haverole = OptionHaveRole.GetRole();
+        haverole = OptionHaveRole.GetBool() ? OptionHaveRole.GetRole() : CustomRoles.Impostor;
         if (CustomRoleManager.AllRolesInfo.TryGetValue(haverole, out var roleinfo))
         {
             AddRole = roleinfo.CreateInstance(Player);
-            Logger.Info($"Assasin + {haverole}", "Assasin");
+            Logger.Info($"JackalWolf + {haverole}", "JackalWolf");
         }
         AddRole?.Add();
         Player.AddDoubleTrigger();
@@ -112,7 +112,7 @@ public sealed class JackalWolf : RoleBase, ILNKiller, IUsePhantomButton, IDouble
         => AddRole?.CheckVoteAsVoter(votedForId, voter) ?? true;
     public override void OverrideTrueRoleName(ref Color roleColor, ref string roleText)
     {
-        if (AddRole is null) return;
+        if (AddRole is null || haverole is CustomRoles.Impostor) return;
 
         roleText += $"<size=50%>{GetString($"{haverole}")}</size>";
     }

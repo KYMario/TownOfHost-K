@@ -53,7 +53,7 @@ public sealed class EvilMaker : RoleBase, IImpostor, IUsePhantomButton
 
         var target = Player.GetKillTarget(true);
         if (target == null) return;
-        if ((target.GetCustomRole() is CustomRoles.SKMadmate or CustomRoles.King or CustomRoles.Merlin || target.GetCustomRole().IsImpostor()) && !SuddenDeathMode.NowSuddenDeathMode) return;
+        if ((target.GetCustomRole() is CustomRoles.SKMadmate or CustomRoles.King or CustomRoles.Merlin || target.IsTeammate(Player)) && !SuddenDeathMode.NowSuddenDeathMode) return;
 
         Used = true;
         AdjustKillCooldown = false;
@@ -66,7 +66,16 @@ public sealed class EvilMaker : RoleBase, IImpostor, IUsePhantomButton
         target.RpcProtectedMurderPlayer(Player);
         target.RpcProtectedMurderPlayer(target);
         UtilsGameLog.AddGameLog($"SideKick", string.Format(GetString("log.Sidekick"), UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})", UtilsName.GetPlayerColor(Player, true)));
-        target.RpcSetCustomRole(CustomRoles.SKMadmate, log: null);
+        target.RpcSetCustomRole(Player.Is(CustomRoles.JackalWolf) ? CustomRoles.Jackaldoll : CustomRoles.SKMadmate, log: null);
+        if (Player.Is(CustomRoles.JackalWolf))
+        {
+            if (!Utils.RoleSendList.Contains(target.PlayerId)) Utils.RoleSendList.Add(target.PlayerId);
+            Neutral.JackalDoll.Sidekick(target, Player);
+            UtilsOption.MarkEveryoneDirtySettings();
+            AdjustKillCooldown = true;
+            SendRPC();
+            return;
+        }
         NameColorManager.Add(Player.PlayerId, target.PlayerId, "#ff1919");
         NameColorManager.Add(target.PlayerId, Player.PlayerId, "#ff1919");
         if (!Utils.RoleSendList.Contains(target.PlayerId)) Utils.RoleSendList.Add(target.PlayerId);

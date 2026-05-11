@@ -76,7 +76,7 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
         ResetCooldown = false;
         if (!SKMad || Options.CanMakeMadmateCount.GetInt() <= PlayerCatch.SKMadmateNowCount) return;
         var target = Player.GetKillTarget(true);
-        if (target == null || target.GetCustomRole() is CustomRoles.King or CustomRoles.Merlin || (target.Is(CustomRoleTypes.Impostor) && !SuddenDeathMode.NowSuddenDeathTemeMode)) return;
+        if (target == null || target.GetCustomRole() is CustomRoles.King or CustomRoles.Merlin || (target.IsTeammate(Player) && !SuddenDeathMode.NowSuddenDeathTemeMode)) return;
 
         SKMad = false;
         SendRPC();
@@ -86,7 +86,14 @@ public sealed class Mafia : RoleBase, IImpostor, IUsePhantomButton
         }
         Player.RpcProtectedMurderPlayer(target);
         target.RpcProtectedMurderPlayer(Player);
-        target.RpcProtectedMurderPlayer(target);
+        target.RpcProtectedMurderPlayer(target); target.RpcSetCustomRole(Player.Is(CustomRoles.JackalWolf) ? CustomRoles.Jackaldoll : CustomRoles.SKMadmate, log: null);
+        if (Player.Is(CustomRoles.JackalWolf))
+        {
+            if (!Utils.RoleSendList.Contains(target.PlayerId)) Utils.RoleSendList.Add(target.PlayerId);
+            Neutral.JackalDoll.Sidekick(target, Player);
+            UtilsOption.MarkEveryoneDirtySettings();
+            return;
+        }
         UtilsGameLog.AddGameLog($"SideKick", string.Format(GetString("log.Sidekick"), UtilsName.GetPlayerColor(target, true) + $"({UtilsRoleText.GetTrueRoleName(target.PlayerId)})", UtilsName.GetPlayerColor(Player, true)));
         target.RpcSetCustomRole(CustomRoles.SKMadmate);
         target.RpcSetRole(Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate, true);

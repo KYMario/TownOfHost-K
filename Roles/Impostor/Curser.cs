@@ -75,7 +75,7 @@ public sealed class Curser : RoleBase, IImpostor
 
     public override bool CheckShapeshift(PlayerControl target, ref bool animate)
     {
-        if ((target.Is(CustomRoleTypes.Impostor) && !SuddenDeathMode.NowSuddenDeathMode) || CurseCount == 0 || target.PlayerId == TargetId) return false;
+        if ((!target.IsTeammate(Player) && !SuddenDeathMode.NowSuddenDeathMode) || CurseCount == 0 || target.PlayerId == TargetId) return false;
 
         TargetId = target.PlayerId;
         Logger.Info($"{Player.GetNameWithRole()}のターゲットを{target.GetNameWithRole()}に設定", "CurserTarget");

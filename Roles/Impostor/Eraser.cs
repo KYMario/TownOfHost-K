@@ -127,7 +127,7 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
 
             var role = player.GetCustomRole();
             //インポスターならキャンセル
-            if (role.IsImpostor() && !SuddenDeathMode.NowSuddenDeathMode) continue;
+            if (player.IsTeammate(Player) && !SuddenDeathMode.NowSuddenDeathMode) continue;
             if (player.IsAlive() is false) continue;//既に死んでたら役職を消さない。
 
             //消したと思ってるリスト
@@ -148,7 +148,7 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             if (AmongUsClient.Instance.AmHost)
             {
                 Erasedtargets.Add(player.PlayerId);
-                player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
+                player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode || Player.Is(CustomRoles.JackalWolf) ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
                 if (role.IsNeutral()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }

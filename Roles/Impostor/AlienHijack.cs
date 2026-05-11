@@ -280,7 +280,7 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
                 Logger.Info("部屋の当たり判定を取得できないため暗転を行いません", "Alien.S");
                 return;
             }
-            playersToDarken = playersToDarken.Where(player => !player.Is(CustomRoleTypes.Impostor));
+            playersToDarken = playersToDarken.Where(player => !player.IsTeammate(Player));
             {
                 darkenedPlayers = playersToDarken.ToArray();
                 foreach (var player in playersToDarken)
@@ -870,4 +870,4 @@ public sealed class AlienHijack : RoleBase, IMeetingTimeAlterable, IImpostor, IN
     //モード
     public AlienMode mode = AlienMode.None;
 }
-#endregion
+    #endregion

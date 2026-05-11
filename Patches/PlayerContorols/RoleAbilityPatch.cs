@@ -12,6 +12,7 @@ using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Ghost;
 using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Patches.ISystemType;
+using TownOfHost.Roles.Neutral;
 
 namespace TownOfHost
 
@@ -45,6 +46,7 @@ namespace TownOfHost
             {
                 var sidekickable = roleclass as ISidekickable;
                 var targetRole = sidekickable?.SidekickTargetRole ?? CustomRoles.SKMadmate;
+                if (shapeshifter.Is(CustomRoles.JackalWolf)) targetRole = CustomRoles.Jackaldoll;
 
                 //var targetm = shapeshifter.GetKillTarget();
                 Vector2 shapeshifterPosition = shapeshifter.transform.position;//変身者の位置
@@ -52,7 +54,7 @@ namespace TownOfHost
                 float dis;
                 foreach (var pc in PlayerCatch.AllAlivePlayerControls)
                 {
-                    if ((pc.Data.Role.Role != RoleTypes.Shapeshifter || pc.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() != RoleTypes.Shapeshifter) && !pc.Is(CustomRoleTypes.Impostor) && !pc.Is(targetRole))
+                    if ((pc.Data.Role.Role != RoleTypes.Shapeshifter || pc.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() != RoleTypes.Shapeshifter) && !pc.IsTeammate(shapeshifter) && !pc.Is(targetRole))
                     {
                         dis = Vector2.Distance(shapeshifterPosition, pc.transform.position);
                         mpdistance.Add(pc, dis);
@@ -74,20 +76,30 @@ namespace TownOfHost
                         UtilsGameLog.AddGameLog("SideKick", string.Format(Translator.GetString("log.Sidekick"), UtilsName.GetPlayerColor(targetm, true) + $"({UtilsRoleText.GetTrueRoleName(targetm.PlayerId)})", UtilsName.GetPlayerColor(shapeshifter, true)));
                         targetm.RpcSetCustomRole(targetRole);
                         Logger.Info($"Make SKMadmate:{targetm.name}", "Shapeshift");
-                        PlayerCatch.SKMadmateNowCount++;
                         shapeshifter.RpcProtectedMurderPlayer(targetm);
                         targetm.RpcProtectedMurderPlayer(shapeshifter);
                         targetm.RpcProtectedMurderPlayer(targetm);
+                        if (targetRole is CustomRoles.Jackaldoll)
+                        {
+                            JackalDoll.Sidekick(targetm, shapeshifter);
+                            if (!Utils.RoleSendList.Contains(targetm.PlayerId)) Utils.RoleSendList.Add(targetm.PlayerId);
+                            PlayerState.GetByPlayerId(targetm.PlayerId).SetCountType(CountTypes.Crew);
+                            UtilsOption.MarkEveryoneDirtySettings();
+                        }
+                        else
+                        {
+                            PlayerCatch.SKMadmateNowCount++;
 
-                        target.RpcSetRole(Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate);
-                        NameColorManager.Add(targetm.PlayerId, shapeshifter.PlayerId, "#ff1919");
-                        if (!Utils.RoleSendList.Contains(targetm.PlayerId)) Utils.RoleSendList.Add(targetm.PlayerId);
-                        PlayerState.GetByPlayerId(targetm.PlayerId).SetCountType(CountTypes.Crew);
-                        UtilsGameLog.LastLogRole[targetm.PlayerId] += "<b>⇒" + Utils.ColorString(UtilsRoleText.GetRoleColor(targetm.GetCustomRole()), Translator.GetString($"{targetm.GetCustomRole()}")) + "</b>" + UtilsRoleText.GetSubRolesText(targetm.PlayerId);
-                        UtilsOption.MarkEveryoneDirtySettings();
-                        UtilsNotifyRoles.NotifyRoles();
-                        //shapeshifter.RpcRejectShapeshift();
-                        //return false;
+                            target.RpcSetRole(Options.SkMadCanUseVent.GetBool() ? RoleTypes.Engineer : RoleTypes.Crewmate);
+                            NameColorManager.Add(targetm.PlayerId, shapeshifter.PlayerId, "#ff1919");
+                            if (!Utils.RoleSendList.Contains(targetm.PlayerId)) Utils.RoleSendList.Add(targetm.PlayerId);
+                            PlayerState.GetByPlayerId(targetm.PlayerId).SetCountType(CountTypes.Crew);
+                            UtilsGameLog.LastLogRole[targetm.PlayerId] += "<b>⇒" + Utils.ColorString(UtilsRoleText.GetRoleColor(targetm.GetCustomRole()), Translator.GetString($"{targetm.GetCustomRole()}")) + "</b>" + UtilsRoleText.GetSubRolesText(targetm.PlayerId);
+                            UtilsOption.MarkEveryoneDirtySettings();
+                            UtilsNotifyRoles.NotifyRoles();
+                            //shapeshifter.RpcRejectShapeshift();
+                            //return false;
+                        }
                     }
                 }
             }

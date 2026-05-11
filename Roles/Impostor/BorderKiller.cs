@@ -49,8 +49,9 @@ public sealed class BorderKiller : RoleBase, IImpostor
 
     public override void CheckWinner(GameOverReason reason)
     {
+        bool IsJacw = Player.Is(CustomRoles.JackalWolf);
         //目標キルカウント ＞ 現在のキルカウント
-        if (OptionMissionKillcount.GetInt() > MyState.GetKillCount(false) && Player.IsWinner(CustomWinner.Impostor))
+        if (OptionMissionKillcount.GetInt() > MyState.GetKillCount(false) && Player.IsWinner(IsJacw ? CustomWinner.Jackal : CustomWinner.Impostor))
         {
             CustomWinnerHolder.CantWinPlayerIds.Add(Player.PlayerId);
             CustomWinnerHolder.WinnerIds.Remove(Player.PlayerId);
@@ -58,7 +59,7 @@ public sealed class BorderKiller : RoleBase, IImpostor
         else if (OptionMissionKillcount.GetInt() <= MyState.GetKillCount(false))
         {
             Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
-            if (Player.IsWinner(CustomWinner.Impostor))
+            if (Player.IsWinner(IsJacw ? CustomWinner.Jackal : CustomWinner.Impostor))
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
         }
         if (5 <= MyState.GetKillCount())

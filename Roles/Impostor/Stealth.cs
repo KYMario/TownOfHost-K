@@ -79,7 +79,7 @@ public sealed class Stealth : RoleBase, IImpostor, IUsePhantomButton
         }
         if (excludeImpostors)
         {
-            playersToDarken = playersToDarken.Where(player => !player.Is(CustomRoleTypes.Impostor));
+            playersToDarken = playersToDarken.Where(player => !player.IsTeammate(Player));
         }
         DarkenPlayers(playersToDarken);
         adddarkenroom.Clear();

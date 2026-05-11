@@ -217,7 +217,7 @@ public sealed class Archer : RoleBase, IImpostor, IUsePhantomButton
             foreach (var target in PlayerCatch.AllAlivePlayerControls)
             {
                 if (target.PlayerId == Player.PlayerId) continue;
-                if (!IsFriendlyFire && target.GetCustomRole().IsImpostor() && !SuddenDeathMode.NowSuddenDeathMode) continue;
+                if (!IsFriendlyFire && target.IsTeammate(Player) && !SuddenDeathMode.NowSuddenDeathMode) continue;
                 if (!IsFriendlyFire && SuddenDeathMode.NowSuddenDeathTemeMode && SuddenDeathMode.IsSameteam(target.PlayerId, Player.PlayerId)) continue;
                 float Distance = Vector2.Distance(ArrowLastPos, target.transform.position);
                 if (Distance <= 0.6f)

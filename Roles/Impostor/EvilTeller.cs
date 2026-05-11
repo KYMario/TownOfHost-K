@@ -94,7 +94,7 @@ public sealed class EvilTeller : RoleBase, IImpostor, IUsePhantomButton
         ResetCooldown = false;
         var target = Player.GetKillTarget(true);
         if (target == null) { ResetCooldown = false; return; }
-        if (target.Is(CustomRoleTypes.Impostor)) { ResetCooldown = false; return; }
+        if (target.IsTeammate(Player)) { ResetCooldown = false; return; }
 
         if (seentarget.ContainsKey(target.PlayerId) || TargetInfo != null) { ResetCooldown = false; return; }
 

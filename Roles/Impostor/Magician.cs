@@ -123,7 +123,7 @@ public sealed class Magician : RoleBase, IImpostor, IUsePhantomButton
             if (pc.Is(CustomRoles.King)) continue;
             dis = Vector2.Distance(Player.transform.position, pc.transform.position);
             //↑プレイヤーとの距離 ↓自分以外、で近くにいて 既にターゲットにされていないか
-            if (pc.PlayerId != Player.PlayerId && dis < Radius && !MagicTarget.Contains(pc.PlayerId) && !pc.GetCustomRole().IsImpostor())
+            if (pc.PlayerId != Player.PlayerId && dis < Radius && !MagicTarget.Contains(pc.PlayerId) && !pc.IsTeammate(Player))
             {
                 distance.Add(pc, dis);
             }

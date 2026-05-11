@@ -52,7 +52,7 @@ public sealed class EvilTracker : RoleBase, IImpostor, IKillFlashSeeable, ISidek
         foreach (var target in PlayerCatch.AllAlivePlayerControls)
         {
             var targetId = target.PlayerId;
-            if (targetId != playerId && target.Is(CustomRoleTypes.Impostor))
+            if (targetId != playerId && target.IsTeammate(Player))
             {
                 ImpostorsId.Add(targetId);
                 TargetArrow.Add(playerId, targetId);
@@ -145,7 +145,7 @@ public sealed class EvilTracker : RoleBase, IImpostor, IKillFlashSeeable, ISidek
 
         //インポスターによるキルかどうかの判別
         var realKiller = target.GetRealKiller() ?? killer;
-        return realKiller.Is(CustomRoleTypes.Impostor) && realKiller != target;
+        return target.IsTeammate(Player) && realKiller != target;
     }
     public bool CanMakeSidekick() => CanCreateSideKick; // ISidekickable
 
@@ -213,14 +213,14 @@ public sealed class EvilTracker : RoleBase, IImpostor, IKillFlashSeeable, ISidek
     private bool CanTarget() => Player.IsAlive() && CanSetTarget;
     private bool IsTrackTarget(PlayerControl target)
         => Player.IsAlive() && target.IsAlive() && !Is(target)
-        && (target.Is(CustomRoleTypes.Impostor) || TargetId == target.PlayerId);
+        && (target.IsTeammate(Player) || TargetId == target.PlayerId);
 
     // 各所で呼ばれる処理
     public override bool CheckShapeshift(PlayerControl target, ref bool animate)
     {
         //ターゲット出来ない、もしくはターゲットが味方の場合は処理しない
         //※どちらにしろシェイプシフトは出来ない
-        if (!CanTarget() || target.Is(CustomRoleTypes.Impostor)) return false;
+        if (!CanTarget() || target.IsTeammate(Player)) return false;
 
         SetTarget(target.PlayerId);
         Logger.Info($"{Player.GetNameWithRole().RemoveHtmlTags()}のターゲットを{target.GetNameWithRole().RemoveHtmlTags()}に設定", "EvilTrackerTarget");

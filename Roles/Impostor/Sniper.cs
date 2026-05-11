@@ -196,7 +196,7 @@ public sealed class Sniper : RoleBase, IImpostor
             //自分には当たらない
             if (target.PlayerId == Player.PlayerId) continue;
             //FriendlyFireがOFFかつサドンデスモードでないならImpostorを除外
-            if (!OpFriendlyFire.GetBool() && target.GetCustomRole().IsImpostor() && !SuddenDeathMode.NowSuddenDeathMode) continue;
+            if (!OpFriendlyFire.GetBool() && target.IsTeammate(Player) && !SuddenDeathMode.NowSuddenDeathMode) continue;
             //FriendlyFireがOffかつ、チームかつ、同陣営なら
             if (!OpFriendlyFire.GetBool() && SuddenDeathMode.NowSuddenDeathTemeMode && SuddenDeathMode.IsSameteam(target.PlayerId, Player.PlayerId)) continue;
             //死んでいない対象の方角ベクトル作成
@@ -291,7 +291,7 @@ public sealed class Sniper : RoleBase, IImpostor
                 snipedTarget, snipedTarget, true, Killpower: 1 // 表示上はsnipedTargetの自爆
             ))
             {
-                if (snipedTarget.Is(CustomRoleTypes.Impostor))
+                if (snipedTarget.IsTeammate(Player))
                     Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[3]);
             }
 
