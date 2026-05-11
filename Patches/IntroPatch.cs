@@ -583,7 +583,12 @@ namespace TownOfHost
                     }, 15f, "Intro", true);
                 }
 
-                GameStates.AnyShapeShifter = PlayerCatch.AllPlayerControls.Any(pc => pc.GetCustomRole().GetRoleInfo()?.BaseRoleType.Invoke() is RoleTypes.Shapeshifter);
+                GameStates.AnyShapeShifter = PlayerCatch.AllPlayerControls.Any(pc =>
+                {
+                    if ((pc.GetCustomRole().GetRoleInfo()?.BaseRoleType?.Invoke() ?? RoleTypes.Crewmate) is RoleTypes.Shapeshifter) return true;
+
+                    return ((pc.GetRoleClass()?.HaveAddRole() ?? CustomRoles.NotAssigned).GetRoleInfo()?.BaseRoleType?.Invoke() ?? RoleTypes.Crewmate) is RoleTypes.Shapeshifter;
+                });
             }
             else
             {

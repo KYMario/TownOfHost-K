@@ -2114,6 +2114,31 @@ public class ModNewsHistory
                 };
                 AllModNews.Add(news);
             }
+            {
+                var news = new ModNews
+                {
+                    Number = 100079,
+                    Title = "もう5月だね。",
+                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.32.31</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.14.32.31</color>",
+                    Text = "<size=80%>"
+                    + "<size=125%>【バグ修正】</size>\n"
+                    + "・妖狐のその他キラーON時、キラー以外にも開示される問題の修正\n"
+                    + "\n<size=125%>【仕様変更】</size>\n"
+                    + "・シェイプシフト能力が配役される場合、会議前に暗転するように変更\n"
+                    + "・併せ持つ役職がある場合、/m,初手役職表示時に表示するように変更\n"
+                    + "\n<size=125%>【設定追加】</size>\n"
+                    + " ・サボ勝利時に他プレイヤーをキルする設定の追加\n"
+                    + "・イレイサーに属性削除設定の追加\n"
+                    + "\n<size=125%>【追加役職】</size>\n"
+                    + "<size=100%>Ⓝジャッカルウルフ/JackalWolf</size>\n"
+                    + "　インポスター能力を併せ持つ事のできるジャッカルです。\n　サイドキック能力は通常持ちません。\n"
+                    + "\n.........\n"
+                    ,
+                    Date = "2026-05-11T00:00:00Z"
+                };
+                AllModNews.Add(news);
+            }
             AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
         }
     }
