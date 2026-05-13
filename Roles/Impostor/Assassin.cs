@@ -84,7 +84,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton, IDoubleTr
         {
             if (data.Key.IsImpostor() is false && data.Key is not CustomRoles.NotAssigned) continue;
             if (data.Key is CustomRoles.AlienHijack or CustomRoles.EvilSatellite or CustomRoles.ConnectSaver
-            or CustomRoles.Limiter or CustomRoles.Assassin)
+            or CustomRoles.Limiter or CustomRoles.Assassin or CustomRoles.Driver)
             {
                 InvalidRoles.Add(data.Key);
                 continue;
