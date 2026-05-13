@@ -651,60 +651,48 @@ namespace TownOfHost
             var AddRoleInfoTitle = $"<{AddRoleTextData}>{AddRoleInfoTitleString}";
             var sb = new StringBuilder();
 
-            var juncture = "<line-height=2.0pic><size=100%>~~~~~~~~~~~~~~~~~~~~~~~~\n\n<size=150%><b>";
             //バフ
-            if (player.Is(CustomRoles.Guesser)) sb.Append(juncture + AddonInfo(CustomRoles.Guesser, "∮", From.TheOtherRoles, player));
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
-            if (player.Is(CustomRoles.Serial)) sb.Append(juncture + AddonInfo(CustomRoles.Serial, "∂", pc: player));
-            if (player.Is(CustomRoles.MagicHand)) sb.Append(juncture + AddonInfo(CustomRoles.MagicHand, "ж", pc: player));
-            if (player.Is(CustomRoles.Powerful)) sb.Append(juncture += AddonInfo(CustomRoles.Powerful, "∠", pc: player));
+            if (player.Is(CustomRoles.Guesser)) SendMessage(GetAddonsHelp(CustomRoles.Guesser), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Serial)) SendMessage(GetAddonsHelp(CustomRoles.Serial), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.MagicHand)) SendMessage(GetAddonsHelp(CustomRoles.MagicHand), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Powerful)) SendMessage(GetAddonsHelp(CustomRoles.Powerful), player.PlayerId, AddRoleInfoTitle);
             if ((player.Is(CustomRoles.Connecting) && !player.Is(CustomRoles.WolfBoy)) || (player.Is(CustomRoles.Connecting) && !player.IsAlive()))
-                sb.Append(juncture + AddonInfo(CustomRoles.Connecting, "Ψ", pc: player) + "\n");
-            if (player.Is(CustomRoles.Watching)) sb.Append(juncture + AddonInfo(CustomRoles.Watching, "∑", From.TOR_GM_Edition, pc: player) + "\n");
-            if (player.Is(CustomRoles.PlusVote)) sb.Append(juncture + AddonInfo(CustomRoles.PlusVote, "р", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Tiebreaker)) sb.Append(juncture + AddonInfo(CustomRoles.Tiebreaker, "т", From.TheOtherRoles, pc: player) + "\n");
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
-            if (player.Is(CustomRoles.Autopsy)) sb.Append(juncture + AddonInfo(CustomRoles.Autopsy, "Å", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Revenger)) sb.Append(juncture + AddonInfo(CustomRoles.Revenger, "Я", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Speeding)) sb.Append(juncture + AddonInfo(CustomRoles.Speeding, "∈", pc: player) + "\n");
-            if (player.Is(CustomRoles.Guarding)) sb.Append(juncture + AddonInfo(CustomRoles.Guarding, "ζ", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Management)) sb.Append(juncture + AddonInfo(CustomRoles.Management, "θ", From.TownOfHost_Y, pc: player) + "\n");
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
-            if (player.Is(CustomRoles.Opener)) sb.Append(juncture + AddonInfo(CustomRoles.Opener, "п") + "\n");
-            //if (player.Is(CustomRoles.AntiTeleporter)) s.Append(k + AddonInfo(CustomRoles.AntiTeleporter, "t", From.RevolutionaryHostRoles, pc: player) + "\n");
-            if (player.Is(CustomRoles.Seeing)) sb.Append(juncture + AddonInfo(CustomRoles.Seeing, "☯", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Lighting)) sb.Append(juncture + AddonInfo(CustomRoles.Lighting, "＊", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Moon)) sb.Append(juncture + AddonInfo(CustomRoles.Moon, "э", pc: player) + "\n");
+                SendMessage(GetAddonsHelp(CustomRoles.Connecting), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Watching)) SendMessage(GetAddonsHelp(CustomRoles.Watching), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.PlusVote)) SendMessage(GetAddonsHelp(CustomRoles.PlusVote), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Tiebreaker)) SendMessage(GetAddonsHelp(CustomRoles.Tiebreaker), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Autopsy)) SendMessage(GetAddonsHelp(CustomRoles.Autopsy), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Revenger)) SendMessage(GetAddonsHelp(CustomRoles.Revenger), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Speeding)) SendMessage(GetAddonsHelp(CustomRoles.Speeding), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Guarding)) SendMessage(GetAddonsHelp(CustomRoles.Guarding), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Management)) SendMessage(GetAddonsHelp(CustomRoles.Management), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Opener)) SendMessage(GetAddonsHelp(CustomRoles.Opener), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Seeing)) SendMessage(GetAddonsHelp(CustomRoles.Seeing), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Lighting)) SendMessage(GetAddonsHelp(CustomRoles.Lighting), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Moon)) SendMessage(GetAddonsHelp(CustomRoles.Moon), player.PlayerId, AddRoleInfoTitle);
 
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             //デバフ
-            if (player.Is(CustomRoles.News)) sb.Append(juncture + AddonInfo(CustomRoles.News, "Ｎ", pc: player) + "\n");
-            if (player.Is(CustomRoles.SlowStarter)) sb.Append(juncture + AddonInfo(CustomRoles.SlowStarter, "Ｓs", pc: player) + "\n");
-            if (player.Is(CustomRoles.Notvoter)) sb.Append(juncture + AddonInfo(CustomRoles.Notvoter, "Ｖ", pc: player) + "\n");
-            if (player.Is(CustomRoles.Elector)) sb.Append(juncture + AddonInfo(CustomRoles.Elector, "Ｅ", pc: player) + "\n");
-            if (player.Is(CustomRoles.InfoPoor)) sb.Append(juncture + AddonInfo(CustomRoles.InfoPoor, "Ｉ", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.NonReport)) sb.Append(juncture + AddonInfo(CustomRoles.NonReport, "Ｒ", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Transparent)) sb.Append(juncture + AddonInfo(CustomRoles.Transparent, "Ｔ", pc: player) + "\n");
-            if (player.Is(CustomRoles.Water)) sb.Append(juncture + AddonInfo(CustomRoles.Water, "Ｗ", pc: player) + "\n");
-            if (player.Is(CustomRoles.Clumsy)) sb.Append(juncture + AddonInfo(CustomRoles.Clumsy, "Ｃ", From.TownOfHost_Y, pc: player) + "\n");
-            if (player.Is(CustomRoles.Slacker)) sb.Append(juncture + AddonInfo(CustomRoles.Slacker, "ＳＬ", pc: player) + "\n");
-            if (player.Is(CustomRoles.Sunglasses)) sb.Append(juncture + AddonInfo(CustomRoles.Sunglasses, "Ｓ", From.TheOtherRoles, pc: player) + "\n");
+            if (player.Is(CustomRoles.News)) SendMessage(GetAddonsHelp(CustomRoles.News), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.SlowStarter)) SendMessage(GetAddonsHelp(CustomRoles.SlowStarter), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Notvoter)) SendMessage(GetAddonsHelp(CustomRoles.Notvoter), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Elector)) SendMessage(GetAddonsHelp(CustomRoles.Elector), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.InfoPoor)) SendMessage(GetAddonsHelp(CustomRoles.InfoPoor), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.NonReport)) SendMessage(GetAddonsHelp(CustomRoles.NonReport), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Transparent)) SendMessage(GetAddonsHelp(CustomRoles.Transparent), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Water)) SendMessage(GetAddonsHelp(CustomRoles.Water), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Clumsy)) SendMessage(GetAddonsHelp(CustomRoles.Clumsy), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Slacker)) SendMessage(GetAddonsHelp(CustomRoles.Slacker), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Sunglasses)) SendMessage(GetAddonsHelp(CustomRoles.Sunglasses), player.PlayerId, AddRoleInfoTitle);
 
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
             //第三
             var lover = player.GetLoverRole();
-            if (lover != CustomRoles.NotAssigned) sb.Append(juncture + AddonInfo(lover, "♥", lover is not CustomRoles.Lovers ? From.None : From.Love_Couple_Mod, pc: player) + "\n");
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
+            if (lover != CustomRoles.NotAssigned) SendMessage(GetAddonsHelp(lover), player.PlayerId, AddRoleInfoTitle);
             //ラスト系
-            if (player.Is(CustomRoles.LastImpostor)) sb.Append(juncture + AddonInfo(CustomRoles.LastImpostor, from: From.TownOfHost, pc: player) + "\n");
-            if (player.Is(CustomRoles.LastNeutral)) sb.Append(juncture + AddonInfo(CustomRoles.LastNeutral, pc: player) + "\n");
-            if (player.Is(CustomRoles.Workhorse)) sb.Append(juncture + AddonInfo(CustomRoles.Workhorse, from: From.TownOfHost, pc: player) + "\n");
-            if (player.Is(CustomRoles.OneWolf)) sb.Append(juncture + AddonInfo(CustomRoles.OneWolf, pc: player) + "\n");
-            CheckPageChange(player.PlayerId, sb, title: AddRoleInfoTitle);
-            if (player.Is(CustomRoles.Twins)) sb.Append(juncture + AddonInfo(CustomRoles.Twins) + "\n");
-
-            if (sb.ToString().RemoveHtmlTags() != "" && sb.Length != 0)
-                SendMessage(sb.ToString(), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.LastImpostor)) SendMessage(GetAddonsHelp(CustomRoles.LastImpostor), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.LastNeutral)) SendMessage(GetAddonsHelp(CustomRoles.LastNeutral), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Workhorse)) SendMessage(GetAddonsHelp(CustomRoles.Workhorse), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.OneWolf)) SendMessage(GetAddonsHelp(CustomRoles.OneWolf), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Twins)) SendMessage(GetAddonsHelp(CustomRoles.Twins), player.PlayerId, AddRoleInfoTitle);
 
             GetGhostRolesInfo(player);
         }
