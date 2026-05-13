@@ -43,7 +43,7 @@ namespace TownOfHost
             if (PlayerCatch.AllPlayerControls == null) return;
 
             //ミーティング中の呼び出しは不正
-            if (GameStates.IsMeeting) return;
+            if (GameStates.IsMeeting || GameStates.CalledMeeting) return;
 
             if (GameStates.IsLobby) return;
 

@@ -422,7 +422,7 @@ namespace TownOfHost
                     }
                     else if (!IsComms && DesyncComms.Contains(pc.PlayerId))
                     {
-                        var sender = CustomRpcSender.Create("Reset", Hazel.SendOption.None);
+                        var sender = CustomRpcSender.Create("Reset", Hazel.SendOption.Reliable);
                         DesyncComms.Remove(pc.PlayerId);
                         sender.AutoStartRpc(ShipStatus.Instance.NetId, RpcCalls.UpdateSystem, pc.GetClientId())
                                 .Write((byte)SystemTypes.Comms)

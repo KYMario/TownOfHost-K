@@ -154,6 +154,7 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             }
             var addons = player.GetPlayerState().SubRoles;
             if (CanDelAddon) addons.Do(x => player.GetPlayerState().RemoveSubRole(x));
+            if (UtilsTask.HasTasks(player.Data) is false) Lovers.HaveLoverDontTaskPlayers.Add(player.PlayerId);
         }
         EraseTargets.Clear();
     }
