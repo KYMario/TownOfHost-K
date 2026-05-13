@@ -1,17 +1,7 @@
 {
     "AllVersion": {
         "Unavailable": false,
-        "NotAvailableOnline": false,
-        "Events": [
-            {
-                "RoleId": 117,
-                "Period": {
-                    "Month": 4,
-                    "StartDay": 1,
-                    "EndDay": 8
-                }
-            }
-        ]
+        "NotAvailableOnline": false
     },
     "51.14.31": {
         "Unavailable": true,
@@ -140,6 +130,14 @@
         "NotAvailableOnline": false
     },
     "51.14.32.24": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
+    },
+    "51.14.32.31": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
+    },
+    "51.14.32.32": {
         "Unavailable": false,
         "NotAvailableOnline": false
     }
