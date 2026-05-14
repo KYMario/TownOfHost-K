@@ -200,6 +200,13 @@ namespace TownOfHost
                     SelfName = SelfName.RemoveDeltext("color=#", "#");
                     //SelfName = $"\n\n\n\n\n\n{SelfName}{(SelfSuffix.ToString() == "" ? "\n\n\n\n\n\n" : "\n\n\n\n")}<{Main.ModColor}55>TOH-K</color>";
 
+                    if (SelfName.Length > 340 && IsRestriction())
+                    {
+                        Logger.Error($"Large!{seer.PlayerId}:{SelfName}", "NotifyRoles_Large");
+                        SelfName = SelfName.RemoveDeltext("</color>");
+                        if (SelfName.Length > 340)
+                            SelfName = SelfName.RemoveColorTags();
+                    }
                     //適用
                     if (seer.SetNameCheck(SelfName, seer, NoCache))
                     {
@@ -377,6 +384,14 @@ namespace TownOfHost
                             TargetName = TargetName.RemoveDeltext("color=#", "#");
                             if ($"{lineheight}{(TemporaryName ? name : TargetPlayerName)}" == TargetName) TargetName = TargetName.RemoveDeltext("</?line-height[^>]*?>");
                             //適用
+
+                            if (TargetName.Length > 340 && IsRestriction())
+                            {
+                                Logger.Error($"Large!{seer.PlayerId}=>{target.PlayerId}:{TargetName}", "NotifyRoles_Large");
+                                TargetName = TargetName.RemoveDeltext("</color>");
+                                if (TargetName.Length > 340)
+                                    TargetName = TargetName.RemoveColorTags();
+                            }
 
                             if (target.SetNameCheck(TargetName, seer, NoCache))
                             {
@@ -577,6 +592,13 @@ namespace TownOfHost
                     Logger.Info($"{seer.Data?.GetLogPlayerName() ?? "???"}(Me) => {SelfName}", "NotifyRoles");
                     //適用
                     //Logger.Info(SelfName, "Name");
+                    if (SelfName.Length > 340 && IsRestriction())
+                    {
+                        Logger.Error($"Large!{seer.PlayerId}:{SelfName}", "MNotifyRoles_Large");
+                        SelfName = SelfName.RemoveDeltext("</color>");
+                        if (SelfName.Length > 340)
+                            SelfName = SelfName.RemoveColorTags();
+                    }
                     sender.StartRpc(seer.NetId, (byte)RpcCalls.SetName)
                     .Write(seer.NetId)
                     .Write(SelfName)
@@ -761,6 +783,13 @@ namespace TownOfHost
                             TargetName = TargetName.RemoveDeltext("color=#", "#");
                             Logger.Info($"{target?.Data?.GetLogPlayerName() ?? "???"} =>{TargetName}", "NotifyRoles");
 
+                            if (TargetName.Length > 340 && IsRestriction())
+                            {
+                                Logger.Error($"Large!{seer.PlayerId}=>{target.PlayerId}:{TargetName}", "MNotifyRoles_Large");
+                                TargetName = TargetName.RemoveDeltext("</color>");
+                                if (TargetName.Length > 340)
+                                    TargetName = TargetName.RemoveColorTags();
+                            }
                             sender.StartRpc(target.NetId, (byte)RpcCalls.SetName)
                             .Write(target.NetId)
                             .Write(TargetName)

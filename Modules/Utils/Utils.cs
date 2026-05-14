@@ -335,16 +335,16 @@ namespace TownOfHost
             if (IsRestriction() && isTowSend && title == "NonTitle") title = "";
 
             var towsend = "";
-            if (checkl && (text.Length > 500 || ((text.Split("\n")?.Count() ?? 0) > 13)) && sendTo != PlayerControl.LocalPlayer.PlayerId)
+            if (checkl && (text.Length > 280 || ((text.Split("\n")?.Count() ?? 0) > 13)) && sendTo != PlayerControl.LocalPlayer.PlayerId)
             {
                 var sendtext = "";
                 var alltext = text.Split("\n");
                 (string size, string color, string hi, string b) tag = ("", "", "", "");
                 var oldtext = text;
                 var i = 0;
-                for (i = 0; sendtext.Length < 350 || ((sendtext.Split("\n")?.Count() ?? 0) < 10); i++)
+                for (i = 0; sendtext.Length < 250 || ((sendtext.Split("\n")?.Count() ?? 0) < 10); i++)
                 {
-                    if ((sendtext.Length + alltext[i].Length > 350 || ((sendtext.Split("\n")?.Count() ?? 0) > 10)) && i > 0)
+                    if ((sendtext.Length + alltext[i].Length > 250 || ((sendtext.Split("\n")?.Count() ?? 0) > 10)) && i > 0)
                     {
                         i--;
                         break;
