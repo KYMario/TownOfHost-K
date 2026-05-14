@@ -335,7 +335,7 @@ namespace TownOfHost
             if (IsRestriction() && isTowSend && title == "NonTitle") title = "";
 
             var towsend = "";
-            if (checkl && (text.Length > 280 || ((text.Split("\n")?.Count() ?? 0) > 13)) && sendTo != PlayerControl.LocalPlayer.PlayerId)
+            if (text.Length > 280 || ((text.Split("\n")?.Count() ?? 0) > 13))
             {
                 var sendtext = "";
                 var alltext = text.Split("\n");
