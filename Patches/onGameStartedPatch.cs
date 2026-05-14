@@ -171,9 +171,15 @@ namespace TownOfHost
                 else
                 {
                     var colorId = pc.Data.DefaultOutfit.ColorId;
-                    //if (AmongUsClient.Instance.AmHost && Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(colorId));
+                    if (AmongUsClient.Instance.AmHost && Options.ColorNameMode.GetBool())// pc.RpcSetName(Palette.GetColorName(colorId));
+                    {
+                        Main.AllPlayerNames[pc.PlayerId] = Palette.GetColorName(colorId);//pc?.Data?.PlayerName;
+                    }
+                    else
+                    {
+                        Main.AllPlayerNames[pc.PlayerId] = pc?.Data?.PlayerName;
+                    }
 
-                    Main.AllPlayerNames[pc.PlayerId] = Palette.GetColorName(colorId);//pc?.Data?.PlayerName;
                     Main.PlayerColors[pc.PlayerId] = Palette.PlayerColors[colorId];
                     pc.cosmetics.nameText.text = pc.name;
 
