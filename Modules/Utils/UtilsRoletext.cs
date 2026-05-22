@@ -184,7 +184,7 @@ namespace TownOfHost
                     }
                 }
             }
-            return sb.ToString();
+            return GameStates.CalledMeeting ? sb.ToString().RemoveColorTags() : sb.ToString();
         }
         /// <summary>
         /// 対象のRoleNameを全て正確に表示
