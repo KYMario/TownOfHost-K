@@ -68,11 +68,9 @@ public sealed class CountKiller : RoleBase, ILNKiller, ISchrodingerCatOwner, IAd
         .SetValueFormat(OptionFormat.Times);
         OptionCanVent = BooleanOptionItem.Create(RoleInfo, 12, GeneralOption.CanVent, true, false);
         OptionAddWin = BooleanOptionItem.Create(RoleInfo, 13, OptionName.CountKillerAddWin, true, false);
-        OptionAddWinToSoloWin = BooleanOptionItem.Create(RoleInfo, 14, OptionName.CountKillerAddWinToSoloWin, false, false, OptionAddWin)
-            .SetParent(OptionAddWin);
-        OptionSoloVictoryCount = IntegerOptionItem.Create(RoleInfo, 15, OptionName.CountKillerSoloVictoryCount, new(1, 20, 1), 8, false, OptionAddWinToSoloWin)
-            .SetValueFormat(OptionFormat.Times)
-            .SetParent(OptionAddWinToSoloWin);
+        OptionAddWinToSoloWin = BooleanOptionItem.Create(RoleInfo, 14, OptionName.CountKillerAddWinToSoloWin, false, false, OptionAddWin);
+        OptionSoloVictoryCount = IntegerOptionItem.Create(RoleInfo, 15, OptionName.CountKillerSoloVictoryCount, new(1, 15, 1), 8, false, OptionAddWinToSoloWin)
+            .SetValueFormat(OptionFormat.Times);
         RoleAddAddons.Create(RoleInfo, 16);
     }
     public ISchrodingerCatOwner.TeamType SchrodingerCatChangeTo => ISchrodingerCatOwner.TeamType.CountKiller;

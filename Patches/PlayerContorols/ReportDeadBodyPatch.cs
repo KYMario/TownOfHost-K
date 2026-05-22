@@ -49,7 +49,6 @@ namespace TownOfHost
             GameStates.CalledMeeting = true;
             if (Options.IsStandardHAS && target != null && __instance == target.Object) return true; //[StandardHAS] ボタンでなく、通報者と死体が同じなら許可
 
-
             if (!CanReport[__instance.PlayerId])
             {
                 GameStates.CalledMeeting = false;
@@ -121,7 +120,7 @@ namespace TownOfHost
 
             if (Cancelcheck is null or true)
                 if (!CheckMeeting(reporter, target, checkdie: Cancelcheck is true)) return;
-
+            GameStates.CalledMeeting = true;
             PlayerControlRpcUseZiplinePatch.OnMeeting(reporter, target);
 
             ShapeKiller.SetDummyReport(ref reporter, target);

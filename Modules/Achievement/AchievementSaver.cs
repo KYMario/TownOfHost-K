@@ -25,7 +25,7 @@ public class AchievementSaver
             {
                 File.Move($"{Application.persistentDataPath}/TownOfHost_K/Achievement.txt", PATH);
             }
-            if (SaveStatistics.IsOldVersion) return;
+            if (SaveStatistics.IsOldVersion || DebugModeManager.AmDebugger) return;
 
             var text = "";
             foreach (var data in Achievement.AllAchievements)
