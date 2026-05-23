@@ -73,7 +73,8 @@ public sealed class JackalDoll : RoleBase
     {
         if ((CustomRoles.Jackal.IsEnable() && Jackal.OptionCanMakeSidekick.GetBool())
         || (CustomRoles.JackalAlien.IsEnable() && JackalAlien.OptionCanMakeSidekick.GetBool())
-        || (CustomRoles.JackalMafia.IsEnable() && JackalMafia.OptionCanMakeSidekick.GetBool()))
+        || (CustomRoles.JackalMafia.IsEnable() && JackalMafia.OptionCanMakeSidekick.GetBool())
+        || (CustomRoles.JackalWolf.IsEnable() && JackalWolf.OptionHaveRole.GetRole().CanMakeMadmate()))
         {
             // 0%以上なら確認する。
             if (Options.GetRoleChance(CustomRoles.Jackaldoll) > 0)

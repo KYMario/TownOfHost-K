@@ -42,12 +42,13 @@ namespace TownOfHost
             var shapeshifter = __instance;
             var shapeshifting = shapeshifter.PlayerId != target.PlayerId;
             // 変身したとき一番近い人をマッドメイトにする処理
-            if (shapeshifter.CanMakeMadmate() && shapeshifting)
+            if ((shapeshifter.CanMakeMadmate() ||
+            (shapeshifter.Is(CustomRoles.JackalWolf) && JackalWolf.OptionHaveRole.GetRole().CanMakeMadmate() && (JackalDoll.GetSideKickCount() <= JackalDoll.NowSideKickCount)))
+            && shapeshifting)
             {
                 var sidekickable = roleclass as ISidekickable;
                 var targetRole = sidekickable?.SidekickTargetRole ?? CustomRoles.SKMadmate;
                 if (shapeshifter.Is(CustomRoles.JackalWolf)) targetRole = CustomRoles.Jackaldoll;
-
                 //var targetm = shapeshifter.GetKillTarget();
                 Vector2 shapeshifterPosition = shapeshifter.transform.position;//変身者の位置
                 Dictionary<PlayerControl, float> mpdistance = new();

@@ -50,7 +50,7 @@ public sealed class JackalWolf : RoleBase, ILNKiller, IUsePhantomButton, IDouble
     private static bool JackalMafiaCanAlsoBeExposedToJackal;
     public static bool CanVent;
     public static bool CanUseSabotage;
-    static FilterOptionItem OptionHaveRole; static CustomRoles haverole;
+    public static FilterOptionItem OptionHaveRole; static CustomRoles haverole;
     RoleBase AddRole;
 
     static CustomRoles[] InvalidRoles()

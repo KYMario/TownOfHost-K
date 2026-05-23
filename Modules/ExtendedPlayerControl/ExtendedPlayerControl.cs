@@ -359,7 +359,7 @@ namespace TownOfHost
             var role = player.GetCustomRole();
 
             if (
-            Options.CanMakeMadmateCount.GetInt() <= PlayerCatch.SKMadmateNowCount ||
+            (Options.CanMakeMadmateCount.GetInt() <= PlayerCatch.SKMadmateNowCount && (player.Is(CustomRoleTypes.Impostor) || player.Is(CustomRoles.Egoist))) ||
             player == null ||
             (player.Data.Role.Role != RoleTypes.Shapeshifter) || role.GetRoleInfo()?.BaseRoleType.Invoke() != RoleTypes.Shapeshifter)
             {
