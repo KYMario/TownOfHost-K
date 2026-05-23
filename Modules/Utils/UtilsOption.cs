@@ -433,7 +433,20 @@ namespace TownOfHost
         {
             foreach (var opt in option.Children.Select((v, i) => new { Value = v, Index = i + 1 }))
             {
-                if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true) continue;
+                if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true)
+                {
+                    if (opt.Value.ParentRole is CustomRoles.Guesser)
+                    {
+                        if (deep > 0)
+                        {
+                            sb.Append(string.Concat(Enumerable.Repeat("┃", Mathf.Max(deep - 1, 0))));
+                            sb.Append(opt.Index == option.Children.Count ? "┗ " : "┣ ");
+                        }
+                        sb.Append($"{opt.Value.GetName()}\n");
+                        ShowChildrenSettings(opt.Value, ref sb, deep + 1);
+                    }
+                    continue;
+                }
                 if (!opt.Value.IsEnabled()) continue;
                 if (!opt.Value.GetBool())
                 {

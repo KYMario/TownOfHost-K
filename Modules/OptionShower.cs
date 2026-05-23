@@ -245,7 +245,20 @@ namespace TownOfHost
                 if (opt.Value.IsEnabled?.Invoke() == false) continue;
                 if (opt.Value.Name is "Maximum" or "FixedRole") continue;
                 if (opt.Value.Name == "ResetDoorsEveryTurns" && !(Options.IsActiveFungle || Options.IsActiveAirship || Options.IsActivePolus)) continue;
-                if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true) continue;
+                if ((opt.Value as ObjectOptionitem)?.IsHedderObject is true)
+                {
+                    if (opt.Value.ParentRole is CustomRoles.Guesser)
+                    {
+                        if (deep > 0)
+                        {
+                            sb.Append(string.Concat(Enumerable.Repeat("┃", Mathf.Max(deep - 1, 0))));
+                            sb.Append(opt.Index == option.Children.Count ? "┗ " : "┣ ");
+                        }
+                        sb.Append($"{opt.Value.GetName()}\n");
+                        ShowChildren(opt.Value, ref sb, color, deep + 1);
+                    }
+                    continue;
+                }
 
                 if (!opt.Value.GetBool())
                 {
