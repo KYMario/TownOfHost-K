@@ -436,22 +436,27 @@ public static class MeetingHudPatch
                     }
                 }
 
+                bool HasGuesser = false;
                 //本人のsubrole処理
                 foreach (var subRole in seer.GetCustomSubRoles())
                 {
                     switch (subRole)
                     {
                         case CustomRoles.Guesser:
+                            if (HasGuesser) continue;
+                            HasGuesser = true;
                             if (!seer.Data.IsDead && !target.Data.IsDead && target != seer)
                                 fsb.Append(Utils.ColorString(Color.yellow, target.PlayerId.ToString()) + " ");
                             continue;
                         case CustomRoles.LastImpostor:
-                            if (!LastImpostor.giveguesser) continue;
+                            if (!LastImpostor.giveguesser || HasGuesser) continue;
+                            HasGuesser = true;
                             if (!seer.Data.IsDead && !target.Data.IsDead && target != seer)
                                 fsb.Append(Utils.ColorString(Color.yellow, target.PlayerId.ToString()) + " ");
                             continue;
                         case CustomRoles.LastNeutral:
-                            if (!LastNeutral.GiveGuesser.GetBool()) continue;
+                            if (!LastNeutral.GiveGuesser.GetBool() || HasGuesser) continue;
+                            HasGuesser = true;
                             if (!seer.Data.IsDead && !target.Data.IsDead && target != seer)
                                 fsb.Append(Utils.ColorString(Color.yellow, target.PlayerId.ToString()) + " ");
                             continue;
@@ -464,8 +469,11 @@ public static class MeetingHudPatch
                 }
                 if (RoleAddAddons.GetRoleAddon(seer.GetCustomRole(), out var data, seer, subrole: CustomRoles.Guesser) && data.GiveGuesser.GetBool())
                 {
-                    if (!seer.Data.IsDead && !target.Data.IsDead && target != seer)
-                        fsb.Append(Utils.ColorString(Color.yellow, target.PlayerId.ToString()) + " ");
+                    if (HasGuesser is false)
+                    {
+                        if (!seer.Data.IsDead && !target.Data.IsDead && target != seer)
+                            fsb.Append(Utils.ColorString(Color.yellow, target.PlayerId.ToString()) + " ");
+                    }
                 }
 
                 if (Options.CanSeeNextRandomSpawn.GetBool() && seer == target)

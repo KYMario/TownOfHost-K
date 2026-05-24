@@ -1619,7 +1619,7 @@ namespace TownOfHost
                         Logger.Info($"{player.Data.GetLogPlayerName()} : {send}", "TwinsChat");
                         foreach (var twins in AllPlayerControls)
                         {
-                            if (twins && (twins.PlayerId == twinsid || (!twins.IsAlive())) && (twins.PlayerId != player.PlayerId && !Isclient))
+                            if (twins && (twins.PlayerId == twinsid || (!twins.IsAlive())))
                             {
                                 if (twins.PlayerId == player.PlayerId && !Isclient) continue;
                                 if (AmongUsClient.Instance.AmHost)
