@@ -159,7 +159,7 @@ namespace TownOfHost
                 logger.Info("キノコカオス中のため変身をキャンセルします");
                 return false;
             }
-            if (MeetingHud.Instance && animate)
+            if ((MeetingHud.Instance || GameStates.CalledMeeting) && animate)
             {
                 logger.Info("会議中のため変身をキャンセルします");
                 return false;
@@ -528,6 +528,11 @@ namespace TownOfHost
             if (Utils.CantUseVent)
             {
                 if (log) Logger.Info($"{pp.name}がベントに入ろうとしましたがベントが無効化されているので弾きます。", "OnenterVent");
+                return false;
+            }
+            if (GameStates.IsMeeting || GameStates.CalledMeeting)
+            {
+                if (log) Logger.Info($"{pp.name}がベントに入ろうとしましたが、会議が発生しているので防ぎます", "OnEnterVent");
                 return false;
             }
             return true;

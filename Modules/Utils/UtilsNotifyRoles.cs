@@ -496,12 +496,15 @@ namespace TownOfHost
                     var list = aliveplayer.ToArray().AddRangeToArray(deadplayer.ToArray());
 
                     bool isMeMinfo = false;
-                    if (Assassin.NowUse) isMeMinfo = false;
                     if (list[0] is not null)
                     {
                         if (list[0] == seer) isMeMinfo = true;
                     }
-
+                    if (Assassin.NowUse)
+                    {
+                        list = PlayerCatch.AllPlayerControls.ToArray();
+                        isMeMinfo = false;
+                    }
                     //名前の後ろに付けるマーカー
                     SelfMark.Clear();
 
@@ -645,7 +648,7 @@ namespace TownOfHost
                             if (Assassin.NowUse)
                             {
                                 tageismeI = target.PlayerId == PlayerControl.LocalPlayer.PlayerId;
-                                tageismodinfo = target.PlayerId == 1;
+                                list = PlayerCatch.AllPlayerControls.ToArray();
                             }
                             if (list[0] != null && !Assassin.NowUse)
                             {
@@ -653,11 +656,11 @@ namespace TownOfHost
                                 {
                                     tageismeI = true;
                                 }
-                                if (list.Length > 1)
-                                {
-                                    if (list[1] == target)
-                                        tageismodinfo = true;
-                                }
+                            }
+                            if (list.Length > 1)
+                            {
+                                if (list[1] == target)
+                                    tageismodinfo = true;
                             }
                             var targetrole = target.GetRoleClass();
                             //名前の後ろに付けるマーカー
