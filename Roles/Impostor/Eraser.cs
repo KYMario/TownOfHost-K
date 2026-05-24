@@ -148,7 +148,7 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             if (AmongUsClient.Instance.AmHost)
             {
                 Erasedtargets.Add(player.PlayerId);
-                player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode || Player.Is(CustomRoles.JackalWolf) ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
+                player.RpcSetCustomRole(SuddenDeathMode.NowSuddenDeathMode || (Player.Is(CustomRoles.JackalWolf) && player.Is(CustomRoleTypes.Impostor)) ? CustomRoles.Impostor : CustomRoles.Crewmate, true, null);
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
                 if (role.IsNeutral()) Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[1]);
             }
