@@ -310,6 +310,7 @@ namespace TownOfHost
             Wait = true;
             GameStates.task = false;
             bool IsMeetingBlackout = Options.ExCallMeetingBlackout.GetBool() || CustomRoles.Monochromer.IsEnable() || GameStates.AlreadyDied;
+            IsMeetingBlackout &= (Options.firstturnmeeting && MeetingStates.FirstMeeting) is false;
 
             DisableDevice.StartMeeting();
             foreach (var kvp in PlayerState.AllPlayerStates)
