@@ -362,6 +362,7 @@ public static class CustomRoleManager
 
         Utils.TargetDies(info);
         MurderMystery.CheckDeath(attemptTarget);
+        AllActiveRoles.Do(role => role.Value.OnDead(attemptTarget));
 
         //サドンデスの初手キル処理なので、バウハン等の影響受けないように限定にしておく
         if (SuddenDeathMode.NowSuddenDeathMode && appearanceKiller.GetPlayerState().Is10secKillButton)
@@ -859,6 +860,7 @@ public enum CustomRoles
     MadSuicide,
     MadBetrayer,
     Nue,
+    MadHacker,
     //DEBUG only Madmate
     //Crewmate(Vanilla)
     Engineer,

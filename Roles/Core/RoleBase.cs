@@ -159,6 +159,13 @@ public abstract class RoleBase : IDisposable
     { }
 
     /// <summary>
+    /// 誰かが死亡した時に呼ばれる関数。
+    /// </summary>
+    /// <param name="player">死亡した人</param>
+    public virtual void OnDead(PlayerControl player)
+    { }
+
+    /// <summary>
     /// シェイプシフト時に呼ばれる関数
     /// 自分自身について呼ばれるため本人確認不要
     /// [全クライアント]

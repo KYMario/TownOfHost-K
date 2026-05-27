@@ -449,12 +449,17 @@ namespace TownOfHost
             if (!Utils.IsRestriction())
             {
                 player.RpcExileV2();
+                CustomRoleManager.AllActiveRoles.Do(role => role.Value.OnDead(player));
                 return;
             }
             if (AntiBlackout.IsSet)
             {
                 Logger.Warn("Antiblack set Cancel..", "RpcExileV3");
-                if (player.IsAlive()) player.GetPlayerState().SetDead();
+                if (player.IsAlive())
+                {
+                    player.GetPlayerState().SetDead();
+                    CustomRoleManager.AllActiveRoles.Do(role => role.Value.OnDead(player));
+                }
                 return;
             }
             if (player.IsAlive() || !(player.Data.Role.Role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost or RoleTypes.GuardianAngel))
@@ -471,7 +476,11 @@ namespace TownOfHost
             }
             player.Exiled();
             player.Data.IsDead = true;
-            if (player.IsAlive()) player.GetPlayerState().SetDead();
+            if (player.IsAlive())
+            {
+                player.GetPlayerState().SetDead();
+                CustomRoleManager.AllActiveRoles.Do(role => role.Value.OnDead(player));
+            }
             Patches.GameDataSerializePatch.SerializeMessageCount++;
             RPC.RpcSyncAllNetworkedPlayer();
             player.RpcSetRole(player.IsGhostRole() ? RoleTypes.GuardianAngel :

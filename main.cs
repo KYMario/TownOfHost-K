@@ -66,7 +66,7 @@ namespace TownOfHost
         /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
         public static bool DebugVersion = false;
 
-        // サポートされている最低のAmongUsバージョン
+        // サポートされている最低のAmongUsバージョン(Readmeも変える)
         public static readonly string LowestSupportedVersion = "2026.3.31";
         // このバージョンのみで公開ルームを無効にする場合
         public static readonly bool IsPublicAvailableOnThisVersion = false;

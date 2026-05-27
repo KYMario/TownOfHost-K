@@ -220,7 +220,8 @@ namespace TownOfHost
                 case CustomRPC.SetRealKiller:
                     byte targetId = reader.ReadByte();
                     byte killerId = reader.ReadByte();
-                    RPC.SetRealKiller(targetId, killerId);
+                    string killroom = reader.ReadString();
+                    RPC.SetRealKiller(targetId, killerId, killroom);
                     if (killerId == PlayerControl.LocalPlayer.PlayerId && !AmongUsClient.Instance.AmHost)
                     {
                         var State = PlayerState.GetByPlayerId(targetId);
@@ -519,7 +520,7 @@ namespace TownOfHost
             else rpcName = callId.ToString();
             return rpcName;
         }
-        public static void SetRealKiller(byte targetId, byte killerId)
+        public static void SetRealKiller(byte targetId, byte killerId, string KillRoom)
         {
             PlayerState state = PlayerState.GetByPlayerId(targetId);
             state.RealKiller.Item1 = DateTime.Now;
@@ -529,6 +530,7 @@ namespace TownOfHost
             MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SetRealKiller, SendOption.None, -1);
             writer.Write(targetId);
             writer.Write(killerId);
+            writer.Write(KillRoom);
             AmongUsClient.Instance.FinishRpcImmediately(writer);
         }
         public static MessageWriter RpcPublicRoleSync(byte playerid, CustomRoles role)
