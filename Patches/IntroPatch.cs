@@ -8,7 +8,6 @@ using UnityEngine;
 
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
-using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Impostor;
 using static TownOfHost.Translator;
 
@@ -134,7 +133,7 @@ namespace TownOfHost
                     pc.cosmetics.nameText.text = pc.name;
 
                     var outfit = pc.Data.DefaultOutfit;
-                    Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
+                    Camouflage.PlayerSkins[pc.PlayerId] = new NetworkedPlayerInfo.PlayerOutfit().Set(Options.ColorNameMode.GetBool() ? Palette.GetColorName(colorId) : outfit.PlayerName, outfit.ColorId, outfit.HatId, outfit.SkinId, outfit.VisorId, outfit.PetId);
                 }
             }
             var logger = Logger.Handler("Info");
@@ -559,10 +558,29 @@ namespace TownOfHost
                     CustomButtonHud.BottonHud(true);
                 }, 0.3f, "setnames", true);
 
+                bool IsPlayerSkinShuffleMode = Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special);
+                if (IsPlayerSkinShuffleMode)
+                {
+                    PlayerCatch.AllPlayerControls.Do(pc =>
+                    {
+                        if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
+
+                        if (Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
+                        else pc.RpcSetName(outfit.PlayerName);
+                    });
+                }
+                else if (Options.ColorNameMode.GetBool())
+                {
+                    PlayerCatch.AllPlayerControls.Do(pc =>
+                    {
+                        pc.RpcSetName(Palette.GetColorName(pc.Data.DefaultOutfit.ColorId));
+                    });
+                }
+
                 _ = new LateTask(() =>
                 {
                     CustomRoleManager.AllActiveRoles.Values.Do(role => role.ChangeColor());
-                    UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+                    UtilsNotifyRoles.NotifyRoles(NoCache: IsPlayerSkinShuffleMode || Options.ColorNameMode.GetBool(), ForceLoop: true);
 
                     ExtendedRpc.AllPlayerOnlySeeMePet();
                     SuddenDeathMode.NotTeamKill();
