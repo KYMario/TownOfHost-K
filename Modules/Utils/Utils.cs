@@ -673,6 +673,7 @@ namespace TownOfHost
                 {
                     if (roleClass is Balancer balancer) balancer.BalancerAfterMeetingTasks();
                 }
+                GameStates.ExiledAnimate = false;
             }
             else
             {
