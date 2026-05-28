@@ -113,6 +113,7 @@ class Achievements
         {
             ac.IsCompleted = true;
         }
+        AchievementSaver.Save();
     }
     public static string GetAllAchievement()
     {

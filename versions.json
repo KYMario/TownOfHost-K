@@ -8,83 +8,6 @@
         "NotAvailableOnline": false,
         "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
     },
-    "51.14.31.11": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.12": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.13": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.14": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.15": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.21": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.22": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.23": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.24": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "<size=2.5>バニラサーバーを使用すると正常に動作しません...\nローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.25": {
-        "Unavailable": true,
-        "NotAvailableOnline": false,
-        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.26": {
-        "Unavailable": true,
-        "NotAvailableOnline": false
-    },
-    "51.14.31.27": {
-        "Unavailable": false,
-        "NotAvailableOnline": false,
-        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.28": {
-        "Unavailable": false,
-        "NotAvailableOnline": false,
-        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.29": {
-        "Unavailable": false,
-        "NotAvailableOnline": false,
-        "AnnounceText": "バニラサーバーを使用すると正常に動作しません...ローカル or カスタムサーバーをご利用ください。"
-    },
-    "51.14.31.31": {
-        "Unavailable": false,
-        "NotAvailableOnline": false
-    },
-    "51.14.31.32": {
-        "Unavailable": false,
-        "NotAvailableOnline": false
-    },
     "51.14.32": {
         "Unavailable": false,
         "NotAvailableOnline": false
@@ -146,6 +69,10 @@
         "NotAvailableOnline": false
     },
     "51.14.32.34": {
+        "Unavailable": false,
+        "NotAvailableOnline": false
+    },
+    "51.14.32.35": {
         "Unavailable": false,
         "NotAvailableOnline": false
     }
