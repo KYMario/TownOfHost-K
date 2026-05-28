@@ -83,7 +83,7 @@ namespace TownOfHost
             if (AmongUsClient.Instance.AmHost)
             {
                 // 死者の最終位置にペットが残るバグ対応
-                __instance.RpcSetPet("");
+                //__instance.RpcSetPet("");
 
                 if (__instance.Is(CustomRoles.Amnesia))//アムネシア削除
                 {

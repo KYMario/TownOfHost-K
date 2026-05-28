@@ -577,13 +577,13 @@ namespace TownOfHost
             if (seer.PlayerId == PlayerControl.LocalPlayer.PlayerId)
             {
                 pc.SetColor(Color);
-                if (NonSkin)
+                /*if (NonSkin)
                 {
                     pc.SetSkin("", Color);
                     pc.SetHat("", Color);
                     pc.SetVisor("", Color);
                     return;
-                }
+                }*/
             }
             var sender = CustomRpcSender.Create("DChengeColor", SendOption.Reliable);
             sender.StartMessage(seer.GetClientId());
@@ -593,7 +593,7 @@ namespace TownOfHost
             .Write(Color)
             .EndRpc();
 
-            if (NonSkin)
+            /*if (NonSkin)
             {
                 sender.StartRpc(pc.NetId, RpcCalls.SetHatStr)
                 .Write("")
@@ -607,12 +607,14 @@ namespace TownOfHost
                 .Write("")
                 .Write(pc.GetNextRpcSequenceId(RpcCalls.SetVisorStr))
                 .EndRpc();
-            }
+            }*/
             sender.EndMessage();
             sender.SendMessage();
         }
         public static void OnlySeeMyPet(this PlayerControl pc, string petid = null)
         {
+            return;
+            /*
             petid ??= Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit) ? outfit.PetId : "";
             if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
             //pc.RpcSetPet("");
@@ -637,7 +639,7 @@ namespace TownOfHost
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
             }*/
 
-            pc.RawSetPet(pc.PlayerId == PlayerControl.LocalPlayer.PlayerId ? petid : "pet_EmptyPet", pc.Data.DefaultOutfit.ColorId);
+            //pc.RawSetPet(pc.PlayerId == PlayerControl.LocalPlayer.PlayerId ? petid : "pet_EmptyPet", pc.Data.DefaultOutfit.ColorId);
         }
         public static void AllPlayerOnlySeeMePet() => PlayerCatch.AllPlayerControls.Do(pc => pc.OnlySeeMyPet(Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit) ? outfit.PetId : ""));
     }

@@ -573,6 +573,7 @@ namespace TownOfHost
 
             if (Camouflage.IsCamouflage)
             {
+                /* 
                 var sender = CustomRpcSender.Create(name: $"Camouflage.RpcSetSkin({player.Data.GetLogPlayerName()})");
                 byte color = (byte)ModColors.PlayerColor.Gray;
 
@@ -599,7 +600,7 @@ namespace TownOfHost
                     .Write("")
                     .Write(player.GetNextRpcSequenceId(RpcCalls.SetVisorStr))
                     .EndRpc();
-                sender.SendMessage();
+                sender.SendMessage();*/
             }
             else if (Camouflage.ventplayr.Contains(player.PlayerId))
                 Camouflage.RpcSetSkin(player, force: null);

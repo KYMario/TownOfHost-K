@@ -48,7 +48,7 @@ namespace TownOfHost
 
             var oldIsCamouflage = IsCamouflage;
 
-            IsCamouflage = Utils.IsActive(SystemTypes.Comms);
+            IsCamouflage = false;//Utils.IsActive(SystemTypes.Comms);
 
             if (oldIsCamouflage != IsCamouflage)
             {
@@ -58,7 +58,8 @@ namespace TownOfHost
                     // The code is intended to remove pets at dead players to combat a vanilla bug
                     if (!IsCamouflage && !pc.IsAlive())
                     {
-                        pc.RpcSetPet("");
+                        return;
+                        //pc.RpcSetPet("");
                     }
                 }
                 UtilsNotifyRoles.NotifyRoles(NoCache: true);
@@ -127,6 +128,7 @@ namespace TownOfHost
                 .Write(newOutfit.ColorId)
                 .EndRpc();
 
+            /*
             target.SetHat(newOutfit.HatId, newOutfit.ColorId);
             sender.AutoStartRpc(target.NetId, (byte)RpcCalls.SetHatStr)
                 .Write(newOutfit.HatId)
@@ -144,6 +146,7 @@ namespace TownOfHost
                 .Write(newOutfit.VisorId)
                 .Write(target.GetNextRpcSequenceId(RpcCalls.SetVisorStr))
                 .EndRpc();
+                */
 
             sender.SendMessage();
             if (ventplayr.Contains(target.PlayerId)) ventplayr.Remove(target.PlayerId);

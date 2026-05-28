@@ -383,7 +383,7 @@ class StandardIntro
 
                 if (GameModeManager.IsStandardClass())
                     _ = new LateTask(() =>
-                    {
+                    {/*
                         foreach (var Player in PlayerCatch.AllPlayerControls)
                         {
                             if (Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Options.EnableGM.GetBool()) continue;
@@ -395,9 +395,9 @@ class StandardIntro
 
                                 if (outfit == null) return;
 
-                                if (Player.IsAlive()) Player.RpcSetPet(outfit.pet);
+                                if (Player.IsAlive()) Player.RpcSetPet("");
                             }
-                        }
+                        }*/
                         UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
                     }, 0.2f, "Use On click Shepe", true);
             }, 2.0f, "Roleset", false);

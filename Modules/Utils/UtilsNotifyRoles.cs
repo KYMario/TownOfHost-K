@@ -368,7 +368,7 @@ namespace TownOfHost
 
                             if (((IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())
                             || (role is CustomRoles.Monochromer && seerisAlive)
-                            || Camouflager.NowUse
+                            //|| Camouflager.NowUse
                             || (SuddenDeathMode.SuddenCannotSeeName && !TemporaryName))
                             && (!((targetrole as Jumper)?.Jumping == true)))
                             {

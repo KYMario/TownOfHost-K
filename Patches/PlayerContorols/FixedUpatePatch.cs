@@ -373,7 +373,7 @@ namespace TownOfHost
 
                         if ((Utils.IsActive(SystemTypes.Comms) && Options.CommsCamouflage.GetBool())
                         || (seer.Is(CustomRoles.Monochromer) && seer.IsAlive())
-                        || Camouflager.NowUse
+                        //|| Camouflager.NowUse
                         || (SuddenDeathMode.SuddenCannotSeeName && !TemporaryName))
                             RealName = $"<size=0>{RealName}</size> ";
                     }
