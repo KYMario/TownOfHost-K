@@ -272,7 +272,7 @@ namespace TownOfHost.Modules.ChatManager
                             writer.EndMessage();
                             writer.SendMessage();
                             UtilsNotifyRoles.NotifyRoles(true, false, true, [sendpc]);
-                            if (!Main.IsCs() && Options.ExRpcWeightR.GetBool()) Main.MegCount++;
+                            if (Utils.IsRestriction() && Options.ExRpcWeightR.GetBool()) Main.MegCount++;
                         }
                     }
                 }
@@ -296,6 +296,7 @@ namespace TownOfHost.Modules.ChatManager
                 Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
                 return;
             }
+            if (Utils.IsRestriction() && Options.ExRpcWeightR.GetBool()) return;
             // バニラ鯖使用下の状況
             if (Utils.IsRestriction())
             {
@@ -371,13 +372,13 @@ namespace TownOfHost.Modules.ChatManager
                                     writer.EndMessage();
                                 }, true);
                             }
+                            GameDataSerializePatch.SerializeMessageCount--;
                             Nwriter.StartRpc(senderplayer.Data.NetId, (byte)RpcCalls.SetName)
                             .Write(senderplayer.Data.NetId)
-                            .Write(senderplayer.Data.GetLogPlayerName())
+                            .Write(name)
                             .EndRpc();
                             Nwriter.EndMessage();
                             Nwriter.SendMessage();
-                            GameDataSerializePatch.SerializeMessageCount--;
                         }
                     }
                     senderplayer.Die(DeathReason.Kill, false);

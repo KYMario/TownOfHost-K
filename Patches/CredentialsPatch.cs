@@ -268,18 +268,17 @@ namespace TownOfHost
                         Main.MegCount = 0;
                     }
                 }
-                else
-                    if (Main.MegCount == oldcount)
-                    {
-                        olddeltimer += Time.deltaTime;
+                else if (Main.MegCount == oldcount)
+                {
+                    olddeltimer += Time.deltaTime;
 
-                        if (olddeltimer > 1.3f)
-                        {
-                            timer = 0;
-                            olddeltimer = 0;
-                            Main.MegCount = 0;
-                        }
+                    if (olddeltimer > 1.3f)
+                    {
+                        timer = 0;
+                        olddeltimer = 0;
+                        Main.MegCount = 0;
                     }
+                }
 
                 oldcount = Main.MegCount;
             }
