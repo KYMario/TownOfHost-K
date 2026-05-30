@@ -194,7 +194,7 @@ public sealed class Balancer : RoleBase, ISelfVoter
                 sender.Writer.Write(target2);
 
                 ExileControllerWrapUpPatch.AntiBlackout_LastExiled = null;
-                Instance.ClearAndExiles([Target1, Target2], Skip);
+                _ = new LateTask(() => Instance.ClearAndExiles([Target1, Target2], Skip), 0.3f, "", true);
             }
         }
     }
