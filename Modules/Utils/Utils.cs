@@ -401,7 +401,7 @@ namespace TownOfHost
             var fir = "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
-            if (setsize is false) text = $"<size=70%>{text}";
+            if (setsize is false) text = $"<size=70%><#ffffff>{text}";
             if (IsRestriction())
             {
                 var sendtext = text;
