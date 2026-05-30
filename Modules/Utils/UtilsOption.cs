@@ -222,7 +222,7 @@ namespace TownOfHost
                 sb.AppendFormat("<line-height=45%><size={0}>", ActiveSettingsSize);
             }*/
         }
-        public static void ShowWinSetting(byte PlayerId = byte.MaxValue)
+        public static void ShowWinSetting(byte PlayerId = byte.MaxValue, bool IsMonochrome = false)
         {
             if ((Options.HideGameSettings.GetBool() || (Options.HideSettingsDuringGame.GetBool() && GameStates.IsInGame)) && PlayerId != byte.MaxValue)
             {
@@ -245,6 +245,7 @@ namespace TownOfHost
             {
                 sb += $"\n" + UtilsRoleText.GetCombinationName(data.Key, true) + $"{data.Value}";
             }
+            if (Options.ExChatMonochrome.GetBool() || IsMonochrome) sb = sb.RemoveColorTags();
             SendMessage(sb, PlayerId, checkl: true);
         }
         public static void CopyCurrentSettings()
@@ -278,7 +279,7 @@ namespace TownOfHost
             sb.Append($"━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
             ClipboardHelper.PutClipboardString(sb.ToString());
         }
-        public static void ShowActiveRoles(byte PlayerId = byte.MaxValue)
+        public static void ShowActiveRoles(byte PlayerId = byte.MaxValue, bool IsMonochrome = false)
         {
             if ((Options.HideGameSettings.GetBool() || (Options.HideSettingsDuringGame.GetBool() && GameStates.IsInGame)) && PlayerId != byte.MaxValue)
             {
@@ -287,7 +288,10 @@ namespace TownOfHost
             }
             var m = GetActiveRoleText(PlayerId);
             if (m.RemoveHtmlTags() != "")
+            {
+                if (Options.ExChatMonochrome.GetBool() || IsMonochrome) m = m.RemoveColorTags();
                 SendMessage(m, PlayerId, checkl: true);
+            }
         }
         public static string GetActiveRoleText(byte pc)
         {

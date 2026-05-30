@@ -970,6 +970,7 @@
 "ExCallMeetingBlackoutInfo","Automatically ON if some Role are included","一部役職が入っている場合は自動的にON"
 "ExIntroWeight","Intro communication","イントロの通信量分割"
 "ExIntroWeightInfo","Enable only when the intro disconnect occurs","イントロ落ちがでたときのみ有効に"
+"ExChatMonochrome","Chat Delete Color","一部のシステムメッセージの色を無くす"
 "UseZoom","UseZoom (ModClient Only)","ズームを有効にする(ModClient Only)"
 "SoloWinOption","%role%SoloWin","%role%の勝利優先順位"
 "RandomPreset","RandomPreset","ランダムプリセット"

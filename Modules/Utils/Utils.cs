@@ -235,7 +235,7 @@ namespace TownOfHost
             if (!isAlive && !GhostRole) return Options.GhostCanSeeKillerColor.GetBool() || !Options.GhostOptions.GetBool();
             return false;
         }
-        public static string GetVitalText(byte playerId, bool? RealKillerColor = false)
+        public static string GetVitalText(byte playerId, bool? RealKillerColor = false, bool alivecolor = true)
         {
             var state = PlayerState.GetByPlayerId(playerId);
 
@@ -246,8 +246,9 @@ namespace TownOfHost
             {
                 case true:
                     {
-                        //rgb(97, 128, 163)
                         var KillerId = state.GetRealKiller();
+                        if (alivecolor is false && KillerId == byte.MaxValue) return deathReason;
+                        //rgb(97, 128, 163)
                         Color color = KillerId != byte.MaxValue ? Main.PlayerColors[KillerId] : (state.DeathReason == CustomDeathReason.etc ? new Color32(97, 128, 163, 255) : new Color32(120, 120, 120, 255));
                         deathReason = ColorString(color, deathReason);
                     }
@@ -327,7 +328,7 @@ namespace TownOfHost
         }
 
         static readonly Regex UnderlineRegex = new(@"<u>(.*?)</u>", RegexOptions.Singleline | RegexOptions.Compiled);
-        public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool checkl = true, bool isTowSend = false)
+        public static void SendMessage(string text, byte sendTo = byte.MaxValue, string title = "", bool checkl = true, bool isTowSend = false, bool setsize = false)
         {
             if (!AmongUsClient.Instance.AmHost) return;
             if (text.RemoveHtmlTags() == "") return;
@@ -342,9 +343,9 @@ namespace TownOfHost
                 (string size, string color, string hi, string b) tag = ("", "", "", "");
                 var oldtext = text;
                 var i = 0;
-                for (i = 0; sendtext.Length < 250 || ((sendtext.Split("\n")?.Count() ?? 0) < 10); i++)
+                for (i = 0; sendtext.Length < 280 || ((sendtext.Split("\n")?.Count() ?? 0) < 10); i++)
                 {
-                    if ((sendtext.Length + alltext[i].Length > 250 || ((sendtext.Split("\n")?.Count() ?? 0) > 10)) && i > 0)
+                    if ((sendtext.Length + alltext[i].Length > 280 || ((sendtext.Split("\n")?.Count() ?? 0) > 10)) && i > 0)
                     {
                         i--;
                         break;
@@ -377,6 +378,7 @@ namespace TownOfHost
                 {
                     send += $"{alltext[ii]}\n";
                 }
+                if (tag.color == "<#ffffff>") tag.color = "";
                 towsend = $"{tag.b}{tag.hi}{tag.color}{tag.size}{send}";
                 text = sendtext;
             }
@@ -399,13 +401,17 @@ namespace TownOfHost
             var fir = "<align=\"left\">";
             text = text.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
             title = title.RemoveDeltext("color=#", "#").RemoveDeltext("FF>", ">");
+            if (setsize is false) text = $"<size=70%>{text}";
             if (IsRestriction())
             {
                 var sendtext = text;
-                if (!VersionInfoManager.GetCustomFlag(1))
-                    sendtext = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
-                if (isTowSend && title == "") Main.MessagesToSend.Add(($" ", sendTo, $"{fir}<#ffffff><size=70%>{sendtext}"));
-                else Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}</color><#ffffff>\n<size=70%>{sendtext}"));
+                if (sendtext.RemoveHtmlTags().RemoveDeltext("\n") != "")
+                {
+                    if (!VersionInfoManager.GetCustomFlag(1))
+                        sendtext = UnderlineRegex.Replace(text, m => $"<u><line-height=1.5em>{m.Groups[1].Value}</line-height></u>");
+                    if (isTowSend && title == "") Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{sendtext}"));
+                    else Main.MessagesToSend.Add(($" ", sendTo, $"{fir}{title}\n{sendtext}"));
+                }
             }
             else
                 Main.MessagesToSend.Add(($"{fir}{text}", sendTo, $"{fir}{title}"));

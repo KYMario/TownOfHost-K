@@ -87,17 +87,14 @@ namespace TownOfHost
         public static string GetLogtext(byte pc)
         {
             var longestNameByteCount = Main.AllPlayerNames?.Values?.Select(name => name.GetByteCount())?.OrderByDescending(byteCount => byteCount)?.FirstOrDefault() ?? 10;
-            var pos = Math.Min(((float)longestNameByteCount / 2) + 1.5f, 11.5f);
-            var pos1 = pos + 4f;
-            var pos2 = pos + 4f + (DestroyableSingleton<TranslationController>.Instance.currentLanguage.languageID == SupportedLangs.English ? 8f : 4.5f);
 
-            var name = LastLog.TryGetValue(pc, out var log) ? log : "???";
-            var pro = LastLogPro.TryGetValue(pc, out var prog) ? prog : "(????)";
-            var role = LastLogRole.TryGetValue(pc, out var rolelog) ? rolelog : "??????";
+            var name = LastLog.TryGetValue(pc, out var log) ? log : "??";
+            var pro = LastLogPro.TryGetValue(pc, out var prog) ? prog : "(??)";
+            var role = LastLogRole.TryGetValue(pc, out var rolelog) ? rolelog : "???";
             var addon = "??";
-            addon = LastLogLoveRole.TryGetValue(pc, out var m) ? m : "";// : GetSubRolesText(pc, mark: true);
+            addon = LastLogLoveRole.TryGetValue(pc, out var m) ? m : "";
 
-            return name + pro + " : " + GetVitalText(pc, true) + " " + role + addon;
+            return name + pro + "：" + GetVitalText(pc, true, false) + " " + role + addon;
         }
         public static string SummaryTexts(byte id)
         {
@@ -335,7 +332,7 @@ namespace TownOfHost
             }
             return sb;
         }
-        public static void ShowLastResult(byte PlayerId = byte.MaxValue)
+        public static void ShowLastResult(byte PlayerId = byte.MaxValue, bool IsMonochrome = false)
         {
             if (AmongUsClient.Instance.IsGameStarted)
             {
@@ -347,8 +344,8 @@ namespace TownOfHost
             var winnerColor = ((CustomRoles)CustomWinnerHolder.WinnerTeam).GetRoleInfo()?.RoleColor ?? GetRoleColor((CustomRoles)CustomWinnerHolder.WinnerTeam);
 
             sb.Append("""<align="center">""");
-            sb.Append("<size=150%>").Append(GetString("LastResult")).Append("</size>");
-            sb.Append('\n').Append(SetEverythingUpPatch.LastWinsText.Mark(winnerColor, false));
+            sb.Append(GetString("LastResult")).Append("</size>");
+            sb.Append('\n').Append("<size=80%>").Append(SetEverythingUpPatch.LastWinsText.RemoveSizeTags());
             sb.Append("</align>");
 
             sb.Append("<size=65%>\n");
@@ -359,7 +356,7 @@ namespace TownOfHost
             var count = 0;
             foreach (var id in Main.winnerList)
             {
-                sb.Append($"\n★ ".Color(winnerColor)).Append(GetLogtext(id));
+                sb.Append($"\n★ ").Append(GetLogtext(id));
                 cloneRoles.Remove(id);
                 count++;
             }
@@ -370,13 +367,15 @@ namespace TownOfHost
             }
             sb.Append("</color>   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n");
             sb.Append(string.Format(GetString("Result.Task"), Main.Alltask));
-            SendMessage(sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId, checkl: true);
+            var text = sb.ToString().RemoveDeltext("<b>").RemoveDeltext("</b>");
+            if (Options.ExChatMonochrome.GetBool() || IsMonochrome) text = text.RemoveColorTags();
+            SendMessage(text, PlayerId, checkl: true, setsize: true);
         }
         public static void ShowLastWins(byte PlayerId = byte.MaxValue)
         {
             SendMessage("<size=0>", PlayerId, $"{SetEverythingUpPatch.LastWinsText}");
         }
-        public static void ShowKillLog(byte PlayerId = byte.MaxValue)
+        public static void ShowKillLog(byte PlayerId = byte.MaxValue, bool IsMonochrome = false)
         {
             if (GameStates.IsInGame)
             {
@@ -408,7 +407,9 @@ namespace TownOfHost
 
                     var Star = "★";
                     var send = mes.ToString() + "\n\n" + $"{Star}{meg}{Star}".Color(winnerColor);
-                    SendMessage(send.RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId, checkl: true);
+
+                    if (Options.ExChatMonochrome.GetBool() || IsMonochrome) send = send.RemoveColorTags();
+                    SendMessage(send.RemoveDeltext("<b>").RemoveDeltext("</b>"), PlayerId, checkl: true, setsize: true);
                     break;
                 }
             }

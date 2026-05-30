@@ -162,6 +162,7 @@ namespace TownOfHost
         public static OptionItem ExRpcWeightR;
         public static OptionItem ExCallMeetingBlackout;
         public static OptionItem ExIntroWeight;
+        public static OptionItem ExChatMonochrome;
 
         //幽霊役職
         public static OptionItem GhostRoleOption;
@@ -676,6 +677,8 @@ namespace TownOfHost
             ExIntroWeight = StringOptionItem.Create(105014, "ExIntroWeight", ["Weight_0", "Weight_1", "Weight_2"], 0, TabGroup.MainSettings, false)
                 .SetParent(ExperimentalMode)
                 .SetInfo(Translator.GetString("ExIntroWeightInfo"));
+            ExChatMonochrome = BooleanOptionItem.Create(105015, "ExChatMonochrome", false, TabGroup.MainSettings, false)
+                .SetParent(ExperimentalMode);
 
             //9人以上部屋で落ちる現象の対策
             FixSpawnPacketSize = BooleanOptionItem.Create(105010, "FixSpawnPacketSize", false, TabGroup.MainSettings, true)
