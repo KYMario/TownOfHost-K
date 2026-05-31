@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Hazel;
+using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Neutral;
@@ -33,20 +34,17 @@ public static class HqHudSystemTypeUpdateSystemPatch
             // マッド属性化時に削除
             (playerRole is SchrodingerCat schrodingerCat && schrodingerCat.AmMadmate);
 
-        if (isMadmate && !Options.MadmateCanFixComms.GetBool())
+        if ((isMadmate && !Options.MadmateCanFixComms.GetBool())
+        || (player.Is(CustomRoles.Amanojaku) && !Amanojaku.OptCanFixComms.GetBool())
+        || (player.Is(CustomRoles.Clumsy)))
         {
             return false;
         }
-        if (Options.CommsDonttouch.GetBool())
-            if (Options.CommsDonttouchTime.GetFloat() > Main.SabotageActivetimer)
-            {
-                return false;
-            }
+        if (Options.CommsDonttouch.GetBool() && (Options.CommsDonttouchTime.GetFloat() > Main.SabotageActivetimer))
+        {
+            return false;
+        }
 
-        if (player.Is(CustomRoles.Clumsy))
-        {
-            return false;
-        }
         if (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.Clumsy) && data.GiveClumsy.GetBool()) return false;
 
         if (Roles.AddOns.Common.Amnesia.CheckAbility(player))

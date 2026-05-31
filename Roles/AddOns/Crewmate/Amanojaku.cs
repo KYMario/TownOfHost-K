@@ -13,6 +13,8 @@ namespace TownOfHost.Roles.AddOns.Common
         public static List<byte> playerIdList = new();
         public static OptionItem AssingDay;
         public static OptionItem SurvivetoWin;
+        public static OptionItem OptCanFixLightsOut;
+        public static OptionItem OptCanFixComms;
         public static Dictionary<CustomWinner, OptionItem> OptionRole = new();
         public static void SetupCustomOption()
         {
@@ -21,6 +23,8 @@ namespace TownOfHost.Roles.AddOns.Common
             AssingDay = IntegerOptionItem.Create(Id + 20, "AmanojakuAssingDay", new(0, 99, 1), 4, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amanojaku).SetValueFormat(OptionFormat.day);
             ObjectOptionitem.Create(Id + 21, "AddonOption", true, "", TabGroup.Addons).SetOptionName(() => "Role Option").SetSubRoleOptionItem(CustomRoles.Amanojaku);
             SurvivetoWin = BooleanOptionItem.Create(Id + 22, "AmanojakuSurvivetoWin", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amanojaku);
+            OptCanFixLightsOut = BooleanOptionItem.Create(Id + 23, "MadmateCanFixLightsOut", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amanojaku);
+            OptCanFixComms = BooleanOptionItem.Create(Id + 24, "MadmateCanFixComms", true, TabGroup.Addons, false).SetSubRoleOptionItem(CustomRoles.Amanojaku);
 
             var id = 52 + Id;
             foreach (var _customwinner in EnumHelper.GetAllValues<CustomWinner>().Where(x => x < CustomWinner.TaskPlayerB && x is not CustomWinner.Crewmate && x > CustomWinner.Draw))

@@ -1,5 +1,6 @@
 using HarmonyLib;
 using Hazel;
+using TownOfHost.Roles.AddOns.Common;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using TownOfHost.Roles.Neutral;
@@ -33,11 +34,9 @@ public static class SwitchSystemUpdateSystemPatch
             player.Is(CustomRoleTypes.Madmate) ||
             // マッド属性化時に削除
             (roleclass is SchrodingerCat schrodingerCat && schrodingerCat.AmMadmate);
-        if (isMadmate && !Options.MadmateCanFixLightsOut.GetBool())
-        {
-            return false;
-        }
-        if (player.Is(CustomRoles.Water))
+        if ((isMadmate && !Options.MadmateCanFixLightsOut.GetBool())
+        || (player.Is(CustomRoles.Amanojaku) && !Amanojaku.OptCanFixLightsOut.GetBool())
+        || player.Is(CustomRoles.Water))
         {
             return false;
         }
