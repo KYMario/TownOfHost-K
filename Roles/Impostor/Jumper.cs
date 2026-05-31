@@ -174,7 +174,7 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         {
             JumpToPosition = Player.transform.position;
             AdjustKillCooldown = true;
-            Player.RpcSpecificRejectShapeshift(Player, false);
+            //Player.RpcSpecificRejectShapeshift(Player, false);
             Player.RpcResetAbilityCooldown(Sync: true);
             SendRPC();
             Logger.Info($"Set:{JumpToPosition.x}-{JumpToPosition.y} (${Player.PlayerId})", "Jumper");
@@ -199,7 +199,6 @@ public sealed class Jumper : RoleBase, IImpostor, IUsePhantomButton
         _ = new LateTask(() => UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player), 0.2f, "JumperSet", true);
         _ = new LateTask(() =>
         {
-            Player.RpcSetPet("");
             Player.SyncSettings();
             int chance = IRandom.Instance.Next(0, 18);
             PlayerCatch.AllPlayerControls.Do(pc => Player.RpcChColor(pc, (byte)chance));

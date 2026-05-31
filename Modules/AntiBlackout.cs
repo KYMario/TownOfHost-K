@@ -323,6 +323,7 @@ namespace TownOfHost
             _ = new LateTask(() =>
                 {
                     Player.SetKillCooldown(force: true, delay: true);
+                    Player.RpcResetAbilityCooldown();
                     if (Player.IsAlive() && !(Player.PlayerId == PlayerControl.LocalPlayer.PlayerId && Options.EnableGM.GetBool()))
                     {
                         var roleclass = Player.GetRoleClass();
