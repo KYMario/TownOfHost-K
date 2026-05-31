@@ -4,7 +4,6 @@ using AmongUs.GameOptions;
 using HarmonyLib;
 using Hazel;
 using TownOfHost.Roles.Core;
-using TownOfHost.Roles.Neutral;
 using UnityEngine;
 
 namespace TownOfHost.Roles.Crewmate;
