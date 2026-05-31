@@ -152,6 +152,14 @@ public static class OptionSaver
                             }
                             else if (roleid is -1) rolelist.Add(CustomRoles.Crewmate);
                             else if (roleid is -3) rolelist.Add(CustomRoles.Impostor);
+                            else
+                            {
+                                var info = CustomRoleManager.AllRolesInfo.Values.FirstOrDefault(x => x.ConfigId == roleid);
+                                if (info is not null)
+                                {
+                                    rolelist.Add(info.RoleName);
+                                }
+                            }
                         }
                         role.Add(item.Key, rolelist);
                     }
