@@ -72,7 +72,7 @@ namespace TownOfHost
                 return false;
             }
             // 会議中のキルでないか
-            if (MeetingHud.Instance != null || GameStates.CalledMeeting)
+            if (MeetingHud.Instance != null || (GameStates.CalledMeeting && !force))
             {
                 Logger.Info("会議が始まっていたため、キルをキャンセルしました。", "CheckMurder");
                 return false;
