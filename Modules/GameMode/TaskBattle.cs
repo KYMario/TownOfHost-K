@@ -42,6 +42,7 @@ class TaskBattle
     }
     public static bool TaskBattleCompleteTask(PlayerControl pc, TaskState taskState)
     {
+        if (AmongUsClient.Instance.AmHost is false) return true;
         if (pc.Is(CustomRoles.TaskPlayerB) && taskState.IsTaskFinished)
         {
             if (TaskAddMode.GetBool())

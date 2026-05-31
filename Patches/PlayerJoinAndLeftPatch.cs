@@ -137,6 +137,7 @@ namespace TownOfHost
         }
         public static void checkjoin(ClientData client)
         {
+            if (AmongUsClient.Instance.AmHost is false) return;
             if (4 < kickpuidlist.Count(id => id == client.ProductUserId))
             {
                 Logger.seeingame(string.Format(GetString("Message.KickedByKickPlayer"), client.PlayerName));

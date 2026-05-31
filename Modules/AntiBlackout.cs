@@ -220,7 +220,7 @@ namespace TownOfHost
             if (Iswaitsend)
             {
                 Iswaitsend = false;
-                Main.CanUseAbility = true;
+                _ = new LateTask(() => Main.CanUseAbility = true, 1f, "", true);
                 //個々視点のみになってるっぽい。会議時とかそういう場で相互性が取れなくなる。
                 //1000msとか行ったら暗転するけどそこまで考えるのは...
                 //_ = new LateTask(() => SendGameData(), 1f, "SetAllPlayerData", true);

@@ -240,7 +240,7 @@ namespace TownOfHost
             RemoveDisableDevicesPatch.UpdateDisableDevices();
             SoundManager.Instance.ChangeAmbienceVolume(DataManager.Settings.Audio.AmbienceVolume);
             //ExtendedPlayerControl.RpcResetAbilityCooldownAllPlayer();
-            Main.CanUseAbility = true;
+            _ = new LateTask(() => Main.CanUseAbility = true, 1f, "", true);
             MeetingStates.First = false;
 
             var roleInfo = PlayerControl.LocalPlayer.GetCustomRole().GetRoleInfo();
