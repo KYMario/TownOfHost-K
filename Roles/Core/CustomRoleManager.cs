@@ -42,8 +42,8 @@ public static class CustomRoleManager
     public static bool OnCheckMurder(PlayerControl attemptKiller, PlayerControl attemptTarget)
     {
         if (attemptKiller.Is(CustomRoles.Powerful)
-        || (attemptKiller.Is(CustomRoles.LastImpostor) && LastImpostor.GievPowerful.GetBool())
-        || (attemptKiller.Is(CustomRoles.LastNeutral) && LastNeutral.GievPowerful.GetBool()))
+        || (attemptKiller.Is(CustomRoles.LastImpostor) && LastImpostor.GivePowerful.GetBool())
+        || (attemptKiller.Is(CustomRoles.LastNeutral) && LastNeutral.GivePowerful.GetBool()))
         {
             return OnCheckMurder(attemptKiller, attemptTarget, attemptKiller, attemptTarget, Killpower: 2);
         }
