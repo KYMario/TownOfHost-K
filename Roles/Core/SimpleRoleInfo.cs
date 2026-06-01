@@ -63,6 +63,7 @@ public class SimpleRoleInfo
     public bool IsCantSeeTeammates;
     /// <summary>オプションの順序低い順に並べられる。(大まかな順番 , 細かな順番)</summary>
     public (int TabNumber, int SortNumber) OptionSort;
+    public Func<CustomRoles?> AddHaveRole;
     private SimpleRoleInfo(
         Type classType,
         Func<PlayerControl, RoleBase> createInstance,
@@ -83,6 +84,7 @@ public class SimpleRoleInfo
         CombinationRoles combination,
         From from,
         bool isCantSeeTeammates,
+        Func<CustomRoles?> addhaverole,
         Func<string> Desc
     )
     {
@@ -103,6 +105,7 @@ public class SimpleRoleInfo
         From = from;
         Combination = combination;
         IsCantSeeTeammates = isCantSeeTeammates;
+        AddHaveRole = addhaverole;
         this.Desc = Desc;
 
         if (colorCode == "")
@@ -150,6 +153,7 @@ public class SimpleRoleInfo
         CombinationRoles combination = CombinationRoles.None,
         From from = From.None,
         bool isCantSeeTeammates = false,
+        Func<CustomRoles?> AddHaveRole = null,
         Func<string> Desc = null
     )
     {
@@ -178,6 +182,7 @@ public class SimpleRoleInfo
             combination,
             from,
             isCantSeeTeammates,
+            AddHaveRole,
             Desc
             );
         roleInfo.Description = new SingleRoleDescription(roleInfo);
@@ -292,6 +297,7 @@ public class SimpleRoleInfo
             combination,
             from,
             false,
+            null,
             null);
         roleInfo.Description = new VanillaRoleDescription(roleInfo, baseRoleType);
         return roleInfo;

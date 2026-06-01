@@ -235,6 +235,13 @@ namespace TownOfHost
                     if (roleInfo != null && roleInfo.Description != null)
                     {
                         SendMessage(roleInfo.Description.FullFormatHelp, sendTo: player, checkl: true);
+                        var addhaverole = roleInfo.AddHaveRole?.Invoke();
+                        if (addhaverole is not null and not CustomRoles.NotAssigned)
+                        {
+                            var addroleInfo = addhaverole.Value.GetRoleInfo();
+                            if (addroleInfo != null && addroleInfo.Description != null)
+                                SendMessage(addroleInfo.Description.FullFormatHelp, player, ColorString(GetRoleColor(roledata.Key), GetString("AddRoleInfoTitle")), checkl: true);
+                        }
                     }
                     // RoleInfoがない役職は従来の処理
                     else
@@ -253,6 +260,13 @@ namespace TownOfHost
                 if (roleInfo != null && roleInfo.Description != null)
                 {
                     SendMessage(roleInfo.Description.FullFormatHelp, sendTo: player, checkl: true);
+                    var addhaverole = roleInfo.AddHaveRole?.Invoke();
+                    if (addhaverole is not null and not CustomRoles.NotAssigned)
+                    {
+                        var addroleInfo = addhaverole.Value.GetRoleInfo();
+                        if (addroleInfo != null && addroleInfo.Description != null)
+                            SendMessage(addroleInfo.Description.FullFormatHelp, player, ColorString(GetRoleColor(hr), GetString("AddRoleInfoTitle")), checkl: true);
+                    }
                 }
                 // RoleInfoがない役職は従来の処理
                 else

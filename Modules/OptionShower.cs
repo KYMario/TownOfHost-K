@@ -186,11 +186,25 @@ namespace TownOfHost
                 nameAndValue(Options.EnableGM);
                 //いっくらなんでもこれが重すぎる！
                 //30役職を上回ったらこの処理をスキップ
-                if (Options.CustomRoleSpawnChances.Where(op => op.Value.GetBool()).Count() < 30)
+                if (Options.CustomRoleSpawnChances.Count(op => op.Value.GetBool()) < 30)
                 {
                     foreach (var kvp in Options.CustomRoleSpawnChances)
                     {
-                        if (!kvp.Key.IsEnable() || kvp.Value.IsHiddenOn(Options.CurrentGameMode) || (kvp.Value.IsEnabled?.Invoke() == false)) continue;
+                        AddRoleOption(kvp);
+
+                        var addrole = kvp.Key.GetRoleInfo()?.AddHaveRole?.Invoke();
+                        if (addrole is not null and not CustomRoles.NotAssigned)
+                        {
+                            if (addrole.Value.IsEnable() is false && Options.CustomRoleSpawnChances.TryGetValue(addrole.Value, out var v))
+                            {
+                                AddRoleOption(new KeyValuePair<CustomRoles, IntegerOptionItem>(addrole.Value, v), true);
+                            }
+                        }
+                    }
+
+                    void AddRoleOption(KeyValuePair<CustomRoles, IntegerOptionItem> kvp, bool isadd = false)
+                    {
+                        if ((!kvp.Key.IsEnable() && !isadd) || kvp.Value.IsHiddenOn(Options.CurrentGameMode) || (kvp.Value.IsEnabled?.Invoke() == false)) return;
                         sb.Append('\n');
                         sb.Append($"</size><size=100%>{UtilsRoleText.GetCombinationName(kvp.Key)}: {kvp.Value.GetString()}×{kvp.Key.GetCount()}</size>\n<size=80%>");
                         ShowChildren(kvp.Value, ref sb, UtilsRoleText.GetRoleColor(kvp.Key).ShadeColor(-0.5f), 1);

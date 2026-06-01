@@ -54,6 +54,15 @@ namespace TownOfHost
                         if (role.GetRoleInfo()?.Description is { } description)
                         {
                             SendMessage(description.FullFormatHelp, PlayerId, checkl: true);
+
+                            var addhaverole = role.GetRoleInfo()?.AddHaveRole?.Invoke();
+                            if (addhaverole is not null and not CustomRoles.NotAssigned)
+                            {
+                                if (addhaverole.Value.IsEnable()) continue;
+                                var addroleInfo = addhaverole.Value.GetRoleInfo();
+                                if (addroleInfo != null && addroleInfo.Description != null)
+                                    SendMessage(addroleInfo.Description.FullFormatHelp, PlayerId, ColorString(GetRoleColor(role), GetString("AddRoleInfoTitle")), checkl: true);
+                            }
                         }
                         // RoleInfoがない役職は従来処理
                         else

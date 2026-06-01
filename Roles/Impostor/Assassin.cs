@@ -32,6 +32,7 @@ public sealed class Assassin : RoleBase, IImpostor, IUsePhantomButton, IDoubleTr
                 AssignUnitRoles = [CustomRoles.Assassin, CustomRoles.Merlin]
             },
             combination: CombinationRoles.AssassinandMerlin,
+            AddHaveRole: () => OptionHaveRole.GetRole(),
             from: From.ExtremeRoles
         );
     public Assassin(PlayerControl player)
