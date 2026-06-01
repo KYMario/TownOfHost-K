@@ -2139,6 +2139,31 @@ public class ModNewsHistory
                 };
                 AllModNews.Add(news);
             }
+            {
+                var news = new ModNews
+                {
+                    Number = 100080,
+                    Title = "もう6月だね。(ﾃﾝﾌﾟﾚ)",
+                    SubTitle = "<color=#00c1ff>Town Of Host-K v.51.14.32.41</color>",
+                    ShortTitle = "<color=#00c1ff>◆TOH-K v.51.14.32.41</color>",
+                    Text = "<size=80%>今月も頑張って行きましょー\n"
+                    + "<size=125%>【バグ修正】</size>\n"
+                    + "・ジャンパーが正常に動作しない問題の修正\n"
+                    + "・ゲームログ/試合結果の自動送信が有効時にキックされる問題の抑制\n"
+                    + "・Rpcの送信を制限する設定が一部分で動作していない問題の修正\n"
+                    + "・タスクバトル終了時に非ホスト導入者がキックされる問題の修正?\n"
+                    + "・会議直前に起こる特殊キルが通らない問題の修正\n"
+                    + "・併せ持つ役職のインフォが毎会議送られる問題の修正\n"
+                    + "\n<size=125%>【設定追加】</size>\n"
+                    + "・一部システムメッセージの色を無くす設定の追加\n"
+                    + "・天邪鬼に通信妨害・停電を修復できるかの設定追加\n"
+                    + "\n<size=125%>【追加役職】</size>\n"
+                    + "Ⓜマッドハッカー\n　死者の情報(どこで死亡したか、インポスターがキルしたのか)を手に入れることができるマッド。"
+                    + "\n\n3周年どうするんだろね。けーわいさん。",
+                    Date = "2026-06-01T00:00:00Z"
+                };
+                AllModNews.Add(news);
+            }
             AnnouncementPopUp.UpdateState = AnnouncementPopUp.AnnounceState.NotStarted;
         }
     }
