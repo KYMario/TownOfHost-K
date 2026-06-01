@@ -1785,9 +1785,10 @@ namespace TownOfHost
         public static bool BlockSendName = false;
         public static void Postfix(ChatController __instance)
         {
-            var timer = Main.MessageWait.Value < 0.2f ? 0.2f : Main.MessageWait.Value;
+            var timer = Main.MessageWait.Value < 0.2f && Utils.IsRestriction() ? 0.2f : Main.MessageWait.Value;
             if (!AmongUsClient.Instance.AmHost || Main.MessagesToSend.Count < 1 || ((Main.MessagesToSend[0].Item2 == byte.MaxValue) && timer > __instance.timeSinceLastMessage)) return;
             if (DoBlockChat) return;
+            if (50 <= Main.MegCount) return;
 
             if (GameStates.IsLobby) ChatManager.SendmessageInLobby(__instance);
             else ChatManager.SendMessageInGame(__instance);

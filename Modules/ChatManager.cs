@@ -272,7 +272,7 @@ namespace TownOfHost.Modules.ChatManager
                             writer.EndMessage();
                             writer.SendMessage();
                             UtilsNotifyRoles.NotifyRoles(true, false, true, [sendpc]);
-                            if (Utils.IsRestriction() && Options.ExRpcWeightR.GetBool()) Main.MegCount++;
+                            if (Options.ExRpcWeightR.GetBool()) Main.MegCount++;
                         }
                     }
                 }
@@ -296,7 +296,7 @@ namespace TownOfHost.Modules.ChatManager
                 Logger.Error($"{sendTo}がnullの為弾きます。", "SendMassage");
                 return;
             }
-            if (Utils.IsRestriction() && Options.ExRpcWeightR.GetBool()) return;
+            if (Options.ExRpcWeightR.GetBool()) Main.MegCount++;
             // バニラ鯖使用下の状況
             if (Utils.IsRestriction())
             {
@@ -584,6 +584,7 @@ namespace TownOfHost.Modules.ChatManager
                 return;
 
             Main.MessagesToSend.RemoveAt(0);
+            if (Options.ExRpcWeightR.GetBool()) Main.MegCount++;
 
             // ホスト視点でのチャット送信
             if (clientId is -1)
