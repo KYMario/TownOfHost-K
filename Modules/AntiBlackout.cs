@@ -310,7 +310,7 @@ namespace TownOfHost
                 }
                 sender.EndMessage();
                 sender.SendMessage();
-                Player.Revive();
+                //Player.Revive();
             }
 
             Player.GetPlayerState().IsBlackOut = false;

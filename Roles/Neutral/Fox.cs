@@ -404,6 +404,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
             UtilsGameLog.AddGameLog($"Fox", $"{UtilsName.GetPlayerColor(Player, true)}(<b>{UtilsRoleText.GetTrueRoleName(Player.PlayerId, false)}</b>) [{Utils.GetVitalText(Player.PlayerId, true)}]");
             UtilsGameLog.AddGameLogsub($"\n\t┗ {GetString("Skillplayer")}{UtilsName.GetPlayerColor(player, true)}(<b>{UtilsRoleText.GetTrueRoleName(player.PlayerId, false)}</b>)");
 
+            /*何この処理。
             var meetingHud = MeetingHud.Instance;
             var hudManager = DestroyableSingleton<HudManager>.Instance.KillOverlay;
             {
@@ -415,7 +416,7 @@ public sealed class Fox : RoleBase, ISystemTypeUpdateHook, IRoomTasker
                 }
                 RPC.RpcSyncAllNetworkedPlayer(Player.GetClientId());
                 GameDataSerializePatch.SerializeMessageCount--;
-            }
+            }*/
 
             Utils.SendMessage(UtilsName.GetPlayerColor(Player, true) + GetString("Meetingkill"), title: GetString("MSKillTitle"));
             foreach (var go in PlayerCatch.AllPlayerControls.Where(pc => pc != null && !pc.IsAlive()))
