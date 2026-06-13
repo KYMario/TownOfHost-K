@@ -209,8 +209,8 @@ namespace TownOfHost
             if (optTurnTimeLimitVital > 0 && TurnVitalTimer > optTurnTimeLimitVital) return i == null;
 
             if (player.Is(CustomRoles.InfoPoor) ||
-                            (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.InfoPoor) &&
-                            data.GiveInfoPoor.GetBool()))
+                (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.InfoPoor) &&
+                data.GiveInfoPoor.GetBool()))
                 return i == null;
 
             if (player.Is(CustomRoles.MassMedia)) return i == null;
@@ -231,8 +231,8 @@ namespace TownOfHost
             if (optTurnTimeLimitCamAndLog > 0 && TurnLogAndCamTimer > optTurnTimeLimitCamAndLog) return i == null;
 
             if (player.Is(CustomRoles.InfoPoor) ||
-                            (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.InfoPoor) &&
-                            data.GiveInfoPoor.GetBool()))
+                (RoleAddAddons.GetRoleAddon(player.GetCustomRole(), out var data, player, subrole: CustomRoles.InfoPoor) &&
+                data.GiveInfoPoor.GetBool()))
                 return i == null;
 
             //ここから
@@ -452,6 +452,7 @@ namespace TownOfHost
         public static void SendMessage()
         {
             if (PlayerCatch.AnyModClient() is false || !AmongUsClient.Instance.AmHost) return;
+            if (optTimeLimitDevices is false && optTurnTimeLimitDevice is false) return;
 
             var Map = (MapNames)Main.NormalOptions.MapId;
             var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None, -1);
@@ -491,7 +492,7 @@ namespace TownOfHost
                 GameVitalTimer = reader.ReadSingle();
                 TurnVitalTimer = reader.ReadSingle();
             }
-            RemoveDisableDevicesPatch.UpdateDisableDevices(true);
+            RemoveDisableDevicesPatch.UpdateDisableDevices();
         }
     }
     [HarmonyPatch(typeof(ShipStatus), nameof(ShipStatus.Start))]
@@ -551,8 +552,8 @@ namespace TownOfHost
                         }
                         if ((Options.DisableAirshipRecordsAdmin.GetBool() || AdminUsecheck(player) || forceSync) && x.name == "records_admin_map")
                         {
-                            ignore &= DisableForceRecordsAdomin is false;
-                            x.gameObject.GetComponent<BoxCollider2D>().enabled = AdminUsecheck(player, ignore);
+                            var reignore = ignore && DisableForceRecordsAdomin is false;
+                            x.gameObject.GetComponent<BoxCollider2D>().enabled = AdminUsecheck(player, reignore);
                         }
                     });
                     if (Options.DisableAirshipCamera.GetBool() || LogAndCamUsecheck(player) || forceSync)
