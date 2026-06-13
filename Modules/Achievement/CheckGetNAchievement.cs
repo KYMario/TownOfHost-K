@@ -4,7 +4,6 @@ using HarmonyLib;
 using TownOfHost.Attributes;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
-using TownOfHost.Roles.Impostor;
 
 namespace TownOfHost;
 
