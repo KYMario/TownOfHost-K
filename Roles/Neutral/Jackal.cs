@@ -85,7 +85,7 @@ namespace TownOfHost.Roles.Neutral
             OptionCooldown = FloatOptionItem.Create(RoleInfo, 18, GeneralOption.Cooldown, new(0f, 180f, 0.5f), 30f, false, OptionCanMakeSidekick)
                 .SetValueFormat(OptionFormat.Seconds);
             OptionSidekickPromotion = BooleanOptionItem.Create(RoleInfo, 19, OptionName.JackalSidekickPromotion, false, false, OptionCanMakeSidekick);
-            RoleAddAddons.Create(RoleInfo, 20, NeutralKiller: true);
+            RoleAddAddons.Create(RoleInfo, 20, CustomRoles.Jackaldoll, NeutralKiller: true);
         }
         public float CalculateKillCooldown() => KillCooldown;
         public bool CanUseSabotageButton() => CanUseSabotage;
