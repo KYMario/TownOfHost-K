@@ -694,6 +694,7 @@ namespace TownOfHost
             if (player.Is(CustomRoles.Absorb)) SendMessage(GetAddonsHelp(CustomRoles.Absorb), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Management)) SendMessage(GetAddonsHelp(CustomRoles.Management), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Opener)) SendMessage(GetAddonsHelp(CustomRoles.Opener), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.AntiTeleporter)) SendMessage(GetAddonsHelp(CustomRoles.AntiTeleporter), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Seeing)) SendMessage(GetAddonsHelp(CustomRoles.Seeing), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Lighting)) SendMessage(GetAddonsHelp(CustomRoles.Lighting), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Moon)) SendMessage(GetAddonsHelp(CustomRoles.Moon), player.PlayerId, AddRoleInfoTitle);
@@ -757,7 +758,7 @@ namespace TownOfHost
                 CustomRoles.Absorb => AddonInfo(role, "Г"),
                 CustomRoles.Management => AddonInfo(role, "θ", From.TownOfHost_Y),
                 CustomRoles.Opener => AddonInfo(role, "п"),
-                //CustomRoles.AntiTeleporter => AddonInfo(role, "t", From.RevolutionaryHostRoles),
+                CustomRoles.AntiTeleporter => AddonInfo(role, "t", From.RevolutionaryHostRoles),
                 CustomRoles.Seeing => AddonInfo(role, "☯", From.TownOfHost_Y),
                 CustomRoles.Lighting => AddonInfo(role, "＊", From.TownOfHost_Y),
                 CustomRoles.Moon => AddonInfo(role, "э"),

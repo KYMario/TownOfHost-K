@@ -136,6 +136,7 @@ namespace TownOfHost
             FallFromLadder.Reset();
             PlayerCatch.CountAlivePlayers(true);
             Utils.AfterMeetingTasks();
+            AntiTeleporter.AfterMeetingTasks();
 
             if (AmongUsClient.Instance.AmHost && Main.NormalOptions.MapId != 4)
             {

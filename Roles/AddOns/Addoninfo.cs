@@ -26,6 +26,7 @@ class AddondataInfo
                 CustomRoles.Guarding => "ζ",
                 CustomRoles.Management => "θ",
                 CustomRoles.Opener => "п",
+                CustomRoles.AntiTeleporter => "t",
                 CustomRoles.Seeing => "☯",
                 CustomRoles.Lighting => "＊",
                 CustomRoles.Moon => "э",
@@ -92,7 +93,7 @@ class AddondataInfo
                     {CustomRoles.Powerful , "#f08e39"},
                     {CustomRoles.Stack , "#b55f47"},
                     {CustomRoles.Absorb,"#434981"},
-                    //{CustomRoles.AntiTeleporter,"#dea785"},
+                    {CustomRoles.AntiTeleporter,"#ff1919"},
                     //デバフ
                     { CustomRoles.NonReport,"#006666"},
                     {CustomRoles.Notvoter,"#6c848d"},

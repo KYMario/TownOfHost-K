@@ -1019,7 +1019,7 @@ public enum CustomRoles
     Opener,
     Powerful,
     Stack,
-    //AntiTeleporter,
+    AntiTeleporter,
     Seeing,
     Lighting,
     Moon,

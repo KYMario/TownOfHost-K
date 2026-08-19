@@ -34,7 +34,7 @@ class GhostRoleCore
         Guarding.Init();
         Connecting.Init();
         Opener.Init();
-        //AntiTeleporter.Init();
+        AntiTeleporter.Init();
         Moon.Init();
         Tiebreaker.Init();
         MagicHand.Init();
@@ -93,7 +93,7 @@ class GhostRoleCore
         Management.SetupCustomOption();
         Seeing.SetupCustomOption();
         Opener.SetupCustomOption();
-        //AntiTeleporter.SetupCustomOption();
+        AntiTeleporter.SetupCustomOption();
         Lighting.SetupCustomOption();
         Moon.SetupCustomOption();
         Notice.SetupCustomOption();

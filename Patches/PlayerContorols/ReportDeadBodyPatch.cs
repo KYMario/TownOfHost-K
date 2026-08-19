@@ -319,6 +319,7 @@ namespace TownOfHost
                 kvp.Value.LastRoom = pc?.GetPlainShipRoom();
                 if (IsMeetingBlackout) kvp.Value.IsBlackOut = true;
             }
+            AntiTeleporter.OnMeetingCalled();
 
             AdminProvider.CalculateAdmin(true);
 

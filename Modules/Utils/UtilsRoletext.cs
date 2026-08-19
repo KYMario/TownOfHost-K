@@ -165,7 +165,7 @@ namespace TownOfHost
                         case CustomRoles.Management: sb.Append(Management.SubRoleMark); break;
                         case CustomRoles.Seeing: sb.Append(Seeing.SubRoleMark); break;
                         case CustomRoles.Opener: sb.Append(Opener.SubRoleMark); break;
-                        //case CustomRoles.AntiTeleporter: sb.Append(AntiTeleporter.SubRoleMark); break;
+                        case CustomRoles.AntiTeleporter: sb.Append(AntiTeleporter.SubRoleMark); break;
                         case CustomRoles.Lighting: sb.Append(Lighting.SubRoleMark); break;
                         case CustomRoles.Moon: sb.Append(Moon.SubRoleMark); break;
                         case CustomRoles.Powerful: sb.Append(Powerful.SubRoleMark); break;

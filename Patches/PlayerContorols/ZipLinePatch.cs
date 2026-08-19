@@ -85,5 +85,8 @@ namespace TownOfHost
             ZiplineCools.Clear();
             ZipdiePlayers.Clear();
         }
+
+        public static bool IsUsingZipline(PlayerControl player)
+            => player != null && ZiplineCools.Contains(player.PlayerId);
     }
 }

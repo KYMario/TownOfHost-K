@@ -84,7 +84,7 @@ namespace TownOfHost
                 CustomRoles.Serial or
                 CustomRoles.PlusVote or
                 CustomRoles.Opener or
-                //CustomRoles.AntiTeleporter or
+                CustomRoles.AntiTeleporter or
                 CustomRoles.Seeing or
                 CustomRoles.Revenger or
                 CustomRoles.Autopsy or
@@ -123,7 +123,7 @@ namespace TownOfHost
                 CustomRoles.Serial or
                 CustomRoles.PlusVote or
                 CustomRoles.Opener or
-                //CustomRoles.AntiTeleporter or
+                CustomRoles.AntiTeleporter or
                 CustomRoles.Seeing or
                 CustomRoles.Revenger or
                 CustomRoles.Autopsy or

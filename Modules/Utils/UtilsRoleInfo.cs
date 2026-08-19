@@ -78,7 +78,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.Serial, "Se");
                 roleCommands.Add(CustomRoles.PlusVote, "Pv");
                 roleCommands.Add(CustomRoles.Opener, "Oe");
-                //roleCommands.Add(CustomRoles.AntiTeleporter, "At");
+                roleCommands.Add(CustomRoles.AntiTeleporter, "At");
                 roleCommands.Add(CustomRoles.Revenger, "Re");
                 roleCommands.Add(CustomRoles.Seeing, "Se");
                 roleCommands.Add(CustomRoles.Autopsy, "Au");
