@@ -295,6 +295,7 @@
 "Amnesia","Loss of memory","アムネシア"
 "InfoPoor","InfoPoor","インフォプアー"
 "News","News","ニュース"
+"Notice","Notice","ノーティス"
 "Sunglasses","Sunglasses","サングラス"
 
 "# その他"
@@ -572,6 +573,7 @@
 "AmnesiaInfo","Where am I? Who am I?","ここはどこ..わたしはだれ...?"
 "InfoPoorInfo","What!?","何もしてないのに壊れたんだけど！"
 "NewsInfo","Breaking news...","臨時ニュースです..."
+"NoticeInfo","Leave a last message","遺言を残そう"
 "SunglassesInfo","The thing that obstructed my view","我の視界を遮りしモノ"
 
 "## 役職説明ロング"
@@ -878,6 +880,7 @@
 "AmnesiaInfoLong","Add-ons:\nHe is not aware that he is Amnesia.\n Also, his position is not known until the end of the first meeting of the set number of days.\n Only the camp can know. (Madmate is judged neutral.) \n\nWhen the awakening is ON in a task and he is not an Imposter, he remembers his position after completing a certain number of tasks.\n\n If the setting is ON, the position ability is not demonstrated.","(属性):\n自身がアムネシアだと自覚できない。\nまた、自身の役職が設定日数目の会議が終了するまで分からない。\n陣営のみ知ることができる。(マッドメイトはニュートラル判定)\nタスクで覚醒がONかつ自身がインポスターではない時、一定数タスクを終わらせると自身の役職を思い出す。\n設定がONの場合、役職能力が発揮されない。"
 "InfoPoorInfoLong","Add-ons:\nCant Use Devices.","(属性):\n情報機器が使用できない。\nファングルの望遠鏡への効果はない。"
 "NewsInfoLong","","設定された条件を満たし、生存していると、会議で貴方の役職が生存していることが通知されてしまう。"
+"NoticeInfoLong","Add-ons:\nWhen your dead body is reported, your role or faction is revealed.","(属性):\nタスクターン中にキルされ、自身の死体が通報されると\n自分の役職、または陣営が通知される。(設定有)\n自身以外の死体が通報された時は通知されない。"
 "SunglassesInfoLong","Vision is slightly reduced","視界が一定倍率低下する。"
 
 "# ニュートラル属性"
@@ -1245,6 +1248,8 @@
 "AwakeningTaskcount","Number of tasks to become self-aware","自覚可能になるタスク数"
 "AbilityAwakening","Unaware of ability until it becomes available","能力使用可能になるまで自覚できない"
 "CanUseActiveComms","Can Use Ability in Comms","通信妨害中でも能力が発揮される"
+"NoticeTellTeam","Reveal faction instead of role","伝える役職を陣営にする"
+"NoticeTellEveryone","Reveal to all players","全員に陣営/役職を伝えるか"
 "VentCooldown","VentCooldown","ベントクールダウン"
 "AddGuardCount","Number of times you can guard","ガード可能回数"
 "OptionCount","Maximum","能力使用可能回数"
@@ -2105,6 +2110,8 @@
 "PhantomThiefNoticeTeam0","<align="center">.\n I'll take everything {0} has to give me that has kept him alive.","<align="center">.\n 争いが終わりを告げ、\n{0}\n存命し続けた彼の全てを頂戴する<size=120%>\n怪盗K</size>"
 "PhantomThiefNoticeemail0","<align="center">.\n When the conflict is over and the sailor who has captured my interest is victorious\n I will take all that he has left to live.","<align="center">.\n 争いが終わりを告げ、\n私の興味を惹いた船員が勝利を掴み取る時\n存命し続けた彼の全てを頂戴する<size=120%>\n怪盗K</size>"
 "PhantomThiefNoticeRole","<align="center">.\n When the conflict comes to an end\n{0}\nand {1} claims the glory of victory\ntheir triumph is stolen away.<size=120%>Phantom Thief K</size>\n","<align="center">.\n 争いが終わりを告げ、\n{0}\n{1}が勝利の栄光を手に入れた時\n彼の勝利を簒奪する。<size=120%>\n怪盗K</size>"
+"NoticeRevealRoleMessage","{0}'s role was {1}.","{0}の役職は{1}だった。"
+"NoticeRevealTeamMessage","{0} belonged to {1}.","{0}は{1}陣営だった。"
 "PhantomThiefRole.Impostor","A threat that drives this ship toward destruction","この船を滅亡へ追い込む脅威である"
 "PhantomThiefRole.Crewmate","A role that keeps this ship in peace","この船を平和に保つ役割の"
 "PhantomThiefRole.Neutral","Acting solely in pursuit of their own desires","己の願望のみを第一に行動している"

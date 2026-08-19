@@ -41,6 +41,7 @@ class AddondataInfo
                 CustomRoles.Clumsy => "Ｃ",
                 CustomRoles.Slacker => "ＳＬ",
                 CustomRoles.News => "Ｎ",
+                CustomRoles.Notice => "Ｎo",
                 CustomRoles.Sunglasses => "Ｓ",
                 _ => ""
             };
@@ -104,6 +105,7 @@ class AddondataInfo
                     {CustomRoles.SlowStarter,"#ff00ff"},
                     {CustomRoles.InfoPoor ,"#555647"},
                     {CustomRoles.News, "#828282"},
+                    {CustomRoles.Notice, "#c48cff"},
                     {CustomRoles.Sunglasses , "#2e103d"},
 
                     //第三属性

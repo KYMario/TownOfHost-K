@@ -1038,6 +1038,7 @@ public enum CustomRoles
     SlowStarter,
     InfoPoor,
     News,
+    Notice,
     Sunglasses,
 
     //GhostRoles

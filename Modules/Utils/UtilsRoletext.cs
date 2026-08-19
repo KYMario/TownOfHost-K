@@ -181,6 +181,7 @@ namespace TownOfHost
                         case CustomRoles.Elector: sb.Append(Elector.SubRoleMark); break;
                         case CustomRoles.InfoPoor: sb.Append(InfoPoor.SubRoleMark); break;
                         case CustomRoles.News: sb.Append(News.SubRoleMark); break;
+                        case CustomRoles.Notice: sb.Append(Notice.SubRoleMark); break;
                         case CustomRoles.Sunglasses: sb.Append(Sunglasses.SubRoleMark); break;
                     }
                 }

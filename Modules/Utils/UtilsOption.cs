@@ -697,6 +697,7 @@ namespace TownOfHost
             if (player.Is(CustomRoles.Seeing)) SendMessage(GetAddonsHelp(CustomRoles.Seeing), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Lighting)) SendMessage(GetAddonsHelp(CustomRoles.Lighting), player.PlayerId, AddRoleInfoTitle);
             if (player.Is(CustomRoles.Moon)) SendMessage(GetAddonsHelp(CustomRoles.Moon), player.PlayerId, AddRoleInfoTitle);
+            if (player.Is(CustomRoles.Notice)) SendMessage(GetAddonsHelp(CustomRoles.Notice), player.PlayerId, AddRoleInfoTitle);
 
             //デバフ
             if (player.Is(CustomRoles.News)) SendMessage(GetAddonsHelp(CustomRoles.News), player.PlayerId, AddRoleInfoTitle);
@@ -760,6 +761,7 @@ namespace TownOfHost
                 CustomRoles.Seeing => AddonInfo(role, "☯", From.TownOfHost_Y),
                 CustomRoles.Lighting => AddonInfo(role, "＊", From.TownOfHost_Y),
                 CustomRoles.Moon => AddonInfo(role, "э"),
+                CustomRoles.Notice => AddonInfo(role, "Ｎo"),
                 //デバフ
                 CustomRoles.Amnesia => AddonInfo(role),
                 CustomRoles.SlowStarter => AddonInfo(role, "Ｓs"),

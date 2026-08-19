@@ -360,6 +360,7 @@ namespace TownOfHost
             DisableDevice.SendMessage();
 
             var meetingInfo = UtilsNotifyRoles.ExtendedMeetingText;
+            Notice.OnReportDeadBody(reporter, target);
             foreach (var pc in PlayerCatch.AllPlayerControls)
             {
                 var roleClass = pc.GetRoleClass();

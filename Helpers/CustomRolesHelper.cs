@@ -92,6 +92,7 @@ namespace TownOfHost
                 CustomRoles.MagicHand or
                 CustomRoles.Powerful or
                 CustomRoles.Absorb or
+                CustomRoles.Notice or
                 //デバフ
                 CustomRoles.NonReport or
                 CustomRoles.Notvoter or
@@ -104,6 +105,7 @@ namespace TownOfHost
                 CustomRoles.SlowStarter or
                 CustomRoles.InfoPoor or
                 CustomRoles.News or
+                CustomRoles.Notice or
                 CustomRoles.Sunglasses
                 ;
         }
@@ -128,7 +130,8 @@ namespace TownOfHost
                 CustomRoles.Tiebreaker or
                 CustomRoles.MagicHand or
                 CustomRoles.Powerful or
-                CustomRoles.Absorb
+                CustomRoles.Absorb or
+                CustomRoles.Notice
                 ;
         }
         public static bool IsDebuffAddon(this CustomRoles roles)
