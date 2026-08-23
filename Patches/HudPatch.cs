@@ -479,11 +479,6 @@ namespace TownOfHost
             Suffix.Append(CustomRoleManager.GetLowerTextOthers(seer, target));
             if (Amnesia.CheckAbility(seer))
             {
-                //プログレスキラー
-                if (seer.Is(CustomRoles.ProgressKiller) && target.Is(CustomRoles.Workhorse) && ProgressKiller.ProgressWorkhorseseen)
-                {
-                    Mark.Append($"<#0000ff>♦</color>");
-                }
                 //エーリアン
                 if ((seerRole as Alien)?.mode == Alien.AlienMode.ProgressKiller && Alien.ProgressWorkhorseseen)
                     if (target.Is(CustomRoles.Workhorse))

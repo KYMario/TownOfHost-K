@@ -1,4 +1,5 @@
 using AmongUs.GameOptions;
+using UnityEngine;
 
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
@@ -25,45 +26,44 @@ public sealed class ProgressKiller : RoleBase, IImpostor
         player
     )
     {
-        ProgressKillerMadseen = OptionProgressKillerMadseen.GetBool();
-        ProgressWorkhorseseen = OptionProgressWorkhorseseen.GetBool();
-        CustomRoleManager.MarkOthers.Add(GetMarkOthers);
+        RequiredKillCount = OptionRequiredKillCount.GetInt();
     }
-    public static OptionItem OptionProgressKillerMadseen;
-    public static OptionItem OptionProgressWorkhorseseen;
+    public static OptionItem OptionRequiredKillCount;
     enum OptionName
     {
-        ProgressKillerMadseen,
-        ProgressWorkhorseseen,
+        ProgressKillerRequiredKillCount,
     }
-    public static bool ProgressKillerMadseen;
-    public static bool ProgressWorkhorseseen;
+    public static int RequiredKillCount;
     private static void SetupOptionItem()
     {
-        OptionProgressKillerMadseen = BooleanOptionItem.Create(RoleInfo, 10, OptionName.ProgressKillerMadseen, true, false);
-        OptionProgressWorkhorseseen = BooleanOptionItem.Create(RoleInfo, 11, OptionName.ProgressWorkhorseseen, true, false);
+        OptionRequiredKillCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.ProgressKillerRequiredKillCount, new(0, 15, 1), 1, false)
+            .SetValueFormat(OptionFormat.Times);
     }
     public override bool NotifyRolesCheckOtherName => true;
-    public override string GetMark(PlayerControl seer, PlayerControl seen, bool isForMeeting = false)
+    public bool CanSeeTaskProgress()
+        => Player.IsAlive() && MyState.GetKillCount(true) >= RequiredKillCount;
+    public bool CanSeeTaskProgress(PlayerControl seen)
+        => CanSeeTaskProgress()
+        && seen != null
+        && seen != Player
+        && UtilsTask.HasTasks(seen.Data, false);
+    public void OnMurderPlayerAsKiller(MurderInfo info)
     {
-        seen ??= seer;
-        if (ProgressKillerMadseen && seen.Is(CustomRoleTypes.Madmate) && seer.Is(CustomRoles.ProgressKiller) && seer != seen)
-        {
-            if (seen.GetPlayerTaskState().IsTaskFinished)
-                return Utils.ColorString(RoleInfo.RoleColor, "☆");
-        }
-        return "";
+        if (!info.IsSuicide)
+            UtilsNotifyRoles.NotifyRoles(SpecifySeer: Player);
     }
-    public static string GetMarkOthers(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
+    public override void OverrideProgressTextAsSeer(PlayerControl seen, ref bool enabled, ref string text)
     {
-        //seenが省略の場合seer
-        seen ??= seer;
-
-        if (seer.Is(CustomRoles.ProgressKiller) && !seen.Is(CustomRoleTypes.Madmate) && seer != seen)
-        {
-            if (seen.GetPlayerTaskState().IsTaskFinished)
-                return Utils.ColorString(RoleInfo.RoleColor, "〇");
-        }
-        return "";
+        if (!CanSeeTaskProgress(seen)) return;
+        enabled = true;
+        var comms = Utils.IsActive(SystemTypes.Comms);
+        text = UtilsRoleText.GetTaskProgressText(seen.PlayerId, comms, false);
+    }
+    public override string GetProgressText(bool comms = false, bool gamelog = false)
+    {
+        var killCount = MyState.GetKillCount(true);
+        if (killCount >= RequiredKillCount)
+            return Utils.ColorString(RoleInfo.RoleColor, "★");
+        return Utils.ColorString(Palette.ImpostorRed.ShadeColor(0.5f), $"({killCount}/{RequiredKillCount})");
     }
 }
