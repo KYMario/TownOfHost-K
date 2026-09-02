@@ -463,8 +463,11 @@ public class MeetingVoteManager
             logger.Info($"投票: {pc.GetNameWithRole().RemoveHtmlTags()} => {GetVoteName(voteTo)} x {numVotes} {(isOverride ? "(Override)" : "")}");
             VotedFor = voteTo;
             NumVotes = numVotes;
-            IsOverride = isOverride;
-            OverrideExid = ovexid;
+            if (ovexid != byte.MaxValue)
+            {
+                IsOverride = isOverride;
+                OverrideExid = ovexid;
+            }
             ChatManager.ChatManager.SendMessage(pc, "<size=0>.</size>");
         }
     }

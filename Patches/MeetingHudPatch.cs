@@ -69,14 +69,13 @@ public static class MeetingHudPatch
                     Logger.Info($"{voter.GetNameWithRole().RemoveHtmlTags()} は投票しない！ => {suspectPlayerId}", nameof(CastVotePatch));
                     return false;
                 }
-                else
-                    if (voter.Is(CustomRoles.Elector) && suspectPlayerId == 253 || (RoleAddAddons.GetRoleAddon(voter.GetCustomRole(), out var da, voter, subrole: CustomRoles.Elector) && da.GiveElector.GetBool() && suspectPlayerId == 253))
-                    {
-                        Utils.SendMessage(GetString("ElectorCancelMessage"), voter.PlayerId);
-                        __instance.RpcClearVote(voter.PlayerId);
-                        Logger.Info($"{voter.GetNameWithRole().RemoveHtmlTags()} イレクター発動 => {suspectPlayerId}", nameof(CastVotePatch));
-                        return false;
-                    }
+                else if (voter.Is(CustomRoles.Elector) && suspectPlayerId == 253 || (RoleAddAddons.GetRoleAddon(voter.GetCustomRole(), out var da, voter, subrole: CustomRoles.Elector) && da.GiveElector.GetBool() && suspectPlayerId == 253))
+                {
+                    Utils.SendMessage(GetString("ElectorCancelMessage"), voter.PlayerId);
+                    __instance.RpcClearVote(voter.PlayerId);
+                    Logger.Info($"{voter.GetNameWithRole().RemoveHtmlTags()} イレクター発動 => {suspectPlayerId}", nameof(CastVotePatch));
+                    return false;
+                }
             }
             if (voter.GetRoleClass() is ISelfVoter selfVoter && Amnesia.CheckAbility(voter))
             {
@@ -96,6 +95,7 @@ public static class MeetingHudPatch
     public static class SetJudgeOverrulePatch
     {
         public static ushort OverruleNonce;
+        public static byte CallerId;
         public static bool Prefix(MeetingHud __instance, [HarmonyArgument(0)] PlayerId judgePlayerId /* 投票した人 */ , [HarmonyArgument(1)] PlayerId targetPlayerId, [HarmonyArgument(2)] ushort overruleNonce)
         {
             if (!AmongUsClient.Instance.AmHost) return true;
@@ -107,10 +107,16 @@ public static class MeetingHudPatch
 
             if (roleclass?.CallJudgeVote(voter, votefor, ref ExilePlayerid) is true)
             {
-                OverruleNonce = overruleNonce;
-                MeetingVoteManager.Instance?.SetVote(judgePlayerId, targetPlayerId, Isjudgevote: true, ovex: ExilePlayerid);
-                MeetingVoteManager.Instance?.EndMeeting();
-                return false;
+                MeetingVoteManager.Instance?.SetVote(judgePlayerId, targetPlayerId, Isjudgevote: true,
+                    ovex: CallerId == byte.MaxValue ? ExilePlayerid : byte.MaxValue);
+                //MeetingVoteManager.Instance?.EndMeeting();
+                if (CallerId == byte.MaxValue)
+                {
+                    OverruleNonce = overruleNonce;
+                }
+                CallerId = voter.PlayerId;
+
+                return true;
             }
 
             __instance.RpcClearVote(voter.PlayerId);

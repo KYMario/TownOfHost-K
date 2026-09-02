@@ -946,6 +946,7 @@ namespace TownOfHost
         {
             meetingsendhis = new();
             MeetingHudPatch.SetJudgeOverrulePatch.OverruleNonce = ushort.MinValue;
+            MeetingHudPatch.SetJudgeOverrulePatch.CallerId = byte.MaxValue;
             GameDataSerializePatch.DontTouch = false;
             Camouflage.ventplayr.Clear();
             PlayerCatch.OldAlivePlayerControles.Clear();
