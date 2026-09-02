@@ -738,6 +738,7 @@ namespace TownOfHost
                     ventilationSystem.PlayersInsideVents.Clear();
                     ventilationSystem.IsDirty = true;
                 }
+                CoEnterVentPatch.VentPlayers.Clear();
                 GuessManager.Reset();//会議後にリセット入れる
                 GameStates.ExiledAnimate = false;
             }
