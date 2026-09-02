@@ -40,6 +40,7 @@ public sealed class Staff : RoleBase
         CanUseVent = BooleanOptionItem.Create(RoleInfo, 10, GeneralOption.CanVent, true, false);
         OptAwakening = BooleanOptionItem.Create(RoleInfo, 11, GeneralOption.TaskAwakening, false, false);
         OptAwakeningTask = IntegerOptionItem.Create(RoleInfo, 12, GeneralOption.AwakeningTaskcount, new(1, 255, 1), 5, false, OptAwakening);
+        OverrideTasksData.Create(RoleInfo, 13);
     }
 
     public override CustomRoles Misidentify() => Awakened ? CustomRoles.NotAssigned : (CanUseVent.GetBool() ? CustomRoles.Engineer : CustomRoles.Crewmate);
