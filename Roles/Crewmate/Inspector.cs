@@ -46,12 +46,14 @@ public sealed class Inspector : RoleBase, ISelfVoter
         Isdie = false;
         deadtimer = 0;
         killer = byte.MaxValue;
+        IsAbilityUseVote = OptionAbilityUseVote.GetBool();
     }
     bool Awakened;
     static OptionItem OptionMaximum;
     static OptionItem OptAwakening;
     static OptionItem OptAwakeningTaskcount;
     static OptionItem OptionVoteMode;
+    static OptionItem OptionAbilityUseVote; static bool IsAbilityUseVote;
     static OptionItem OptionSetRect;/*確率を設定する*/ static bool IsSetRect;
     static OptionItem OptionDeathReason; static float rectdeathreason;
     static OptionItem OptionKillerColor; static float rectkillercolor;
@@ -69,7 +71,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
 
     enum OptionName
     {
-        InspectVoteMode,
+        InspectVoteMode, AbilityUseVote,
         InspectSetRect,
         InspectDeathReason,
         InspectColor,
@@ -93,6 +95,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, GeneralOption.OptionCount, new(1, 99, 1), 1, false)
             .SetValueFormat(OptionFormat.Times);
         OptionVoteMode = StringOptionItem.Create(RoleInfo, 11, OptionName.InspectVoteMode, EnumHelper.GetAllNames<AbilityVoteMode>(), 1, false);
+        OptionAbilityUseVote = BooleanOptionItem.Create(RoleInfo, 21, OptionName.AbilityUseVote, false, false);
         OptionSetRect = BooleanOptionItem.Create(RoleInfo, 14, OptionName.InspectSetRect, false, false);
         OptionDeathReason = FloatOptionItem.Create(RoleInfo, 15, OptionName.InspectDeathReason, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
         OptionKillerColor = FloatOptionItem.Create(RoleInfo, 16, OptionName.InspectColor, new(0, 100, 5), 100, false, OptionSetRect).SetValueFormat(OptionFormat.Percent);
@@ -228,7 +231,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
         Isdie = false;
         TargetPlayerId = byte.MaxValue;
     }
-    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && TargetPlayerId is byte.MaxValue && Awakened;
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && TargetPlayerId is byte.MaxValue && Awakened && !IsAbilityUseVote;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;
@@ -239,7 +242,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
             {
                 if (Player.PlayerId == votedForId || votedForId == SkipId) return true;
                 Inspect(votedForId);
-                return false;
+                return IsAbilityUseVote;
             }
             else
             {
@@ -252,7 +255,7 @@ public sealed class Inspector : RoleBase, ISelfVoter
                     if (status is VoteStatus.Vote)
                         Inspect(votedForId);
                     SetMode(Player, status is VoteStatus.Self);
-                    return false;
+                    return IsAbilityUseVote && status is VoteStatus.Vote;
                 }
             }
         }

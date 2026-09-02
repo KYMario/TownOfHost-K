@@ -43,11 +43,13 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
         targetcanseeplayer = TargetCanseePlayer.GetBool();
         canseerole = OptionRole.GetBool();
         canusebutton = AbilityUseTurnCanButton.GetBool();
+        IsAbilityUseVote = OptionAbilityUseVote.GetBool();
     }
 
     static OptionItem OptionMaximum;
     static OptionItem OptionVoteMode;
     static OptionItem OptionRole;
+    static OptionItem OptionAbilityUseVote; static bool IsAbilityUseVote;
     static OptionItem OptionCanTaskcount;
     static OptionItem OptAwakening;
     static OptionItem TargetCanseeArrow;
@@ -72,6 +74,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
     {
         TellMaximum,
         AbilityVotemode,
+        AbilityUseVote,
         TellRole,
         AmateurTellerTargetCanseeArrow,
         AmateurTellerCanUseAbilityTurnButton,
@@ -91,6 +94,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, Option.TellMaximum, new(1, 99, 1), 1, false)
             .SetValueFormat(OptionFormat.Times);
         OptionVoteMode = StringOptionItem.Create(RoleInfo, 11, Option.AbilityVotemode, EnumHelper.GetAllNames<AbilityVoteMode>(), 1, false);
+        OptionAbilityUseVote = BooleanOptionItem.Create(RoleInfo, 18, Option.AbilityUseVote, false, false);
         OptionRole = BooleanOptionItem.Create(RoleInfo, 12, Option.TellRole, true, false);
         TargetCanseePlayer = BooleanOptionItem.Create(RoleInfo, 13, Option.AmateurTellerTargetCanseePlayer, true, false);
         TargetCanseeArrow = BooleanOptionItem.Create(RoleInfo, 14, Option.AmateurTellerTargetCanseeArrow, true, false, TargetCanseePlayer);
@@ -117,7 +121,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
         }
         return false;
     }
-    bool ISelfVoter.CanUseVoted() => Canuseability() && maximum > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (!Use);
+    bool ISelfVoter.CanUseVoted() => Canuseability() && maximum > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (!Use) && !IsAbilityUseVote;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;
@@ -128,7 +132,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
             {
                 if (Player.PlayerId == votedForId || votedForId == SkipId) return true;
                 UseTellAbility(votedForId);
-                return false;
+                return IsAbilityUseVote;
             }
             else
             {
@@ -141,7 +145,7 @@ public sealed class AmateurTeller : RoleBase, ISelfVoter
                     if (status is VoteStatus.Vote)
                         UseTellAbility(votedForId);
                     SetMode(Player, status is VoteStatus.Self);
-                    return false;
+                    return IsAbilityUseVote && status is VoteStatus.Vote;
                 }
             }
         }

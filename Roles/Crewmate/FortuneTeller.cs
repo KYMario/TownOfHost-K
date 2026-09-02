@@ -43,10 +43,12 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
         cantaskcount = OptionCanTaskcount.GetFloat();
         onemeetingmaximum = Option1MeetingMaximum.GetFloat();
         impostorteams = new();
+        IsAbilityUseVote = OptionAbilityUseVote.GetBool();
     }
 
     public static OptionItem OptionMaximum;
     public static OptionItem OptionVoteMode;
+    public static OptionItem OptionAbilityUseVote; static bool IsAbilityUseVote;
     public static OptionItem Optionrolename;
     public static OptionItem OptionRole;
     public static OptionItem OptionCanTaskcount;
@@ -66,7 +68,7 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
     enum Option
     {
         TellMaximum,
-        AbilityVotemode,
+        AbilityVotemode, AbilityUseVote,
         TellerCanSeeRolename, //占った相手の名前の上に占い結果を表示するかの設定
         TellRole, //占い時役職を表示するか、陣営を表示するかの設定
     }
@@ -76,6 +78,7 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 10, Option.TellMaximum, new(1, 99, 1), 1, false)
             .SetValueFormat(OptionFormat.Times);
         OptionVoteMode = StringOptionItem.Create(RoleInfo, 11, Option.AbilityVotemode, EnumHelper.GetAllNames<AbilityVoteMode>(), 1, false);
+        OptionAbilityUseVote = BooleanOptionItem.Create(RoleInfo, 17, Option.AbilityUseVote, false, false);
         Optionrolename = BooleanOptionItem.Create(RoleInfo, 12, Option.TellerCanSeeRolename, true, false);
         OptionRole = BooleanOptionItem.Create(RoleInfo, 13, Option.TellRole, true, false);
         OptionCanTaskcount = IntegerOptionItem.Create(RoleInfo, 14, GeneralOption.cantaskcount, new(0, 99, 1), 5, false);
@@ -108,7 +111,7 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false) => Utils.ColorString(!MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) ? Color.gray : Max <= count ? Color.gray : Color.cyan, $"({Max - count})");
     public override void OnStartMeeting() => MeetingUsedcount = 0;
-    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0) && !IsAbilityUseVote;
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
         if (!Canuseability()) return true;
@@ -119,7 +122,7 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
             {
                 if (Player.PlayerId == votedForId || votedForId == SkipId) return true;
                 UseTellAbility(votedForId);
-                return false;
+                return IsAbilityUseVote;
             }
             else
             {
@@ -132,7 +135,7 @@ public sealed class FortuneTeller : RoleBase, ISelfVoter
                     if (status is VoteStatus.Vote)
                         UseTellAbility(votedForId);
                     SetMode(Player, status is VoteStatus.Self);
-                    return false;
+                    return IsAbilityUseVote && status is VoteStatus.Vote;
                 }
             }
         }

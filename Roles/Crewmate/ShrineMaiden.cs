@@ -39,6 +39,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
         Votemode = (VoteMode)OptionVoteMode.GetValue();
         onemeetingmaximum = Option1MeetingMaximum.GetFloat();
         OnikuId = byte.MaxValue;
+        IsAbilityUseVote = OptionAbilityUseVote.GetBool();
     }
 
     private static OptionItem OptionMaximum;
@@ -49,6 +50,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
     bool Awakened;
     public float Max;
     public VoteMode Votemode;
+    static OptionItem OptionAbilityUseVote; static bool IsAbilityUseVote;
     int count;
     float cantaskcount;
     float onemeetingmaximum;
@@ -59,7 +61,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
     enum Option
     {
         TellMaximum,
-        AbilityVotemode,
+        AbilityVotemode, AbilityUseVote,
     }
     public enum VoteMode
     {
@@ -72,6 +74,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 11, Option.TellMaximum, new(1, 99, 1), 1, false)
             .SetValueFormat(OptionFormat.Times);
         OptionVoteMode = StringOptionItem.Create(RoleInfo, 12, Option.AbilityVotemode, EnumHelper.GetAllNames<AbilityVoteMode>(), 1, false);
+        OptionAbilityUseVote = BooleanOptionItem.Create(RoleInfo, 17, Option.AbilityUseVote, false, false);
         Optioncantaskcount = IntegerOptionItem.Create(RoleInfo, 14, GeneralOption.cantaskcount, new(0, 99, 1), 5, false);
         Option1MeetingMaximum = IntegerOptionItem.Create(RoleInfo, 15, GeneralOption.MeetingMaxTime, new(0, 99, 1), 0, false)
             .SetValueFormat(OptionFormat.Times);
@@ -116,7 +119,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
         }
         return "";
     }
-    bool ISelfVoter.CanUseVoted() => Canuseability() && IsReport && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
+    bool ISelfVoter.CanUseVoted() => Canuseability() && IsReport && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0) && !IsAbilityUseVote;
 
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
@@ -127,7 +130,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
             {
                 if (Player.PlayerId == votedForId || votedForId == SkipId) return true;
                 ShrineMaidenAbility(votedForId);
-                return false;
+                return IsAbilityUseVote;
             }
             else
             {
@@ -140,7 +143,7 @@ public sealed class ShrineMaiden : RoleBase, ISelfVoter
                     if (status is VoteStatus.Vote)
                         ShrineMaidenAbility(votedForId);
                     SetMode(Player, status is VoteStatus.Self);
-                    return false;
+                    return IsAbilityUseVote && status is VoteStatus.Vote;
                 }
             }
         }

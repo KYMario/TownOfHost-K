@@ -42,6 +42,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
         Votemode = (AbilityVoteMode)OptionVoteMode.GetValue();
         onemeetingmaximum = Option1MeetingMaximum.GetFloat();
         Awakened = !OptAwakening.GetBool() || cantaskcount < 1;
+        IsAbilityUseVote = OptionAbilityUseVote.GetBool();
         if (!OptionNonAlignFortuneTeller.GetBool())
         {
             rolename = FortuneTeller.Optionrolename.GetBool();
@@ -52,6 +53,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             Awakened = !FortuneTeller.OptAwakening.GetBool();
             Max = FortuneTeller.OptionMaximum.GetFloat();
 
+            IsAbilityUseVote = FortuneTeller.OptionAbilityUseVote.GetBool();
             spflug = 0;
         }
         GameTell = new();
@@ -61,6 +63,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
     private static OptionItem OptionMaximum;
     private static OptionItem OptionRole;
     private static OptionItem OptionVoteMode;
+    static OptionItem OptionAbilityUseVote; static bool IsAbilityUseVote;
     private static OptionItem Optioncantaskcount;
     private static OptionItem Option1MeetingMaximum;
     private static OptionItem Optionrolename;
@@ -85,7 +88,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
     {
         TellerCollectRect,
         TellMaximum,
-        AbilityVotemode,
+        AbilityVotemode, AbilityUseVote,
         TellerCanSeeRolename,
         TellRole,
         PonkotuTellerFTOption,
@@ -100,6 +103,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
         OptionNonAlignFortuneTeller = BooleanOptionItem.Create(RoleInfo, 17, Option.PonkotuTellerFTOption, true, false);
         OptionMaximum = IntegerOptionItem.Create(RoleInfo, 11, Option.TellMaximum, new(1, 99, 1), 1, false, OptionNonAlignFortuneTeller)
             .SetValueFormat(OptionFormat.Times);
+        OptionAbilityUseVote = BooleanOptionItem.Create(RoleInfo, 21, Option.AbilityUseVote, false, false);
         OptionVoteMode = StringOptionItem.Create(RoleInfo, 12, Option.AbilityVotemode, EnumHelper.GetAllNames<AbilityVoteMode>(), 1, false, OptionNonAlignFortuneTeller);
         Optionrolename = BooleanOptionItem.Create(RoleInfo, 19, Option.TellerCanSeeRolename, true, false, OptionNonAlignFortuneTeller);
         OptionRole = BooleanOptionItem.Create(RoleInfo, 13, Option.TellRole, true, false, OptionNonAlignFortuneTeller);
@@ -134,7 +138,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
         }
         return "";
     }
-    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0);
+    bool ISelfVoter.CanUseVoted() => Canuseability() && Max > count && MyTaskState.HasCompletedEnoughCountOfTasks(cantaskcount) && (MeetingUsedcount < onemeetingmaximum || onemeetingmaximum == 0) && !IsAbilityUseVote;
 
     public override bool CheckVoteAsVoter(byte votedForId, PlayerControl voter)
     {
@@ -145,7 +149,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
             {
                 if (Player.PlayerId == votedForId || votedForId == SkipId) return true;
                 UseTellAbility(votedForId);
-                return false;
+                return IsAbilityUseVote;
             }
             else
             {
@@ -158,7 +162,7 @@ public sealed class PonkotuTeller : RoleBase, ISelfVoter
                     if (status is VoteStatus.Vote)
                         UseTellAbility(votedForId);
                     SetMode(Player, status is VoteStatus.Self);
-                    return false;
+                    return IsAbilityUseVote && status is VoteStatus.Vote;
                 }
             }
         }

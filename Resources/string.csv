@@ -1584,6 +1584,7 @@
 "WolfBoyCountteam","%role% is count","%role%を勝利までのキル数にカウント"
 "TellMaximum","Fortune-telling times","占い可能回数"
 "AbilityVotemode","Fortune telling method","占い方法"
+"AbilityUseVote","Using an ability, a vote.","能力使用時に投票も同時に行う"
 "TellerCollectRect","Rect","占い成功率"
 "PonkotuTellerFTOption","dont option FortuneTeller","占い師と設定をそろえない"
 "PonkotuTellerMyisFT","Ponkotu Teller is FortuneTeller","占い師と錯覚する"
