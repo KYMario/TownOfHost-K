@@ -106,7 +106,7 @@ public sealed class Mayor : RoleBase
         {
             var user = physics.myPlayer;
             //ホスト視点、vent処理中に会議を呼ぶとベントの矢印が残るので遅延させる
-            _ = new LateTask(() => ReportDeadBodyPatch.ExReportDeadBody(Player, null), 0.1f, "MayerPortableButton");
+            _ = new LateTask(() => ReportDeadBodyPatch.ExReportDeadBody(Player, null, null), 0.1f, "MayerPortableButton");
             //ポータブルボタン時はベントから追い出す必要はない
             return true;
         }

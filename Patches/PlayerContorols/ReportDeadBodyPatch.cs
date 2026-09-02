@@ -116,7 +116,7 @@ namespace TownOfHost
             if (GameStates.IsMeeting || GameStates.IsLobby || Wait) return;
 
             var State = PlayerState.GetByPlayerId(reporter.PlayerId);
-            if (State.NumberOfRemainingButtons <= 0 && target is null && Cancelcheck is not false) return;
+            if (State.NumberOfRemainingButtons <= 0 && target is null && Cancelcheck is true) return;
 
             if (Cancelcheck is null or true)
                 if (!CheckMeeting(reporter, target, checkdie: Cancelcheck is true)) return;
