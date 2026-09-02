@@ -1731,6 +1731,7 @@
 "BankerDieRemoveTurn","Die remove Turn Coin","死亡状態でターン開始時に消費するポイント"
 "BakeCatDieKiller","Killer Suicide","キラーが自殺するか"
 "BakeCatDieKillerTime","Killer Suicide time","キラーが自殺するまでの時間"
+"BakeCatMisidentify","misidentify","キルされるまで自覚できない"
 "BakeCatCountChenge","Count is Killer","カウントをキラーのカウントにする"
 "PhantomThiefFarstCoolDown","Set Target Cooldown","ターゲット指定クールダウン"
 "PhantomThiefCantSetCount","Set Target Min player count","ターゲット指定に必要な最低人数"
