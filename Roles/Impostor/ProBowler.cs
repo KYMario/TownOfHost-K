@@ -4,20 +4,22 @@ using UnityEngine;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
+using System.Linq;
+using System;
 
 /// <Memo>
 /// 転がる設定ONの時、転がりながらひき殺しも考えた。
 
 namespace TownOfHost.Roles.Impostor;
 
-public sealed class ProBowler : RoleBase, IImpostor
+public sealed class ProBowler : RoleBase, IImpostor, IUsePhantomButton
 {
     public static readonly SimpleRoleInfo RoleInfo =
         SimpleRoleInfo.Create(
             typeof(ProBowler),
             player => new ProBowler(player),
             CustomRoles.ProBowler,
-            () => RoleTypes.Shapeshifter,
+            () => RoleTypes.Phantom,
             CustomRoleTypes.Impostor,
             4200,
             SetupOptionItem,
@@ -72,25 +74,22 @@ public sealed class ProBowler : RoleBase, IImpostor
         OptionBowling = BooleanOptionItem.Create(RoleInfo, 13, OptionName.ProBowlerBowling, true, false);
         OptionDeathReasonIsFall = BooleanOptionItem.Create(RoleInfo, 14, OptionName.ProBowlerDeathReasonIsFall, false, false);
     }
-    public override bool CheckShapeshift(PlayerControl target, ref bool shouldAnimate)
+    void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        if (Is(target) || Bowl is not null)
-        {
-            shouldAnimate = false;
-            return true;
-        }
+        AdjustKillCooldown = true;
+        ResetCooldown = true;
+        if (Bowl is not null) return;
         NowUseCount++;
-        Bowl = Player.transform.position;
+        Bowl = Player.GetTruePosition();
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
-        shouldAnimate = true;
+        var dummyshapetarget = PlayerCatch.AllPlayerControls.Where(pc => pc.PlayerId != Player.PlayerId).OrderBy(x => Guid.NewGuid()).FirstOrDefault(PlayerControl.LocalPlayer);
+        Player.RpcShapeshift(dummyshapetarget, true);
+        _ = new LateTask(() => Player.RpcShapeshift(Player, false), 1.5f + Main.LagTime, "", true);
         SendRPC();
-        return true;
     }
     public override void ApplyGameOptions(IGameOptions opt)
     {
-        AURoleOptions.ShapeshifterCooldown = MaxUseCount <= NowUseCount ? 200 : AbilityCooldown;
-        AURoleOptions.ShapeshifterDuration = 1f;
-        AURoleOptions.ShapeshifterLeaveSkin = false;
+        AURoleOptions.PhantomCooldown = MaxUseCount <= NowUseCount ? 200 : AbilityCooldown;
     }
     public void OnCheckMurderAsKiller(MurderInfo info)
     {

@@ -8,6 +8,7 @@ using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Core.Interfaces;
 using Hazel;
 using TownOfHost.Roles.Vanilla;
+using System;
 
 namespace TownOfHost.Roles.Neutral;
 
@@ -135,22 +136,9 @@ public sealed class Vulture : RoleBase, IKillFlashSeeable, IAdditionalWinner
             //食べたときにシェイプを
             if (OptEatShape)
             {
-                var dummyshapetarget = PlayerCatch.AllPlayerControls.Where(pc => pc.PlayerId != Player.PlayerId).FirstOrDefault(PlayerControl.LocalPlayer);
+                var dummyshapetarget = PlayerCatch.AllPlayerControls.Where(pc => pc.PlayerId != Player.PlayerId).OrderBy(x => Guid.NewGuid()).FirstOrDefault(PlayerControl.LocalPlayer);
                 Player.RpcShapeshift(dummyshapetarget, true);
-                Player.RpcShapeshift(Player, true);
-                var sender = CustomRpcSender.Create("VultureEatShape");
-                sender.AutoStartRpc(Player.NetId, RpcCalls.Shapeshift)
-                    .Write(dummyshapetarget)
-                    .Write(true)
-                    .EndRpc();
-                sender.AutoStartRpc(Player.NetId, RpcCalls.Shapeshift)
-                    .Write(Player)
-                    .Write(true)
-                    .EndRpc();
-                sender.EndMessage();
-                sender.SendMessage();
-
-                _ = new LateTask(() => Player.RpcShapeshift(Player, false), Main.LagTime, "", true);
+                _ = new LateTask(() => Player.RpcShapeshift(Player, false), 1.5f + Main.LagTime, "", true);
             }
             if (turneat > 2)
             {
