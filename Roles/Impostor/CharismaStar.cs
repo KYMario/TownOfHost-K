@@ -34,11 +34,6 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     {
         killCooldown = optionKillCooldown.GetFloat();
         gatherCooldown = optionGatherCooldown.GetFloat();
-        // 集合クールがキルクールより短い時、集合クールはキルクールと同じにする
-        if (gatherCooldown < killCooldown)
-        {
-            gatherCooldown = killCooldown;
-        }
 
         gatherMaxCount = optionGatherMaxCount.GetInt();
         notGatherPlayerKill = optionNotGatherPlayerKill.GetBool();
@@ -152,9 +147,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
 
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        // クールダウン設定(使用時は既にキルクールがない想定)
-        AdjustKillCooldown = true;
-        Main.AllPlayerKillCooldown[Player.PlayerId] = 0.1f;
+        AdjustKillCooldown = false;
         ResetCooldown = true;
 
         // リストに誰も登録されていない
