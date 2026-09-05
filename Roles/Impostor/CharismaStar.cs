@@ -149,6 +149,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     {
         AdjustKillCooldown = false;
         ResetCooldown = true;
+        Player.RpcResetAbilityCooldown();
 
         // リストに誰も登録されていない
         if (gatherChoosePlayers.Count == 0)
