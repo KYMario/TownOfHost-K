@@ -63,6 +63,8 @@ public sealed class ProBowler : RoleBase, IImpostor
     Vector2 BowlTp;
     Vector2 targetpos;
     int Rollscount;
+    bool IUsePhantomButton.IsPhantomRole => true;
+    bool IUsePhantomButton.IsresetAfterKill => false;
 
     private static void SetupOptionItem()
     {
@@ -72,25 +74,44 @@ public sealed class ProBowler : RoleBase, IImpostor
         OptionBowling = BooleanOptionItem.Create(RoleInfo, 13, OptionName.ProBowlerBowling, true, false);
         OptionDeathReasonIsFall = BooleanOptionItem.Create(RoleInfo, 14, OptionName.ProBowlerDeathReasonIsFall, false, false);
     }
-    public override bool CheckShapeshift(PlayerControl target, ref bool shouldAnimate)
+    void IUsePhantomButton.OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        if (Is(target) || Bowl is not null)
+        AdjustKillCooldown = false;
+        if (Bowl is not null)
         {
-            shouldAnimate = false;
-            return true;
+            ResetCooldown = false;
+            return;
         }
+        ResetCooldown = true;
         NowUseCount++;
+        if (NowUseCount > MaxUseCount)
+        {
+            return;
+        }
         Bowl = Player.transform.position;
         UtilsNotifyRoles.NotifyRoles(OnlyMeName: true, SpecifySeer: Player);
-        shouldAnimate = true;
         SendRPC();
-        return true;
+        var dummyshapetarget = PlayerControl.LocalPlayer;
+        Player.RpcShapeshift(dummyshapetarget, true);
+        Player.RpcShapeshift(Player, true);
+        var sender = CustomRpcSender.Create("ProBowlerShape");
+        sender.AutoStartRpc(Player.NetId, RpcCalls.Shapeshift)
+            .Write(dummyshapetarget)
+            .Write(true)
+            .EndRpc();
+        sender.AutoStartRpc(Player.NetId, RpcCalls.Shapeshift)
+            .Write(Player)
+            .Write(true)
+            .EndRpc();
+        sender.EndMessage();
+        sender.SendMessage();
+
+        _ = new LateTask(() => Player.RpcShapeshift(Player, false), Main.LagTime, "", true);
     }
+
     public override void ApplyGameOptions(IGameOptions opt)
     {
-        AURoleOptions.ShapeshifterCooldown = MaxUseCount <= NowUseCount ? 200 : AbilityCooldown;
-        AURoleOptions.ShapeshifterDuration = 1f;
-        AURoleOptions.ShapeshifterLeaveSkin = false;
+        AURoleOptions.PhantomCooldown = MaxUseCount <= NowUseCount ? 200 : AbilityCooldown;
     }
     public void OnCheckMurderAsKiller(MurderInfo info)
     {
