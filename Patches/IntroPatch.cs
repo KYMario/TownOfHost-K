@@ -562,18 +562,7 @@ namespace TownOfHost
                     CustomButtonHud.BottonHud(true);
                 }, 0.3f, "setnames", true);
 
-                bool IsPlayerSkinShuffleMode = Options.AllPlayerSkinShuffle.GetBool() && (Event.April || Event.Special);
-                if (IsPlayerSkinShuffleMode)
-                {
-                    PlayerCatch.AllPlayerControls.Do(pc =>
-                    {
-                        if (!Camouflage.PlayerSkins.TryGetValue(pc.PlayerId, out var outfit)) return;
-
-                        if (Options.ColorNameMode.GetBool()) pc.RpcSetName(Palette.GetColorName(outfit.ColorId));
-                        else pc.RpcSetName(outfit.PlayerName);
-                    });
-                }
-                else if (Options.ColorNameMode.GetBool())
+                if (Options.ColorNameMode.GetBool())
                 {
                     PlayerCatch.AllPlayerControls.Do(pc =>
                     {
@@ -584,7 +573,7 @@ namespace TownOfHost
                 _ = new LateTask(() =>
                 {
                     CustomRoleManager.AllActiveRoles.Values.Do(role => role.ChangeColor());
-                    UtilsNotifyRoles.NotifyRoles(NoCache: IsPlayerSkinShuffleMode || Options.ColorNameMode.GetBool(), ForceLoop: true);
+                    UtilsNotifyRoles.NotifyRoles(NoCache: Options.ColorNameMode.GetBool(), ForceLoop: true);
 
                     ExtendedRpc.AllPlayerOnlySeeMePet();
                     SuddenDeathMode.NotTeamKill();
