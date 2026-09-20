@@ -235,7 +235,7 @@ class StandardIntro
                 HudManagerCoShowIntroPatch.Cancel = false;
                 DestroyableSingleton<HudManager>.Instance.StartCoroutine(DestroyableSingleton<HudManager>.Instance.CoShowIntro());
                 DestroyableSingleton<HudManager>.Instance.HideGameLoader();
-                UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+                UtilsNotifyRoles.NotifyRoles(ForceLoop: true, NoCache: true);
 
                 var sender = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.SyncModSystem, SendOption.None);
                 sender.Write((int)RPC.ModSystem.ShowIntro);
@@ -398,7 +398,7 @@ class StandardIntro
                                 if (Player.IsAlive()) Player.RpcSetPet("");
                             }
                         }*/
-                        UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
+                        UtilsNotifyRoles.NotifyRoles(ForceLoop: true, NoCache: true);
                     }, 0.2f, "Use On click Shepe", true);
             }, 2.0f, "Roleset", false);
         }

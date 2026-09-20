@@ -511,7 +511,7 @@ namespace TownOfHost
                 }
             }
 
-            if (GameStates.IsLobby && !Iscountdown && (force || (pc.name != "Player(Clone)" && pc.PlayerId != PlayerControl.LocalPlayer.PlayerId && !pc.IsModClient())))
+            if (GameStates.IsLobby && !Iscountdown && !GameStates.InGame && (force || (pc.name != "Player(Clone)" && pc.PlayerId != PlayerControl.LocalPlayer.PlayerId && !pc.IsModClient())))
             {
                 if (AmongUsClient.Instance.IsGameStarted) return;
                 var sb = new StringBuilder();
