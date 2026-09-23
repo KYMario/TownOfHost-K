@@ -57,7 +57,7 @@ public sealed class Camouflager : RoleBase, IImpostor, IUsePhantomButton
 
     public override void ApplyGameOptions(IGameOptions opt)
     {
-        AURoleOptions.PhantomCooldown = NowUse ? (OptionAblitytime.GetFloat() + 1f) : OptionCooldown.GetFloat();
+        AURoleOptions.PhantomCooldown = NowUse ? (OptionAblitytime.GetFloat()) : OptionCooldown.GetFloat();
     }
 
     public override void OnFixedUpdate(PlayerControl player)
@@ -69,8 +69,18 @@ public sealed class Camouflager : RoleBase, IImpostor, IUsePhantomButton
         {
             _limit = -100;
             NowUse = false;
-            PlayerCatch.AllPlayerControls.Do(pc => Camouflage.RpcSetSkin(pc, force: null));
-
+            //正常に解除されないことあるのでここでも実行
+            foreach (var pl in PlayerCatch.AllPlayerControls)
+            {
+                pl.RpcShapeshift(pl, false);
+                var sender = CustomRpcSender.Create("CamouflagerShape");
+                sender.AutoStartRpc(pl.NetId, RpcCalls.Shapeshift)
+                    .Write(pl)
+                    .Write(false)
+                    .EndRpc();
+                sender.EndMessage();
+                sender.SendMessage();
+            }
             _ = new LateTask(() =>
             {
                 if (GameStates.CalledMeeting) return;
@@ -105,7 +115,7 @@ public sealed class Camouflager : RoleBase, IImpostor, IUsePhantomButton
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
         AdjustKillCooldown = true;
-        ResetCooldown = false;
+        ResetCooldown = true;
         if (NowUse) return;
 
         var dummy = PlayerCatch.AllPlayerControls.FirstOrDefault(pc => pc != null) ?? PlayerCatch.GetPlayerById(0);
@@ -128,7 +138,6 @@ public sealed class Camouflager : RoleBase, IImpostor, IUsePhantomButton
         _ = new LateTask(() =>
         {
             UtilsNotifyRoles.NotifyRoles(ForceLoop: true);
-            Player.RpcResetAbilityCooldown(log: false, Sync: true);
         }, 0.2f, "", true);
     }
 
