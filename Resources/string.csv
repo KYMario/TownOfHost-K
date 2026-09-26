@@ -777,6 +777,8 @@
 "ProBowlerDescBowl","<u>Roll to the dug hole,</u>","<u>掘った穴まで転がし、</u>"
 "ProBowlerDescTeleport","<u>Teleport directly to the dug hole,</u>","<u>掘った穴に直接テレポートさせ、</u>"
 "SerialKillerDesc","Although the kill cooldown is shorter compared to other Impostors, if you do not perform a kill within <b>{0} seconds</b> after your first kill, you will self-destruct.","キルクールが他のインポスターに比べて短い反面、1度目のキルを行った後\n<b>{0}秒</b>以内にキルしないと自爆する。"
+"WarlockDesc","Click the button to cast a curse on the target. \nAfter casting the curse, click the button again to teleport the cursed person to the nearest person and kill them.","ワンクリックボタンを使用するとキルターゲットに呪いをかける。\n呪った後ワンクリック再度押すと呪った人が一番近い人の元にテレポートしキルする。"
+"WarlockDescKoutyoku","Click the button once to cast a curse on the target. \nAfter casting the curse, click the button again to teleport the cursed player to the nearest person and kill them. \n<b>After a curse kill, the player is immobilized for {0} seconds. </b>","ワンクリックボタンを使用するとキルターゲットに呪いをかける。\n呪った後ワンクリック再度押すと呪った人が一番近い人の元にテレポートしキルする。\n<b>呪いキル後、{0}秒間動けなくなる。</b>"
 
 "# MadmateDescInfos"
 
