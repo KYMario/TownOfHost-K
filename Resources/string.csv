@@ -1474,6 +1474,10 @@
 "ArcherArrowTime","Have Arrow","矢の所持数"
 "ArcherArrowSpeed","Arrow Speed","矢の速度"
 "EvilBlenderSabotageLimittime","Sabotage limit","窒息死するまでの時間"
+"WarlockDouki","Synchronize normal kills with cooldowns","通常キルとクールタイムを同期するか"
+"WarlockKoutyoku","Should the character be unable to move after a curse kill","呪いキル後硬直するか"
+"WarlockCantMovetime","Stiffening time","硬直時間"
+"WarlockCanKillNakama","can curse the imposter to death","インポスターを能力キルの対象に含める"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
