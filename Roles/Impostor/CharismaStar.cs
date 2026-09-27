@@ -34,11 +34,6 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     {
         killCooldown = optionKillCooldown.GetFloat();
         gatherCooldown = optionGatherCooldown.GetFloat();
-        // 集合クールがキルクールより短い時、集合クールはキルクールと同じにする
-        if (gatherCooldown < killCooldown)
-        {
-            gatherCooldown = killCooldown;
-        }
 
         gatherMaxCount = optionGatherMaxCount.GetInt();
         notGatherPlayerKill = optionNotGatherPlayerKill.GetBool();
@@ -53,8 +48,6 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
 
     enum OptionName
     {
-        CharismaStarGatherCooldown,
-        CharismaStarGatherMaxCount,
         CharismaStarNotGatherPlayerKill,
         CharismaStarCanAllPlayerGather,
     }
@@ -74,10 +67,10 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
     {
         optionKillCooldown = FloatOptionItem.Create(RoleInfo, 10, GeneralOption.KillCooldown, new(2.5f, 180f, 0.5f), 30f, false)
                 .SetValueFormat(OptionFormat.Seconds);
-        optionGatherCooldown = FloatOptionItem.Create(RoleInfo, 11, OptionName.CharismaStarGatherCooldown, new(2.5f, 180f, 2.5f), 30f, false)
+        optionGatherCooldown = FloatOptionItem.Create(RoleInfo, 11, GeneralOption.Cooldown, new(2.5f, 180f, 2.5f), 30f, false)
         .SetValueFormat(OptionFormat.Seconds);
-        optionGatherMaxCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.CharismaStarGatherMaxCount, new(1, 10, 1), 3, false)
-            .SetValueFormat(OptionFormat.Pieces);
+        optionGatherMaxCount = IntegerOptionItem.Create(RoleInfo, 12, GeneralOption.OptionCount, new(1, 10, 1), 3, false)
+            .SetValueFormat(OptionFormat.Times);
         optionNotGatherPlayerKill = BooleanOptionItem.Create(RoleInfo, 13, OptionName.CharismaStarNotGatherPlayerKill, true, false);
         optionCanAllPlayerGather = BooleanOptionItem.Create(RoleInfo, 14, OptionName.CharismaStarCanAllPlayerGather, true, false);
     }
@@ -134,7 +127,7 @@ public sealed class CharismaStar : RoleBase, IImpostor, IUsePhantomButton, IDoub
 
     public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
     {
-        AdjustKillCooldown = true;
+        AdjustKillCooldown = false;
         ResetCooldown = true;
 
         // リストに誰も登録されていない
