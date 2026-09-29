@@ -256,7 +256,7 @@ namespace TownOfHost
         {
             if (pc.PlayerId == PlayerControl.LocalPlayer.PlayerId && !Main.showkillbutton) return false;
             if (!pc.IsAlive()) return false;
-            if (pc?.Data?.Role?.Role == RoleTypes.GuardianAngel) return false;
+            if (pc?.Data?.Role?.Role is RoleTypes.GuardianAngel or RoleTypes.SpiritGuide) return false;
 
             if (pc.Is(CustomRoles.Amnesia) && !pc.Is(CustomRoleTypes.Impostor)) return false;
 

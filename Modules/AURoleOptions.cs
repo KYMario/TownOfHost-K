@@ -123,6 +123,10 @@ namespace TownOfHost
             get => Opt.GetFloat(FloatOptionNames.ViperDissolveTime);
             set => Opt.SetFloat(FloatOptionNames.ViperDissolveTime, value);
         }
-
+        public static float SpiritGuideCooldownSeconds
+        {
+            get => Opt.GetFloat(FloatOptionNames.SpiritGuideCooldownSeconds);
+            set => Opt.SetFloat(FloatOptionNames.SpiritGuideCooldownSeconds, value);
+        }
     }
 }

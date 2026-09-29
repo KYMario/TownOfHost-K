@@ -91,9 +91,10 @@ namespace TownOfHost.Modules
                 var guardancool = opt.GetFloat(FloatOptionNames.GuardianAngelCooldown);
                 var vip = opt.GetFloat(FloatOptionNames.ViperDissolveTime);
                 var jud = opt.GetFloat(FloatOptionNames.JudgeTaskRequirementPercentage);
+                var spgcd = opt.GetFloat(FloatOptionNames.SpiritGuideCooldownSeconds);
 
                 string NowOption = $"{killCooldown},{killDistance},{impostorLight},{crewLight},{playerSpeed},{numEmergency},{emergencyCooldown},{discussionTime},{votingTime},{anonymousVotes},{numCommonTasks},{numLongTasks},{numShortTasks},{visualTasks},{taskBarMode},{confirmImpostor}";
-                NowOption += $"{engcooldown},{engmaxtime},{scicooldown},{scibattery},{trackercool},{trackerdelay},{tarckduration},{noisealert},{noiseimp},{shapecool},{ShapeshifterDuration},{shapeskin},{phantom},{detective},{vip},{guardancool},{jud}";
+                NowOption += $"{engcooldown},{engmaxtime},{scicooldown},{scibattery},{trackercool},{trackerdelay},{tarckduration},{noisealert},{noiseimp},{shapecool},{ShapeshifterDuration},{shapeskin},{phantom},{detective},{vip},{guardancool},{jud},{spgcd}";
                 if (OldOptionstext == NowOption)//再度送信するならキャンセル
                 {
                     return;
@@ -358,6 +359,7 @@ namespace TownOfHost.Modules
                         case CustomRoles.DemonicCrusher: AURoleOptions.GuardianAngelCooldown = CoolDown(DemonicCrusher.CoolDown.GetFloat()); break;
                         case CustomRoles.DemonicVenter: AURoleOptions.GuardianAngelCooldown = CoolDown(DemonicVenter.CoolDown.GetFloat()); break;
                         case CustomRoles.AsistingAngel: AURoleOptions.GuardianAngelCooldown = CoolDown(AsistingAngel.GetNowCoolDown()); break;
+                        case CustomRoles.SpiritGuide: AURoleOptions.SpiritGuideCooldownSeconds = CoolDown(SpiritGuide.CoolDown.GetFloat()); break;
                     }
                 }
             }

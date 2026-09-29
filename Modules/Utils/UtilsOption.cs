@@ -795,6 +795,7 @@ namespace TownOfHost
                 CustomRoles.DemonicSupporter => AddonInfo(role),
                 CustomRoles.DemonicVenter => AddonInfo(role),
                 CustomRoles.AsistingAngel => AddonInfo(role),
+                CustomRoles.SpiritGuide => AddonInfo(role),
 
                 _ => $"{role}-{role.GetRoleInfo()?.ConfigId ?? -100}...?(´・ω・｀)"
             });

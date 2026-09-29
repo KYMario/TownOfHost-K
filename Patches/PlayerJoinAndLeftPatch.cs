@@ -74,7 +74,8 @@ namespace TownOfHost
                 gameOptions.RoleOptions.SetRoleRate(RoleTypes.Detective, 0, 0);
                 gameOptions.RoleOptions.SetRoleRate(RoleTypes.Viper, 0, 0);
                 gameOptions.RoleOptions.SetRoleRate(RoleTypes.Judge, 0, 0);//アプデ対応　　　　　　　　　　　　　　　↓これ忘れやすい
-                Main.NormalOptions.roleOptions.TryGetRoleOptions(RoleTypes.GuardianAngel, out GuardianAngelRoleOptionsV11 roleData);
+                Main.NormalOptions.roleOptions.TryGetRoleOptions(RoleTypes.GuardianAngel, out GuardianAngelRoleOptionsV12 roleData);
+                gameOptions.RoleOptions.SetRoleRate(RoleTypes.SpiritGuide, 0, 0);
                 gameOptions.SetBool(BoolOptionNames.ConfirmImpostor, false);
                 gameOptions.SetInt(Int32OptionNames.TaskBarMode, 2);
                 if (Main.NormalOptions.MaxPlayers > 15)

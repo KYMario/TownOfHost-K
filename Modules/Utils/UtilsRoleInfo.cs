@@ -117,6 +117,7 @@ namespace TownOfHost
                 roleCommands.Add(CustomRoles.DemonicTracker, "DTr");
                 roleCommands.Add(CustomRoles.DemonicVenter, "Dve");
                 roleCommands.Add(CustomRoles.AsistingAngel, "AsA");
+                roleCommands.Add(CustomRoles.SpiritGuide, "SpG");
 
                 // HAS
                 roleCommands.Add((CustomRoles)(-6), $"== {GetString("HideAndSeek")} ==");  // 区切り用
@@ -345,7 +346,7 @@ namespace TownOfHost
             input = FixRoleNameInput(input).ToLower();
             foreach (CustomRoles role in Enum.GetValues(typeof(CustomRoles)))
             {
-                if (!includeVanilla && role.IsVanilla() && role != CustomRoles.GuardianAngel) continue;
+                if (!includeVanilla && role.IsVanilla() && role is not CustomRoles.GuardianAngel and not CustomRoles.SpiritGuide) continue;
                 if (input == GuessManager.ChangeNormal2Vanilla(role))
                 {
                     output = role;

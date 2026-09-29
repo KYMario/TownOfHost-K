@@ -125,10 +125,11 @@ class AddondataInfo
                     {CustomRoles.GhostReseter , "#a87a71"},
                     {CustomRoles.GhostRumour , "#707cab"},
                     {CustomRoles.GuardianAngel,"#7cc0fc"},
+                    {CustomRoles.SpiritGuide , "#f9f3ad"},
                     {CustomRoles.DemonicTracker,"#824880"},
                     {CustomRoles.DemonicCrusher,"#522886"},
                     {CustomRoles.DemonicSupporter , "#351f1f"},
-                    { CustomRoles.DemonicVenter ,"#635963"},
+                    {CustomRoles.DemonicVenter ,"#635963"},
                     {CustomRoles.AsistingAngel,"#8da0b6"},
 
                     {CustomRoles.NotAssigned, "#ffffff"}

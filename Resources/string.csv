@@ -20,6 +20,7 @@
 "Phantom","Phantom","ファントム"
 "Viper","Viper","バイパー"
 "Judge","Judge","ジャッジ"
+"SpiritGuide","Influencer","インフルエンサー"
 
 "# 特殊インポスター役職"
 "BountyHunter","Bounty Hunter","バウンティハンター","赏金猎人","賞金獵人","Охотник за головами","Caçador de Recompensas","Caçador de Recompensas"
@@ -527,6 +528,7 @@
 "DemonicCrusherInfo","Dokaaaan!","どっかーん！"
 "DemonicSupporterInfo","Carry out sabotage","サボタージュを起こそう"
 "AsistingAngelInfo","will lead you to victory.","君を勝たせてあげる..."
+"SpiritGuideInfo","The best one","最高の一枚を"
 
 "# 属性"
 "LastImpostorInfo","You are the last of us","残ったのはあなただけ","你是狼村最后的希望…","你是狼村最後的希望...","Ты последний предатель","Você é o último Impostor","Você é o último Impostor"
@@ -832,6 +834,7 @@
 "DemonicSupporterInfoLong","Only granted to the Madmate faction that has dead.\nCan Use Sabotage","(幽霊役職):\n死亡したマッドメイトにしか付与されない。\nサボタージュが使用可能になる。"
 "AsistingAngelInfoLong","Only granted to the crew/neutral faction that has dead.\nWhen the assist target wins after using the Guardian Ability for the first time, you also gain an additional victory.\n\nAfter selecting an assist target, attempting to activate the Guardian ability on them grants them Kill Guard for a set duration.\nIf activated on anyone other than the assist target,\nthe location where it was activated is notified to the assist target.\nUsing this ability increases the next cooldown.\n\nGhost, Ghost Role Setting: Regardless of role, cannot see others' roles.\nOriginal victory conditions are removed, and tasks are also removed.","(幽霊役職):\n死亡したクルー/ニュートラルにしか付与されない。\n初めての守護能力を使用したアシスト対象が勝利すると自身も追加勝利する。\n\nアシスト対象選択後、守護能力をアシスト対象に発動しようとすると、\nアシスト対象に一定時間のキルガードを付与する。\nアシスト対象以外に発動した場合、\n発動した時の位置がアシスト対象者に通知される。\n能力を使用した場合、次のクールダウンが増加する。\n\n幽霊,幽霊役職設定に関わらず他人の役職などが見えない。\n元の勝利条件は無くなり、タスクもなくなる。"
 "GuardianAngelInfoLong","Only granted to the crew faction that has dead.\nWhen someone protected by your Guardian Ability for a set period is about to be killed, you block the kill with a barrier.","(幽霊役職):\n死亡したクルー陣営にしか付与されない。\n一定時間守護能力で守った人がキルされそうになった時、キルをバリアで防ぐ。"
+"SpiritGuideInfoLong","This is only granted to crew members who have died.\nDuring a task turn, you can send up to 3 marks to other players at once.","死亡したクルー陣営ににしか付与されない\nタスクターン中に他のプレイヤーへマークを一度に3つまで送ることができる。"
 
 "# 属性"
 "LastImpostorInfoLong","(Add-ons):\nAn Add-on granted to the last Impostor remaining.\nKill cooldown is reduced according to this setting.\nNot granted to Bounty Hunters, Serial Killers, or Vampires.","(属性):\n最後のインポスターに付与される属性。\nキルクールが設定した時間まで短くなる。\n一部インポスター役職には付与されない。","（效果）:\n这个效果在内鬼仅剩一人时赋予该内鬼。\n使其击杀冷却缩短。\n该效果对赏金猎人、嗜血杀手以及吸血鬼不适用。","(附加效果):\n該效果給予在場上的最後一位偽裝者，擁有該效果的偽裝者刀人冷卻時間會變短，該效果不會給予:\n賞金獵人, 連環殺手或吸血鬼 (可以設定冷卻)","(Атрибут):\nАтрибут, присваивается последнему Предателю. \nВремя отката убийства становится меньше, чем обычно. \nНе назначается Охотнику за головами, Серийному убийце или Вампиру.","(Atributos): \nUm Atributo dado ao último Impostor. \nO tempo de recarga (abate) é reduzido segundo a configuração. \nNão é dado para Caçadores de Recompensas, Serial Killers ou Vampiros.",""

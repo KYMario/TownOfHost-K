@@ -53,7 +53,8 @@ public abstract class RoleBase : IDisposable
             RoleTypes.Detective or
             RoleTypes.GuardianAngel or
             RoleTypes.CrewmateGhost or
-            RoleTypes.ImpostorGhost;
+            RoleTypes.ImpostorGhost or
+            RoleTypes.SpiritGuide;
 
         MyState = PlayerState.GetByPlayerId(player.PlayerId);
         MyTaskState = MyState.GetTaskState();
@@ -457,7 +458,7 @@ public abstract class RoleBase : IDisposable
             RoleTypes.Phantom => StringNames.PhantomAbility,
             RoleTypes.GuardianAngel => StringNames.ProtectAbility,
             RoleTypes.Detective => StringNames.DetectiveAbilityNotes,
-            //RoleTypes.Judge => StringNames.Judge,
+            RoleTypes.SpiritGuide => StringNames.SpiritGuideAbility,
             RoleTypes.ImpostorGhost or RoleTypes.CrewmateGhost => StringNames.HauntAbilityName,
             _ => null//アプデ対応用
         };

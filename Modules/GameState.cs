@@ -91,6 +91,7 @@ namespace TownOfHost
                     RoleTypes.Noisemaker => CustomRoles.Noisemaker,
                     RoleTypes.Detective => CustomRoles.Detective,
                     RoleTypes.GuardianAngel => CustomRoles.GuardianAngel,
+                    RoleTypes.SpiritGuide => CustomRoles.SpiritGuide,
                     RoleTypes.Impostor => CustomRoles.Impostor,
                     RoleTypes.Shapeshifter => CustomRoles.Shapeshifter,
                     RoleTypes.Phantom => CustomRoles.Phantom,

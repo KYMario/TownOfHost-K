@@ -173,7 +173,7 @@ namespace TownOfHost
         public static bool IsMainRole(this CustomRoles role) => role < CustomRoles.NotAssigned;
         public static bool IsCrewmate(this RoleTypes role) =>
             role is RoleTypes.Crewmate or RoleTypes.CrewmateGhost or
-                    RoleTypes.Engineer or RoleTypes.GuardianAngel or
+                    RoleTypes.Engineer or RoleTypes.GuardianAngel or RoleTypes.SpiritGuide or
                     RoleTypes.Noisemaker or RoleTypes.Scientist or RoleTypes.Tracker or RoleTypes.Detective or RoleTypes.Judge;
         public static bool IsSubRole(this CustomRoles role) => role.IsAddOn() || role.IsLovers() || role.IsGhostRole() || role is CustomRoles.Amanojaku or CustomRoles.Twins or CustomRoles.Faction;
         public static bool IsLovers(this CustomRoles roles, bool checkonelover = true)
@@ -248,6 +248,7 @@ namespace TownOfHost
                         or CustomRoles.DemonicCrusher
                         or CustomRoles.DemonicSupporter
                         or CustomRoles.AsistingAngel
+                        or CustomRoles.SpiritGuide
                         ;
         }
         public static bool IsStartedRole(this CustomRoles role) => role is not
@@ -294,7 +295,6 @@ namespace TownOfHost
                 if (roleOpt is null) return 0;
                 return role switch
                 {
-                    CustomRoles.GuardianAngel => roleOpt.GetNumPerGame(RoleTypes.GuardianAngel),
                     CustomRoles.Crewmate => roleOpt.GetNumPerGame(RoleTypes.Crewmate),
                     _ => Options.GetRoleCount(role)
                 };
@@ -311,7 +311,6 @@ namespace TownOfHost
                 var roleOpt = Main.NormalOptions.RoleOptions;
                 return role switch
                 {
-                    CustomRoles.GuardianAngel => roleOpt.GetChancePerGame(RoleTypes.GuardianAngel),
                     CustomRoles.Crewmate => roleOpt.GetChancePerGame(RoleTypes.Crewmate),
                     _ => Options.GetRoleChance(role)
                 };

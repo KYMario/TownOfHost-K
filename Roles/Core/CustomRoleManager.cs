@@ -577,6 +577,7 @@ public static class CustomRoleManager
                 case CustomRoles.DemonicCrusher: DemonicCrusher.Add(pc.PlayerId); break;
                 case CustomRoles.DemonicSupporter: DemonicSupporter.Add(pc.PlayerId); break;
                 case CustomRoles.AsistingAngel: AsistingAngel.Add(pc.PlayerId); break;
+                case CustomRoles.SpiritGuide: SpiritGuide.Add(pc.PlayerId); break;
             }
         }
     }
@@ -1052,6 +1053,7 @@ public enum CustomRoles
     GhostNoiseSender,
     GhostReseter,
     GuardianAngel,
+    SpiritGuide,
     GhostRumour,
     //NeutralGhost
     AsistingAngel,

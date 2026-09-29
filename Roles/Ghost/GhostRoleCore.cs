@@ -22,6 +22,7 @@ class GhostRoleCore
         GhostReseter.Init();
         GhostRumour.Init();
         GuardianAngel.Init();
+        SpiritGuide.Init();
 
         //アドオンもここ置かせて( ᐛ )
         LastImpostor.Init();
@@ -127,5 +128,6 @@ class GhostRoleCore
         GhostReseter.SetupCustomOption();
         GhostRumour.SetupCustomOption();
         GuardianAngel.SetupCustomOption();
+        SpiritGuide.SetupCustomOption();
     }
 }

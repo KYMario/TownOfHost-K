@@ -343,7 +343,7 @@ namespace TownOfHost
                             player.Data.Role.Ability.Image = image;
                             player.Data.Role.InitializeAbilityButton();
                         }
-                        else if (player.Data.Role.Role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost or RoleTypes.GuardianAngel)
+                        else if (player.Data.Role.Role is RoleTypes.CrewmateGhost or RoleTypes.ImpostorGhost or RoleTypes.GuardianAngel or RoleTypes.SpiritGuide)
                         {
                             player.Data.Role.Ability.Image = image;
                             player.Data.Role.InitializeAbilityButton();
@@ -634,7 +634,7 @@ namespace TownOfHost
                     desc += $"<size=70%>{inforoleinfo?.Desc()}";
                 }
                 else
-                    if (inforole.IsVanilla() && inforole is not CustomRoles.GuardianAngel)
+                    if (inforole.IsVanilla() && inforole is not CustomRoles.GuardianAngel and not CustomRoles.SpiritGuide)
                     {
                         text += $"<size=100%>{inforoleinfo.Description.Blurb}" + "\n\n</size>";
                         desc += $"<size=70%>{inforoleinfo.Description.Description}";
