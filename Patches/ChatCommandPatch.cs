@@ -756,19 +756,19 @@ namespace TownOfHost
                         if (args.Length > 1 && int.TryParse(args[1], out var cot))
                             if (ch(cot))
                             {
-                                Main.NormalOptions.TryCast<NormalGameOptionsV11>().SetInt(Int32OptionNames.NumCommonTasks, cot);
+                                Main.NormalOptions.TryCast<NormalGameOptionsV12>().SetInt(Int32OptionNames.NumCommonTasks, cot);
                                 chc += Main.UseingJapanese ? $"通常タスクを{cot}にしました!\n" : $"CommonTask:{cot}\n";
                             }
                         if (args.Length > 2 && int.TryParse(args[2], out var lot))
                             if (ch(lot))
                             {
-                                Main.NormalOptions.TryCast<NormalGameOptionsV11>().SetInt(Int32OptionNames.NumLongTasks, lot);
+                                Main.NormalOptions.TryCast<NormalGameOptionsV12>().SetInt(Int32OptionNames.NumLongTasks, lot);
                                 chc += Main.UseingJapanese ? $"ロングタスクを{lot}にしました!\n" : $"LongTask:{lot}\n";
                             }
                         if (args.Length > 3 && int.TryParse(args[3], out var sht))
                             if (ch(sht))
                             {
-                                Main.NormalOptions.TryCast<NormalGameOptionsV11>().SetInt(Int32OptionNames.NumShortTasks, sht);
+                                Main.NormalOptions.TryCast<NormalGameOptionsV12>().SetInt(Int32OptionNames.NumShortTasks, sht);
                                 chc += Main.UseingJapanese ? $"ショートタスクを{sht}にしました!\n" : $"ShortTask:{sht}\n";
                             }
                         if (chc == "")
@@ -793,7 +793,7 @@ namespace TownOfHost
                         if (args.Length > 1 && float.TryParse(args[1], out var fl))
                         {
                             if (fl <= 0) fl = 0.00000000000000001f;
-                            Main.NormalOptions.TryCast<NormalGameOptionsV11>().SetFloat(FloatOptionNames.KillCooldown, fl);
+                            Main.NormalOptions.TryCast<NormalGameOptionsV12>().SetFloat(FloatOptionNames.KillCooldown, fl);
                         }
                         GameOptionsSender.RpcSendOptions();
                         try

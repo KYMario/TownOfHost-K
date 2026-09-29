@@ -77,8 +77,8 @@ namespace TownOfHost
         public static string ExceptionMessage;
         public static bool ExceptionMessageIsShown = false;
         public static string credentialsText;
-        public static NormalGameOptionsV11 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
-        public static HideNSeekGameOptionsV11 HideNSeekSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
+        public static NormalGameOptionsV12 NormalOptions => GameOptionsManager.Instance.currentNormalGameOptions;
+        public static HideNSeekGameOptionsV12 HideNSeekSOptions => GameOptionsManager.Instance.currentHideNSeekGameOptions;
         //Client Options
         public static ConfigEntry<string> HideName { get; private set; }
         public static ConfigEntry<string> HideColor { get; private set; }

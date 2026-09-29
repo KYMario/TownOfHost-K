@@ -399,7 +399,7 @@ namespace TownOfHost
         }
         public static PlayerControl TryGetKilltarget(this PlayerControl pc, bool IsOneclick = false)//SNR参考!(((
         {
-            float killdis = NormalGameOptionsV11.KillDistances[Mathf.Clamp(GameManager.Instance.LogicOptions.currentGameOptions.GetInt(Int32OptionNames.KillDistance), 0, 2)];
+            float killdis = NormalGameOptionsV12.KillDistances[Mathf.Clamp(GameManager.Instance.LogicOptions.currentGameOptions.GetInt(Int32OptionNames.KillDistance), 0, 2)];
 
             if (pc.Data.IsDead || pc.inVent) return null;
 

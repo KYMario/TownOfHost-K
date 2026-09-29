@@ -61,7 +61,7 @@ namespace TownOfHost
                 if (AURoleOptions.ShapeshifterCooldown == 0f)
                     AURoleOptions.ShapeshifterCooldown = Main.LastShapeshifterCooldown.Value;
 
-                NormalGameOptionsV11 gameOptions = Main.NormalOptions.TryCast<NormalGameOptionsV11>();
+                NormalGameOptionsV12 gameOptions = Main.NormalOptions.TryCast<NormalGameOptionsV12>();
                 if (Main.NormalOptions.NumImpostors == 0 && GameStates.IsOnlineGame)
                     gameOptions.SetInt(Int32OptionNames.NumImpostors, 1);
 
