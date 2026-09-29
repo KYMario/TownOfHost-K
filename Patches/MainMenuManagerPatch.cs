@@ -338,6 +338,7 @@ namespace TownOfHost
         [HarmonyPatch(nameof(MainMenuManager.OpenOnlineMenu))]
         [HarmonyPatch(nameof(MainMenuManager.GoBackCreateGame))]
         [HarmonyPatch(nameof(MainMenuManager.OpenEnterCodeMenu))]
+        [HarmonyPatch(nameof(MainMenuManager.OpenRedeemCodeMenu))]
         [HarmonyPostfix]
         public static void OpenMenuPostfix(MainMenuManager __instance)
         {
