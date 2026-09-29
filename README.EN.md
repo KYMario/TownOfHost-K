@@ -20,7 +20,7 @@ Additionally, questions and bug reports regarding TownOfHost-K are accepted on t
 ## [Wiki](https://github.com/KYMario/TownOfHost-K/wiki)
 
 ## Release
-AmongUs version : **18.0.0**~<br>
+AmongUs version : **19.0.0**~<br>
 
 **The latest version is[Here](https://github.com/KYMario/TownOfHost-K/releases/latest)**<br>
 Previous versions are [Here](https://github.com/KYMario/TownOfHost-K/releases)<br>

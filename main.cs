@@ -59,15 +59,15 @@ namespace TownOfHost
         // ==========
         //Sorry for many Japanese comments.
         public const string PluginGuid = "com.kymario.townofhost-k";
-        public const string PluginVersion = "51.14.32.55";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
-        public const string PluginShowVersion = "51.14.32.55";
+        public const string PluginVersion = "51.14.32.56";//ほんとはx.y.z表記にしたかったけどx.y.z.km.ks表記だと警告だされる
+        public const string PluginShowVersion = "51.14.32.56";
         public const string ModVersion = ".14.32";//リリースver用バージョン変更
 
         /// 配布するデバッグ版なのであればtrue。リリース時にはfalseにすること。
         public static bool DebugVersion = false;
 
         // サポートされている最低のAmongUsバージョン(Readmeも変える)
-        public static readonly string LowestSupportedVersion = "2026.8.18";
+        public static readonly string LowestSupportedVersion = "2026.9.29";
         // このバージョンのみで公開ルームを無効にする場合
         public static readonly bool IsPublicAvailableOnThisVersion = false;
         public Harmony Harmony { get; } = new Harmony(PluginGuid);
