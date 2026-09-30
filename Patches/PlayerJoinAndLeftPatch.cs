@@ -117,6 +117,17 @@ namespace TownOfHost
                 CustomSpawnManager.Save();
                 CustomSpawnEditor.ActiveEditMode = false;
             }
+            if (reason is DisconnectReasons.Hacking && !GameStates.InGame)
+            {
+                DataManager.Player.Customization.Visor = VisorData.EmptyId;
+                DataManager.Player.Customization.Pet = PetData.EmptyId;
+                DataManager.Player.Customization.Skin = SkinData.EmptyId;
+                DataManager.Player.Customization.NamePlate = NamePlateData.EmptyId;
+                DataManager.Player.Customization.colorID = 0;
+                DataManager.Player.Customization.Hat = HatData.EmptyId;
+                DataManager.Player.Customization.Name = "Dummy";
+                return;
+            }
 
             if (AmongUsClient.Instance.AmHost && GameStates.InGame && reason is not DisconnectReasons.Destroy)
             {
