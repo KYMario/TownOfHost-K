@@ -297,7 +297,7 @@ namespace TownOfHost
                     }
                     if (!isalive && pc.IsGhostRole())
                     {
-                        setrole = pc.Is(RoleTypes.SpiritGuide) ? RoleTypes.SpiritGuide : RoleTypes.GuardianAngel;
+                        setrole = pc.Is(CustomRoles.SpiritGuide) ? RoleTypes.SpiritGuide : RoleTypes.GuardianAngel;
                     }
 
                     sender.StartRpc(pc.NetId, RpcCalls.SetRole)
