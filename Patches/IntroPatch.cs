@@ -166,7 +166,7 @@ namespace TownOfHost
                 }
             }
             logger.Info("------------基本設定------------");
-            var tmp = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(GameData.Instance ? GameData.Instance.PlayerCount : 10).Split("\r\n").Skip(1).SkipLast(12);
+            var tmp = GameOptionsManager.Instance.CurrentGameOptions.ToHudString(GameData.Instance ? GameData.Instance.PlayerCount : 10).Split("\r\n").Skip(1).SkipLast(11);
             foreach (var t in tmp) logger.Info(t);
             logger.Info("------------詳細設定------------");
             foreach (var o in OptionItem.AllOptions.Where(o => o is not ObjectOptionitem))
@@ -417,7 +417,18 @@ namespace TownOfHost
                         {
                             _ = new LateTask(() =>
                             {
-                                PlayerCatch.AllPlayerControls.Do(pc => pc.SetKillCooldown(SuddenDeathMode.SuddenKillcooltime.GetFloat() - 0.7f, delay: true));
+                                var killcool = SuddenDeathMode.SuddenKillcooltime.GetFloat();
+                                foreach (var pc in PlayerCatch.AllPlayerControls)
+                                {
+                                    if (pc != null)
+                                    {
+                                        if (pc.GetRoleClass() is IKiller killer && killer.CalculateKillCooldown() != Options.DefaultKillCooldown)
+                                        {
+                                            killcool = killer.CalculateKillCooldown();
+                                        }
+                                        pc.SetKillCooldown(killcool, delay: true);
+                                    }
+                                }
                             }, 0.7f, "FixKillCooldownTask", null);
                         }
                         else if (Options.FixFirstKillCooldown.GetBool())
