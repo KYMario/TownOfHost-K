@@ -860,6 +860,8 @@ public enum CustomRoles
     Assassin,
     EvilBlender,
     UnFortuner,
+    Bloodlust,
+    EvilButtoner,
     //DEBUG only Impostor
     //Madmate
     MadGuardian,

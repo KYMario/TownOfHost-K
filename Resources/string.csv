@@ -76,6 +76,7 @@
 "CharismaStar","Charisma Star","カリスマスター"
 "Archer","Archer","アーチャー"
 "EvilBlender","EvilBlender","イビルブレンダー"
+"EvilButtoner","EvilButtoner","イビルボタナー"
 "#ImpostorName"
 
 "# マッドメイト系役職"
@@ -374,6 +375,7 @@
 "ArcherInfo","———Pierce through","——————貫け。"
 "EvilBlenderInfo","Chemistry solves everything","化学は裏切らない"
 "UnFortunerInfo","Happiness for Only Impostors","幸せになりたい..."
+"EvilButtonerInfo","Take that Megaphone","そのメガホンを手に取って"
 "#ImpostorInfo"
 
 "# マッドメイト系役職"
@@ -634,6 +636,7 @@
 "ArcherInfoLong","An Impostor who can kill Crewmates using a bow and arrows.\nPress the Phantom button and move in the opposite direction of where you want to fire to shoot an arrow.\nPlayers hit by the arrow die instantly (deathreason: Hit).\nThe arrow disappears when it hits a wall or after a certain amount of time.","弓矢を駆使し、クルーをキルすることができるインポスター。\nファントムボタンを押し、矢を放ちたい方向と逆方向に移動し、\nもう一度ファントムボタンを押すことで矢を放つことができる。\n矢が当たったプレイヤーはその場で死亡する(死因:命中)\n矢は壁に当たるか一定時間経過すると消滅する。"
 "EvilBlenderInfoLong","An Impostor who can activate a special sabotage only once.\nIf no sabotage other than door closing is active, pressing the Phantom button will fill the entire map with Poison Gas.\nWhen the gas is released, all living players must reach the designated room within a certain time or they will die (cause of death: Suffocation).\nWhile Poison Gas is active, the emergency button cannot be used and no sabotages can be triggered.","1度のみ特殊サボタージュを発動することができるインポスター。\nドア閉め以外のサボタージュが発動されていない時にファントムボタンを押すと\n「毒ガス」をマップ全体に充満させることができる。\n毒ガスが発生した時、生存しているプレイヤーは一定時間以内に指定された部屋へ行かないと死亡する。(死因:窒息)\n毒ガス発生中は緊急ボタンは使用できず、サボタージュも発動できない。"
 "UnFortunerInfoLong","An Impostor who can grant attributes.\nThe kill target at the moment the Phantom button is used will receive a random attribute at the start of the next meeting.\n\nIf 'Grant one attribute per use' is ON, or if no overwrite attributes are configured, one random attribute is applied.\nOtherwise, all configured attributes are applied.","属性を付与することのできるインポスター。\nファントムボタンを使用した時のキルターゲットに\n次会議開始時、ランダムで属性を付与する。\n\n'1回使用で属性を1つ渡す'がON、または上書きする付与属性が未設定の場合は、ランダムで1つ。\nそれ以外の場合は設定した属性が全て付与される。"
+"EvilButtonerInfoLong","","キルボタンを押すことでターゲットを指定することができる。\nターゲットを指定した後ファントムボタンを押すことで対象名義で緊急会議を招集することができる。\n死亡済、残り招集回数が0の場合は指定できない。\nまた、ノンレポートなどの理由で会議が招集できない場合は効果が発揮されない。"
 "#ImpostorInfoLong"
 
 "# マッドメイト系役職"
@@ -1483,6 +1486,7 @@
 "ArcherArrowTime","Have Arrow","矢の所持数"
 "ArcherArrowSpeed","Arrow Speed","矢の速度"
 "EvilBlenderSabotageLimittime","Sabotage limit","窒息死するまでの時間"
+"EvilButtonerCanUseMeCall","Can hold a meeting in your","自身名義で会議を開ける"
 
 "## MadMate Role Setting"
 "MadmateOption","MadMate Options","マッドメイト系役職の設定"
@@ -2266,6 +2270,7 @@
 "EvilBlender_SabotageLowerAlive","<#ff1919>!!Poison Gas Detected!!\n!!<#ffffff>Reach {1} within {0}</color> seconds!!</color>","<#ff1919>!!毒ガス発生中!!\n!!<#ffffff>{0}</color>秒以内に{1}へ行け!!</color>"
 "EvilBlender_SabotageLower","<#ff1919>!!Poison Gas Detected!!<#ffffff>{0}</color></color>","<#ff1919>!!毒ガス発生中!!<#ffffff>({0}s)</color></color>"
 "Analyzer_Ability","vent → UseAbility","ベント → 陣営の残り人数を確認"
+"EvilButtoner_LowerText","Target → {0}","ターゲット → {0}"
 
 "## かくれんぼ設定"
 "HideAndSeekOptions","Hide and Seek Settings","かくれんぼの設定","躲猫猫设置","躲貓貓設定","Настройки Пряток","Configurações do Esconde-Esconde",""
@@ -2356,6 +2361,7 @@
 "Fortuner_AbilityButton","Give","付与"
 "BloodlustAbilityTimer","Until Release","通知まで"
 "BloodlustAbilityExposed","Revealed","早くキルしろ"
+"EvilButtonerAbilityText","Call","招集"
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""

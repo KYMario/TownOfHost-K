@@ -55,8 +55,7 @@ public interface IUsePhantomButton
     ///  </summary>
     /// <param name="AdjustKillCooldown">trueで使用後キルクールの調整処理を行う</param>
     /// <param name="ResetCooldown">trueでアビリティリセット処理を入れる<br/> nullでファントム戻し処理もいれない</param>
-    public void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown)
-    { }
+    public abstract void OnClick(ref bool AdjustKillCooldown, ref bool? ResetCooldown);
     /// <summary>ワンクリックボタンが使えるか</summary>
     public bool UseOneclickButton => true;
     /// <summary>ファントム置き換えにするかどうか</summary>
