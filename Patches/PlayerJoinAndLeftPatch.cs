@@ -4,6 +4,7 @@ using System.Linq;
 using AmongUs.Data;
 using AmongUs.GameOptions;
 using HarmonyLib;
+using Il2CppInterop.Runtime.InteropTypes.Arrays;
 using InnerNet;
 using TownOfHost.Modules;
 using TownOfHost.Modules.ChatManager;
@@ -116,8 +117,8 @@ namespace TownOfHost
             {
                 CustomSpawnManager.Save();
                 CustomSpawnEditor.ActiveEditMode = false;
-            }
-            if (reason is DisconnectReasons.Hacking && !GameStates.InGame)
+            }/*
+            if (Utils.IsRestriction() && reason is DisconnectReasons.Hacking && !GameStates.InGame)
             {
                 DataManager.Player.Customization.Visor = VisorData.EmptyId;
                 DataManager.Player.Customization.Pet = PetData.EmptyId;
@@ -126,8 +127,12 @@ namespace TownOfHost
                 DataManager.Player.Customization.colorID = 0;
                 DataManager.Player.Customization.Hat = HatData.EmptyId;
                 DataManager.Player.Customization.Name = "Dummy";
+            Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<byte> option = new(AmongUs.Data.DataManager.Settings.Multiplayer.RawNormalHostOptions.Count);
+            AmongUs.Data.DataManager.Settings.Multiplayer.RawNormalHostOptions = option;
+            Il2CppInterop.Runtime.InteropTypes.Arrays.Il2CppStructArray<byte> option2 = new(AmongUs.Data.DataManager.Settings.Multiplayer.RawHideNSeekSearchOptions.Count);
+            AmongUs.Data.DataManager.Settings.Multiplayer.RawHideNSeekSearchOptions = option2;
                 return;
-            }
+            }*/
 
             if (AmongUsClient.Instance.AmHost && GameStates.InGame && reason is not DisconnectReasons.Destroy)
             {

@@ -10,6 +10,7 @@ using BepInEx.Unity.IL2CPP.Utils.Collections;
 
 using TownOfHost.Modules;
 using static TownOfHost.Translator;
+using System.Linq;
 
 namespace TownOfHost
 {
@@ -101,7 +102,12 @@ namespace TownOfHost
     [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.Start))]
     class CreateGameOptionsStartPatch
     {
-        public static void Prefix() => CreateGameOptionsUpdateServerText.Prefix();
+        public static void Prefix(CreateGameOptions __instance)
+        {
+            __instance.chatTypeButtons.Last().gameObject.SetActive(false);
+            __instance.chatTypeButtons.First().OnClick.Invoke();
+            CreateGameOptionsUpdateServerText.Prefix();
+        }
     }
     [HarmonyPatch(typeof(CreateGameOptions), nameof(CreateGameOptions.UpdateServerText))]
     class CreateGameOptionsUpdateServerText
