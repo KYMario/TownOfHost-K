@@ -781,6 +781,7 @@
 "ProBowlerDescBowl","<u>Roll to the dug hole,</u>","<u>掘った穴まで転がし、</u>"
 "ProBowlerDescTeleport","<u>Teleport directly to the dug hole,</u>","<u>掘った穴に直接テレポートさせ、</u>"
 "SerialKillerDesc","Although the kill cooldown is shorter compared to other Impostors, if you do not perform a kill within <b>{0} seconds</b> after your first kill, you will self-destruct.","キルクールが他のインポスターに比べて短い反面、1度目のキルを行った後\n<b>{0}秒</b>以内にキルしないと自爆する。"
+"BloodlustDesc","If you don't get a kill within {0} seconds of the start of your turn, everyone will put a red star next to your name.\n The timer resets each time you start a turn or get a kill.\n The red star is not visible during the meeting.","ターン開始から<b>{0}秒</b>以内にキルを取らないと、全員から名前の横に赤い星マークがつく\nターン開始またはキルするたびにタイマーがリセットされる。\n会議中、赤い星マークは見えない"
 
 "# MadmateDescInfos"
 
@@ -1327,6 +1328,7 @@
 "MareDarkKilldistance","Electrical Killdistance","停電時のキルディスタンス"
 "PuppeteerPuppetCool","puppet enable time","パペット有効化までの時間"
 "SerialKillerLimit","Time Until Suicide","自殺までの秒数","嗜血杀手自杀倒计时","連環殺手自殺倒數","Лимит времени до Самоубийства","Tempo Para Suicídio",""
+"BloodlustTimeUntilRed","Time until name turns red","名前が赤くなるまでの時間","名字变红时限","名字變紅時限","Время до красного имени","Tempo até o nome ficar vermelho",""
 "ShapeMasterShapeshiftDuration","Shapeshift Duration","シェイプマスターの変身持続時間","千面鬼变形持续时间","變形大師變形持續時間","Продолжительность морфа","Duração da Mutação",""
 "FireWorksMaxCount","Fireworks Count","花火の所持数","烟花商人可放置烟花的最大数量","煙火工匠可設定煙火最大數量","Максимальное количество фейерверков","Número de Fogos de Artifício",""
 "FireWorksRadius","Firework BomberExplosion Radius","花火の爆発半径","烟花商人烟花爆炸半径","煙火工匠的煙火爆炸半徑","Радиус фейерверка","Alcance da Explosão",""
@@ -2352,6 +2354,8 @@
 "Archer_AbilityButton","Shot","矢を放つ"
 "EvilBlender_AbilityButton","ReleaseGas","毒ガス発生"
 "Fortuner_AbilityButton","Give","付与"
+"BloodlustAbilityTimer","Until Release","通知まで"
+"BloodlustAbilityExposed","Revealed","早くキルしろ"
 
 "## クライアント設定"
 "Close","Close","閉じる","关闭","","Закрыть","Fechar",""
