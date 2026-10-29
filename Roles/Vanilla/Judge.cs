@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using AmongUs.GameOptions;
+using Hazel;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Impostor;
@@ -24,13 +25,11 @@ public sealed class Judge : RoleBase
         player
     )
     {
-        taskrequirement = OptionTaskRequirement.GetFloat();
         LimitAbility = OptionCount.GetInt();
         Isfall = false;
     }
     int LimitAbility;
     bool Isfall;
-    static float taskrequirement;
     public static OptionItem OptionTaskRequirement;
     private static OptionItem OptionCanKillMadMate;
     private static OptionItem OptionCanKillNeutrals;
@@ -38,15 +37,35 @@ public sealed class Judge : RoleBase
     private static OptionItem OptionCount;
     public static void SetUpCustomOption()
     {
-        OptionTaskRequirement = FloatOptionItem.Create(RoleInfo, 25110, StringNames.JudgeTaskRequirement, new(0, 100, 2), 2, false);
+        OptionTaskRequirement = IntegerOptionItem.Create(RoleInfo, 25110, GeneralOption.TaskTrigger, new(0, 99, 1), 1, false)
+            .SetValueFormat(OptionFormat.Pieces);
         OptionCount = IntegerOptionItem.Create(RoleInfo, 25111, GeneralOption.OptionCount, new(1, 15, 1), 1, false);
         OptionCanKillMadMate = BooleanOptionItem.Create(RoleInfo, 25112, "MeetingSheriffCanKillMadMate", true, false);
         OptionCanKillNeutrals = BooleanOptionItem.Create(RoleInfo, 25113, "MeetingSheriffCanKillNeutrals", true, false);
         OptionCanKillLovers = BooleanOptionItem.Create(RoleInfo, 25114, "SheriffCanKillLovers", true, false);
     }
+    /// <summary>
+    /// 個数設定をバニラの達成率に変換する。
+    /// </summary>
+    public static float GetTaskRequirementPercentage(PlayerControl player)
+    {
+        var need = OptionTaskRequirement.GetInt();
+        if (need <= 0) return 0f;
+
+        var all = player == null ? -1 : PlayerState.GetByPlayerId(player.PlayerId)?.GetTaskState()?.AllTasksCount ?? -1;
+        if (all <= 0)
+        {
+            all = Main.NormalOptions.NumCommonTasks
+                + Main.NormalOptions.NumLongTasks
+                + Main.NormalOptions.NumShortTasks;
+        }
+        if (all <= 0) return 0f;
+        if (need >= all) return 100f;
+        return need * 100f / all;
+    }
     public override void ApplyGameOptions(IGameOptions opt)
     {
-        AURoleOptions.JudgeTaskRequirementPercentage = taskrequirement;
+        AURoleOptions.JudgeTaskRequirementPercentage = GetTaskRequirementPercentage(Player);
     }
     public override bool CallJudgeVote(PlayerControl voter, PlayerControl votefor, ref byte ExilePlayerid)
     {
@@ -77,6 +96,7 @@ public sealed class Judge : RoleBase
             Isfall = true;
             ExilePlayerid = voter.PlayerId;
         }
+        SendRpc();
         return true;
     }
     public override void OnExileWrapUp(NetworkedPlayerInfo exiled, ref bool DecidedWinner)
@@ -113,4 +133,13 @@ public sealed class Judge : RoleBase
         return false;
     }*/
     public override string GetProgressText(bool comms = false, bool GameLog = false) => $" <{(0 < LimitAbility ? RoleInfo.RoleColorCode : "#828282")}>({LimitAbility})</color>";
+    void SendRpc()
+    {
+        using var sender = CreateSender();
+        sender.Writer.Write(LimitAbility);
+    }
+    public override void ReceiveRPC(MessageReader reader)
+    {
+        LimitAbility = reader.ReadInt32();
+    }
 }
