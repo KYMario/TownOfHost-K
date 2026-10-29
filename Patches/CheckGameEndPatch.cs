@@ -257,7 +257,7 @@ namespace TownOfHost
             }
 
             // 蘇生を確実にゴーストロール設定の後に届けるための遅延
-            yield return new WaitForSeconds(EndGameDelay);
+            yield return WaitEndGameDelay;
 
             if (ReviveRequiredPlayerIds.Count > 0)
             {
@@ -273,9 +273,9 @@ namespace TownOfHost
                 RPC.RpcSyncAllNetworkedPlayer();
                 GameDataSerializePatch.SerializeMessageCount--;
                 // ゲーム終了を確実に最後に届けるための遅延
-                yield return new WaitForSeconds(EndGameDelay);
+                yield return WaitEndGameDelay;
             }
-            yield return new WaitForSeconds(EndGameDelay);
+            yield return WaitEndGameDelay;
             //ちゃんとバニラに試合結果表示させるための遅延
             try
             {
@@ -286,7 +286,7 @@ namespace TownOfHost
                 Logger.Exception(ex, "SetRoleSummaryText");
                 Logger.seeingame("非クライアントへのアウトロテキスト生成中にエラーが発生しました。");
             }
-            yield return new WaitForSeconds(EndGameDelay);
+            yield return WaitEndGameDelay;
 
             // ゲーム終了
             GameManager.Instance.RpcEndGame(reason, false);
@@ -358,6 +358,7 @@ namespace TownOfHost
                 }
             }
         }
+        private static WaitForSeconds WaitEndGameDelay => new(EndGameDelay);
         private const float EndGameDelay = 0.2f;
 
         private static void EnsurePredicate()

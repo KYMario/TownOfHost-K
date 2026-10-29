@@ -272,7 +272,7 @@ class CheckGetNomalAchievement
                 }
             }
 
-            if (PlayerCatch.AllPlayerControls.Any(pc => pc.GetCustomRole().IsE() || pc.GetCustomRole() is CustomRoles.Cakeshop))
+            if (PlayerCatch.AllPlayerControls.Any(pc => pc.GetCustomRole() is CustomRoles.Cakeshop))
             {
                 PlayerCatch.AllPlayerControls.Do(pc =>
                 {

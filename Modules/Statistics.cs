@@ -260,7 +260,6 @@ namespace TownOfHost
             foreach (var roledata in Statistics.NowStatistics.Rolecount.OrderBy(x => x.Key))
             {
                 if (roledata.Value.Item1 == roledata.Value.Item2 && roledata.Value.Item2 == 0) continue;
-                if (roledata.Key.IsE()) continue;
                 if (!Event.CheckRole(roledata.Key)) continue;
 
                 role += i % 2 == 0 ? $"\n{GetRoleColorAndtext(roledata.Key)}：{roledata.Value.Item2}/{roledata.Value.Item1}<size=30%>({Getpercent(roledata.Value.Item2, roledata.Value.Item1)})</size>"

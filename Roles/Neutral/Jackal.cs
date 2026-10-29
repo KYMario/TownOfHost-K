@@ -20,7 +20,7 @@ namespace TownOfHost.Roles.Neutral
                 SetupOptionItem,
                 "jac",
                 "#00b4eb",
-                (1, 0),
+                (0, 0),
                 true,
                 countType: CountTypes.Jackal,
                 assignInfo: new RoleAssignInfo(CustomRoles.Jackal, CustomRoleTypes.Neutral)
