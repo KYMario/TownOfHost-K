@@ -20,7 +20,8 @@ public sealed class Eraser : RoleBase, IImpostor, IUsePhantomButton
             5700,
             SetupOptionItem,
             "Er",
-            OptionSort: (6, 3)
+            OptionSort: (6, 3),
+            from: From.TheOtherRoles
         );
     public Eraser(PlayerControl player)
     : base(
