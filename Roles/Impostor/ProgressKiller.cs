@@ -27,17 +27,22 @@ public sealed class ProgressKiller : RoleBase, IImpostor
     )
     {
         RequiredKillCount = OptionRequiredKillCount.GetInt();
+        HideTaskTotal = OptionHideTaskTotal.GetBool();
     }
     public static OptionItem OptionRequiredKillCount;
+    public static OptionItem OptionHideTaskTotal;
     enum OptionName
     {
         ProgressKillerRequiredKillCount,
+        ProgressKillerHideTaskTotal,
     }
     public static int RequiredKillCount;
+    public static bool HideTaskTotal;
     private static void SetupOptionItem()
     {
         OptionRequiredKillCount = IntegerOptionItem.Create(RoleInfo, 12, OptionName.ProgressKillerRequiredKillCount, new(0, 15, 1), 1, false)
             .SetValueFormat(OptionFormat.Times);
+        OptionHideTaskTotal = BooleanOptionItem.Create(RoleInfo, 13, OptionName.ProgressKillerHideTaskTotal, false, false);
     }
     public override bool NotifyRolesCheckOtherName => true;
     public bool CanSeeTaskProgress()
@@ -58,6 +63,18 @@ public sealed class ProgressKiller : RoleBase, IImpostor
         enabled = true;
         var comms = Utils.IsActive(SystemTypes.Comms);
         text = UtilsRoleText.GetTaskProgressText(seen.PlayerId, comms, false);
+        if (HideTaskTotal)
+            text = HideTaskTotalCount(text);
+    }
+    /// <summary>所持数を隠してみた。完了数と完了色はそのまま。</summary>
+    static string HideTaskTotalCount(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        var open = text.IndexOf('(');
+        var slash = text.IndexOf('/', open + 1);
+        var close = text.IndexOf(')', slash + 1);
+        if (open < 0 || slash < 0 || close < 0) return text;
+        return text[..slash] + text[close..];
     }
     public override string GetProgressText(bool comms = false, bool gamelog = false)
     {

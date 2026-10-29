@@ -1417,6 +1417,7 @@
 "LimiterLimitMeeting","limitmode CallMeeting Not Bom","自爆モード中に会議が発生しても自爆しない"
 "ProgressKillerMadseen","Can see Task completed MadMate","タスクを終えたマッドメイト系役職が分かる"
 "ProgressKillerRequiredKillCount","Kill Count To See Tasks","タスク表示に必要なキル数"
+"ProgressKillerHideTaskTotal","Hide Task Total Count","タスクの所持数を見えない"
 "ProgressWorkhorseseen","Can see Workhorse","ワークホースのプレイヤーが分かる"
 "DecrescendoDecKillCount","Number of kills where weakening begins","弱化が始まるキル数"
 "DecrescendoMaxKillcooldown","max killcooldown","キルクールの最大値"
