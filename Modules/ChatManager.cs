@@ -305,7 +305,6 @@ namespace TownOfHost.Modules.ChatManager
                 {
                     //苦肉の応急手当。一瞬だけホスト復活
                     Main.MessagesToSend.RemoveAt(0);
-                    var Ischatopen = HudManager.Instance?.Chat?.IsOpenOrOpening ?? false;
                     senderplayer = PlayerControl.LocalPlayer;
                     name = senderplayer.Data.GetLogPlayerName();
                     // ホスト視点でのチャット送信

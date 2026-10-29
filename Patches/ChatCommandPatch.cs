@@ -793,7 +793,7 @@ namespace TownOfHost
                         if (args.Length > 1 && float.TryParse(args[1], out var fl))
                         {
                             if (fl <= 0) fl = 0.00000000000000001f;
-                            Main.NormalOptions.TryCast<NormalGameOptionsV11>().SetFloat(FloatOptionNames.KillCooldown, fl);
+                            Main.NormalOptions.SetFloat(FloatOptionNames.KillCooldown, fl);
                         }
                         GameOptionsSender.RpcSendOptions();
                         try

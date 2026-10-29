@@ -37,7 +37,7 @@ namespace TownOfHost.Roles.AddOns.Impostor
         public static OptionItem GivePowerful;
         public static void SetupCustomOption()
         {
-            SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.LastImpostor, new(1, 1, 1), fromtext: "<color=#000000>From:</color><color=#00bfff>TownOfHost</color></size>");
+            SetupRoleOptions(Id, TabGroup.Addons, CustomRoles.LastImpostor, new(1, 1, 1), fromtext: UtilsOption.GetFrom(From.TownOfHost));
             GiveKillCooldown = StringOptionItem.Create(Id + 7, "Givekillcoondown", Givekillcooldownmode, 3, TabGroup.Addons, false).SetParentRole(CustomRoles.LastImpostor).SetParent(CustomRoleSpawnChances[CustomRoles.LastImpostor]);
             KillCooldown = FloatOptionItem.Create(Id + 8, "KillCooldown", new(0f, 180f, 1f), 15f, TabGroup.Addons, false).SetParentRole(CustomRoles.LastImpostor).SetParent(GiveKillCooldown)
                 .SetValueFormat(OptionFormat.Seconds);

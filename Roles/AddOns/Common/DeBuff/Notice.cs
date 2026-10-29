@@ -9,7 +9,7 @@ namespace TownOfHost.Roles.AddOns.Common
     {
         private static readonly int Id = 25600;
         private static readonly Color RoleColor = UtilsRoleText.GetRoleColor(CustomRoles.Notice);
-        public static string SubRoleMark = Utils.ColorString(RoleColor, "Ｎo");
+        public static string SubRoleMark = Utils.ColorString(RoleColor, "No");
 
         private static OptionItem OptionTellTeam;
         private static OptionItem OptionTellEveryone;

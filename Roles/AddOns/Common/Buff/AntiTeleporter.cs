@@ -10,7 +10,7 @@ namespace TownOfHost.Roles.AddOns.Common
     {
         private static readonly int Id = 25700;
         private static readonly Color RoleColor = UtilsRoleText.GetRoleColor(CustomRoles.AntiTeleporter);
-        public static string SubRoleMark = Utils.ColorString(RoleColor, "t");
+        public static string SubRoleMark = Utils.ColorString(RoleColor, "＠");
         private static Dictionary<byte, Vector2> MeetingStartPositions = new();
         private static Dictionary<byte, Vector2> PendingAirshipReturns = new();
 

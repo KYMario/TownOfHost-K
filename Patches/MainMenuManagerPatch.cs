@@ -417,7 +417,8 @@ namespace TownOfHost
             CreateStreameMenu.CloseMenu();
             _ = new LateTask(() =>
             {
-                __instance.ejectMenu?.ejectButton?.gameObject?.SetActive(true);
+                if (__instance?.ejectMenu?.ejectButton?.gameObject is not null)
+                    __instance?.ejectMenu?.ejectButton?.gameObject?.SetActive(true);
             }, 0.5f, "ShowButton", true);
         }
         public static void DestroyButton()

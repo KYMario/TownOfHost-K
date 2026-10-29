@@ -60,6 +60,10 @@ class ToolTip
         if (delay <= 0) delay = defaultdelay;
         yield return new WaitForSeconds(delay);
 
+        if (GameStates.IsNotJoined is false && DestroyableSingleton<HudManager>.Instance?.TaskPanel?.taskText?.font is not null)
+        {
+            button.Label.font = DestroyableSingleton<HudManager>.Instance.TaskPanel.taskText.font;
+        }
         button.Label.text = text;
         button.Label.alignment = TMPro.TextAlignmentOptions.TopLeft;
         button.Label.ForceMeshUpdate(true);

@@ -327,7 +327,7 @@ namespace TownOfHost
                         mark = $" {UtilsRoleText.GetSubRoleMarks(list, CustomRoles.NotAssigned)}";
                     }
                 }
-                opt.TitleText.text = size + "<b>" + GetName(isoption: true) + mark + Fromtext + "</b></size>";
+                opt.TitleText.text = size + "<b>" + GetName(isoption: true) + "　" + mark + Fromtext + "</b></size>";
                 opt.ValueText.text = GetString();
                 opt.oldValue = opt.Value = CurrentValue;
             }

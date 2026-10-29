@@ -110,7 +110,7 @@ namespace TownOfHost
 
                         if (tag == null) continue;
                         //動かないバージョンに切り替えれないようにするための応急手当。.31になる頃には消す。
-                        if (!tag.Contains($"{Main.ModVersion}") || tag.Contains(".32.1") || tag.Contains(".32.2") || tag.Contains(".32.3") || tag.Contains(".32.4") || tag.Contains(".30.51")) continue;//そのバージョンの奴じゃないなら除外
+                        if (!tag.Contains($"{Main.ModVersion}")) continue;//そのバージョンの奴じゃないなら除外
                         if (tag.StartsWith("5.") || tag.StartsWith("S5.") || tag.StartsWith("s5.") || tag.Contains("519.") || tag.Contains("S519.")) continue;//今の表記は519とかなので5.1.x表示ならもう表示しない
 
                         snapshots.Add(release);

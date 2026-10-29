@@ -26,7 +26,7 @@ class AddondataInfo
                 CustomRoles.Guarding => "ζ",
                 CustomRoles.Management => "θ",
                 CustomRoles.Opener => "п",
-                CustomRoles.AntiTeleporter => "t",
+                CustomRoles.AntiTeleporter => "＠",
                 CustomRoles.Seeing => "☯",
                 CustomRoles.Lighting => "＊",
                 CustomRoles.Moon => "э",
