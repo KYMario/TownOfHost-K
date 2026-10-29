@@ -42,7 +42,7 @@ class AddondataInfo
                 CustomRoles.Clumsy => "Ｃ",
                 CustomRoles.Slacker => "ＳＬ",
                 CustomRoles.News => "Ｎ",
-                CustomRoles.Notice => "Ｎo",
+                CustomRoles.Notice => "Ｎо",
                 CustomRoles.Sunglasses => "Ｓ",
                 _ => ""
             };
@@ -93,7 +93,7 @@ class AddondataInfo
                     {CustomRoles.Powerful , "#f08e39"},
                     {CustomRoles.Stack , "#b55f47"},
                     {CustomRoles.Absorb,"#434981"},
-                    {CustomRoles.AntiTeleporter,"#ff1919"},
+                    {CustomRoles.AntiTeleporter,"#793838"},
                     //デバフ
                     { CustomRoles.NonReport,"#006666"},
                     {CustomRoles.Notvoter,"#6c848d"},
@@ -106,7 +106,7 @@ class AddondataInfo
                     {CustomRoles.SlowStarter,"#ff00ff"},
                     {CustomRoles.InfoPoor ,"#555647"},
                     {CustomRoles.News, "#828282"},
-                    {CustomRoles.Notice, "#c48cff"},
+                    {CustomRoles.Notice, "#33455e"},
                     {CustomRoles.Sunglasses , "#2e103d"},
 
                     //第三属性

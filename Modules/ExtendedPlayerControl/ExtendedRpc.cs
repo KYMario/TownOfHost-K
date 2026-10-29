@@ -12,7 +12,6 @@ using TownOfHost.Roles.Core.Interfaces;
 using static TownOfHost.ExtendedPlayerControl;
 
 using static TownOfHost.Translator;
-using Rewired;
 
 namespace TownOfHost
 {
@@ -58,6 +57,8 @@ namespace TownOfHost
                             NameColorManager.Add(player.PlayerId, imp.Key, "ff1919");
                         }
                 }
+                if (role is CustomRoles.SKMadmate)
+                    NameColorManager.RevealSKMadmateToImpostors(player);
             }
             else if (role >= CustomRoles.NotAssigned)   //500:NoSubRole 501~:SubRole
             {

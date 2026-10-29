@@ -1508,6 +1508,7 @@
 "CanMakeMadmateCount","Sidekick Madmate Max Count","サイドキックマッドメイト","变形者可以招募叛徒的数量","變形者招募叛徒最大人數","Максимум союзников Безумца","Máximo de Tripulantes Loucos Ajudantes",""
 "MadSnitchTasks","Mad Snitch Tasks","マッドスニッチのタスク数","背叛的告密者任务数","背叛告密者任務數量","Задания Безумного Стукача","Tarefas do Dedo-Duro Louco",""
 "MadSnitchCanAlsoBeExposedToImpostor","Known to Impostors","インポスターからも視認できる","对内鬼同样可见","對偽裝者同樣可見","Также не защищен от Предателей","Visível Para Impostor",""
+"MadSnitchExposedTaskTrigger","Tasks Until Known to Impostors","インポスターが視認できるようになるタスク数"
 "MadGuardianCanSeeWhoTriedToKill","Can See Attempted Murderer","自身の殺害未遂者を知ることができる","背叛的守卫可以得知尝试对其击杀的玩家","背叛天使可以看到是誰嘗試殺害自己","Может видеть кто пытался его убить","Pode Ver Quem Tentou Matar",""
 "MadReduecdVote","reduced Vote","減少する投票数"
 "MadAvengerMeetingPlayerCount","Minimum number of people required for revolutionary meetings","革命会議に必要な最低人数"

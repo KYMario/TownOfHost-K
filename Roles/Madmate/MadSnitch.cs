@@ -34,6 +34,7 @@ public sealed class MadSnitch : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
 
         canAlsoBeExposedToImpostor = OptionCanAlsoBeExposedToImpostor.GetBool();
         TaskTrigger = OptionTaskTrigger.GetInt();
+        ExposedTaskTrigger = OptionExposedTaskTrigger.GetInt();
 
         MyTaskState.NeedTaskCount = OptionTaskTrigger.GetInt();
         CustomRoleManager.MarkOthers.Add(GetMarkOthers);
@@ -41,23 +42,30 @@ public sealed class MadSnitch : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
 
     private static OptionItem OptionCanVent;
     private static OptionItem OptionCanAlsoBeExposedToImpostor;
-    /// <summary>能力発動タスク数</summary>
+    /// <summary>マッドスニッチがインポスターを知るタスク数</summary>
     private static OptionItem OptionTaskTrigger;
+    /// <summary>インポスターがマッドスニッチを視認するタスク数。0ならKnowsImpostorと同じタイミング</summary>
+    ///こちらも実装するかは要相談 こちらも夜藍に任せようかな()
+    private static OptionItem OptionExposedTaskTrigger;
     private static OverrideTasksData Tasks;
     enum OptionName
     {
-        MadSnitchCanAlsoBeExposedToImpostor
+        MadSnitchCanAlsoBeExposedToImpostor,
+        MadSnitchExposedTaskTrigger,
     }
 
     private static bool canSeeKillFlash;
     private static bool canSeeDeathReason;
     private static bool canAlsoBeExposedToImpostor;
     private static int TaskTrigger;
+    private static int ExposedTaskTrigger;
 
     public static void SetupOptionItem()
     {
         OptionCanVent = BooleanOptionItem.Create(RoleInfo, 10, GeneralOption.CanVent, false, false);
         OptionCanAlsoBeExposedToImpostor = BooleanOptionItem.Create(RoleInfo, 11, OptionName.MadSnitchCanAlsoBeExposedToImpostor, false, false);
+        OptionExposedTaskTrigger = IntegerOptionItem.Create(RoleInfo, 13, OptionName.MadSnitchExposedTaskTrigger, new(0, 99, 1), 0, false, OptionCanAlsoBeExposedToImpostor)
+            .SetValueFormat(OptionFormat.Pieces);
         OptionTaskTrigger = IntegerOptionItem.Create(RoleInfo, 12, GeneralOption.TaskTrigger, new(0, 99, 1), 1, false).SetValueFormat(OptionFormat.Pieces);
         Tasks = OverrideTasksData.Create(RoleInfo, 20);
         RoleAddAddons.Create(RoleInfo, 25);
@@ -66,6 +74,16 @@ public sealed class MadSnitch : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
     private bool KnowsImpostor()
     {
         return MyTaskState.HasCompletedEnoughCountOfTasks(TaskTrigger);
+    }
+    /// <summary>
+    /// インポスターからマッドスニッチを視認できるか。
+    /// 視認タスク数が0なら、マッドスニッチがインポスターを知ったタイミング（従来仕様）。
+    /// </summary>
+    private bool IsExposedToImpostor()
+    {
+        if (!canAlsoBeExposedToImpostor) return false;
+        if (ExposedTaskTrigger <= 0) return KnowsImpostor();
+        return MyTaskState.HasCompletedEnoughCountOfTasks(ExposedTaskTrigger);
     }
     private void CheckAndAddNameColorToImpostors()
     {
@@ -98,8 +116,8 @@ public sealed class MadSnitch : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
             seer.Is(CustomRoles.WolfBoy) ||
 
             seen.GetRoleClass() is not MadSnitch madSnitch ||
-            // マッドスニッチがまだインポスターを知らない
-            !madSnitch.KnowsImpostor())
+            // インポスター側の視認に必要なタスクをまだ完了していない
+            !madSnitch.IsExposedToImpostor())
         {
             return string.Empty;
         }

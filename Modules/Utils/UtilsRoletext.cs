@@ -53,6 +53,7 @@ namespace TownOfHost
                         || (Main.VisibleTasksCount && !seer.Is(CustomRoles.AsistingAngel) && !seer.IsAlive() && (!seer.IsGhostRole() || Options.GhostRoleCanSeeOtherRoles.GetBool()) && (Options.GhostCanSeeOtherRoles.GetBool() || !Options.GhostOptions.GetBool()))
                         || (Options.InsiderMode.GetBool() && seerrole.IsImpostor())
                         || (Options.CanSeeImpostorRole.GetBool() && seerrole.IsImpostor() && seen.GetCustomRole().IsImpostor())
+                        || (Options.ImpostorCanSeeSKMadmate.GetBool() && seerrole.IsImpostor() && seen.Is(CustomRoles.SKMadmate))
                         || seen.Is(CustomRoles.MadonnaLovers) && seer.Is(CustomRoles.MadonnaLovers) && Madonna.IsKnowRole
                         ;
 
