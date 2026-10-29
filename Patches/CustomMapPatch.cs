@@ -10,6 +10,7 @@ using HarmonyLib;
 using TownOfHost.Attributes;
 using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
+using TownOfHost.Roles.Core.Interfaces;
 using UnityEngine;
 
 namespace TownOfHost;

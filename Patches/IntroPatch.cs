@@ -10,6 +10,7 @@ using TownOfHost.Modules;
 using TownOfHost.Roles.Core;
 using TownOfHost.Roles.Impostor;
 using static TownOfHost.Translator;
+using TownOfHost.Roles.Core.Interfaces;
 
 namespace TownOfHost
 {
