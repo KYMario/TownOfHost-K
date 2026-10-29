@@ -44,6 +44,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     static OptionItem OptionBlackVision;
     static OptionItem OptionMeetingTargetReset;
     static OptionItem OptionCanSeeKillflash;
+    static OptionItem OptionCanGuessOtherReport;
     static OptionItem OptionCriminalprofile;
     List<byte> Suspects;
     bool SuspectsSearch;
@@ -62,7 +63,8 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
         MassMediaShikai,
         MassMediaMeetingTargetReset,
         MassMediaCanSeeKillflash,
-        MassMediaCriminalprofile
+        MassMediaCriminalprofile,
+        MassMediaCanGuessOtherReport
     }
     public override void Add()
     {
@@ -89,6 +91,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
         OptionBlackVision = FloatOptionItem.Create(RoleInfo, 11, Option.MassMediaShikai, new(0f, 0.20f, 0.02f), 0.04f, false)
                 .SetValueFormat(OptionFormat.Multiplier);
         OptionMeetingTargetReset = BooleanOptionItem.Create(RoleInfo, 12, Option.MassMediaMeetingTargetReset, false, false);
+        OptionCanGuessOtherReport = BooleanOptionItem.Create(RoleInfo, 15, Option.MassMediaCanGuessOtherReport, true, false);
         OptionCanSeeKillflash = BooleanOptionItem.Create(RoleInfo, 13, Option.MassMediaCanSeeKillflash, false, false);
         OptionCriminalprofile = BooleanOptionItem.Create(RoleInfo, 14, Option.MassMediaCriminalprofile, false, false);
     }
@@ -104,7 +107,6 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
         var Mieruhani = Main.DefaultCrewmateVision;
         if (player.Is(CustomRoles.Lighting)) Mieruhani = Main.DefaultImpostorVision;
         if (player.Is(CustomRoles.Sunglasses)) Mieruhani *= Sunglasses.SunglassesVisionmagnification.GetFloat() * 0.01f;
-
 
         Mieruhani *= 6.5f;
         //position
@@ -178,14 +180,17 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     }
     public override void OnReportDeadBody(PlayerControl repo, NetworkedPlayerInfo tg)
     {
-        if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
-        if (Is(repo) && Player.Is(CustomRoles.MassMedia))//自分が通報したならチャンスだよ!!
+        if (Amnesia.CheckAbilityreturn(Player)) return;
+        if (tg != null && tg.PlayerId == Targetid)
         {
-            //死体通報なら～
-            if (tg != null && tg.PlayerId == Targetid)
+            if (Is(repo) && Player.Is(CustomRoles.MassMedia))
             {
                 GuessMode = true;
                 Achievements.RpcCompleteAchievement(Player.PlayerId, 0, achievements[0]);
+            }
+            else if (OptionCanGuessOtherReport.GetBool())
+            {
+                GuessMode = true;
             }
         }
         //リセット
@@ -202,7 +207,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     public override string GetMark(PlayerControl seer, PlayerControl seen = null, bool isForMeeting = false)
     {
         seen ??= seer;
-        if (isForMeeting && Suspects.Contains(seen.PlayerId))
+        if (isForMeeting && GuessMode && Suspects.Contains(seen.PlayerId))
         {
             return "<#512513>〇</color>";
         }
@@ -265,7 +270,7 @@ public sealed class MassMedia : RoleBase, IKiller, IKillFlashSeeable
     }
     public override void AfterMeetingTasks()
     {
-        if (AddOns.Common.Amnesia.CheckAbilityreturn(Player)) return;
+        if (Amnesia.CheckAbilityreturn(Player)) return;
         if (Win && AmongUsClient.Instance.AmHost)
         {
             if (CustomWinnerHolder.ResetAndSetAndChWinner(CustomWinner.MassMedia, Player.PlayerId, true))
