@@ -1504,6 +1504,7 @@
 "MadmateVentMaxTime","Max Vent Duration","ベント内での最大時間","叛徒系职业在管道中停留的最大时间","叛徒職業的玩家在管道中可以停留的最大時間","Время использования вентиляции Безумцев","Tempo Máximo de Loucos nos Dutos",""
 "MadmateCanMovedByVent","Can be moved by vent","ベント移動ができる"
 "SkMadCanUseVent","sidekickmadmate can use vent","ベントを使える"
+"ImpostorCanSeeSKMadmate","Impostors can identify Sidekick Madmate","インポスターがサイドキックマッドメイトを識別できる"
 "CanMakeMadmateCount","Sidekick Madmate Max Count","サイドキックマッドメイト","变形者可以招募叛徒的数量","變形者招募叛徒最大人數","Максимум союзников Безумца","Máximo de Tripulantes Loucos Ajudantes",""
 "MadSnitchTasks","Mad Snitch Tasks","マッドスニッチのタスク数","背叛的告密者任务数","背叛告密者任務數量","Задания Безумного Стукача","Tarefas do Dedo-Duro Louco",""
 "MadSnitchCanAlsoBeExposedToImpostor","Known to Impostors","インポスターからも視認できる","对内鬼同样可见","對偽裝者同樣可見","Также не защищен от Предателей","Visível Para Impostor",""

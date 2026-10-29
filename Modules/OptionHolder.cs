@@ -121,6 +121,7 @@ namespace TownOfHost
         public static OptionItem DefaultEngineerInVentMaxTime;
         public static OptionItem CanMakeMadmateCount;
         public static OptionItem SkMadCanUseVent;
+        public static OptionItem ImpostorCanSeeSKMadmate;
         public static OptionItem MadMateOption;
         public static OptionItem MadmateCanSeeKillFlash;
         public static OptionItem MadmateCanSeeDeathReason;
@@ -714,6 +715,9 @@ namespace TownOfHost
                 .SetColor(Palette.ImpostorRed);
             SkMadCanUseVent = BooleanOptionItem.Create(102001, "SkMadCanUseVent", false, TabGroup.MadmateRoles, false)
                 .SetParent(CanMakeMadmateCount);
+            ImpostorCanSeeSKMadmate = BooleanOptionItem.Create(102020, "ImpostorCanSeeSKMadmate", false, TabGroup.MadmateRoles, false)
+                .SetParent(CanMakeMadmateCount)
+                .SetColor(Palette.ImpostorRed);
             MadMateOption = BooleanOptionItem.Create(102002, "MadmateOption", false, TabGroup.MadmateRoles, false)
                 .SetHeader(true)
                 .SetColorcode("#ffa3a3");
@@ -1259,7 +1263,7 @@ namespace TownOfHost
                     case CustomRoles.Noisemaker: id = 350; break;
                     case CustomRoles.Detective: id = 23100; break;
                     case CustomRoles.Judge: id = 25100; break;
-                        //case CustomRoles. : id = 25150;break; 
+                        //case CustomRoles. : id = 25150;break;
                 }
             }
             assignCountRule ??= new(1, 15, 1);
