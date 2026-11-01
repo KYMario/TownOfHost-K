@@ -311,7 +311,7 @@ namespace TownOfHost
             winnerList ??= Main.winnerList;
 
             if (!(CustomWinnerHolder.WinnerTeam is CustomWinner.None or CustomWinner.Draw))
-                sb.Append($"{GetString("TaskPlayerB")}:\n　{Main.AllPlayerNames[winnerList[0]] ?? "?"}");
+                sb.Append($"{GetString("TaskPlayerB")}:\n　{Main.AllPlayerNames.GetValueOrDefault(TaskBattle.RTAPlayerId, "?")}");
 
             sb.Append($"\n{GetString("TaskCount")}:")
             .Append($"\n　{GetString(StringNames.GameCommonTasks)}: {Main.NormalOptions.NumCommonTasks}{$"{(AddCommon > 0 ? $"+ {AddCommon} * {TaskBattle.MaxAddCount.GetInt()}" : "")}"}")
