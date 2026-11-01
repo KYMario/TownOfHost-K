@@ -38,13 +38,12 @@ namespace TownOfHost
             if (!GameStates.IsModHost) return;
             if (__instance == null) return;
 
-            if (TaskBattle.IsRTAMode && GameStates.IsInTask && GameStates.introDestroyed)
+            if (Options.CurrentGameMode is CustomGameMode.TaskBattle && GameStates.InGame && GameStates.IsInTask && GameStates.introDestroyed)
             {
-                TaskBattle.FixedUpdate(__instance);
-            }
-            if (Options.CurrentGameMode is CustomGameMode.TaskBattle && player.PlayerId == PlayerControl.LocalPlayer.PlayerId && GameStates.IsInTask && GameStates.introDestroyed)
-            {
-                TaskBattle.timer += Time.deltaTime;
+                if (TaskBattle.IsRTAMode)
+                    TaskBattle.FixedUpdate(__instance);
+                if (player.PlayerId == PlayerControl.LocalPlayer.PlayerId)
+                    TaskBattle.timer += Time.deltaTime;
             }
 
             TargetArrow.OnFixedUpdate(player);
