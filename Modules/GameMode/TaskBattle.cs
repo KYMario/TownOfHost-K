@@ -161,6 +161,7 @@ class TaskBattle
 
     public static void FixedUpdate(PlayerControl player)
     {
+        if (CustomWinnerHolder.WinnerTeam is not CustomWinner.Default) return;
         if (RTAPlayerId != byte.MaxValue && RTAPlayerId == player.PlayerId)
         {
             HudManagerPatch.LowerInfoText.enabled = true;
