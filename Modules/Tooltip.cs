@@ -98,9 +98,9 @@ class ToolTip
     {
         button?.Button?.StopAllCoroutines();
         button?.Button?.gameObject?.SetActive(false);
-
-        if (coTimer != null) obj?.StopCoroutine(coTimer);
-        coTimer = null;
+        //エラーがでた場合は無視してnullにする
+        try { if (coTimer != null) obj?.StopCoroutine(coTimer); }
+        finally { coTimer = null; }
         button?.Button?.gameObject?.SetActive(false); //念のため
     }
 
