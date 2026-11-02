@@ -179,7 +179,7 @@ namespace TownOfHost
                         "Bakery" => "お菓子作りのパン屋",
                         "BakeryInfo" => "今日はパンじゃなくてお菓子だよ！",
                         "ChefInfo" => "パン屋とお菓子作りに苦戦中..",
-                        "TaskPlayerBInfo" => "タスクを誰よりも早く済ませ人にはお菓子が！？",
+                        "TaskPlayerBInfo" => "タスクを誰よりも早く済ませた人にはお菓子が！？",
                         "Message.Bakery1" => "ハッピーハロウィン！ パン屋がお菓子を作ったよ！",
                         "SuddenDeathIntro" => "お菓子は全て我が頂くのだ",
                         "WolfBoyInfo" => "仮装だよ!!仲間だよっ!!",
