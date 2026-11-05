@@ -42,7 +42,7 @@ namespace TownOfHost.Roles.AddOns.Common
             {
                 if (pc == null || !pc.Is(CustomRoles.AntiTeleporter)) continue;
                 if (IsUsingUnsafeTransport(pc)) continue;
-                MeetingStartPositions[pc.PlayerId] = pc.GetTruePosition();
+                MeetingStartPositions[pc.PlayerId] = pc.transform.position;
             }
         }
 
@@ -94,48 +94,100 @@ namespace TownOfHost.Roles.AddOns.Common
 
         private static void ReturnPlayer(PlayerControl pc, Vector2 position)
         {
-            var safePosition = GetSafeReturnPosition(position);
-            pc.RpcSnapToForced(safePosition);
+            pc.RpcSnapToForced(GetSafeReturnPosition(position));
         }
 
-        private static Vector2 GetSafeReturnPosition(Vector2 basePosition)
+        public static Vector2 GetSafeReturnPosition(Vector2 basePosition)
         {
-            foreach (var candidate in EnumerateCandidatePositions(basePosition))
+            var start = PushAwayFromMeetingTable(basePosition);
+            foreach (var candidate in EnumerateCandidatePositions(start))
             {
                 if (!IsBlocked(candidate)) return candidate;
             }
 
-            return basePosition + new Vector2(0f, 0.75f);
+            return start + Vector2.down * 0.9f;
+        }
+
+        private static Vector2 PushAwayFromMeetingTable(Vector2 position)
+        {
+            if (!TryGetMeetingTable(out var center, out var radius)) return position;
+            var offset = position - center;
+            if (offset.magnitude >= radius) return position;
+            if (offset.sqrMagnitude < 0.0001f) offset = Vector2.down;
+            return center + offset.normalized * radius;
+        }
+
+        private static bool TryGetMeetingTable(out Vector2 center, out float radius)
+        {
+            center = default;
+            radius = 0f;
+            var button = ShipStatus.Instance?.EmergencyButton;
+            if (button == null) return false;
+
+            center = button.transform.position;
+            radius = 1.35f;
+
+            Bounds? bounds = null;
+            foreach (var collider in button.GetComponentsInChildren<Collider2D>(true))
+            {
+                if (collider == null || !collider.enabled) continue;
+                if (bounds == null) bounds = collider.bounds;
+                else
+                {
+                    var b = bounds.Value;
+                    b.Encapsulate(collider.bounds);
+                    bounds = b;
+                }
+            }
+            if (bounds != null)
+            {
+                center = bounds.Value.center;
+                radius = Mathf.Max(radius, Mathf.Max(bounds.Value.extents.x, bounds.Value.extents.y) + 0.4f);
+                radius = Mathf.Min(radius, 1.8f);
+            }
+            return true;
         }
 
         private static IEnumerable<Vector2> EnumerateCandidatePositions(Vector2 basePosition)
         {
-            yield return basePosition + new Vector2(0f, 0.1f);
+            yield return basePosition;
 
             var directions = new[]
             {
+                Vector2.down,
                 Vector2.up,
                 Vector2.right,
                 Vector2.left,
-                Vector2.down,
                 new Vector2(1f, 1f).normalized,
                 new Vector2(-1f, 1f).normalized,
                 new Vector2(1f, -1f).normalized,
                 new Vector2(-1f, -1f).normalized,
             };
 
-            var radii = new[] { 0.2f, 0.35f, 0.5f, 0.65f, 0.8f };
+            var radii = new[] { 0.25f, 0.45f, 0.7f, 1.0f, 1.3f, 1.6f };
             foreach (var radius in radii)
             {
                 foreach (var direction in directions)
                 {
-                    yield return basePosition + new Vector2(0f, 0.1f) + (direction * radius);
+                    yield return basePosition + (direction * radius);
                 }
             }
         }
 
         private static bool IsBlocked(Vector2 position)
-            => Physics2D.OverlapCircle(position, 0.18f, Constants.ShipAndAllObjectsMask) != null;
+        {
+            const float playerRadius = 0.28f;
+            foreach (var collider in Physics2D.OverlapCircleAll(position, playerRadius, Constants.ShipAndAllObjectsMask))
+            {
+                if (collider == null || !collider.enabled) continue;
+                if (collider.isTrigger) continue;
+                if (collider.GetComponentInParent<PlayerControl>() != null) continue;
+                if (collider.GetComponentInParent<DeadBody>() != null) continue;
+                if (collider.GetComponentInParent<Vent>() != null) continue;
+                return true;
+            }
+            return false;
+        }
 
         private static bool IsUsingUnsafeTransport(PlayerControl pc)
         {
