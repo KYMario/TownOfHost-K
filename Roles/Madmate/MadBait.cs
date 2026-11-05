@@ -74,21 +74,22 @@ public sealed class MadBait : RoleBase, IKillFlashSeeable, IDeathReasonSeeable
         var killerrole = killer.GetCustomRole();
         if (!target.Is(CustomRoles.MadBait) || info.IsSuicide) return;
 
-        //インポスター以外のキル
+        //インポスター以外のキルならキルした本人にセルフレポートさせる
         if (!killerrole.IsImpostor() || killerrole == CustomRoles.WolfBoy)
         {
             _ = new LateTask(() =>
-                ReportDeadBodyPatch.ExReportDeadBody(Player, target.Data)
+                ReportDeadBodyPatch.ExReportDeadBody(killer, target.Data, false)
                 , 0.15f + OptionReportDelay.GetFloat() + tien, "MadBait Self Report");
         }//インポスターのキル
         else if (RandomRepo.GetBool())
         {
             var nise = PlayerCatch.AllAlivePlayerControls.Where(x => !x.GetCustomRole().IsImpostor() && !x.Is(CustomRoles.WolfBoy)).ToArray();
             if (!ImpRepo.GetBool()) nise = PlayerCatch.AllAlivePlayerControls.ToArray();
+            if (nise.Length == 0) return;
             var rand = IRandom.Instance;
             var P = nise[rand.Next(0, nise.Length)];
             _ = new LateTask(() =>
-                ReportDeadBodyPatch.ExReportDeadBody(P, target.Data)
+                ReportDeadBodyPatch.ExReportDeadBody(P, target.Data, false)
                 , 0.15f + OptionReportDelay.GetFloat() + tien, "Bait Self Report");
         }
     }
